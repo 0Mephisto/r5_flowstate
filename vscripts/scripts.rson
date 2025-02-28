@@ -78,7 +78,8 @@ Scripts:
 	gamemodes/sh_dev_gamemodes_mp.gnut // DEVSCRIPTS REMOVE
 	gamemodes/sh_gamemodes_mp.gnut
 	sh_ability_shadow_zombie.nut
-  pilot/sh_pilot_tracking_vision.gnut
+
+	pilot/sh_pilot_tracking_vision.gnut
 	sh_bird_cluster.nut
 
 	sh_extended_use.gnut
@@ -352,6 +353,103 @@ Scripts:
 
 	weapons/mp_weapon_mounted_turret_placeable.nut
 	weapons/mp_weapon_mounted_turret_weapon.nut
+	// weapons/mp_weapon_grenade_rev_shell.nut
+	
+	//S0 Dev Protos
+	//Husaria
+	//Plant a breaching charge that fires a sonic wave through walls to destroy traps, force open doors, and disorient enemies.
+	weapons/s0_dev_protos/mp_weapon_concussive_breach.nut
+	//Throw a grenade that briefly blinds and deafens opponents.
+	weapons/s0_dev_protos/mp_weapon_grenade_flashbang.nut
+	//You have a shotgun on your leg that fires when you melee doors or enemies. Requires shotgun ammo. Using your abilities grants you a brief speed boost.
+	weapons/s0_dev_protos/sh_pilot_passive_shotgun_kick.gnut
+	weapons/s0_dev_protos/mp_weapon_shotgun_kick.nut
+	
+	//Jericho
+	//Throw two electrically-charged javelins that burn through enemy body shields.
+	weapons/s0_dev_protos/mp_ability_maelstrom_javelin.nut
+	//A full-body shield that protects you from incoming fire.
+	weapons/s0_dev_protos/mp_ability_riot_shield.nut
+
+	//Prophet
+	//Scans the environment for enemies and gathers information on targets found.
+	weapons/s0_dev_protos/mp_ability_spotter_sight.nut
+	
+	//Nomad
+	//Follow the Loot Compass to the nearest item.
+	weapons/s0_dev_protos/mp_ability_loot_compass.nut
+
+	//Forge
+	//Ground Slam
+	//Reverse your jump jets to slam down into the ground.
+	weapons/s0_dev_protos/mp_ability_ground_slam.nut
+	
+	//Rampart (OG)
+	//Build cover with an upper barrier that blocks incoming shots.
+	weapons/s0_dev_protos/mp_weapon_cover_wall.nut
+
+	//PROTOS - NOT ASSIGNED TO A CHARACTER YET
+	//Stryder Dodge Roll (Proto)
+	weapons/s0_dev_protos/mp_ability_dodge_roll.nut
+	weapons/s0_dev_protos/mp_ability_phase_dash.nut
+
+	//Sonic Shriek (Proto)
+	//A charged short-range blast of force that pushes pilots and projectiles.
+	weapons/s0_dev_protos/mp_ability_sonic_shout.nut	
+	
+	//Split Timeline
+	//Weirdest ability in the game -> Proto changed to mp_ability_mark_recall which wasn't commented and doesn't have the weapon handling stuff
+	//You can split time in two, carry different weapons, you can have different health / shield and ammo in each timeline
+	weapons/s0_dev_protos/mp_ability_split_timeline.nut
+	
+	
+	//------------------------ Second part of dev protos. Cafe
+	
+	//Skunner
+	//Drop a pile of debris that slows and damages enemies when they move through it.
+	weapons/s0_dev_protos/mp_weapon_debris_trap.nut
+	//Instantly create a spiked barrier made from rapid hardening resin.
+	weapons/s0_dev_protos/mp_weapon_grenade_barrier.nut
+	
+	//Unreleased Mirage Ultimate (Proto)
+	weapons/s0_dev_protos/mp_ability_haunt.nut
+	
+	//Proximity Mine
+	
+	//Downfall (Fuse grandfather)
+	//sh_fire
+	//mp_ability_rocket_ribault (Fire a rocket propelled fire bomb. Press %offhand4% to air burst the bomb and drop fire mines.)
+	//grenade_molotov (Throw a fire bomb that sets enemies on fire.)
+	//deployable_molotov (Drop a box of 4 molotovs anyone in your squad can pickup and throw.)
+	//Passive Fire Walker (You automatically extinguish fire by walking through it. Burning teammates will be extinguished when they move close to you.)
+	
+	//Inmortal
+	//Shield carger (Unleash a cloud of nanites to charge your teams shields.)
+	//Protection (Restores your health and shields to full and gives nearby teammates 30 seconds of self revive. Takes 8 seconds to charge.)
+
+	//Rosie (Loba)
+	//Arms Market
+	//Area loot scan
+	//Teleport Proto
+	
+	//Nomad
+	//Crafting Table Placeholder
+	
+	//Sentry Turret (OG Rampart turret)
+
+	//Gladiator Disc (Scraped, similar to deathbox, killer can grab something that a dead player leaves)
+	
+	//MORE PROTOS
+	
+	//Black Sand Trap
+	//ShuffleAbility_Init (Teleport with objects?)
+	//Shockwave
+	//Cluster Rocket
+	//Shotgun Double Barrel
+	//Deployable Wallrun (Ice Wall)
+	//Hover Wall (HoverWall_Init)
+	//Gravity Toggle
+	//Antman
 ]
 
 When: "SERVER || CLIENT"
@@ -963,6 +1061,9 @@ Scripts:
 	weapons/mp_weapon_droneplasma.nut
 	weapons/mp_weapon_dronerocket.nut
 	
+	// abilities/loba_tactical_translocation.nut
+	// weapons/mp_ability_ash_dash.nut
+	
 	sh_clientmusic.gnut
 
 	sh_waypoints.gnut
@@ -975,6 +1076,7 @@ Scripts:
 	mp/sh_weapon_inspect.gnut
 	weapons/mp_weapon_throwingknife.nut
 	
+	//(cafe) custom content
 	weapons/mp_weapon_titan_sword.nut
 	weapons/mp_weapon_titan_sword_heavy.nut
 	weapons/mp_weapon_titan_sword_block.nut
@@ -1113,6 +1215,7 @@ Scripts:
 	// 4d specific
 	custom_maps/_custom_maps_4d.nut
 	
+	//mkos LG patches & map based patches
 	custom_maps/_LG_Duel.nut
 	custom_maps/_map_patch.nut
 

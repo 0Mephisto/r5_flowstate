@@ -201,6 +201,26 @@ void function InitWeaponScripts()
 	MpWeaponBasicBolt_Init()
 
 	WeaponMastiff_Init()
+	
+	//(cafe) S0 Dev Protos
+	MpWeaponGroundSlam_Init()
+	Haunt_Init()
+	MpAbilityLootCompass_Init()
+	MpAbilityMaelstromJavelin_Init()
+	MpAbilityRiotShield_Init()
+	MpAbilitySonicShoutWeapon_Init()
+	MpAbilitySplitTimelineWeapon_Init()
+	MpAbilitySpotterSight_Init()
+	MpWeaponConcussiveBreach_Init()
+	MpWeaponGrenadeBarrier_Init()
+	MpWeaponGrenadeFlashbang_Init()
+	MpWeaponDebrisTrap_Init()
+	MpWeaponCoverWall_Init()
+	ShPassiveShotgunKick_Init()
+	
+	//(cafe) Test stuff
+	// LobaTacticalTranslocation_LevelInit()
+	// MpAbilityAshDash_Init()
 
 	#if SERVER
 		//BallLightning_Init()
