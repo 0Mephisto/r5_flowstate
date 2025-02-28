@@ -49,6 +49,7 @@ global struct DisplayTime
 	int hours
 	int minutes
 	int seconds
+	int milliseconds
 }
 
 global struct AABB
@@ -2443,6 +2444,29 @@ DisplayTime function SecondsToDHMS( int seconds )
 	dt.seconds = int( ceil( remainingSeconds ) )
 
 	return dt
+}
+
+DisplayTime function SecondsToDHMSM(float total_seconds)
+{
+    DisplayTime dt;
+
+    // Extract days
+    dt.days = (total_seconds / SECONDS_PER_DAY).tointeger() // Convert to integer
+    total_seconds = total_seconds % SECONDS_PER_DAY
+
+    // Extract hours
+    dt.hours = (total_seconds / SECONDS_PER_HOUR).tointeger() // Convert to integer
+    total_seconds = total_seconds % SECONDS_PER_HOUR
+
+    // Extract minutes
+    dt.minutes = (total_seconds / SECONDS_PER_MINUTE).tointeger() // Convert to integer
+    total_seconds = total_seconds % SECONDS_PER_MINUTE
+
+    // Extract seconds and milliseconds
+    dt.seconds = total_seconds.tointeger(); // Extract whole seconds
+    dt.milliseconds = ((total_seconds - dt.seconds) * 1000).tointeger() // Extract milliseconds
+
+    return dt
 }
 
 int function GetDayOfWeek( int unixTime )

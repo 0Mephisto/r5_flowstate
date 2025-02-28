@@ -78,6 +78,7 @@ global function FS_Scenarios_SetRingCloseTimeForMinimap
 
 global function FS4DIntroSequence
 global function HaloBrIntroSequence
+global function Flowstate_RespawnTimer_Thread
 
 const string CIRCLE_CLOSING_IN_SOUND = "UI_InGame_RingMoveWarning" //"survival_circle_close_alarm_01"
 
@@ -708,12 +709,12 @@ void function Flowstate_ShowRespawnTimeUI( int timeUntilRespawn )
 void function Flowstate_RespawnTimer_Thread( int timeUntilRespawn, int type )
 {
 	clGlobal.levelEnt.EndSignal( "LocalClientPlayerRespawned" )
-	entity player = GetLocalClientPlayer()
+	// entity player = GetLocalViewPlayer()
 	
-	if( !IsValid( player ) )
-		return
+	// if( !IsValid( player ) )
+		// return
 		
-	player.EndSignal( "OnDestroy" )
+	// player.EndSignal( "OnDestroy" )
 
 	OnThreadEnd
 	(
@@ -732,7 +733,11 @@ void function Flowstate_RespawnTimer_Thread( int timeUntilRespawn, int type )
 	if( type == 2 )
 	{
 		msg = "Match Found "
+	} else if( type == 3 )
+	{
+		msg = "Round Starts In "
 	}
+	
 	while ( timeUntilRespawn > 0 )
 	{
 		Hud_SetText( HudElement( "FS_Respawn_Countdown_Center"), msg + string( timeUntilRespawn ) )

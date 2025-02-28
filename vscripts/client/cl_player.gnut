@@ -142,7 +142,7 @@ void function ClPlayer_Init()
 	level.grenadeIndicatorEnabled <- true
 	level.clientsLastKiller <- null
 
-	if( GetCurrentPlaylistVarBool( "flowstate_enable_health_bars", false ) ) 
+	if( GetCurrentPlaylistVarBool( "flowstate_enable_health_bars", false ) && !GetCurrentPlaylistVarBool( "is_practice_map", false ) )
 	{
 		AddCreateCallback( "player", FS_HealthBars_StartForPlayer )
 		AddDestroyCallback( "player", FS_HealthBars_Destroy )

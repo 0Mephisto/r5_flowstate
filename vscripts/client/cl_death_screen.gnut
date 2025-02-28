@@ -408,12 +408,12 @@ void function DeathScreen_RespawnStatusChanged( entity player, int old, int new,
 	if ( player != clientPlayer )
 		return
 
-	if ( new == eRespawnStatus.WAITING_FOR_DROPPOD && IsViewingDeathScreen() )
-	{
-		RunUIScript( "UI_CloseDeathScreenMenu" )
-		DeathScreenCreateNonMenuBlackBars()
-		return
-	}
+	// if ( new == eRespawnStatus.WAITING_FOR_DROPPOD && IsViewingDeathScreen() )
+	// {
+		// RunUIScript( "UI_CloseDeathScreenMenu" )
+		// DeathScreenCreateNonMenuBlackBars()
+		// return
+	// }
 
 	if ( new == eRespawnStatus.SQUAD_ELIMINATED && IsViewingSpectateTab() )
 	{

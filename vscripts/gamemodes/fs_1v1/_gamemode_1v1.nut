@@ -58,6 +58,9 @@ global function SetupPlayerReserveAmmo
 global function _3v3ModePlayerToRestingList
 
 global function Gamemode1v1_SetPlayerGamestate
+global function Gamemode1v1_GetPlayerGamestate
+global function RemovePlayerFromGroup
+
 global function Gamemode1v1_SetRestEnabled
 global function Gamemode1v1_CreatePanels
 global function Gamemode1v1_GetRestEnabled
@@ -152,7 +155,10 @@ global enum e1v1State
 	SEQUENCE,
 	MATCHING,
 	RESTING,
-	RECAP
+	RECAP,
+	
+	//coaching mode
+	WATCHING_FIGHT_REPLAY
 }
 
 struct ChallengesStruct
@@ -431,7 +437,7 @@ void function Gamemode1v1_SetPlayerGamestate( entity player, int state = 0 )
 	#endif
 }
 
-int function GetPlayer1v1Gamestate( entity player )
+int function Gamemode1v1_GetPlayerGamestate( entity player )
 {
 	return player.e.gamemode1v1State
 }
@@ -2445,9 +2451,9 @@ void function soloModePlayerToWaitingList( entity player )
 	playerStruct.player = player
 	playerStruct.handle = player.p.handle
 	
-	if( !settings.isScenariosMode )
+	if( !settings.isScenariosMode && !bIsCoachingMode() )
 		playerStruct.waitingTime = Time() + 2
-		
+
 	float season_kd
 	float current_kd
 	
@@ -2470,7 +2476,7 @@ void function soloModePlayerToWaitingList( entity player )
 	//set realms for resting player
 	FS_ClearRealmsAndAddPlayerToAllRealms( player )
 	
-	if( !isScenariosMode() )
+	if( !isScenariosMode() && !bIsCoachingMode() )
 		Remote_CallFunction_ByRef( player, "ForceScoreboardFocus" )
 
 	// Check opponent -- (mk):cannot do this here, it will simply result in double calls for both players.
@@ -2480,7 +2486,25 @@ void function soloModePlayerToWaitingList( entity player )
 	
 	//检查resting list 是否有该玩家
 	deleteSoloPlayerResting( player )
-	LocalMsg( player, "#FS_IN_QUEUE", "", eMsgUI.EVENT, settings.roundTime )
+
+	if( isScenariosMode() && FS_Scenarios_GetMatchIsEnding() )
+		LocalMsg( player, "#FS_Scenarios_WaitingForRoundEnd", "", eMsgUI.EVENT, g_fCurrentRoundEndTime - Time() )
+	else if( !bIsCoachingMode() )
+		LocalMsg( player, "#FS_IN_QUEUE", "", eMsgUI.EVENT, settings.roundTime )
+
+	if( bIsCoachingMode() )
+	{
+		if( !IsAlive( player ) )
+			DecideRespawnPlayer( player, false )
+
+		if( GetPlayerArray().len() == 2 )
+		{
+			Message_New( player, "Welcome to District's 1v1 Faceoff\n\n Waiting For Admin To Start", 300 )
+			Remote_CallFunction_NonReplay(player, "Flowstate_OpenCoachingMenu")
+		}
+		else
+			Message_New( player, "Welcome to District's 1v1 Faceoff\n\n Waiting Another Player To Start", 9999 )
+	}
 }
 
 void function soloModePlayerToInProgressList( soloGroupStruct newGroup ) 
@@ -2905,6 +2929,11 @@ void function respawnInSoloMode( entity player, int respawnSlotIndex = -1 ) //�
 		Inventory_SetPlayerEquipment( player, "", "armor" )
 	}
 	
+	if( bIsCoachingMode() )
+	{
+		FS_Coaching_StartRecording( player )
+	}
+	
 	wait 0.1
 	ReCheckGodMode( player ) //Todo(mk): fix and remove the need for this.
 }
@@ -3106,13 +3135,17 @@ void function Gamemode1v1_Init( int eMap )
 	INIT_1v1_sbmm()
 	INIT_HostCustomWeapons()
 	
-	if( !isScenariosMode() ) //intertwined D:
+	if( !isScenariosMode() && !bIsCoachingMode() ) //intertwined D:
 	{
 		AddClientCommandCallback( "start_in_rest", ClientCommand_mkos_start_in_rest_setting ) 
 		AddClientCommandCallback( "wait", ClientCommand_mkos_IBMM_wait )
 		AddClientCommandCallback( "lock1v1", ClientCommand_mkos_lock1v1_setting )
 		AddClientCommandCallback( "enable_input_banner", ClientCommand_enable_input_banner )
 		AddClientCommandCallback( "challenge", ClientCommand_mkos_challenge )
+	} else if( bIsCoachingMode() )
+	{
+		INIT_CC_playeradmins()
+		FS_Init_1v1_Coaching()
 	}
 	
 	if( Playlist() == ePlaylists.fs_lgduels_1v1 )
@@ -3313,51 +3346,63 @@ void function Gamemode1v1_Init( int eMap )
 		//["add another"] = null,
 	};
 	
-	Gamemode1v1_CreatePanels( g_waitingRoomPanelLocation.origin, g_waitingRoomPanelLocation.angles, panels )
-	DefinePanelCallbacks( panels )
+	if( !bIsCoachingMode() )
+	{
+		Gamemode1v1_CreatePanels( g_waitingRoomPanelLocation.origin, g_waitingRoomPanelLocation.angles, panels )
+		DefinePanelCallbacks( panels )
+	}
 
 	forbiddenZoneInit( GetMapName() )
 	
 	thread Gamemode1v1_soloModeThread( getWaitingRoomLocation() )
 	
-	#if TEST_WORLDDRAW
-		AddCallback_OnClientConnected
-		(
-			void function( entity player ) 
+	AddCallback_OnClientConnected
+	(
+		void function( entity player ) 
+		{
+			#if TEST_WORLDDRAW
+			float imgWidth = 600
+			float imgHeight = 380
+			
+			int refID = WorldDrawAsset_CreateOnClient
+			(
+				player,
+				"",
+				Gamemode1v1_GetNotificationPanel_Coordinates() + <0,0,imgHeight>,
+				Gamemode1v1_GetNotificationPanel_Angles(),
+				imgWidth,
+				imgHeight,
+				WorldDrawAsset_AssetRefToID( "rui/flowstate_custom/mkos/1v1banner" )
+			)
+			
+			// WorldDrawAsset_Timed
+			// (
+				// player, 
+				// "rui/flowstate_custom/mkos/1v1banner",
+				// Gamemode1v1_GetNotificationPanel_Coordinates() + <0,0,imgHeight>,
+				// Gamemode1v1_GetNotificationPanel_Angles(),
+				// imgWidth,
+				// imgHeight,
+				// -1, //WorldDrawAsset_AssetRefToID( "rui/flowstate_custom/mkos/1v1banner" ),
+				// -1, //no alpha change
+				// 15  //duration
+			// )
+			
+			#if DEVELOPER 
+				printt( "SERVER: Created WorldDrawImg on client for", player, "with ID:", refID )
+			#endif
+			
+			#endif
+	
+			if( bIsCoachingMode() )
 			{
-				float imgWidth = 600
-				float imgHeight = 380
+				if( !IsAlive( player ) )
+					DecideRespawnPlayer( player, false )
 				
-				int refID = WorldDrawAsset_CreateOnClient
-				(
-					player,
-					"",
-					Gamemode1v1_GetNotificationPanel_Coordinates() + <0,0,imgHeight>,
-					Gamemode1v1_GetNotificationPanel_Angles(),
-					imgWidth,
-					imgHeight,
-					WorldDrawAsset_AssetRefToID( "rui/flowstate_custom/mkos/1v1banner" )
-				)
-				
-				// WorldDrawAsset_Timed
-				// (
-					// player, 
-					// "rui/flowstate_custom/mkos/1v1banner",
-					// Gamemode1v1_GetNotificationPanel_Coordinates() + <0,0,imgHeight>,
-					// Gamemode1v1_GetNotificationPanel_Angles(),
-					// imgWidth,
-					// imgHeight,
-					// -1, //WorldDrawAsset_AssetRefToID( "rui/flowstate_custom/mkos/1v1banner" ),
-					// -1, //no alpha change
-					// 15  //duration
-				// )
-				
-				#if DEVELOPER 
-					printt( "SERVER: Created WorldDrawImg on client for", player, "with ID:", refID )
-				#endif
+				player.p.playerisready = false
 			}
-		)
-	#endif
+		}
+	)
 	
 	AddCallback_OnClientConnected
 	( 
@@ -3373,8 +3418,13 @@ void function Gamemode1v1_Init( int eMap )
 	)
 	
 	BannerImages_1v1Init()
-	Gamemode1v1_SetRestEnabled()
-	AddClientCommandCallback( "rest", ClientCommand_Maki_SoloModeRest )
+
+	if( !bIsCoachingMode() )
+	{
+		AddClientCommandCallback( "rest", ClientCommand_Maki_SoloModeRest )
+		Gamemode1v1_SetRestEnabled()
+	} else
+		Gamemode1v1_SetRestEnabled( false )
 }
 
 void function Gamemode1v1_SetRestEnabled( bool value = true )
@@ -3712,9 +3762,12 @@ void function soloModeThread( LocPair waitingRoomLocation )
 				playerInWaitingStruct.IBMM_Timeout_Reached = false
 
 			//timeout preferred matchmaking 
-			if ( playerInWaitingStruct.waitingTime < Time() && !playerInWaitingStruct.IsTimeOut && IsValid( playerInWaitingStruct.player ) )
-				playerInWaitingStruct.IsTimeOut = true
-		}
+
+			if ( !bIsCoachingMode() && playerInWaitingStruct.waitingTime < Time() && !playerInWaitingStruct.IsTimeOut && IsValid(playerInWaitingStruct.player))
+			{
+				playerInWaitingStruct.IsTimeOut = true;
+			}
+		}//foreach
 
 		//遍历游玩队列
 		array<soloGroupStruct> groupsToRemove
@@ -3976,7 +4029,64 @@ void function soloModeThread( LocPair waitingRoomLocation )
 			file.APlayerHasMessage = false;
 		}
 
-		// printt("------------------2 or more players in solo waiting array,matching------------------")
+		// printt("------------------more than 2 player in solo waiting array,matching------------------")
+		
+		if( bIsCoachingMode() )
+		{
+			//Coaching mode, we should wait until admin decides to start
+			
+			//Open menu with recordings list, wait until amdin presses "start new"
+
+			foreach ( player in GetPlayerArray() )
+			{
+				if ( !IsValid( player ) )
+					continue
+				
+				if( !player.p.playerisready )
+				{
+					Message_New( player, "Welcome to District's 1v1 Faceoff\n\n Waiting For Admin To Start", 300 )
+					
+					player.p.playerisready = true
+					
+					Remote_CallFunction_NonReplay(player, "Flowstate_OpenCoachingMenu")
+				}
+			}
+
+			while( !GetStartNewGameBool() && GetPlayerArray_Alive().len() == 2)
+				WaitFrame()
+
+			SetStartNewGameBool( false )
+			
+			//check if there are still two players, if not, continue..
+			if( GetPlayerArray_Alive().len() < 2 )
+			{
+				foreach ( player in GetPlayerArray() )
+				{
+					if ( !IsValid( player ) )
+						continue
+					
+					player.p.playerisready = false
+				}
+				continue
+			}
+			
+			//NEW COACHING 1V1 GAME HAS STARTED, INMINENT..
+
+			//close menu
+			
+			foreach ( player in GetPlayerArray() )
+			{
+				if ( !IsValid( player ) )
+					continue
+				
+				Remote_CallFunction_NonReplay(player, "Flowstate_CloseCoachingMenu")
+				Message_New( player, "STARTING RECORDED 1V1 MATCH", 3 )
+				player.p.playerisready = false
+			}			
+			
+			wait 3
+		}
+		
 		soloGroupStruct newGroup
 		entity opponent
 		bool bMatchFound = false
@@ -3993,7 +4103,8 @@ void function soloModeThread( LocPair waitingRoomLocation )
 			bool player_IBMM_timeout = eachPlayerStruct.IBMM_Timeout_Reached		
 			
 			//challenge system
-			if( IsPlayerPendingChallenge( playerSelf ) )
+
+			if( !bIsCoachingMode() && IsPlayerPendingChallenge( playerSelf ) )
 			{
 				entity Lock1v1Opponent = getLock1v1OpponentOfPlayer( playerSelf )		
 				if ( IsValid( Lock1v1Opponent ) )
@@ -4077,22 +4188,32 @@ void function soloModeThread( LocPair waitingRoomLocation )
 					if( !IsValid( eachOpponent ) || playerSelf == eachOpponent )//过滤非法对手
 						continue
 						
-					if( fabs( selfKd - opponentKd ) > file.SBMM_kd_difference ) //过滤kd差值
+					if( !bIsCoachingMode() && fabs(selfKd - opponentKd) > file.SBMM_kd_difference ) //过滤kd差值
 						continue
 						
 					properOpponentTable[ eachOpponent ] <- fabs( selfKd - opponentKd )
 					
 					//(mk): keep building a list of candidates who are not timed out with same input
-					if( playerSelf.p.input != eachOpponent.p.input && ( player_IBMM_timeout == false || opponent_IBMM_timeout == false ) )
+
+					if( !bIsCoachingMode() && playerSelf.p.input != eachOpponent.p.input && ( player_IBMM_timeout == false || opponent_IBMM_timeout == false ) )
+					{
+						//sqprint("Waiting for input match...");
 						continue		
+					}
 				}
 
 				float lowestKd = 999
 				entity bestOpponent
 				entity scondBestOpponent//防止bestOpponent是上一局的对手
-				foreach ( opponentt,kd in properOpponentTable )
+				
+				foreach (opponentt,kd in properOpponentTable)
 				{
-					if( kd < lowestKd )
+					if( bIsCoachingMode() )
+					{
+						bestOpponent = opponentt
+					}
+					
+					if(kd < lowestKd)
 					{
 						scondBestOpponent = bestOpponent
 						bestOpponent = opponentt
@@ -4102,10 +4223,15 @@ void function soloModeThread( LocPair waitingRoomLocation )
 
 				entity lastOpponent = eachPlayerStruct.lastOpponent
 
-				if( !IsValid( bestOpponent ) ) 
-					continue //没找到最合适玩家,为下一位玩家匹配
-					
-				if( (bestOpponent != lastOpponent && Fetch_IBMM_Timeout_For_Player( bestOpponent ) == true && Fetch_IBMM_Timeout_For_Player( playerSelf ) == true ) || ( bestOpponent != lastOpponent && Fetch_IBMM_Timeout_For_Player( playerSelf ) == false && Fetch_IBMM_Timeout_For_Player( bestOpponent ) == false && playerSelf.p.input == bestOpponent.p.input ) ) //最合适玩家是上局对手,用第二合适玩家代替
+				if(!IsValid(bestOpponent)) continue//没找到最合适玩家,为下一位玩家匹配
+				
+				if( bIsCoachingMode() )
+				{
+					newGroup.player1 = playerSelf
+					newGroup.player2 = bestOpponent
+					break			
+				}
+				else if( (bestOpponent != lastOpponent && Fetch_IBMM_Timeout_For_Player( bestOpponent ) == true && Fetch_IBMM_Timeout_For_Player( playerSelf ) == true ) || ( bestOpponent != lastOpponent && Fetch_IBMM_Timeout_For_Player( playerSelf ) == false && Fetch_IBMM_Timeout_For_Player( bestOpponent ) == false && playerSelf.p.input == bestOpponent.p.input ) ) //最合适玩家是上局对手,用第二合适玩家代替
 				{				
 						bool inputresult = playerSelf.p.input == bestOpponent.p.input ? true : false
 						
@@ -4292,6 +4418,16 @@ void function FS_1v1_OnPlayerDisconnected( entity player )
 		delete file.playerToGroupMap[ playerHandle ]
 }
 
+void function RemovePlayerFromGroup( entity player )
+{
+	//If player was in a match, remove. Cafe
+	if( player.p.handle in file.playerToGroupMap )
+	{
+		delete file.playerToGroupMap[ player.p.handle ]
+	}
+}
+//mkos input watch
+
 void function InputWatchdog( entity player, entity opponent, soloGroupStruct group )
 {
 	#if DEVELOPER
@@ -4401,7 +4537,7 @@ void function GiveWeaponsToGroup( array<entity> players, soloGroupStruct groupRe
 		
 		foreach( player in players )
 		{		
-			if ( settings.bGiveSameRandomLegendToBothPlayers && random_character_index <= 10 )
+			if ( settings.bGiveSameRandomLegendToBothPlayers && random_character_index <= 10 && !bIsCoachingMode() )
 				CharacterSelect_AssignCharacter( ToEHI( player ), random_character )
 			
 			DeployAndEnableWeapons_Raw( player )//✓
@@ -5334,10 +5470,16 @@ void function Gamemode1v1_OnPlayerDied( entity victim, entity attacker, var dama
 	if( IsValid( attacker ) )
 		victim.p.lastKiller = attacker
 
+	if( bIsCoachingMode() )
+	{
+		//stops recording
+		FS_Coaching_StopRecording( FS_Coaching_GetAvailableMatchIdentifier(), victim, attacker )
+	}
+	
 	// if( isPlayerInWaitingList( victim ) )
 	// {
 		// LocPair waitingRoomLocation = getWaitingRoomLocation()
-		
+
 		// if( !IsAlive( victim ) )
 		// {
 			// Gamemode1v1_SetPlayerGamestate( victim, e1v1State.SEQUENCE )
@@ -5460,6 +5602,9 @@ void function SetupPlayerReserveAmmo( entity player, entity weapon )
 	//Clean up ammo. Cafe
 	foreach ( ammo, type in eAmmoPoolType )
 	{
+		if( !SURVIVAL_Loot_IsRefValid( ammo ) )
+			continue
+		
 		if( !IsAmmoInUse( player, ammo ) )
 		{
 			int count = SURVIVAL_CountItemsInInventory( player, ammo )
