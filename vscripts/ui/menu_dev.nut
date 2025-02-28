@@ -1286,6 +1286,7 @@ void function SetupAbilities()
 	SetupDevCommand( "Wraith Tactical", "give mp_ability_phase_walk" )
 	SetupDevCommand( "Wraith Ultimate", "give mp_weapon_phase_tunnel" )
 	
+	SetupDevCommand( " ", "give dontgiveanything" ) // blank line
 	SetupDevCommand( "-> Custom abilities", "give mp" )
 	SetupDevCommand( "Tf2: Pulse Blade", "give mp_weapon_grenade_sonar" )
 	SetupDevCommand( "Tf2: Amped Wall", "give mp_weapon_deployable_cover" )
@@ -1293,6 +1294,37 @@ void function SetupAbilities()
 	
 	SetupDevCommand( "Dev: 3Dash", "give mp_ability_3dash" )
 	SetupDevCommand( "Dev: Cloak", "give mp_ability_cloak" )
+	
+	//Husaria
+	SetupDevCommand( "Dev Prototype: Concussive Breach", "give mp_weapon_concussive_breach" )
+	SetupDevCommand( "Dev Prototype: Flashbang Grenade", "give mp_weapon_grenade_flashbang" )
+	// + passive Shotgun Kick (PAS_SHOTGUN_KICK)
+	
+	//Jericho
+	SetupDevCommand( "Dev Prototype: Riot Shield", "give mp_ability_riot_shield" )
+	SetupDevCommand( "Dev Prototype: Malestrom Javelin", "give mp_ability_maelstrom_javelin" )
+	
+	//Prophet
+	SetupDevCommand( "Dev Prototype: Spotter Sight", "give mp_ability_spotter_sight" )
+	
+	//Nomad
+	SetupDevCommand( "Dev Prototype: Loot Compass", "give mp_ability_loot_compass" )
+	
+	//Forge
+	SetupDevCommand( "Dev Prototype: Ground Slam", "give mp_ability_ground_slam" )
+	
+	//Skunner
+	SetupDevCommand( "Dev Prototype: Debris Trap", "give mp_weapon_debris_trap" )
+	SetupDevCommand( "Dev Prototype: Grenade Barrier", "give mp_weapon_grenade_barrier" )
+	// + passive light step (PAS_LIGHT_STEP)
+	
+	SetupDevCommand( "Dev Prototype: Cover Wall", "give mp_weapon_cover_wall_proto" )
+	
+	SetupDevCommand( "Dev Prototype: Split Timeline", "give mp_ability_split_timeline" )
+	SetupDevCommand( "Dev Prototype: Sonic Shout", "give mp_ability_sonic_shout" )
+
+	SetupDevCommand( "Dev Prototype: Haunt", "give mp_ability_haunt" )
+	SetupDevCommand( "Dev Prototype: Dodge Roll", "give mp_ability_dodge_roll" )	
 	
 	//SetupDevCommand( "Gravity Star", "give mp_weapon_grenade_gravity" )
 	

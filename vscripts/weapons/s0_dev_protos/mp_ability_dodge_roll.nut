@@ -57,7 +57,7 @@ var function OnWeaponPrimaryAttack_ability_dodge_roll( entity weapon, WeaponPrim
 				float xAxis = InputGetAxis( ANALOG_LEFT_X )
 				float yAxis = InputGetAxis( ANALOG_LEFT_Y ) * -1
 				vector angles = player.EyeAngles()
-				vector directionForward = PhaseDash_GetDirectionFromInput( angles, xAxis, yAxis )
+				vector directionForward = DodgeRoll_GetDirectionFromInput( angles, xAxis, yAxis )
 				if ( IsFirstTimePredicted() )
 				{
 					EmitSoundOnEntity( player, "Stryder.Dash" )
@@ -91,7 +91,7 @@ void function DodgeRoll_SetPlayerVelocityFromInput( entity player, float scale, 
 	vector angles = player.EyeAngles()
 	float xAxis = player.GetInputAxisRight()
 	float yAxis = player.GetInputAxisForward()
-	vector directionForward = PhaseDash_GetDirectionFromInput( angles, xAxis, yAxis )
+	vector directionForward = DodgeRoll_GetDirectionFromInput( angles, xAxis, yAxis )
 
 	player.SetVelocity( directionForward * scale + baseVel )
 }

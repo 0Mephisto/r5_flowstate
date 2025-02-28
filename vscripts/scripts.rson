@@ -353,7 +353,7 @@ Scripts:
 
 	weapons/mp_weapon_mounted_turret_placeable.nut
 	weapons/mp_weapon_mounted_turret_weapon.nut
-	// weapons/mp_weapon_grenade_rev_shell.nut
+	weapons/mp_weapon_grenade_rev_shell.nut
 	
 	//S0 Dev Protos
 	//Husaria
@@ -1061,8 +1061,8 @@ Scripts:
 	weapons/mp_weapon_droneplasma.nut
 	weapons/mp_weapon_dronerocket.nut
 	
-	// abilities/loba_tactical_translocation.nut
-	// weapons/mp_ability_ash_dash.nut
+	abilities/loba_tactical_translocation.nut
+	weapons/mp_ability_ash_dash.nut
 	
 	sh_clientmusic.gnut
 
@@ -1162,7 +1162,7 @@ Scripts:
 	gamemodes/fs_prophunt/sh_gamemode_prophunt.nut
 	gamemodes/fs_duckhunt/sh_gamemode_duckhunt.nut
 	gamemodes/fs_infection/sh_gamemode_infection.nut
-	// gamemodes/fs_pkknockback/sh_gamemode_pkknockback.nut	
+	gamemodes/fs_pkknockback/sh_gamemode_pkknockback.nut	
 	gamemodes/fs_snd/sh_gamemode_snd.nut
 	gamemodes/util/sh_custom_zombie_mystery_box.nut
 	gamemodes/util/sh_custom_zombie_mystery_box_weapon.nut
@@ -1170,7 +1170,7 @@ Scripts:
 	mp/sh_movement_recorder.nut
 	sh_hover_vehicle.gnut
 	gamemodes/fs_scenarios/sh_gamemode_scenarios.nut
-	// gamemodes/fs_spieslegends/sh_gamemode_spieslegends.nut
+	gamemodes/fs_spieslegends/sh_gamemode_spieslegends.nut
 	//gamemodes/fs_carritos/sh_gamemode_carritos.nut
 	mp/sh_skydive_launchers.gnut
 ]
@@ -1189,12 +1189,12 @@ Scripts:
 	gamemodes/custom_ctf/_gamemode_custom_ctf.nut
 	gamemodes/fs_duckhunt/_gamemode_duckhunt.nut
 	gamemodes/fs_prophunt/_gamemode_prophunt.nut
-	// gamemodes/fs_pkknockback/_gamemode_pkknockback.nut
+	gamemodes/fs_pkknockback/_gamemode_pkknockback.nut
 	gamemodes/fs_infection/_gamemode_infection.nut
 	gamemodes/fs_snd/_gamemode_snd.nut
 	gamemodes/fs_surf/_gamemode_surf.nut
 	gamemodes/fs_surf/_gamemode_surf2.nut
-	// gamemodes/fs_spieslegends/_gamemode_spieslegends.nut
+	gamemodes/fs_spieslegends/_gamemode_spieslegends.nut
 	//gamemodes/fs_carritos/_gamemode_carritos.nut
 	
 	gamemodes/fs_aimtrainer/_gamemode_aimtrainer.nut
@@ -1209,7 +1209,7 @@ Scripts:
 	custom_maps/_custom_maps_6.nut
 	custom_maps/_custom_maps_7.nut
 	custom_maps/_custom_maps_8.nut
-	// custom_maps/_custom_maps_9.nut
+	custom_maps/_custom_maps_9.nut
 	custom_maps/_custom_deafps_maps.nut
 
 	// 4d specific
@@ -1251,7 +1251,7 @@ Scripts:
 	gamemodes/fs_duckhunt/cl_gamemode_duckhunt.nut
 	gamemodes/fs_prophunt/cl_gamemode_prophunt.nut
 	gamemodes/fs_infection/cl_gamemode_infection.nut	
-	// gamemodes/fs_pkknockback/cl_gamemode_pkknockback.nut
+	gamemodes/fs_pkknockback/cl_gamemode_pkknockback.nut
 	gamemodes/fs_snd/cl_gamemode_snd.nut
 	lobby/lobbyvm/cl_lobbyvm.nut
 	custom_maps/cl_custom_falling_forever.nut
