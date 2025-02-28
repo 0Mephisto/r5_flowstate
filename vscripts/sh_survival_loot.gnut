@@ -634,7 +634,7 @@ void function SURVIVAL_Loot_InitShared()
 
 	file.initialized = true
 
-	var attachmentTable = GetDataTable( $"datatable/flowstate_weapon_mods.rpak" )
+	var attachmentTable = GetDataTable( $"datatable/weapon_mods_sdk.rpak" )
 	int numRows = GetDatatableRowCount( attachmentTable )
 
 	for ( int i = 0; i < numRows; i++ )
@@ -920,7 +920,7 @@ void function OnClientConnected( entity player )
 	ValidateDataTable( player, "datatable/survival_loot_sdk.rpak" )
 	ValidateDataTable( player, "datatable/flowstate_all_new_halomod.rpak" )
 	ValidateDataTable( player, "datatable/flowstate_all_new_snd.rpak" )
-	ValidateDataTable( player, "datatable/flowstate_weapon_mods.rpak" )
+	ValidateDataTable( player, "datatable/weapon_mods_sdk.rpak" )
 	ValidateDataTable( player, "datatable/flowstate_all_new_groups.rpak" )
 	ValidateDataTable( player, "datatable/flowstate_weapon_attachment_data.rpak" )
 	
