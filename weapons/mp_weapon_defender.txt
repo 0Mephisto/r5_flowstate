@@ -26,7 +26,8 @@ WeaponData
 	"OnWeaponReload"								"OnWeaponReload_weapon_defender_railgun"
 	"OnWeaponPrimaryAttack"							"OnWeaponPrimaryAttack_weapon_defender_railgun"
     "OnWeaponChargeBegin"					       	"OnWeaponChargeBegin_weapon_defender_railgun"
-
+	"OnProjectileCollision"                         "OnProjectileCollision_Generic"
+	
 	// Menu
 	"stat_damage" 									"88"
 	"stat_range"  									"96"
@@ -252,6 +253,62 @@ WeaponData
 
 	Mods
 	{
+		funny_selector
+		{
+			"projectile_ricochet_max_count"					"9999"
+			"bolt_bounce_frac" 								"1"
+			"projectile_damages_owner"						"1"
+		}
+
+		hopup_selectfire
+		{
+			// This mod is only used to indicate that the hop-up is active
+			// When player changes fire modes, we activate "altfire_selectfire"
+		}
+
+		// autofire
+		altfire_selectfire
+		{
+			"mod_activity_modifier"							"fire_select"
+	
+			"fire_rate"   									"2.0"
+			
+			"charge_cooldown_time"							"2.0"
+			
+			"is_semi_auto"									"0"
+
+			"damage_near_value"   							"*0.75"
+			"damage_far_value"								"*0.75"
+			"damage_very_far_value"							"*0.75"
+			"damage_near_value_titanarmor"					"*0.75"
+			"damage_far_value_titanarmor" 					"*0.75"
+			"damage_very_far_value_titanarmor" 				"*0.75"
+			"damage_near_distance"							"*0.75"
+			"damage_far_distance"						    "*0.75"
+			"damage_very_far_distance"						"*0.75"
+
+			"viewkick_pitch_base" 							"*0.5"
+			"viewkick_pitch_random"   						"*0.5"
+			"viewkick_pitch_softScale"						"*0.5"
+			"viewkick_pitch_hardScale"						"*0.5"
+			
+			"viewkick_yaw_base"   							"*0.5"
+			"viewkick_yaw_random" 							"*0.5"
+			"viewkick_yaw_softScale"  						"*0.5"
+			"viewkick_yaw_hardScale"  						"*0.5"
+			
+			"viewkick_roll_base"  							"*0.5"
+			"viewkick_roll_randomMin" 						"*0.5"
+			"viewkick_roll_randomMax" 						"*0.5"
+			"viewkick_roll_softScale" 						"*0.5"
+			"viewkick_roll_hardScale" 						"*0.5"
+			
+			"viewkick_hipfire_weaponFraction" 				"*0.5"
+			"viewkick_hipfire_weaponFraction_vmScale" 		"*0.5"
+			"viewkick_ads_weaponFraction" 					"*0.5"
+			"viewkick_ads_weaponFraction_vmScale" 			"*0.5"
+		}
+	   
         gold
         {
         }
