@@ -87,6 +87,8 @@ global function RemoveTitanCallback_OnHealthSegmentLost
 // Player movement callbacks
 global function AddPlayerMovementEventCallback
 global function RemovePlayerMovementEventCallback
+global function HasPlayerMovementEventCallback
+
 global function CodeCallback_OnPlayerJump
 global function CodeCallback_OnPlayerDoubleJump
 global function CodeCallback_OnPlayerDodge
@@ -1101,7 +1103,18 @@ void function RemovePlayerMovementEventCallback( entity player, int playerMoveme
 
 }
 
-
+bool function HasPlayerMovementEventCallback( entity player, int playerMovementEvent, void functionref( entity player ) callbackFunc )
+{
+	table<int, array<void functionref( entity )> > callbackTable = player.p.playerMovementEventCallbacks
+	if ( playerMovementEvent in callbackTable )
+	{
+		if ( callbackTable[ playerMovementEvent ].contains( callbackFunc ) )
+		{
+			return true
+		}
+	}
+	return false
+}
 
 void function CodeCallback_OnPlayerJump( entity player )
 {
