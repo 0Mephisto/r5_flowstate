@@ -391,7 +391,7 @@ Scripts:
 	//PROTOS - NOT ASSIGNED TO A CHARACTER YET
 	//Stryder Dodge Roll (Proto)
 	weapons/s0_dev_protos/mp_ability_dodge_roll.nut
-	weapons/s0_dev_protos/mp_ability_phase_dash.nut
+	// weapons/s0_dev_protos/mp_ability_phase_dash.nut
 
 	//Sonic Shriek (Proto)
 	//A charged short-range blast of force that pushes pilots and projectiles.
