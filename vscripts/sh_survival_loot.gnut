@@ -635,6 +635,9 @@ void function SURVIVAL_Loot_InitShared()
 	file.initialized = true
 
 	var attachmentTable = GetDataTable( $"datatable/weapon_mods_sdk.rpak" )
+	if( Playlist() == ePlaylists.survival_firingrange ) 
+		attachmentTable = GetDataTable( $"datatable/weapon_mods_sdk_firing_range.rpak" )
+	
 	int numRows = GetDatatableRowCount( attachmentTable )
 
 	for ( int i = 0; i < numRows; i++ )
@@ -656,7 +659,7 @@ void function SURVIVAL_Loot_InitShared()
 	// --------------------------
 	// attachment data
 	// --------------------------
-	var attachmentMatrix = GetDataTable( $"datatable/flowstate_weapon_attachment_data.rpak" )
+	var attachmentMatrix = GetDataTable( $"datatable/weapon_attachment_matrix.rpak" )
 	int amRowCount       = GetDatatableRowCount( attachmentMatrix )
 
 	array<LootData> allWeapons = SURVIVAL_Loot_GetByType( eLootType.MAINWEAPON )
@@ -920,12 +923,16 @@ void function OnClientConnected( entity player )
 	ValidateDataTable( player, "datatable/survival_loot_sdk.rpak" )
 	ValidateDataTable( player, "datatable/flowstate_all_new_halomod.rpak" )
 	ValidateDataTable( player, "datatable/flowstate_all_new_snd.rpak" )
-	ValidateDataTable( player, "datatable/weapon_mods_sdk.rpak" )
 	ValidateDataTable( player, "datatable/flowstate_all_new_groups.rpak" )
 	ValidateDataTable( player, "datatable/flowstate_weapon_attachment_data.rpak" )
 	
 	if( Playlist() == ePlaylists.fs_haloMod_survival ) 
 		ValidateDataTable( player, "datatable/flowstate_all_new_halomod_survival_groundloot.rpak" )
+		
+	if( Playlist() == ePlaylists.survival_firingrange ) 
+		ValidateDataTable( player, "datatable/weapon_mods_sdk_firing_range.rpak" )
+	else
+		ValidateDataTable( player, "datatable/weapon_mods_sdk.rpak" )
 }
 
 void function OnPlayerRespawned( entity player )
