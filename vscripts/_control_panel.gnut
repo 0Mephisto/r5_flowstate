@@ -1067,5 +1067,5 @@ void function SetPathfinder_HandUSB( entity player, bool showUSB = false )
 
 bool function FS_ShouldPanelHaveHighlight( entity panel )
 {
-	return IsPVEMode() || Gamemode() == eGamemodes.fs_spieslegends && panel.GetTeam() == gCurrentSpyTeam
+	return IsPVEMode() // || Gamemode() == eGamemodes.fs_spieslegends && panel.GetTeam() == gCurrentSpyTeam
 }
