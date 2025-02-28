@@ -348,6 +348,13 @@ global struct ServerEntityStruct
 
 	entity pet
 	// r5 stuff
+	array<UseFuncData> useFuncArray
+	void functionref(entity, entity)        onPlayerStartUsing_func // control panels
+	void functionref(entity, entity, bool)        onPlayerFinishesUsing_func // control panels
+	void functionref( entity ) Callback_PlayParentedAnim = null
+	string entAnim1p
+	string entAnim3p
+
 	EHIScriptStruct ehiss
 	bool isBusy = false
 	string lootRef
@@ -522,7 +529,16 @@ global struct ServerEntityStruct
 	int portalDirection = -1
 
 	int lockedSet = eWeaponLockedSet.INVALID
+	
 	entity lastAttackedEnt
+	
+	array<entity> coverWalls
+	
+	entity dummyPanelForMercs
+	entity hackableTerminalWaypoint
+	int hackableTerminalSpawnID
+	int terminalID
+	bool isBeingDataknifed
 }
 
 global struct MeritData
@@ -1119,9 +1135,9 @@ global struct ServerPlayerStruct
 
 	int movementRecorderCharacter = 0
 
-	/* table< int, array< var > > recordingAnims
-	table< int, array< LocPair > > recordingAnimsCoordinates
-	array< int > recordingAnimsChosenCharacters */
+	// table< int, array< var > > recordingAnims
+	// table< int, array< LocPair > > recordingAnimsCoordinates
+	// array< int > recordingAnimsChosenCharacters
 	
 	array< var > recordingAnims
 	array< LocPair > recordingAnimsCoordinates
@@ -1342,6 +1358,16 @@ global struct ServerAIStruct
 // hooked up to entity.w in code
 global struct ServerWeaponStruct
 {
+	// clearable
+	entity        translocate_initialProjectile = null
+	entity        translocate_redirectedProjectile = null
+	bool          translocate_hasProjectilePlanted
+	bool ornull   translocate_wasTeleportSuccessState = null
+	array<vector> translocate_projectileThrowPathTaken
+	int ornull    translocate_wallClimbBlockStatusEffectID = null
+	int ornull    translocate_doubleJumpBlockStatusEffectID = null
+	int ornull    translocate_wallHangBlockStatusEffectID = null
+
 	float startChargeTime = 0.0
 	bool wasCharged = false
 	bool initialized = false
@@ -1394,6 +1420,7 @@ global struct ServerWeaponStruct
 	bool wasFired
 
 	bool isInAdsCustom
+	int savedShieldHealth
 }
 
 
@@ -1428,6 +1455,9 @@ global struct ServerRemoteTurretStruct
 // hooked up to entity.proj in code
 global struct ServerProjectileStruct
 {
+	vector ornull projectileFirstProperBouncePos = null
+	float         projectileForceBounceWithinDist = -1.0
+
 	bool isChargedShot = false
 	float damageScale = 1.0
 	bool onlyAllowSmartPistolDamage = false
