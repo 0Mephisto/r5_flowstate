@@ -96,7 +96,7 @@ WeaponData
 	"fx_shell_eject_world"							"wpn_shelleject_rifle_assault"
 	"fx_shell_eject_attach"							"shell"
 
-	"fx_muzzle_flash_view"							"wpn_muzzleflash_pulse_FP"
+	"fx_muzzle_flash_view"							""
 	"fx_muzzle_flash_world"							"wpn_muzzleflash_pulse"
 	"fx_muzzle_flash_attach"						"muzzle_flash"
 
@@ -124,39 +124,21 @@ WeaponData
 	"low_ammo_sound_name_1"							"R97_LowAmmo_Shot1"
     "low_ammo_fraction" 							"0.3"
 
-	// Network
-	//"net_optimize"		                            "1"
-
 	// Damage - When Used by Players
 	"damage_type" 									"bullet"
 
-                                              
-                                                                                                                       
-                                                     
-                                         
+    "ammo_clip_size"                                "19"
+    "ammo_stockpile_max"							"30"
+    "ammo_default_total"							"0"
+    "ammo_no_remove_from_stockpile"					"0"
+    "uses_ammo_pool"								"1"
 
-                                               
-                                            
-                                                
-                                                     
-                                                     
-                                                         
-
-         
-        "ammo_clip_size"                                "19"
-        "ammo_stockpile_max"							"30"
-        "ammo_default_total"							"0"
-        "ammo_no_remove_from_stockpile"					"0"
-        "uses_ammo_pool"								"1"
-
-        "damage_near_value"   					        "15"
-        "damage_far_value"						        "15"
-        "damage_very_far_value"					        "15"
-        "damage_near_value_titanarmor"			        "15"
-        "damage_far_value_titanarmor" 			        "15"
-        "damage_very_far_value_titanarmor" 		        "15"
-
-       
+    "damage_near_value"   					        "15"
+    "damage_far_value"						        "15"
+    "damage_very_far_value"					        "15"
+    "damage_near_value_titanarmor"			        "15"
+    "damage_far_value_titanarmor" 			        "15"
+    "damage_very_far_value_titanarmor" 		        "15"
 
 	"red_crosshair_range" 							"0"
 
@@ -235,9 +217,7 @@ WeaponData
 	"sprint_fractional_anims"						"0"
 
 	// Crosshair Spread
-
-
-                         
+    
 	"spread_stand_hip"								"4.125"
 	"spread_stand_hip_run"							"4.875"
 	"spread_stand_hip_sprint"                       "5.25"
@@ -373,16 +353,6 @@ WeaponData
 	"viewmodel_ads_rui_bottomleft_attachment"	"RUI_BL_CROSSHAIR_VOLT"
 	"viewmodel_ads_centerpoint_attachment"      "ADS_CENTER_SIGHT_VOLT"
 
-                      
-                                                  
-                                                   
-                                                  
-                                                   
-                                                                                 
-
-      
-
-
 	Mods
 	{
         gold
@@ -419,18 +389,6 @@ WeaponData
 		{
 			"ui1_enable" 							"0"
 		}
-
-                           
-                   
-   
-                          
-   
-
-                           
-   
-                          
-   
-      
 
 		energy_mag_l1
 		{
