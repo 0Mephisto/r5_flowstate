@@ -1615,17 +1615,20 @@ void function SetupSurvivalLoot( var categories )
 {
 	string cats              = expect string( categories )
 	array<string> stringCats = split( cats, " " )
-
-	if (stringCats.contains("attachment_custom"))
+	
+	if( GetCurrentPlaylistVarBool( "custom_loot", true ) )
 	{
-		SetupCustomLoot( "attachment", true )
-		return	
-	}
+		if (stringCats.contains("attachment_custom"))
+		{
+			SetupCustomLoot( "attachment", true )
+			return	
+		}
 
-	if (stringCats.contains("weapon_custom"))
-	{
-		SetupCustomLoot( "main_weapon", false )
-		return	
+		if (stringCats.contains("weapon_custom"))
+		{
+			SetupCustomLoot( "main_weapon", false )
+			return	
+		}
 	}
 	
 	// turn menu strings into real category enums

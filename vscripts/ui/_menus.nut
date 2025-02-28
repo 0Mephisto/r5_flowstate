@@ -196,11 +196,6 @@ void function UICodeCallback_CloseAllMenus()
 
 string function GetCurrentLobbyMenu()
 {
-	//string menuName = "LobbyMenu"
-
-	//if(IsLobby())
-		//menuName = GetPlaylistVarBool("menufall", "r5reloaded_lobby", true) ? "R5RLobbyMenu" : "LobbyMenu"
-
 	return "LobbyMenu"
 }
 

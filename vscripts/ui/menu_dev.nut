@@ -293,10 +293,6 @@ void function SetupDefaultDevCommandsMP()
 		SetupDevMenu( "Equip Legend Abilities", SetDevMenu_Abilities )
 		SetupDevMenu( "Equip Weapons", SetDevMenu_Weapons )
 		SetupDevMenu( "Equip Titanfall Weapons", SetDevMenu_R2Weapons )
-
-		SetupDevMenu( "Custom: Weapons (All)", SetDevMenu_SurvivalLoot, "weapon_custom" )
-		SetupDevMenu( "Custom: Attachments", SetDevMenu_SurvivalLoot, "attachment_custom" )
-		//SetupDevMenu( "Custom: Player Models", SetDevMenu_CustomPRModel ) //TODO: CAFE NEEDS TO FIX MISSING OR BROKEN ASSETS - LorryLeKral
 		
 		if ( IsSurvivalMenuEnabled() )
 		{
@@ -311,6 +307,13 @@ void function SetupDefaultDevCommandsMP()
 			string itemsString = "ordnance ammo health custom_pickup data_knife"
 			SetupDevMenu( "Survival: Consumables", SetDevMenu_SurvivalLoot, itemsString )
 		}
+		
+		if( GetCurrentPlaylistVarBool( "custom_loot", true ) )
+		{
+			SetupDevMenu( "Custom: Weapons (All)", SetDevMenu_SurvivalLoot, "weapon_custom" )
+			SetupDevMenu( "Custom: Attachments", SetDevMenu_SurvivalLoot, "attachment_custom" )
+			//SetupDevMenu( "Custom: Player Models", SetDevMenu_CustomPRModel )
+		} //TODO: CAFE NEEDS TO FIX MISSING OR BROKEN ASSETS - LorryLeKral
 
 		SetupDevMenu( "Respawn Player(s)", SetDevMenu_RespawnPlayers )
 		SetupDevCommand( "Recharge Abilities", "recharge" )

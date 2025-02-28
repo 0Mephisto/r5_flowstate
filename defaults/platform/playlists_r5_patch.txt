@@ -120,7 +120,7 @@ playlists
 				//////////Modded Weapons - JANU's Framework 		 			 		///////////
 				/////////////////////////////////////////////////////////////////////////////////// 
 
-				//custom_grenade_list							"mp_weapon_decoy_grenade"
+				custom_loot               1
 
 				custom_hopup_list "funny_selector incendiary_rounds fullauto_rounds shock_rounds barrel_synchronizer blood_harvest"
 				shock_rounds_name                 "Shock Rounds"
@@ -523,7 +523,6 @@ playlists
 		{
 			inherit defaults
 		}
-
 		custom_ctf
 		{
 			inherit defaults
@@ -574,7 +573,7 @@ playlists
 		
 		fs_aimtrainer
 		{
-			inherit fs_survival
+			inherit survival
 			vars
 			{
 				visible											1
@@ -650,7 +649,7 @@ playlists
 
 		fs_movementrecorder
 		{
-			inherit fs_survival
+			inherit survival
 			vars
 			{
 				visible											1
@@ -713,7 +712,7 @@ playlists
 
 		fs_snd
 		{
-			inherit fs_survival
+			inherit survival
 			vars
 			{
 				visible											1
@@ -774,7 +773,7 @@ playlists
 
 		winterexpress
 		{
-			inherit fs_survival
+			inherit survival
 			vars
 			{
 				visible											1
@@ -3300,7 +3299,7 @@ playlists
 			} } }
 		}
 
-		fs_survival
+		survival
 		{
 			inherit defaults
 			vars
@@ -3321,19 +3320,7 @@ playlists
 				max_players										60
 				min_players										15
 				
-				// waiting_for_players_timeout_seconds			40
-				
-				// debug
-				
-				// Skip intros:
-				// waiting_for_players_spawning_enabled		   	0
-				// waiting_for_players_countdown_seconds		5
-				// waiting_for_players_timeout_seconds			0
-				// character_select_time_max					0.0
-				// character_select_time_min					0.0
-				// survival_enable_gladiator_intros			   	0
-				
-				
+				custom_loot               						0
 				
 				bleedout_enabled								1
 				
@@ -3361,7 +3348,7 @@ playlists
 			} } }
 		}
 		
-		fs_survival_duos
+		survival_duos
 		{
 			inherit defaults
 			vars
@@ -3381,19 +3368,7 @@ playlists
 				max_players										60
 				min_players										16
 				
-				// waiting_for_players_timeout_seconds			40
-				
-				// debug
-				
-				// Skip intros:
-				// waiting_for_players_spawning_enabled		   	0
-				// waiting_for_players_countdown_seconds		5
-				// waiting_for_players_timeout_seconds			0
-				// character_select_time_max					0.0
-				// character_select_time_min					0.0
-				// survival_enable_gladiator_intros			   	0
-				
-				
+				custom_loot               						0
 				
 				bleedout_enabled								1
 				
@@ -3421,7 +3396,7 @@ playlists
 			} } }
 		}
 		
-		fs_survival_solos
+		survival_solos
 		{
 			inherit defaults
 			vars
@@ -3440,18 +3415,8 @@ playlists
 				max_team_size									1
 				max_players										60
 				min_players										15
-				
-				// waiting_for_players_timeout_seconds			40
-				
-				// debug		
-				
-				// Skip intros:
-				// waiting_for_players_spawning_enabled		   	0
-				// waiting_for_players_countdown_seconds		5
-				// waiting_for_players_timeout_seconds			0
-				// character_select_time_max					0.0
-				// character_select_time_min					0.0
-				// survival_enable_gladiator_intros			   	0
+
+				custom_loot               						0
 				
 				bleedout_enabled								1
 				
@@ -3602,7 +3567,7 @@ playlists
 
 		fs_rankupmapmovementpractice
 		{
-			inherit fs_survival
+			inherit survival
 			vars
 			{
 				name                                           "Rank-up Parkour [Practice Map]"
@@ -3646,7 +3611,7 @@ playlists
 
 		fs_ithurtsmovementmappractice
 		{
-			inherit fs_survival
+			inherit survival
 			vars
 			{
 				name                                           "It Hurts Movement Map [Practice Map]"
@@ -3690,7 +3655,7 @@ playlists
 
 		fs_fallingforever
 		{
-			inherit fs_survival
+			inherit survival
 			vars
 			{
 				visible											1
@@ -3739,7 +3704,7 @@ playlists
 
 		fs_doormovementpractice
 		{
-			inherit fs_survival
+			inherit survival
 			vars
 			{
 				visible											1
@@ -3789,7 +3754,7 @@ playlists
 
 		fs_grapplemovementpractice
 		{
-			inherit fs_survival
+			inherit survival
 			vars
 			{
 				visible											1
@@ -3838,7 +3803,7 @@ playlists
 
 		fs_mantlejumppractice
 		{
-			inherit fs_survival
+			inherit survival
 			vars
 			{
 				visible											1
@@ -3887,7 +3852,7 @@ playlists
 
 		fs_firstmovementmappractice
 		{
-			inherit fs_survival
+			inherit survival
 			vars
 			{
 				visible											1
@@ -3936,7 +3901,7 @@ playlists
 
 		fs_gymmovementmappractice
 		{
-			inherit fs_survival
+			inherit survival
 			vars
 			{
 				visible											1
@@ -3985,7 +3950,7 @@ playlists
 
 		fs_strafeitmovementmappractice
 		{
-			inherit fs_survival
+			inherit survival
 			vars
 			{
 				visible											1
@@ -4033,7 +3998,7 @@ playlists
 
 		survival_firingrange
 		{
-			inherit fs_survival
+			inherit survival
 			vars
 			{
 				visible											1
@@ -4089,7 +4054,8 @@ playlists
 				survival_firingrange						   	1
 				staging_ultimates_enabled					  	1
 				survival_staging_area_enabled				  	0
-				//survival_infinite_ammo					   	1
+
+				custom_loot               						0
 
 				flowstate_enable_bullet_slow					1
 			}
@@ -4098,77 +4064,78 @@ playlists
 			} } }
 		}
 
-		// survival_training
-		// {
-			// inherit fs_survival
-			// vars
-			// {
-				// visible										1
+		survival_training
+		{
+			inherit survival
+			vars
+			{
+				visible										1
 				
-				// name										   	"Firing Range"
-				// description									#PL_FIRINGRANGE_DESC
+				name										   	"Firing Range"
+				description									#PL_FIRINGRANGE_DESC
 				
-				// ui_slot										firing_range
-				// image										firing_range
-				// video										_temp
+				ui_slot										firing_range
+				image										firing_range
+				video										_temp
 
-				// waiting_for_players_spawning_enabled		   	1
-				// jump_from_plane_enabled						0
-				// wait_for_players_forever					   	1
-				// scorebar_hide_squads_remaining				1
-				// scorebar_hide_waiting_for_players			1
-				// airdrop_enabled								0
-				// num_static_loot_ticks_to_spawn				0
-				// loot_preprocessing_should_be_skipped		   	1
-				// survival_staging_area_enabled				1
-				// make_room_for_new_players					1
+				waiting_for_players_spawning_enabled		   	1
+				jump_from_plane_enabled						0
+				wait_for_players_forever					   	1
+				scorebar_hide_squads_remaining				1
+				scorebar_hide_waiting_for_players			1
+				airdrop_enabled								0
+				num_static_loot_ticks_to_spawn				0
+				loot_preprocessing_should_be_skipped		   	1
+				survival_staging_area_enabled				1
+				make_room_for_new_players					1
 				
-				// match teams will not fill with more than one party, up to max_teams of size max_team_size (or less) -- not exceeding max_players
-				// max_team_size								3
-				// max_players									3
-				// min_players									1
+				//match teams will not fill with more than one party, up to max_teams of size max_team_size (or less) -- not exceeding max_players
+				max_team_size								3
+				max_players									3
+				min_players									1
 
-				// // Skip intros:
-				// waiting_for_players_spawning_enabled		   	1
-				// waiting_for_players_countdown_seconds		0
-				// waiting_for_players_timeout_seconds			1
-				// character_select_time_max					0.0
-				// character_select_time_min					0.0
-				// survival_enable_gladiator_intros			   	0
-				// jump_from_plane_enabled						0
+				// Skip intros:
+				waiting_for_players_spawning_enabled		   	1
+				waiting_for_players_countdown_seconds		0
+				waiting_for_players_timeout_seconds			1
+				character_select_time_max					0.0
+				character_select_time_min					0.0
+				survival_enable_gladiator_intros			   	0
+				jump_from_plane_enabled						0
 
-				// // No circle:
-				// sur_circle_start_paused						1
+				// No circle:
+				sur_circle_start_paused						1
 
-				// // Can change loadouts:
-				// dev_loadout_changeable_at_any_time			1
-				// sur_dev_unrestricted_character_changes		1
-				// character_reselect_enabled					1
-				// charselect_enabled							1
+				// Can change loadouts:
+				dev_loadout_changeable_at_any_time			1
+				sur_dev_unrestricted_character_changes		1
+				character_reselect_enabled					1
+				charselect_enabled							1
 
-				// // Bots:
-				// sur_bots_spawn_with_random_weapons			1
+				// Bots:
+				sur_bots_spawn_with_random_weapons			1
 				
-				// //General Gamemode Settings
-				// match_ending_enabled						   	0
+				//General Gamemode Settings
+				match_ending_enabled						   	0
 				
-				// // Firing Range:
-				// survival_firingrange						   	1
-				// staging_ultimates_enabled					1
-				// survival_staging_area_enabled				0
-				// //survival_infinite_ammo					   	1
+				// Firing Range:
+				survival_firingrange						   	1
+				staging_ultimates_enabled					1
+				survival_staging_area_enabled				0
+				//survival_infinite_ammo					   	1
 
-				// flowstate_enable_bullet_slow					1
-				// survival_training 1
-			// }
-			// gamemodes { survival { maps {
-				// mp_rr_canyonlands_staging				   	1
-			// } } }
-		// }
+				custom_loot               						0
+
+				survival_training 1
+			}
+			gamemodes { survival { maps {
+				mp_rr_canyonlands_staging				   	1
+			} } }
+		}
 		
 		survival_dev
 		{
-			inherit fs_survival
+			inherit survival
 			vars
 			{
 				visible											1
@@ -4214,6 +4181,8 @@ playlists
 				flowstate_enable_bullet_slow					1
 
 				flowstate_give_character_passive				1
+
+				custom_loot               						0
 				
 			}
 			gamemodes { survival { maps {
@@ -4262,8 +4231,7 @@ playlists
 				// R5DEV-196963
 				reconnect_disabled							 	1
 
-				// survival_jumpkit_enabled					   	1
-				// survival_wallrun_enabled					   	1
+				set_legend									 	"character_revenant"
 			}
 			gamemodes { survival { maps {
 				mp_rr_arena_empty								1
