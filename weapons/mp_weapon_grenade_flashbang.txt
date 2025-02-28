@@ -45,10 +45,6 @@ WeaponData
 	"grenade_arc_indicator_effect"					"P_arc_red"
 	"grenade_arc_indicator_effect_first"			"P_arc_red"
 	"grenade_arc_impact_indicator_effect"			"P_arc_red_end"
-
-	"viewmodel"										"mdl/Weapons/grenades/ptpov_impulse_grenade_held.rmdl"
-	// "playermodel"									"mdl/Weapons/grenades/w_impulse_grenade.rmdl"
-	// "projectilemodel"								"mdl/Weapons/grenades/w_impulse_grenade.rmdl"//"mdl/weapons/grenades/m20_f_grenade_projectile.rmdl"
 	
 		"fire_mode"   									"automatic"
 		"is_semi_auto"									"1"
@@ -70,8 +66,9 @@ WeaponData
 	"cooldown_type"									"ammo_instant"
 
 	// Models
-	"playermodel"									"mdl/weapons/grenades/m20_f_grenade.rmdl"
-	"projectilemodel"								"mdl/weapons/grenades/m20_f_grenade_projectile.rmdl"
+	"viewmodel"										"mdl/weapons/grenades/ptpov_smoke_grenade.rmdl"
+	"playermodel"									"mdl/weapons/grenades/smoke_grenade.rmdl"
+	"projectilemodel"								"mdl/weapons/grenades/smoke_grenade_projectile.rmdl"
 	"activitymodifier"								"ordnance"
 
 	// Effects
