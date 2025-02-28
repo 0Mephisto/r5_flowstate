@@ -1,7 +1,16 @@
 untyped
 
 #if SERVER
+global function FS_Init_1v1_Coaching
 
+global function FS_Coaching_StartRecording
+global function FS_Coaching_StopRecording
+global function FS_Coaching_GetAvailableMatchIdentifier
+
+global function GetStartNewGameBool
+global function SetStartNewGameBool
+
+global function bIsCoachingMode
 #endif
 
 #if CLIENT
@@ -24,7 +33,10 @@ struct recordingInfo_Identifier
 struct
 {
 	#if SERVER
+	bool forceStartNewGame = false
 
+	table< int, array< var > > recordingAnims
+	table< int, array< recordingInfo > > recordingAnimsInfo
 	#endif
 	
 	array< recordingInfo_Identifier > recordingsIdentifiers //len should be the same as recordingAnims and recordingAnimsInfo
@@ -33,7 +45,428 @@ struct
 const int MAX_SLOT = 50
 
 #if SERVER
+void function FS_Init_1v1_Coaching()
+{
+	AddClientCommandCallback( "coaching_startnew", FS_1v1Coaching_StartNew ) //Start new game
+	AddClientCommandCallback( "coaching_playselected", FS_1v1Coaching_PlaySelected ) //Start new game
 
+	for( int i = 0; i < MAX_SLOT; i++ )
+	{
+		file.recordingAnims[i] <- []
+	}
+
+	for( int i = 0; i < MAX_SLOT; i++ )
+	{
+		file.recordingAnimsInfo[i] <- []
+	}
+	
+	AddCallback_OnWeaponAttack( FS_Coaching_RecordWeaponShot )
+}
+
+bool function bIsCoachingMode()
+{
+	return Playlist() == ePlaylists.fs_1v1_coaching
+}
+
+void function FS_Coaching_RecordWeaponShot( entity player, entity weapon, string weaponName, int ammoUsed, vector attackOrigin, vector attackDir )
+{
+	weaponShotRecord shot
+	shot.weaponName = weaponName
+	shot.attackOrigin = attackOrigin
+	shot.attackDir = attackDir
+	shot.shotTime = Time() - player.p.recordingStartTime
+	
+	player.p.savedShots.append( shot )
+}
+
+//Client commands
+bool function FS_1v1Coaching_StartNew(entity player, array<string> args )
+{
+	if( !IsValid(player) )
+		return false
+	
+	if( !IsAdmin(player) )
+	{
+		Message_New(player, "ONLY FOR ADMIN")
+		return false
+	}
+	
+	if( Time() < player.p.lastRestUsedTime + 3 )
+	{
+		Message_New(player, "COOLDOWN")
+		return false
+	}
+
+	if( GetPlayerArray_Alive().len() != 2 )
+	{
+		Message_New(player, "TWO PLAYERS NEEDED")
+		return false
+	}
+	
+	bool defStart = true
+	foreach ( splayer in GetPlayerArray_Alive() )
+	{
+		if ( !IsValid( splayer ) )
+		{
+			defStart = false
+			continue
+		}
+		
+		if( !splayer.p.playerisready )
+			defStart = false
+		
+		if( Gamemode1v1_GetPlayerGamestate( player ) != e1v1State.WAITING )
+			defStart = false
+	}
+	
+	if( !defStart )
+	{
+		Message_New(player, "A PLAYER WASN'T READY")
+		return false
+	}
+
+	player.p.lastRestUsedTime = Time() //reusing this
+	SetStartNewGameBool( true )
+	
+	foreach ( splayer in GetPlayerArray_Alive() )
+	{
+		if ( !IsValid( splayer ) )
+			continue
+		
+		splayer.p.playerisready = false
+	}
+	return true
+}
+
+bool function FS_1v1Coaching_PlaySelected(entity player, array<string> args )
+{
+	if( !IsValid(player) )
+		return false
+	
+	if( !IsAdmin(player) )
+	{
+		Message_New(player, "ONLY FOR ADMIN")
+		return false
+	}
+	
+	if( Gamemode1v1_GetPlayerGamestate( player ) != e1v1State.WAITING )
+		return false
+	
+	if( args.len() != 1 )
+		return false
+	
+	int matchIdentifier = int( args[0] )
+	
+	if( !FS_Coaching_IsValidMatchIdentifier( matchIdentifier ) )
+	{
+		Message_New(player, "ONLY FOR ADMIN")
+		return false
+	}
+	
+	array<recordingInfo> matchData = file.recordingAnimsInfo[ matchIdentifier ]
+	
+	if( matchData.len() != 2 )
+	{
+		Message_New(player, "ERROR ASK CAFE TO DEBUG THIS")
+		return false
+	}
+	
+	recordingInfo adminData = matchData[0]
+	recordingInfo coachedPlayerData = matchData[1]
+	
+	//test
+	entity admin = adminData.player
+	entity coachedPlayer = coachedPlayerData.player
+	
+	if( !IsValid( coachedPlayer ) )
+	{
+		Message_New( admin, "ERROR ASK CAFE TO DEBUG THIS 2" )
+		return false
+	}
+
+	if( isPlayerInWaitingList( admin ) )
+	{
+		deleteWaitingPlayer( admin.p.handle )
+		RemovePlayerFromGroup( admin )
+	}
+	
+	if( isPlayerInWaitingList( coachedPlayer ) )
+	{
+		deleteWaitingPlayer( coachedPlayer.p.handle )
+		RemovePlayerFromGroup( coachedPlayer )
+	}
+	
+	LocalMsg( admin, "#FS_NULL", "", eMsgUI.EVENT, 1 )
+	LocalMsg( coachedPlayer, "#FS_NULL", "", eMsgUI.EVENT, 1 )
+	
+	admin.AddToAllRealms()
+	coachedPlayer.AddToAllRealms()
+	
+	LocPair adminStartingPos = adminData.locPairData
+	LocPair coachedPlayerStartingPos = coachedPlayerData.locPairData
+	
+	admin.SetOrigin( adminStartingPos.origin )
+	admin.SetAngles( adminStartingPos.angles )
+	
+	coachedPlayer.SetOrigin( coachedPlayerStartingPos.origin )
+	coachedPlayer.SetAngles( coachedPlayerStartingPos.angles )	
+	
+	Gamemode1v1_SetPlayerGamestate( admin, e1v1State.WATCHING_FIGHT_REPLAY )
+	Gamemode1v1_SetPlayerGamestate( coachedPlayer, e1v1State.WATCHING_FIGHT_REPLAY )
+	
+	MakeInvincible( admin )
+	MakeInvincible( coachedPlayer )
+	
+	//actually start playing the anim
+	entity adminDummy = CreateDummy( 99, adminStartingPos.origin, adminStartingPos.angles )
+	entity coachedPlayerDummy = CreateDummy( 99, coachedPlayerStartingPos.origin, coachedPlayerStartingPos.angles )
+	SetCommonDummyLines( adminDummy, admin )
+	SetCommonDummyLines( coachedPlayerDummy, coachedPlayer )
+
+	adminDummy.PlayRecordedAnimation( file.recordingAnims[matchIdentifier][0], adminStartingPos.origin, adminStartingPos.angles )
+	coachedPlayerDummy.PlayRecordedAnimation( file.recordingAnims[matchIdentifier][1], coachedPlayerStartingPos.origin, coachedPlayerStartingPos.angles )
+	
+	//admin shots
+	thread PlayPlayerShots( adminDummy, adminData )
+	
+	//coachedplayer shots
+	thread PlayPlayerShots( coachedPlayerDummy, coachedPlayerData )	
+	
+	//watcher
+	thread function () : ( admin, coachedPlayer, matchIdentifier, adminDummy, coachedPlayerDummy )
+	{
+		EndSignal( admin, "OnDestroy" )
+		EndSignal( coachedPlayer, "OnDestroy" )
+
+		OnThreadEnd(
+			function() : ( admin, coachedPlayer )
+			{
+				if( IsValid( admin ) )
+				{
+					ClearInvincible( admin )
+					soloModePlayerToWaitingList( admin )
+					
+					if( !IsAlive( admin ) )
+						DecideRespawnPlayer( admin, false )
+					
+					maki_tp_player( admin, getWaitingRoomLocation() )
+				}
+				
+				if( IsValid( coachedPlayer ) )
+				{
+					ClearInvincible( coachedPlayer )
+					soloModePlayerToWaitingList( coachedPlayer )
+					
+					if( !IsAlive( coachedPlayer ) )
+						DecideRespawnPlayer( coachedPlayer, false )
+					
+					maki_tp_player( coachedPlayer, getWaitingRoomLocation() )
+				}
+			}
+		)
+		
+		wait GetRecordedAnimationDuration( file.recordingAnims[matchIdentifier][0] )
+		
+		//Can't change playback rate after this point
+
+		if( IsValid( adminDummy ) )
+			adminDummy.Destroy()
+				
+		if( IsValid( coachedPlayerDummy ) )
+			coachedPlayerDummy.Destroy()
+
+		wait 3
+	}()
+	return true
+}
+void function PlayPlayerShots( entity dummyPlayer, recordingInfo shotsData )
+{
+	EndSignal( dummyPlayer, "OnDestroy" )
+	
+	string oldweapon
+	float previousShotTime
+	entity weapon
+	
+	foreach( int i, weaponShotRecord shot in shotsData.shots )
+	{
+		float currentShotTime = shot.shotTime
+		float deltaTime = currentShotTime - previousShotTime
+
+		if( deltaTime > 0 )
+		{
+			wait deltaTime - FrameTime()
+		}
+	
+		
+		if( shot.weaponName != oldweapon )
+		{
+			dummyPlayer.TakeNormalWeaponByIndex( WEAPON_INVENTORY_SLOT_PRIMARY_0 )
+			weapon = dummyPlayer.GiveWeapon( shot.weaponName, WEAPON_INVENTORY_SLOT_PRIMARY_0 )
+		}
+		
+		WeaponFireBoltParams fireBoltParams
+		fireBoltParams.pos = shot.attackOrigin
+		fireBoltParams.dir = shot.attackDir
+		fireBoltParams.speed = 1
+		fireBoltParams.scriptTouchDamageType = 0
+		fireBoltParams.scriptExplosionDamageType = 0
+		fireBoltParams.clientPredicted = false
+		fireBoltParams.additionalRandomSeed = 0
+		
+		entity bullet = weapon.FireWeaponBoltAndReturnEntity( fireBoltParams )
+		
+		oldweapon = shot.weaponName
+		previousShotTime = currentShotTime
+	}
+}
+
+void function SetCommonDummyLines( entity npc, entity owner )
+{
+	SetSpawnOption_AISettings( npc, "npc_dummie_wraith" )
+	DispatchSpawn( npc )
+	npc.SetCanBeMeleed( true )
+	npc.SetTakeDamageType( DAMAGE_NO )
+	npc.Show()
+	npc.AddToAllRealms()
+	npc.NotSolid()
+	
+	//Disable collision with players
+	npc.kv.contents = CONTENTS_BULLETCLIP | CONTENTS_MONSTERCLIP | CONTENTS_HITBOX | CONTENTS_BLOCKLOS | CONTENTS_PHYSICSCLIP //CONTENTS_PLAYERCLIP
+}
+//Recording functions
+void function FS_Coaching_StartRecording( entity player )
+{
+	printw( "1v1 Recording Started for player", player )
+	
+	player.p.currentOrigin = player.GetOrigin()
+	player.p.currentAngles = player.GetAngles()
+	player.StartRecordingAnimation( player.p.currentOrigin, player.p.currentAngles )
+	
+	player.p.recordingStartTime = Time()
+}
+
+void function FS_Coaching_StopRecording( int matchIdentifier, entity victim, entity attacker )
+{
+	printw( "[+] COACHING 1v1 SAVING MATCH RECORD IN SLOT: ", matchIdentifier, "- FOR PLAYERS", victim, attacker  )
+	
+	entity admin
+	entity coachedPlayer
+	
+	if( IsAdmin( victim ) )
+	{
+		admin = victim
+		coachedPlayer = attacker
+	}
+	else if( IsAdmin( attacker ) )
+	{
+		admin = attacker
+		coachedPlayer = victim
+	}
+	
+	if( !IsValid( admin ) )
+	{
+		Message_New( victim, "Couldn't save recording, admin wasn't declared." )
+		Message_New( attacker, "Couldn't save recording, admin wasn't declared." )
+		return
+	}
+	
+	//admin
+	{
+		var recording
+		
+		try{
+			recording = admin.StopRecordingAnimation()
+		}catch(e420)
+		{
+			printw( "ERROR SAVING ADMIN PLAYER RECORDING" )
+			return
+		}
+		
+		LocPair animData
+		animData.origin = admin.p.currentOrigin
+		animData.angles = admin.p.currentAngles
+
+		recordingInfo info
+		info.locPairData = animData
+		info.player = admin
+		info.shots = clone admin.p.savedShots
+		admin.p.savedShots.clear()
+		
+		file.recordingAnims[ matchIdentifier ].append( recording )
+		file.recordingAnimsInfo[ matchIdentifier ].append( info )
+	}
+	
+	//coached player
+	{
+		var recording
+		
+		try{
+			recording = coachedPlayer.StopRecordingAnimation()
+		}catch(e420)
+		{
+			printw( "ERROR SAVING COACHED PLAYER RECORDING" )
+			return
+		}
+		
+		LocPair animData
+		animData.origin = coachedPlayer.p.currentOrigin
+		animData.angles = coachedPlayer.p.currentAngles
+		
+		recordingInfo info
+		info.locPairData = animData
+		info.player = coachedPlayer
+		info.shots = clone coachedPlayer.p.savedShots
+		coachedPlayer.p.savedShots.clear()
+
+		file.recordingAnims[ matchIdentifier ].append( recording )
+		file.recordingAnimsInfo[ matchIdentifier ].append( info )
+	}
+	
+	recordingInfo_Identifier recordingIdentifier
+	recordingIdentifier.index = matchIdentifier
+	recordingIdentifier.duration = GetRecordedAnimationDuration( file.recordingAnims[ matchIdentifier ][0] )
+	recordingIdentifier.dateTime = 0
+	recordingIdentifier.winnerHandle = attacker.GetEncodedEHandle()
+	
+	file.recordingsIdentifiers.append( recordingIdentifier )
+	
+	//send data to client vm and ui vm
+	Remote_CallFunction_NonReplay(victim, "Flowstate_AddRecordingIdentifierToClient", recordingIdentifier.index, recordingIdentifier.duration, recordingIdentifier.dateTime, recordingIdentifier.winnerHandle )
+	Remote_CallFunction_NonReplay(attacker, "Flowstate_AddRecordingIdentifierToClient", recordingIdentifier.index, recordingIdentifier.duration, recordingIdentifier.dateTime, recordingIdentifier.winnerHandle )
+}
+
+bool function FS_Coaching_IsValidMatchIdentifier( int matchIdentifier )
+{
+	if( matchIdentifier < 0 )
+		return false 
+	
+	if( file.recordingAnims[ matchIdentifier ].len() != 0 && file.recordingAnimsInfo[ matchIdentifier ].len() != 0 )
+		return true
+	
+	return false
+}
+
+int function FS_Coaching_GetAvailableMatchIdentifier()
+{
+	for( int i = 0; i < MAX_SLOT; i++ )
+	{
+		if( file.recordingAnims[i].len() == 0 )
+			return i
+	}
+	
+	return -1
+}
+
+//Setters and getters
+bool function GetStartNewGameBool()
+{
+	return file.forceStartNewGame
+}
+
+void function SetStartNewGameBool( bool start )
+{
+	file.forceStartNewGame = start
+}
 #endif
 
 #if CLIENT
