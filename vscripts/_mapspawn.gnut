@@ -186,17 +186,6 @@ global struct SvGlobals
 
 global SvGlobals svGlobal
 
-struct{
-	//!FIXME ADD POINTS TO KC
-	vector auto_tp = <5486, 9155, -627>
-
-    table<entity, int> cp_table = {}
-
-	int current_cp = 0
-	array<vector> cps_pos = [<6893, 1086, -1385>, <4839, 1146, -1193>, <3389, 1982, -937>, <3389, 3681, -617>, <3394, 6570, -1257>, <4606, 9088, -745>, <5881, 8712, 4822>]
-	array<vector> cps_ang = [<-89,-178,-0>, <-0,-178,-0>, <-0, 89, -0>, <3, 51, -0>, <0, 90, -0>, <3, -0, -0>, <21, -46, -0>]	
-}file
-
 void function CodeCallback_MapSpawn() // original script entry point
 {	
 	ShWeapons_LevelInit()
@@ -246,7 +235,9 @@ void function CodeCallback_MapSpawn() // original script entry point
 
 	FlagInit( "EntitiesDidLoad" )
 	FlagInit( "ShowExplosionRadius" )  // temp HACK
-
+	FlagInit( "DeathCircleActive", false ) //(cafe) moved here because Sh_ArenaDeathField_Init is not called in all gamemodes but this flag may
+	FlagInit( "DeathCircleSetup", false ) //(cafe) moved here because Sh_ArenaDeathField_Init is not called in all gamemodes but this flag may
+	
 	svGlobal.levelEnt = GetEnt( "worldspawn" )
 
 	LevelVarInit()
@@ -424,6 +415,25 @@ void function PrecacheSDKWeapons()
 
 	PrecacheWeapon( $"mp_weapon_mounted_turret_weapon" )
 	PrecacheWeapon( $"mp_weapon_mounted_turret_placeable" )
+	
+	
+	
+	//S0 Dev Protos
+	PrecacheWeapon( $"mp_weapon_cover_wall_proto" )
+	PrecacheWeapon( $"mp_weapon_debris_trap" )
+	PrecacheWeapon( $"mp_weapon_shotgun_kick" )
+	PrecacheWeapon( $"mp_weapon_grenade_flashbang" )
+	PrecacheWeapon( $"mp_weapon_grenade_barrier" )
+	PrecacheWeapon( $"mp_weapon_concussive_breach" )
+	PrecacheWeapon( $"mp_ability_spotter_sight" )
+	PrecacheWeapon( $"mp_ability_split_timeline" )
+	PrecacheWeapon( $"mp_ability_sonic_shout" )
+	PrecacheWeapon( $"mp_ability_riot_shield" )
+	PrecacheWeapon( $"mp_ability_maelstrom_javelin" )
+	PrecacheWeapon( $"mp_ability_loot_compass" )
+	PrecacheWeapon( $"mp_ability_haunt" )
+	PrecacheWeapon( $"mp_ability_ground_slam" )
+	PrecacheWeapon( $"mp_ability_dodge_roll" )
 }
 
 void function PrecacheSDKEntities()
@@ -502,6 +512,8 @@ void function PrecacheSDKEntities()
 	PrecacheModel( $"mdl/dev/empty_model.rmdl" )
 	PrecacheModel( $"mdl/error.rmdl" ) // model used when no model is provided
 	PrecacheModel( $"mdl/fx/ar_survival_radius_1x100.rmdl")
+	
+	PrecacheModel( $"mdl/communication/terminal_usable_imc_01.rmdl" )
 }
 
 const array<string> InvalidModesForTrackScoreBoard = //const values
