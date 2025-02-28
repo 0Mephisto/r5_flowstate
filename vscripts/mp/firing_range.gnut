@@ -5,7 +5,7 @@ global const float FIRINGRANGE_RACK_RESPAWN_TIME = 0.5
 global const float FIRINGRANGE_RACK_OFFSET = 32
 
 global const int FIRINGRANGE_ATTACHMENTS_MAX_COLUMNS = 6
-global const int FIRINGRANGE_ITEMS_MAX_COLUMNS = 2
+global const int FIRINGRANGE_ITEMS_MAX_COLUMNS = 6
 global const int FIRINGRANGE_ORDNANCE_MAX_COLUMNS = 2
 global const int FIRINGRANGE_AMMO_ROWS = 2
 
@@ -475,7 +475,7 @@ void function SpawnAmmo()
 void function SpawnItems()
 {
 	const float otherSideOffset = 512.0
-	const float cornerOffset = 128.0 - 12.0
+	const float cornerOffset = 0.0
 	const float itemOffsetX = 32.0
 	const float itemOffsetY = 24.0
 	foreach(RackGroup rackGroup in file.rackSpawns)
