@@ -78,7 +78,7 @@ WeaponData
     "low_ammo_fraction" 							"0.0"
 
 	// Behavior
-	"fire_rate"   									"1.0"
+	"fire_rate"   									"2.0"
 	"zoom_time_in"									"0.01"
 	"zoom_time_out"   								"0.01"
 	"zoom_fov"										"50"
