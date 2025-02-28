@@ -432,7 +432,10 @@ int function GetLockedSetFromName( string ref )
 
 void function SURVIVAL_Loot_RegFromDataTable(var dt)
 {
-	var attachmentTable = GetDataTable( $"datatable/flowstate_weapon_mods.rpak" )
+	var attachmentTable = GetDataTable( $"datatable/weapon_mods_sdk.rpak" )
+	if( Playlist() == ePlaylists.survival_firingrange ) 
+		attachmentTable = GetDataTable( $"datatable/weapon_mods_sdk_firing_range.rpak" )
+	
 	int numRows = GetDatatableRowCount( dt )
 	for ( int i = 0; i < numRows; i++ )
 	{
@@ -643,6 +646,9 @@ struct CustomWeaponData
 
 void function RegisterCustomWeapons()
 {	
+	if( GetCurrentPlaylistVarBool( "custom_loot", false ) )
+		return
+
 	array<string> customWeaponClassNames = split(GetCurrentPlaylistVarString("custom_weapon_list", ""), " ")
 	
 	#if DEVELOPER //(mk): added for confirmation, added hudIcon, added name, added registering damagedef	

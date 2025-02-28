@@ -279,9 +279,6 @@ void function OnPlayerRespawned(entity player)
 	player.SetShieldHealth( player.GetShieldHealthMax() )
 	
 	player.UnfreezeControlsOnServer()
-	wait 0.4
-	entity weapon = player.GetActiveWeapon( eActiveInventorySlot.mainHand )
-	weapon.SetWeaponPrimaryClipCount(weapon.GetWeaponPrimaryClipCountMax())
 }
 
 void function OnTeammateLoadoutSelectionChanged( EHI playerEHI, ItemFlavor unused )
@@ -371,7 +368,7 @@ void function FillItemTable()
 	file.items.extend(SURVIVAL_Loot_GetByType( eLootType.HEALTH ))
 	file.items.extend(SURVIVAL_Loot_GetByType( eLootType.RESOURCE ))
 	//file.items.extend(SURVIVAL_Loot_GetByType( eLootType.SURVIVAL ))
-	file.items.extend(SURVIVAL_Loot_GetByType( eLootType.CUSTOMPICKUP ))
+	//file.items.extend(SURVIVAL_Loot_GetByType( eLootType.CUSTOMPICKUP ))
 	file.items.extend(SURVIVAL_Loot_GetByType( eLootType.JUMPKIT ))
 }
 
