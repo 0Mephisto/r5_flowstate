@@ -31,7 +31,7 @@ WeaponData
     // "OnWeaponDeactivate"							"OnWeaponDeactivate_ability_riot_shield"
     "OnWeaponRegenEnd"                              "OnWeaponRegenEndGeneric"
 
-	"viewmodel"                                     "mdl/flowstate_custom/ptpov_nomad_loot_compass.rmdl"
+	"viewmodel"                                     "mdl/weapons/empty_handed/ptpov_nomad_loot_compass.rmdl"
 	"playermodel"									"mdl/weapons/empty_handed/w_empty_handed_human.rmdl"
 
 	// Menu Stats
