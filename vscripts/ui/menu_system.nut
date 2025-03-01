@@ -229,7 +229,7 @@ void function InitSystemPanel( var panel )
 	file.friendlyFireButtonData[ panel ].label = "#BUTTON_FRIENDLY_FIRE_TOGGLE"
 	file.friendlyFireButtonData[ panel ].activateFunc = ToggleFriendlyFire
 	
-	file.thirdPersonButtonData[ panel ].label = "#FS_TOGGLE_THIRD_PERSON"
+	file.thirdPersonButtonData[ panel ].label = "Toggle Third Person"
 	file.thirdPersonButtonData[ panel ].activateFunc = ToggleThirdPerson
 
 	file.endmatchButtonData[ panel ].label = "#FS_END_GAME_LOBBY"
@@ -351,7 +351,7 @@ void function UpdateSystemPanel( var panel )
 		if ( IsFiringRangeGameMode() && !uiGlobal.isAimTrainer )
 		{
 			SetButtonData( panel, buttonIndex++, file.changeCharacterButtonData[ panel ] ) // !FIXME
-			//SetButtonData( panel, buttonIndex++, file.thirdPersonButtonData[ panel ] )
+			SetButtonData( panel, buttonIndex++, file.thirdPersonButtonData[ panel ] )
 		
 			if ( (GetTeamSize( GetTeam() ) > 1) && FiringRangeHasFriendlyFire() )
 				SetButtonData( panel, buttonIndex++, file.friendlyFireButtonData[ panel ] )
