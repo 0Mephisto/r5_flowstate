@@ -36,61 +36,58 @@ global int CurrentPresentationType = ePresentationType.PLAY
 
 //Map to asset
 global table<string, asset> MapAssets = {
-	[ "mp_rr_canyonlands_staging" ] = $"rui/menu/maps/mp_rr_canyonlands_staging",
-	[ "mp_rr_aqueduct" ] = $"rui/menu/maps/mp_rr_aqueduct",
-	[ "mp_rr_aqueduct_night" ] = $"rui/menu/maps/mp_rr_aqueduct",
-	[ "mp_rr_canyonlands_64k_x_64k" ] = $"rui/menu/maps/mp_rr_canyonlands_64k_x_64k",
-	[ "mp_rr_canyonlands_mu1" ] = $"rui/menu/maps/mp_rr_canyonlands_mu1",
-	[ "mp_rr_canyonlands_mu2" ] = $"rui/menu/maps/mp_rr_canyonlands_mu2",
-	[ "mp_rr_canyonlands_mu2_tt" ] = $"rui/menu/maps/mp_rr_canyonlands_mu2_tt",
-	[ "mp_rr_canyonlands_mu2_mv" ] = $"rui/menu/maps/mp_rr_canyonlands_mu2_mv",
-	[ "mp_rr_canyonlands_mu2_ufo" ] = $"rui/menu/maps/mp_rr_canyonlands_mu2_ufo",
-	[ "mp_rr_canyonlands_mu1_night" ] = $"rui/menu/maps/mp_rr_canyonlands_mu1_night",
-	[ "mp_rr_desertlands_64k_x_64k" ] = $"rui/menu/maps/mp_rr_desertlands_64k_x_64k",
-	[ "mp_rr_desertlands_64k_x_64k_nx" ] = $"rui/menu/maps/mp_rr_desertlands_64k_x_64k_nx",
-	[ "mp_rr_desertlands_64k_x_64k_tt" ] = $"rui/menu/maps/mp_rr_desertlands_64k_x_64k_tt",
-	[ "mp_rr_desertlands_holiday" ] = $"rui/menu/maps/mp_rr_desertlands_holiday",
-	[ "mp_rr_desertlands_mu1" ] = $"rui/menu/maps/mp_rr_desertlands_mu1",
-	[ "mp_rr_desertlands_mu1_tt" ] = $"rui/menu/maps/mp_rr_desertlands_mu1_tt",
-	[ "mp_rr_desertlands_mu2" ] = $"rui/menu/maps/mp_rr_desertlands_mu2",
-	[ "mp_rr_arena_composite" ] = $"rui/menu/maps/mp_rr_arena_composite",
-	[ "mp_rr_party_crasher" ] = $"rui/menu/maps/mp_rr_party_crasher",
-	[ "mp_rr_olympus" ] = $"rui/menu/maps/mp_rr_olympus",
-	[ "mp_rr_olympus_tt" ] = $"rui/menu/maps/mp_rr_olympus_tt",
-	[ "mp_rr_arena_phase_runner" ] = $"rui/menu/maps/mp_rr_arena_phase_runner",
-	[ "mp_lobby" ] = $"rui/menu/maps/mp_lobby"
+	[ "mp_rr_canyonlands_staging" ] = $"rui/menu/maps/mp_rr_canyonlands_staging_big_icon",
+	[ "mp_rr_canyonlands_64k_x_64k" ] = $"rui/menu/maps/mp_rr_canyonlands_64k_x_64k_big_icon",
+	[ "mp_rr_canyonlands_mu1" ] = $"rui/menu/maps/mp_rr_canyonlands_mu1_big_icon",
+	[ "mp_rr_canyonlands_mu2" ] = $"rui/menu/maps/mp_rr_canyonlands_mu2_big_icon",
+	[ "mp_rr_canyonlands_mu2_tt" ] = $"rui/menu/maps/mp_rr_canyonlands_mu2_tt_big_icon",
+	[ "mp_rr_canyonlands_mu2_mv" ] = $"rui/menu/maps/mp_rr_canyonlands_mu2_mv_big_icon",
+	[ "mp_rr_canyonlands_mu2_ufo" ] = $"rui/menu/maps/mp_rr_canyonlands_mu2_ufo_big_icon",
+	[ "mp_rr_canyonlands_mu1_night" ] = $"rui/menu/maps/mp_rr_canyonlands_mu1_night_big_icon",
+	[ "mp_rr_desertlands_64k_x_64k" ] = $"rui/menu/maps/mp_rr_desertlands_64k_x_64k_big_icon",
+	[ "mp_rr_desertlands_64k_x_64k_nx" ] = $"rui/menu/maps/mp_rr_desertlands_64k_x_64k_nx_big_icon",
+	[ "mp_rr_desertlands_64k_x_64k_tt" ] = $"rui/menu/maps/mp_rr_desertlands_64k_x_64k_tt_big_icon",
+	[ "mp_rr_desertlands_holiday" ] = $"rui/menu/maps/mp_rr_desertlands_holiday_big_icon",
+	[ "mp_rr_desertlands_mu1" ] = $"rui/menu/maps/mp_rr_desertlands_mu1_big_icon",
+	[ "mp_rr_desertlands_mu1_tt" ] = $"rui/menu/maps/mp_rr_desertlands_mu1_tt_big_icon",
+	[ "mp_rr_desertlands_mu2" ] = $"rui/menu/maps/mp_rr_desertlands_mu2_big_icon",
+	[ "mp_rr_arena_composite" ] = $"rui/menu/maps/mp_rr_arena_composite_big_icon",
+	[ "mp_rr_party_crasher" ] = $"rui/menu/maps/mp_rr_party_crasher_big_icon",
+	[ "mp_rr_arena_phase_runner" ] = $"rui/menu/maps/mp_rr_arena_phase_runner_big_icon",
+	[ "mp_rr_aqueduct" ] = $"rui/menu/maps/mp_rr_aqueduct_big_icon",
+	[ "mp_rr_olympus" ] = $"rui/menu/maps/mp_rr_olympus_big_icon",
+	[ "mp_rr_olympus_tt" ] = $"rui/menu/maps/mp_rr_olympus_tt_big_icon",
+	[ "mp_lobby" ] = $"rui/menu/maps/mp_lobby_big_icon"
 }
 
 global table<string, asset> MapAssetsSquare = {
-	[ "mp_rr_canyonlands_staging" ] = $"rui/menu/gamemodes_menu/mp_rr_canyonlands_staging",
-	[ "mp_rr_aqueduct" ] = $"rui/menu/gamemodes_menu/mp_rr_aqueduct",
-	[ "mp_rr_aqueduct_night" ] = $"rui/menu/gamemodes_menu/mp_rr_aqueduct",
-	[ "mp_rr_canyonlands_64k_x_64k" ] = $"rui/menu/gamemodes_menu/mp_rr_canyonlands_64k_x_64k",
-	[ "mp_rr_canyonlands_mu1" ] = $"rui/menu/gamemodes_menu/mp_rr_canyonlands_mu1",
-	[ "mp_rr_canyonlands_mu2" ] = $"rui/menu/gamemodes_menu/mp_rr_canyonlands_mu2",
-	[ "mp_rr_canyonlands_mu2_tt" ] = $"rui/menu/gamemodes_menu/mp_rr_canyonlands_mu2_tt",
-	[ "mp_rr_canyonlands_mu2_mv" ] = $"rui/menu/gamemodes_menu/mp_rr_canyonlands_mu2_mv",
-	[ "mp_rr_canyonlands_mu2_ufo" ] = $"rui/menu/gamemodes_menu/mp_rr_canyonlands_mu2_ufo",
-	[ "mp_rr_canyonlands_mu1_night" ] = $"rui/menu/gamemodes_menu/mp_rr_canyonlands_mu1_night",
-	[ "mp_rr_desertlands_64k_x_64k" ] = $"rui/menu/gamemodes_menu/mp_rr_desertlands_64k_x_64k",
-	[ "mp_rr_desertlands_64k_x_64k_nx" ] = $"rui/menu/gamemodes_menu/mp_rr_desertlands_64k_x_64k_nx",
-	[ "mp_rr_desertlands_64k_x_64k_tt" ] = $"rui/menu/gamemodes_menu/mp_rr_desertlands_64k_x_64k_tt",
-	[ "mp_rr_desertlands_holiday" ] = $"rui/menu/gamemodes_menu/mp_rr_desertlands_holiday",
-	[ "mp_rr_desertlands_mu1" ] = $"rui/menu/gamemodes_menu/mp_rr_desertlands_mu1",
-	[ "mp_rr_desertlands_mu1_tt" ] = $"rui/menu/gamemodes_menu/mp_rr_desertlands_mu1_tt",
-	[ "mp_rr_desertlands_mu2" ] = $"rui/menu/gamemodes_menu/mp_rr_desertlands_mu2",
-	[ "mp_rr_arena_composite" ] = $"rui/menu/gamemodes_menu/mp_rr_arena_composite",
-	[ "mp_rr_party_crasher" ] = $"rui/menu/gamemodes_menu/mp_rr_party_crasher",
-	[ "mp_rr_olympus" ] = $"rui/menu/gamemodes_menu/mp_rr_olympus",
-	[ "mp_rr_olympus_tt" ] = $"rui/menu/gamemodes_menu/mp_rr_olympus_tt",
-	[ "mp_rr_arena_phase_runner" ] = $"rui/menu/gamemodes_menu/mp_rr_arena_phase_runner",
-	[ "mp_lobby" ] = $"rui/menu/gamemodes_menu/mp_lobby"
+	[ "mp_rr_canyonlands_staging" ] = $"rui/menu/maps/mp_rr_canyonlands_staging_square_icon",
+	[ "mp_rr_canyonlands_64k_x_64k" ] = $"rui/menu/maps/mp_rr_canyonlands_64k_x_64k_square_icon",
+	[ "mp_rr_canyonlands_mu1" ] = $"rui/menu/maps/mp_rr_canyonlands_mu1_square_icon",
+	[ "mp_rr_canyonlands_mu2" ] = $"rui/menu/maps/mp_rr_canyonlands_mu2_square_icon",
+	[ "mp_rr_canyonlands_mu2_tt" ] = $"rui/menu/maps/mp_rr_canyonlands_mu2_tt_square_icon",
+	[ "mp_rr_canyonlands_mu2_mv" ] = $"rui/menu/maps/mp_rr_canyonlands_mu2_mv_square_icon",
+	[ "mp_rr_canyonlands_mu2_ufo" ] = $"rui/menu/maps/mp_rr_canyonlands_mu2_ufo_square_icon",
+	[ "mp_rr_canyonlands_mu1_night" ] = $"rui/menu/maps/mp_rr_canyonlands_mu1_night_square_icon",
+	[ "mp_rr_desertlands_64k_x_64k" ] = $"rui/menu/maps/mp_rr_desertlands_64k_x_64k_square_icon",
+	[ "mp_rr_desertlands_64k_x_64k_nx" ] = $"rui/menu/maps/mp_rr_desertlands_64k_x_64k_nx_square_icon",
+	[ "mp_rr_desertlands_64k_x_64k_tt" ] = $"rui/menu/maps/mp_rr_desertlands_64k_x_64k_tt_square_icon",
+	[ "mp_rr_desertlands_holiday" ] = $"rui/menu/maps/mp_rr_desertlands_holiday_square_icon",
+	[ "mp_rr_desertlands_mu1" ] = $"rui/menu/maps/mp_rr_desertlands_mu1_square_icon",
+	[ "mp_rr_desertlands_mu1_tt" ] = $"rui/menu/maps/mp_rr_desertlands_mu1_tt_square_icon",
+	[ "mp_rr_desertlands_mu2" ] = $"rui/menu/maps/mp_rr_desertlands_mu2_square_icon",
+	[ "mp_rr_arena_composite" ] = $"rui/menu/maps/mp_rr_arena_composite_square_icon",
+	[ "mp_rr_party_crasher" ] = $"rui/menu/maps/mp_rr_party_crasher_square_icon",
+	[ "mp_rr_arena_phase_runner" ] = $"rui/menu/maps/mp_rr_arena_phase_runner_square_icon",
+	[ "mp_rr_aqueduct" ] = $"rui/menu/maps/mp_rr_aqueduct_square_icon",
+	[ "mp_rr_olympus" ] = $"rui/menu/maps/mp_rr_olympus_square_icon",
+	[ "mp_rr_olympus_tt" ] = $"rui/menu/maps/mp_rr_olympus_tt_square_icon",
+	[ "mp_lobby" ] = $"rui/menu/maps/mp_lobby"
 }
 
 //Map to readable name
 global table<string, string> MapNames = {
 	[ "mp_rr_canyonlands_staging" ] = "Firing Range",
-	[ "mp_rr_aqueduct" ] = "Overflow",
 	[ "mp_rr_canyonlands_64k_x_64k" ] = "Kings Canyon S1",
 	[ "mp_rr_canyonlands_mu1" ] = "Kings Canyon S2",
 	[ "mp_rr_canyonlands_mu2" ] = "Kings Canyon S5",
@@ -107,10 +104,11 @@ global table<string, string> MapNames = {
 	[ "mp_rr_desertlands_mu2" ] = "Worlds Edge S6",
 	[ "mp_rr_arena_composite" ] = "Drop Off",
 	[ "mp_rr_party_crasher" ] = "Party Crasher",
+	[ "mp_rr_aqueduct" ] = "Overflow",
+	[ "mp_rr_arena_empty" ] = "Creative",
+	[ "mp_rr_arena_phase_runner" ] = "Phase Runner",
 	[ "mp_rr_olympus" ] = "Olympus S7",
 	[ "mp_rr_olympus_tt" ] = "Olympus S7 - Boxing Ring",
-	[ "mp_rr_arena_phase_runner" ] = "Phase Runner",
-	[ "mp_rr_arena_empty" ] = "Creative",
 	[ "mp_lobby" ] = "Lobby"
 }
 
@@ -645,7 +643,7 @@ asset function GetUIMapAsset(string map, bool gamemode_assets = false)
 		return MapAssetsSquare[map]
 
 	if(gamemode_assets)
-		return $"rui/menu/gamemodes_menu/map_not_found"
+		return $"rui/menu/maps/map_not_found_square_icon"
 
-	return $"rui/menu/maps/map_not_found"
+	return $"rui/menu/maps/map_not_found_big_icon"
 }

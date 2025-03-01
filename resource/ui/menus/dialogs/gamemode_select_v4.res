@@ -131,7 +131,7 @@ scripts/resource/ui/menus/dialog_gamemode_select_v2.menu
         {
             ControlName				RuiButton
             wide					340
-            tall					150
+            tall					340
             ypos                    0
             xpos                    0
             zpos                    10
@@ -149,7 +149,7 @@ scripts/resource/ui/menus/dialog_gamemode_select_v2.menu
                 modeNameText "CHOOSE MAP"
                 modeDescText ""
                 alwaysShowDesc 0
-                modeImage "rui/menu/gamemodes_menu/select_map"
+                modeImage "rui/menu/maps/select_map"
             }
 
             pin_to_sibling			FreeRoamBackground
@@ -224,7 +224,7 @@ scripts/resource/ui/menus/dialog_gamemode_select_v2.menu
                 modeNameText ""
                 modeDescText ""
                 alwaysShowDesc 0
-                modeImage "rui/menu/gamemodes_menu/mp_rr_canyonlands_staging"
+                modeImage "rui/menu/maps/mp_rr_canyonlands_staging_square_icon"
             }
 
             pin_to_sibling			FreeRoamBackground
@@ -299,7 +299,7 @@ scripts/resource/ui/menus/dialog_gamemode_select_v2.menu
                 modeNameText ""
                 modeDescText ""
                 alwaysShowDesc 0
-                modeImage "rui/menu/gamemodes_menu/aim_trainer"
+                modeImage "rui/menu/maps/aim_trainer"
             }
 
             pin_to_sibling			FreeRoamBackground
