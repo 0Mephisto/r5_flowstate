@@ -9,12 +9,19 @@ global const int FIRINGRANGE_ITEMS_MAX_COLUMNS = 6
 global const int FIRINGRANGE_ORDNANCE_MAX_COLUMNS = 2
 global const int FIRINGRANGE_AMMO_ROWS = 2
 
+global const string FIRING_RANGE_TARGET_FLIP_SCRIPTNAME = "fr_target_flip"
+global const string FIRING_RANGE_TARGET_FOLD_SCRIPTNAME = "fr_target_fold"
+
+const asset TARGET_FOLDING_MODEL = $"mdl/barriers/shooting_range_target_01.rmdl"
 global const asset FIRINGRANGE_FLICK_TARGET_ASSET = $"mdl/fx/plasma_sphere_01.rmdl"
 global const asset FIRINGRANGE_FLICK_TARGET_PARTICLE_HIT = $"P_crypto_drone_explosion"
 global const string FIRINGRANGE_FLICK_TARGET_SOUND = "Player.Hitbeep_headshot.Human_3P_vs_1P"
 
+const asset TARGET_SPINNING_BASE = $"mdl/barriers/shooting_range_target_02_stand.rmdl"
+const asset TARGET_SPINNING_MODEL = $"mdl/barriers/shooting_range_target_02.rmdl"
 global const asset FIRINGRANGE_BLUE_TARGET_ASSET = $"mdl/barriers/shooting_range_target_02.rmdl"
 global const asset FIRINGRANGE_BLUE_STAND_ASSET = $"mdl/barriers/shooting_range_target_02_stand.rmdl"
+global const string TARGET_MOVER_SCRIPTNAME = "target_mover"
 
 global const asset FIRINGRANGE_ITEM_RESPAWN_PARTICLE = $"P_impact_shieldbreaker_sparks"
 
@@ -47,6 +54,68 @@ struct RackGroup
 	array<entity> racks = []
 }
 
+struct sMovingTarget
+{
+	entity targetBase
+	entity slideTarget
+	bool headedTowardEnd
+	vector start
+	vector end
+	string soundfx = ""
+}
+
+table< int,  array< sMovingTarget > > fr_MovingTargets
+global table < int, int > frIntSettings_Defaults
+
+global enum eGunRangeTargetTypes
+{
+	SPINNING,
+	FOLDING,
+}
+
+global enum eFRSettingType
+{
+	// ----- Personal FR Bool Settings.
+	// To add new Personal Settings, add to the end of this section.
+	SHOWRUI,				// Show the Settings RUI Overlay?
+	SHOWDYNSTATS,			// Show Dynamic Stats?
+	SHOWDYNTIMER,			// Show Dynamic Stats Timer?
+	LEGENDUPGRADES_RESET,	// Reset Legend Upgrades.
+	INFINITEMAGS,			// Infinite Reloads: ON/OFF
+	SHOWHITMARKS,			// Hit Markers: ON/OFF
+	SHOW3RDPERSON,			// 3rd-Person Mode: ON/OFF
+	                    
+		LEGENDUPGRADESENABLED,
+                           
+
+	// ----- Shared FR bool Settings.
+	// To add new Shared Settings, add to the end of this section.
+	FRIENDLYFIRE,			// Friendly Fire: ON/OFF
+	FRDUMMIEHELMETMATCHSHIELDS,	// Dummie Helmets Match Shield Levels.
+	                   
+	DYNAMICDUMMIESON,	// Dynamic Dummies Enabled/Disabled
+	DUMMIEHIGHLIGHTSON,	// Whether or not to highlight dummies.
+       
+	//	// ----- Shared Int Settings.
+	// To add new Shared Int Setting:
+	//		- add to the end of this section
+	//		- register a new NetVar and PVar.
+	//		- follow the function patterns established by targetspeed and frdummieshieldlvl.
+	//			- UCB_SV_FRSetting_<SettingName>_Change(): called from UI.
+	//			- FRSetting_<SettingName>_Set_OnPlayer(): called from above to set the data.
+	//			- SCB_Broadcast_FRSettings_<SettingName>_Change(): Remote called from above to notify players of change.
+	TARGETSPEED,			// TARGET SPEED: < number >
+	FRDUMMIESHIELDLVL,		// FIRING RANGE DUMMIE SHIELD LEVEL: < number >
+	FRDUMMIESPEED,
+	FRDUMMIEMOVEMENT,
+	FRDUMMIESTANCE,
+                   
+	FRDUMMIESHOOTING,
+	FRDUMMIESPAWNDISTS,
+      
+	COUNT_
+}
+
 struct {
 	table<string, array<LootData> > weaponsPerAmmoType
 	table<string, array<string> > attachmentsPerAmmoType
@@ -77,8 +146,9 @@ void function FiringRangeGameMode_Init()
 {
 	PrecacheModel( FIRINGRANGE_BLUE_STAND_ASSET )
 	PrecacheModel( FIRINGRANGE_FLICK_TARGET_ASSET )
+	PrecacheModel( TARGET_FOLDING_MODEL )
 	PrecacheParticleSystem( FIRINGRANGE_FLICK_TARGET_PARTICLE_HIT )
-	PrecacheParticleSystem( FIRINGRANGE_ITEM_RESPAWN_PARTICLE )
+	//PrecacheParticleSystem( FIRINGRANGE_ITEM_RESPAWN_PARTICLE )
 	
 	if( Playlist() != ePlaylists.survival_firingrange )
 		return
@@ -99,7 +169,10 @@ void function FiringRangeGameMode_Init()
 
 		firingrange_infinite_ammo = GetCurrentPlaylistVarBool( "survival_infinite_ammo", false ) ? 1 : 2
 	#endif
-
+	RegisterSignal( "GunRangeTargetDamaged" )
+	RegisterSignal( "SlideTargetSpeedReset" )
+	RegisterSignal( "SlideTargetThinkStart" )
+	RegisterSignal( "SlideTargetWaitForReset" )
 	#if CLIENT
 		IntroDisplayThread()
 	#endif //CLIENT
@@ -150,22 +223,25 @@ void function OnEntitiesDidLoad()
 	SpawnItems()
 	SpawnAmmo()
 
-	SpawnDummy(<31541,-7964,-29165>, <0,179,0>)
-	SpawnDummy(<31541,-6705,-29165>, <0,179,0>)
-	SpawnDummy(<31541,-5885,-29165>, <0,179,0>)
+	//array< entity > dummypts = GetEntArrayByScriptName( "spawnnpoint_frdummy" )
+	//foreach( dummypt in dummypts)
+	SpawnDummy(<31541,-7964,-29200>, <0,179,0>)
+	SpawnDummy(<31541,-6705,-29200>, <0,179,0>)
+	SpawnDummy(<31541,-5885,-29200>, <0,179,0>)
 
 	// Doors
-	SpawnDoors_Init()
+	//SpawnDoors_Init()
 
 	// Map Props
-	SpawnMapProps()
+	//SpawnMapProps()
 
 	// Targets
-	SpawnTrainingTarget(file.flickTraining_pos, file.flickTraining_ang, OnTrainingTargetDamagedReposition)
-	thread MoveTrainingTargetAround(
-		SpawnTrainingTarget(file.trackingTraining_pos, file.flickTraining_ang, OnTrainingTargetDamagedNothing))
+	//SpawnTrainingTarget(file.flickTraining_pos, file.flickTraining_ang, OnTrainingTargetDamagedReposition)
+	//thread MoveTrainingTargetAround(
+		//SpawnTrainingTarget(file.trackingTraining_pos, file.flickTraining_ang, OnTrainingTargetDamagedNothing))
 
-	SpawnTargets()
+		CreateGunRangeTargetsForRealm()
+	//SpawnTargets()
 	// - - - -
 	#endif
 }
@@ -208,7 +284,7 @@ void function SpawnDummy(vector origin, vector angles)
 	dummy.SetDeathNotifications( true )
 	dummy.SetValidHealthBarTarget( true )
 	SetObjectCanBeMeleed( dummy, true )
-	dummy.SetSkin(RandomInt(6))
+	dummy.SetSkin(1)
 	dummy.DisableHibernation()
 	dummy.GiveWeapon("mp_weapon_rspn101", WEAPON_INVENTORY_SLOT_ANY)
     SetTeam(dummy, 99)
@@ -222,8 +298,8 @@ void function OnDummyKilled(entity dummy)
 	vector pos = dummy.GetOrigin()
 	vector angles = dummy.GetAngles()
 	dummy.WaitSignal( "OnDeath" )
-	wait 1
-	StartParticleEffectInWorld( GetParticleSystemIndex( FIRINGRANGE_ITEM_RESPAWN_PARTICLE ), pos, angles )
+	wait 2
+	//StartParticleEffectInWorld( GetParticleSystemIndex( FIRINGRANGE_ITEM_RESPAWN_PARTICLE ), pos, angles )
 	thread SpawnDummy( pos, angles)
 }
 
@@ -615,7 +691,7 @@ void function OnPickupFromRackThread(entity item, string ref)
 	wait FIRINGRANGE_RACK_RESPAWN_TIME
 
 	entity newWeapon = SpawnWeaponOnRack(rack, ref)
-	StartParticleEffectInWorld( GetParticleSystemIndex( FIRINGRANGE_ITEM_RESPAWN_PARTICLE ), newWeapon.GetOrigin(), newWeapon.GetAngles() )
+	//StartParticleEffectInWorld( GetParticleSystemIndex( FIRINGRANGE_ITEM_RESPAWN_PARTICLE ), newWeapon.GetOrigin(), newWeapon.GetAngles() )
 	thread OnPickupFromRackThread(newWeapon, ref)
 }
 
@@ -628,7 +704,7 @@ void function OnPickupGenericThread(entity item, string ref, int amount = 1)
 
 	wait FIRINGRANGE_RACK_RESPAWN_TIME
 
-	StartParticleEffectInWorld( GetParticleSystemIndex( FIRINGRANGE_ITEM_RESPAWN_PARTICLE ), pos, angles )
+	//StartParticleEffectInWorld( GetParticleSystemIndex( FIRINGRANGE_ITEM_RESPAWN_PARTICLE ), pos, angles )
 	thread OnPickupGenericThread(SpawnGenericLoot(ref, pos, angles, amount), ref, amount)
 }
 
@@ -730,7 +806,7 @@ void function ResetTrainingTarget(entity ent)
 	EndSignal( ent, "OnActivate" )
 	wait 4
 	ent.SetOrigin(ent.GetParent().GetOrigin())
-	StartParticleEffectInWorld( GetParticleSystemIndex( FIRINGRANGE_ITEM_RESPAWN_PARTICLE ), ent.GetOrigin(), <0,0,0> )
+	//StartParticleEffectInWorld( GetParticleSystemIndex( FIRINGRANGE_ITEM_RESPAWN_PARTICLE ), ent.GetOrigin(), <0,0,0> )
 }
 
 entity function SpawnTrainingTarget(vector pos, vector ang, void functionref( entity, var ) onDamaged )
@@ -813,9 +889,411 @@ void function SpawnTargets()
 	}
 	SpawnTarget(<35819.4961, -6457.02588, -26410.3125>, <0,180,0> )
 	SpawnTarget(<31240.9922, -10316.9521, -27762.9805>, <0,90,0> )
+	
+}
+
+void function CreateGunRangeTargetsForRealm( bool autoReset = true, bool doBling = false )
+{
+	                         
+	foreach ( ent in GetEntArrayByScriptName( "shooting_range_rotating_target" ) )
+	{
+			{
+				thread CreateGunRangeTarget( ent, eGunRangeTargetTypes.SPINNING, autoReset, doBling )
+			}
+
+		if ( doBling )
+			WaitFrame()
+	}
+
+	foreach ( ent in GetEntArrayByScriptName( "shooting_range_folding_target" ) )
+	{
+		thread CreateGunRangeTarget( ent, eGunRangeTargetTypes.FOLDING, autoReset, doBling )
+		if ( doBling )
+			WaitFrame()
+	}
+}
+
+entity function CreateGunRangeTarget( entity ent, int type, bool autoReset, bool doBling )
+{
+	entity targetMover
+	entity targetGeo
+	vector anglesReady  = < 0, 0, 0 >
+	vector anglesShot   = < 0, 0, 0 >
+	float rotateDuration = 0.0
+	float resetDuration = autoReset ? 3.0 : -1.0
+	{
+		vector origin = ent.GetOrigin()
+
+		entity slideTarget = ent.GetLinkEnt()
+
+		if ( type == eGunRangeTargetTypes.FOLDING )
+		{
+			//printt( "| Creating Gun Range Target (Folding) Realm:", realm )
+
+			targetMover = CreateScriptMover_NEW( TARGET_MOVER_SCRIPTNAME, origin, ent.GetAngles() )
+
+			origin = OffsetPointRelativeToVector( origin, < 26, 2, 0 >, ent.GetForwardVector() )
+			targetGeo = CreatePropDynamic( TARGET_FOLDING_MODEL, origin, ent.GetAngles(), SOLID_OBB, 50000 )
+			targetGeo.SetScriptName( FIRING_RANGE_TARGET_FOLD_SCRIPTNAME )
+
+			entity collision = CreatePropDynamic( TARGET_FOLDING_MODEL, origin, ent.GetAngles(), SOLID_VPHYSICS, 50000 )
+			collision.kv.collisionGroup = TRACE_COLLISION_GROUP_PLAYER
+
+			//DispatchSpawn( collision )
+
+			collision.SetParent( targetGeo )
+			collision.Hide()
+
+			anglesReady = targetMover.GetAngles()
+			anglesShot = AnglesCompose( anglesReady, < -85, 0, 0 > )
+			rotateDuration = 0.1
+
+		}
+		else if ( type == eGunRangeTargetTypes.SPINNING )
+		{
+			//printt( "| Creating Gun Range Target (Spinning) Realm:", realm )
+
+			entity targetBase
+				{
+					targetBase = CreateScriptMoverModel( TARGET_SPINNING_BASE, origin, ent.GetAngles(), SOLID_VPHYSICS, 50000 )
+				}
+
+			//AddStagingCleanupEnt( targetBase )
+
+			origin = OffsetPointRelativeToVector( origin, < 0, 0, 128 >, ent.GetForwardVector() )
+
+			targetMover = CreateScriptMover_NEW( TARGET_MOVER_SCRIPTNAME, origin, ent.GetAngles() )
+			targetMover.NonPhysicsSetRotateModeLocal( true )
+
+				{
+					targetGeo = CreatePropDynamic( TARGET_SPINNING_MODEL, origin, ent.GetAngles(), SOLID_OBB, 50000 )
+				}	
+
+			targetGeo.SetScriptName( FIRING_RANGE_TARGET_FLIP_SCRIPTNAME )
+
+			entity collision
+
+				{
+					collision = CreatePropDynamic( TARGET_SPINNING_MODEL, origin, ent.GetAngles(), SOLID_VPHYSICS, 50000 )
+				}			
+
+			collision.kv.collisionGroup = TRACE_COLLISION_GROUP_PLAYER
+
+			collision.SetParent( targetGeo )
+			collision.Hide()
+	
+			anglesReady = targetMover.GetLocalAngles()
+			anglesShot = AnglesCompose( targetMover.GetLocalAngles(), < 180, 0, 0 > )
+			rotateDuration = 0.0
+
+			if ( IsValid( slideTarget ) )
+			{
+				targetMover.SetParent( targetBase, "", true )
+
+				// Save slideTarget to do Instant Speed Change upon speed change via a signal.
+				sMovingTarget newMovingTarget = MovingTarget_Register( targetBase, slideTarget )
+				thread MovingGunRangeTargetThink( newMovingTarget )
+			}
+			else // Not sliding target, so we don't need scripted base.
+			{
+				//targetBase.Destroy()
+			}
+		}
+
+		Assert( IsValid( targetGeo ) )
+		Assert( IsValid( targetMover ) )
+
+		if ( doBling )
+		{
+			Highlight_SetNeutralHighlight( targetGeo, "staging_gun_range_target_appear" )
+		}
+
+		targetGeo.SetParent( targetMover, "", true )
+		targetMover.SetPusher( true )
+
+		AddEntityCallback_OnPostDamaged( targetGeo, StagingAreaEntity_OnDamaged )
+
+		thread GunRangeTargetThink( targetGeo, targetMover, type, anglesReady, anglesShot, rotateDuration, resetDuration )
+	}
+	return targetGeo
+}
+
+sMovingTarget function MovingTarget_Register( entity targetBase, entity slideTarget )
+{
+	sMovingTarget newTarget
+	newTarget.targetBase = targetBase
+	newTarget.slideTarget = slideTarget
+	newTarget.headedTowardEnd = true
+	newTarget.start = targetBase.GetOrigin()
+	newTarget.end = slideTarget.GetOrigin()
+
+	return newTarget
+}
+
+void function StagingAreaEntity_OnDamaged( entity ent, var damageInfo )
+{
+	if ( !IsValid( ent ) )
+		return
+
+	if ( DamageInfo_GetDamage( damageInfo ) <= 0 )
+		return
+
+	entity attacker = DamageInfo_GetAttacker( damageInfo )
+	int hitGroup = DamageInfo_GetHitGroup( damageInfo )
+	table data
+	data["attacker"] <- attacker
+	data["hitgroup"] <- hitGroup
+
+	ent.Signal( "GunRangeTargetDamaged", data )
+
+	HandleLocationBasedDamage( ent, damageInfo )
+
+	if ( attacker.IsPlayer() )
+	{
+		attacker.NotifyDidDamage(
+			ent, DamageInfo_GetHitBox( damageInfo ),
+			DamageInfo_GetDamagePosition( damageInfo ), DamageInfo_GetCustomDamageType( damageInfo ),
+			DamageInfo_GetDamage( damageInfo ), DamageInfo_GetDamageFlags( damageInfo ),
+			DamageInfo_GetHitGroup( damageInfo ), DamageInfo_GetWeapon( damageInfo ),
+			DamageInfo_GetDistFromAttackOrigin( damageInfo )
+		)
+	}
+}
+
+void function GunRangeTargetThink( entity targetGeo, entity targetMover, int type, vector anglesReady, vector anglesShot, float rotateDuration, float resetDuration )
+{
+	int TargetHealth = 100 // 10000
+	targetGeo.SetTakeDamageType( DAMAGE_EVENTS_ONLY )
+	targetGeo.SetDamageNotifications( true )
+	targetGeo.SetMaxHealth( 10000 )
+	targetGeo.SetHealth( 10000 )
+
+	EndSignal( targetGeo, "OnDestroy" )
+	EndSignal( targetMover, "OnDestroy" )
+
+	bool hasSkinnedTargets = false//Has_SkinnedTargets()
+
+	vector readyPos =  targetMover.GetOrigin()
+	vector anglesShotFromBack = AnglesCompose( anglesReady, < 85, 0, 0 > ) // fall the other way.
+
+	while( true )
+	{
+		WaitFrame()
+		table data = WaitSignal( targetGeo, "GunRangeTargetDamaged" )
+		entity attacker = expect entity( data.attacker )
+
+		if ( IsValid( attacker ) && attacker.IsPlayer() )
+		{
+			EmitSoundOnEntityExceptToPlayer( targetGeo, attacker, "Canyonlands_Scr_RangeTarget_Hit_3P" )
+		}
+		else
+		{
+			EmitSoundOnEntity( targetGeo, "Canyonlands_Scr_RangeTarget_Hit_3P" )
+		}
+
+		targetGeo.e.isDisabled = true
+		if ( rotateDuration > 0 )
+		{
+			vector collapsePos = targetMover.GetOrigin()
+			vector anglesShotToUse = anglesShot
+			if( IsValid( attacker ) )
+			{
+			 	vector ToAttacker = attacker.GetOrigin() - targetMover.GetOrigin()
+				ToAttacker.z = 0
+				if( DotProduct( ToAttacker, targetMover.GetForwardVector() ) < 0 )
+				{
+					// Slighter angle collapse and upward displacement if shot from behind to prevent clipping.
+					anglesShotToUse = anglesShotFromBack
+					collapsePos = collapsePos + < 0, 0, 11 > // Shift up slightly so target doesn't clip.
+				}
+			}
+			targetMover.NonPhysicsRotateTo( anglesShotToUse, rotateDuration, 0.0, 0.0 )
+			targetMover.NonPhysicsMoveTo( collapsePos, rotateDuration, 0.0, 0.0 )
+			wait rotateDuration
+		}
+		else
+		{
+                      
+				//if( hasSkinnedTargets )
+					//thread Target_Do_HitSkin_Thread( targetGeo, data  )
+				//else
+					targetMover.SetLocalAngles( anglesShot )
+        
+                                            
+               
+                            
+		}
+
+		if(( type == eGunRangeTargetTypes.SPINNING ))
+		{
+			EmitSoundOnEntity( targetGeo, "Canyonlands_Scr_RangeTarget_Spin" )
+		}
+
+		if ( resetDuration < 0 )
+			return
+
+                     
+			//if( !Has_SkinnedTargets() )
+				wait resetDuration
+       
+                     
+        
+
+		if(( type == eGunRangeTargetTypes.SPINNING ))
+		{
+			EmitSoundOnEntity( targetGeo, "Canyonlands_Scr_RangeTarget_Spin" )
+		}
+
+		if ( rotateDuration > 0 )
+		{
+			targetMover.NonPhysicsRotateTo( anglesReady, rotateDuration, 0.0, 0.0 )
+			targetMover.NonPhysicsMoveTo( readyPos, rotateDuration, 0.0, 0.0 )
+			wait rotateDuration
+		}
+		else
+		{
+			{
+				targetMover.SetLocalAngles( anglesReady )
+				WaitFrame()
+			}
+		}
+
+		targetGeo.e.isDisabled = false
+	}
 }
 
 
+void function MovingGunRangeTargetThink( sMovingTarget movingTarget )
+{
+	if( !IsValid( movingTarget ) )
+		return
+
+	if( !IsValid( movingTarget.targetBase ) )
+		return
+
+	if( !IsValid( movingTarget.slideTarget ) )
+		return
+
+	OnThreadEnd(
+		function() : ( movingTarget )
+		{
+			// Space intentionally left in case there is cleanup needed later.
+		}
+	)
+
+	Signal( movingTarget.targetBase, "SlideTargetWaitForReset" )
+	EndSignal( movingTarget.targetBase, "SlideTargetWaitForReset", "OnDestroy" )
+	EndSignal( movingTarget.slideTarget, "OnDestroy" )
+
+	thread MovingGunRangeTargetMove( movingTarget, true )
+	
+	while( true )
+	{
+		WaitSignal( movingTarget.targetBase, "SlideTargetSpeedReset" )
+		WaitFrame()
+		thread MovingGunRangeTargetMove( movingTarget, false )
+	}
+}
+
+bool function HasPlaylistVarVariableSpeedTargets()
+{
+	return( GetCurrentPlaylistVarBool( "has_variable_speed_targets", true ))
+}
+
+void function MovingGunRangeTargetMove( sMovingTarget movingTarget, bool initStartPos = true )
+{
+	if( !IsValid( movingTarget ) )
+		return
+
+	if( !IsValid( movingTarget.targetBase ) )
+		return
+
+	if( !IsValid( movingTarget.slideTarget ) )
+		return
+
+	Signal( movingTarget.targetBase, "SlideTargetThinkStart" )
+	EndSignal( movingTarget.targetBase, "SlideTargetThinkStart", "OnDestroy" )
+	EndSignal( movingTarget.slideTarget, "OnDestroy" )
+
+	// Grab the info from the struct.
+	vector start = movingTarget.start
+	vector end = movingTarget.end
+
+	float moveDuration
+	float accelDecel = moveDuration * 0.25
+
+	WaitFrame()
+
+	// Randomly flip the starting direction for variety
+	if( initStartPos )
+	{
+		if( CoinFlip() )
+		{
+			movingTarget.headedTowardEnd = false
+			movingTarget.targetBase.SetOrigin( end )
+		}
+
+		// Wait random time so all targets aren't in sync
+		wait RandomFloat( 1.5 )
+	}
+
+                          
+		//If we're in training, this value isn't in the map, but is needed down the road
+		if ( !(eFRSettingType.TARGETSPEED in frIntSettings_Defaults) )
+		{
+			frIntSettings_Defaults	[ eFRSettingType.TARGETSPEED ] 		<- 2
+		}
+
+		// Actual speeds desired, in units/sec.,
+		table< int, float > targetSpeedsActual
+		targetSpeedsActual[ 0 ] <- 80
+		targetSpeedsActual[ 1 ] <- 80
+		targetSpeedsActual[ 2 ] <- 200
+		targetSpeedsActual[ 3 ] <- 300
+		targetSpeedsActual[ 4 ] <- 600
+
+		// TODO: Stop Previous sound and do new appropriate sound
+		/*
+		FiringRangeMu1_Emit_TargetConveyor_CrouchWalk
+		FiringRangeMu1_Emit_TargetConveyor_Run
+		FiringRangeMu1_Emit_TargetConveyor_Walk
+		FiringRangeMu1_Emit_TargetConveyor_Zipline
+		*/
+		table< int, string > targetSpeedSounds
+		targetSpeedSounds[ 0 ] <- "FiringRangeMu1_Emit_TargetConveyor_CrouchWalk"
+		targetSpeedSounds[ 1 ] <- "FiringRangeMu1_Emit_TargetConveyor_CrouchWalk"
+		targetSpeedSounds[ 2 ] <- "FiringRangeMu1_Emit_TargetConveyor_Walk"
+		targetSpeedSounds[ 3 ] <- "FiringRangeMu1_Emit_TargetConveyor_Run"
+		targetSpeedSounds[ 4 ] <- "FiringRangeMu1_Emit_TargetConveyor_Zipline"
+
+		float distance
+		vector destination
+
+		while( true )
+		{
+			int targetSpeedNDX = 1//FRSetting_TargetSpeed_Get( realm )
+			destination = movingTarget.headedTowardEnd ? end : start
+			distance = Distance2D( movingTarget.targetBase.GetOrigin(), destination )
+			if( distance > 0 )
+			{
+				// UPDATE SOUND BEING PLAYED.
+				if( movingTarget.soundfx != targetSpeedSounds[ targetSpeedNDX ] )
+				{
+					if( movingTarget.soundfx != "" )
+					{
+						StopSoundOnEntity( movingTarget.targetBase, movingTarget.soundfx )
+					}
+					movingTarget.soundfx = targetSpeedSounds[ targetSpeedNDX ]
+					EmitSoundOnEntity( movingTarget.targetBase, movingTarget.soundfx )
+				}
+
+				moveDuration = distance / targetSpeedsActual[ targetSpeedNDX ]
+				movingTarget.targetBase.NonPhysicsMoveTo( destination, moveDuration , accelDecel, accelDecel )
+				wait moveDuration
+			}
+			movingTarget.headedTowardEnd = !movingTarget.headedTowardEnd
+		}    
+}
 
 // ==================================================
 //					MAP PROPS
