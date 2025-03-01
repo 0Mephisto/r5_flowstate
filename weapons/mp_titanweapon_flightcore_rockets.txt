@@ -326,7 +326,9 @@ WeaponData
 
 	Mods
 	{
-
+		crate
+		{
+		}
 	}
 
 	active_crosshair_count				"1"

@@ -326,17 +326,6 @@
             "low_ammo_sound_name_2"                        "DoubleTake_LowAmmo_Shot2"
             "low_ammo_sound_name_3"                        "DoubleTake_LowAmmo_Shot3"
 
-
-            // Sounds - Charged
-            // "charge_sound_1p"								"weapon_sentinel_fire_alt_1p"
-			// "charge_sound_3p"								"weapon_sentinel_fire_alt_3p"
-			// "charge_sound_stop_when_full"					"1"
-			// "charge_sound_seek_to_charge_fraction"		"1"
-			// "charge_drain_sound_1p"						"Weapon_ChargeRifle_WindDown_1P"
-			// "charge_drain_sound_3p"						"Weapon_ChargeRifle_WindDown_3P"
-			// "charge_drain_sound_stop_when_empty"			"1"
-			// "charge_drain_sound_seek_to_charge_fraction"	"1"
-
             // Rumble
             "charge_rumble_min"								"10"
 			"charge_rumble_max"								"30"

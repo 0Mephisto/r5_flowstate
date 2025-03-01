@@ -82,9 +82,6 @@
 	"bolt_hitsize"									"0.0"
 
 	// Ammo
-	//
-
-	"ammo_pool_type"                               "explosive"
 	"uses_ammo_pool"                               "0"
 	"ammo_clip_size"                               "250"
 	"ammo_stockpile_max"                           "500"

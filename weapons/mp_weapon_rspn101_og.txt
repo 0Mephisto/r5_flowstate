@@ -418,7 +418,9 @@ WeaponData
 
 	Mods
 	{
-
+		crate
+		{
+		}
 		iron_sights
 		{
 			"viewmodel_offset_ads"		"0 5 -1.45"// HACK should not have to offset the default ADS anim alignment

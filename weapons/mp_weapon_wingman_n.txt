@@ -383,6 +383,9 @@ WeaponData
 
 	Mods
 	{
+		crate
+		{
+		}
 		iron_sights
 		{
 		}

@@ -15,8 +15,6 @@ WeaponData
 	"aimassist_adspull_weaponclass"					"none"
 	"leveled_pickup"								"1"
 
-	"ammo_pool_type"                           		"explosive"
-
 	"sound_pickup"									"wpn_pickup_MG_1P"
 
 	"projectile_drift_windiness"					"0.4"
@@ -440,6 +438,11 @@ WeaponData
 
 	Mods
 	{
+		crate
+		{
+			"impulse_force"									"47500"
+			"impulse_force_explosions"						"65000"
+		}
         jump_kit
         {
        		"impulse_force"									"17500"

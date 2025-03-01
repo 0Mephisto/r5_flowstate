@@ -480,6 +480,9 @@ WeaponData
 
 	Mods
 	{
+		crate
+		{
+		}
 		holosight
 		{
 			"bodygroup1_set"	    "0"

@@ -9,8 +9,6 @@ WeaponData
 	"menu_icon"										"r2_ui/menus/loadout_icons/anti_titan/at_mgl"
 	"hud_icon"										"r2_ui/menus/loadout_icons/anti_titan/at_mgl"
 
-	"ammo_pool_type"                           		"explosive"
-
 	"weaponClass" 									"human"
 	"weaponSubClass"								"rocket"
 	"fire_mode"   									"automatic"
@@ -434,7 +432,9 @@ WeaponData
 
 	Mods
 	{
-
+		crate
+		{
+		}
 		extended_ammo
 		{
 			"ammo_clip_size"   							"++6"

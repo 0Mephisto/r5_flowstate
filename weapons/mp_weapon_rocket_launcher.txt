@@ -16,8 +16,6 @@ WeaponData
 	"minimap_reveal_distance"						"32000"
 	"fast_swap_to"									"0"
 	"leveled_pickup"								"1"
-	
-	"ammo_pool_type"								"explosive"
 
 	"OnWeaponActivate"								"OnWeaponActivate_weapon_rocket_launcher"
 	"OnWeaponDeactivate"							"OnWeaponDeactivate_weapon_rocket_launcher"
@@ -405,6 +403,9 @@ WeaponData
 
 	Mods
 	{
+		crate
+		{
+		}
 		extended_ammo
 		{
 			"ammo_clip_size"   							"++2"
