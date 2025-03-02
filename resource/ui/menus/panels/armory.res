@@ -19,12 +19,13 @@
         InheritProperties		WeaponCategoryButton
         classname               WeaponCategoryButtonClass
         scriptID				0
-        xpos                    173
+        xpos                    125
+        xpos_nx_handheld        -58			[$NX || $NX_UI_PC]
         ypos                    189
         tabPosition             1
         cursorVelocityModifier  0.7
 
-        navDown                 WeaponCategoryButton3
+        navDown                 WeaponCategoryButton4
         navRight                WeaponCategoryButton1
     }
     WeaponCategoryButton1
@@ -33,7 +34,7 @@
         InheritProperties		WeaponCategoryButton
         classname               WeaponCategoryButtonClass
         scriptID				1
-        xpos                    -121
+        xpos                    -84
         cursorVelocityModifier  0.7
 
         navDown                 WeaponCategoryButton4
@@ -50,11 +51,12 @@
         InheritProperties		WeaponCategoryButton
         classname               WeaponCategoryButtonClass
         scriptID				2
-        xpos                    -121
+        xpos                    -84
         cursorVelocityModifier  0.7
 
         navDown                 WeaponCategoryButton5
         navLeft                 WeaponCategoryButton1
+        navRight                WeaponCategoryButton3
 
         pin_to_sibling			WeaponCategoryButton1
         pin_corner_to_sibling	TOP_LEFT
@@ -66,19 +68,15 @@
         InheritProperties		WeaponCategoryButton
         classname               WeaponCategoryButtonClass
         scriptID				3
-        ypos                    35
+        xpos                    -84
         cursorVelocityModifier  0.7
-        ruiArgs
-        {
-            isNameAtTop         1
-        }
 
-        navUp                   WeaponCategoryButton0
-        navRight                WeaponCategoryButton4
+        navDown                 WeaponCategoryButton6
+        navLeft                 WeaponCategoryButton2
 
-        pin_to_sibling			WeaponCategoryButton0
+        pin_to_sibling			WeaponCategoryButton2
         pin_corner_to_sibling	TOP_LEFT
-        pin_to_sibling_corner	BOTTOM_LEFT
+        pin_to_sibling_corner	TOP_RIGHT
     }
     WeaponCategoryButton4
     {
@@ -86,7 +84,8 @@
         InheritProperties		WeaponCategoryButton
         classname               WeaponCategoryButtonClass
         scriptID				4
-        xpos                    -121
+        ypos                    40
+        xpos                    -190
         cursorVelocityModifier  0.7
         ruiArgs
         {
@@ -94,13 +93,12 @@
         }
 
         navUp                   WeaponCategoryButton1
-        navLeft                 WeaponCategoryButton3
         navRight                WeaponCategoryButton5
         navDown                 MiscCustomizeButton
 
-        pin_to_sibling			WeaponCategoryButton3
-        pin_corner_to_sibling	TOP_LEFT
-        pin_to_sibling_corner	TOP_RIGHT
+        pin_to_sibling			WeaponCategoryButton0
+                pin_corner_to_sibling	TOP_LEFT
+                pin_to_sibling_corner	BOTTOM_LEFT
     }
     WeaponCategoryButton5
     {
@@ -108,7 +106,7 @@
         InheritProperties		WeaponCategoryButton
         classname               WeaponCategoryButtonClass
         scriptID				5
-        xpos                    -121
+        xpos                    -84
         cursorVelocityModifier  0.7
         ruiArgs
         {
@@ -117,8 +115,31 @@
 
         navUp                   WeaponCategoryButton2
         navLeft                 WeaponCategoryButton4
+        navRight                WeaponCategoryButton6
+        navDown                 MiscCustomizeButton
 
         pin_to_sibling			WeaponCategoryButton4
+        pin_corner_to_sibling	TOP_LEFT
+        pin_to_sibling_corner	TOP_RIGHT
+    }
+    WeaponCategoryButton6
+    {
+        ControlName				RuiButton
+        InheritProperties		WeaponCategoryButton
+        classname               WeaponCategoryButtonClass
+        scriptID				5
+        xpos                    -84
+        cursorVelocityModifier  0.7
+        ruiArgs
+        {
+            isNameAtTop         1
+        }
+
+        navUp                   WeaponCategoryButton3
+        navLeft                 WeaponCategoryButton5
+        navDown                 MiscCustomizeButton
+
+        pin_to_sibling			WeaponCategoryButton5
         pin_corner_to_sibling	TOP_LEFT
         pin_to_sibling_corner	TOP_RIGHT
     }
@@ -128,13 +149,14 @@
         InheritProperties		MiscCustomizeButton
         classname               MiscCustomizeButtonClass
         scriptID				6
-        ypos                    35
+        ypos                    110
+        ypos_nx_handheld        22		[$NX || $NX_UI_PC]
         visible                 0
         cursorVelocityModifier  0.7
 
-        navUp                   WeaponCategoryButton4
+        navUp                   WeaponCategoryButton5
 
-        pin_to_sibling			WeaponCategoryButton4
+        pin_to_sibling			WeaponCategoryButton5
         pin_corner_to_sibling	TOP
         pin_to_sibling_corner	BOTTOM
     }

@@ -789,10 +789,10 @@ void function InitPresentationData()
 		pd.maxYawDegrees = 0
 		pd.maxPitchDegrees = 0
 		pd.fov = 50
-		pd.dofNearStart = DEFAULT_DOF_NEAR_START
-		pd.dofNearEnd = DEFAULT_DOF_NEAR_END
-		pd.dofFarStart = DEFAULT_DOF_FAR_START
-		pd.dofFarEnd = DEFAULT_DOF_FAR_END
+		pd.dofNearStart = 3.5
+		pd.dofNearEnd = 5.0
+		pd.dofFarStart = 20.0
+		pd.dofFarEnd = 30.0
 		pd.csmTexelScale1 = 1.0
 		pd.csmTexelScale2 = 1.0
 		pd.csmStartDistance = 0.0

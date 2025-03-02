@@ -514,6 +514,7 @@ void function PrecacheSDKEntities()
 	PrecacheModel( $"mdl/fx/ar_survival_radius_1x100.rmdl")
 	PrecacheModel( $"mdl/vehicle/olympus_hovercraft/olympus_hovercraft_v2.rmdl")
 	PrecacheModel( $"mdl/communication/terminal_usable_imc_01.rmdl" )
+	PrecacheModel( $"mdl/weapons/shellejects/shelleject_repeater3030.rmdl" )//DO NOT REMOVE!
 }
 
 const array<string> InvalidModesForTrackScoreBoard = //const values
