@@ -315,6 +315,9 @@ bool function bIs1v1Mode()
 	if( GetPlaylistMaps( GetCurrentPlaylistName() ).contains( GetMapName() ) )
 		return true
 
+	if( Playlist() == ePlaylists.fs_1v1 )
+		mAssert( false, format( "Map \"%s\" is not enabled for %s in platform/playlists_r5_patch.txt", GetMapName(), GetCurrentPlaylistName() ) )
+
 	return false
 }
 
@@ -2197,7 +2200,8 @@ void function SetupInfiniteAmmoForWeapon( entity player, entity weapon)
 		player.AmmoPool_SetCount( ammoType, ammoInInventory + requiredAmmo + maxClipSize )
 
 		weapon.SetWeaponPrimaryClipCount( weapon.GetWeaponPrimaryClipCountMax() )
-	} else if( IsValid( weapon ) )
+	} 
+	else if( IsValid( weapon ) )
 	{
 		int ammoType = weapon.GetWeaponAmmoPoolType()
 		player.AmmoPool_SetCapacity( 65535 )
@@ -7269,9 +7273,7 @@ array<entity> function Tracker_DetermineBestChampions( array<entity> championCan
 	array<entity> players
 	
 	foreach( TrackerRecap data in allSummaryData )
-	{
 		players.append( GetPlayerEntityByUID( data.uid ) )
-	}
 	
 	return players
 }

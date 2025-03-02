@@ -157,14 +157,14 @@ void function Script_RegisterAllStats()
 			Tracker_RegisterStat( "shots_fired", null, Tracker_ReturnShots )
 			Tracker_RegisterStat( "instagib_deaths", null, Tracker_ReturnDeaths )
 			Tracker_RegisterStat( "instagib_railjumptimes", null, TrackerStats_FSDMRailjumps, STORE_STAT )
-			Tracker_RegisterStat( "instagib_gamesplayed", null, TrackerStats_FSDMGamesPlayed )
+			Tracker_RegisterStat( "instagib_gamesplayed", null, TrackerStats_GamesCompleted )
 			Tracker_RegisterStat( "instagib_wins", null, TrackerStats_FSDMWins )	
 		break
 
 		case ePlaylists.fs_haloMod:
 			Tracker_RegisterStat( "halo_dm_kills", null, Tracker_ReturnKills )
 			Tracker_RegisterStat( "halo_dm_deaths", null, Tracker_ReturnDeaths )
-			Tracker_RegisterStat( "halo_dm_gamesplayed", null, TrackerStats_FSDMGamesPlayed )
+			Tracker_RegisterStat( "halo_dm_gamesplayed", null, TrackerStats_GamesCompleted )
 			Tracker_RegisterStat( "halo_dm_wins", null, TrackerStats_FSDMWins )
 		break
 		
@@ -172,14 +172,14 @@ void function Script_RegisterAllStats()
 			Tracker_RegisterStat( "halo_oddball_kills", null, Tracker_ReturnKills )
 			Tracker_RegisterStat( "halo_oddball_deaths", null, Tracker_ReturnDeaths )
 			Tracker_RegisterStat( "halo_oddball_heldtime", null, TrackerStats_OddballHeldTime, STORE_STAT )
-			Tracker_RegisterStat( "halo_oddball_gamesplayed", null, TrackerStats_FSDMGamesPlayed )
+			Tracker_RegisterStat( "halo_oddball_gamesplayed", null, TrackerStats_GamesCompleted )
 		break
 
 		case ePlaylists.fs_haloMod_ctf:
 
 			Tracker_RegisterStat( "halo_ctf_flags_captured", null, TrackerStats_CtfFlagsCaptured, STORE_STAT )
 			Tracker_RegisterStat( "halo_ctf_flags_returned", null, TrackerStats_CtfFlagsReturned, STORE_STAT )
-			Tracker_RegisterStat( "halo_ctf_gamesplayed", null, TrackerStats_FSDMGamesPlayed )
+			Tracker_RegisterStat( "halo_ctf_gamesplayed", null, TrackerStats_GamesCompleted )
 			Tracker_RegisterStat( "halo_ctf_wins", null, TrackerStats_CtfWins, STORE_STAT )
 		break 
 		
@@ -257,8 +257,17 @@ var function TrackerStats_FSDMRailjumps( string uid )
 	return player.p.railjumptimes 
 }
 
-var function TrackerStats_FSDMGamesPlayed( string uid ) //for leaderboard visuals?
+//Tracker already has a gamemode play count, which is different from this stat.
+var function TrackerStats_GamesCompleted( string uid )
 {
+	entity player = GetPlayerEntityByUID( uid ) 
+	if( !IsValid( player ) )
+		return 0 //check to make sure player is still in server at round end
+	
+	int roundTime = fsGlobal.EndlessFFAorTDM ? 600 : FlowState_RoundTime()
+	if( ( Time() - player.p.connectTime ) < ( roundTime / 2 )  )
+		return 0 // if player did not play 1/2 of the round, or atleast 5 minutes for endless, dont credit a play count.
+		
 	return 1
 }
 

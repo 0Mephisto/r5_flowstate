@@ -518,7 +518,8 @@ void function Flowstate_CheckForLaserSightsAndApplyEffect()
 			if ( mod != "laser_sight_l1" && mod != "laser_sight_l2" && mod != "laser_sight_l3" && mod != "laser_sight_l4" )
 			{
 				hasLaser = false
-			} else
+			} 
+			else
 			{
 				hasLaser = true
 				exitCheck = true
