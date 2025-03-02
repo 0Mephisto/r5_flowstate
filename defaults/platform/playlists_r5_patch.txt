@@ -189,7 +189,7 @@ playlists
 				
 				character_dummie								hide
 				character_random								hide
-				character_loba									hide
+				//character_loba									hide
 
 				///////////////////////////////////////////////////////////////////////////////////
 				//// Character (a.k.a. Legend) Damage Balancing								///////
@@ -3330,6 +3330,7 @@ playlists
 				enable_apex_screens								1
 				skydive_ziplines_enabled					   	1
 				charselect_intro_countdown_duration				0.0
+				dev_loadout_changeable_at_any_time 1
 				
 				r5reloaded_AnimatedCharacterSelect				0
 				flowstate_spectator_team_only					1
@@ -3338,6 +3339,7 @@ playlists
 				flowstate_enable_bullet_slow					1
 				
 				flowstate_give_character_passive				1
+				enable_motd										0
 			}
 			gamemodes { survival { maps {
 				mp_rr_desertlands_64k_x_64k						1
@@ -3386,6 +3388,7 @@ playlists
 				flowstate_enable_bullet_slow					1
 				
 				flowstate_give_character_passive				1
+				enable_motd										0
 			}
 			gamemodes { survival { maps {
 				mp_rr_desertlands_64k_x_64k						1
@@ -3437,6 +3440,7 @@ playlists
 				flowstate_enable_bullet_slow					1
 				
 				flowstate_give_character_passive				1
+				enable_motd										0
 
 			}
 			gamemodes { survival { maps {
@@ -4056,8 +4060,10 @@ playlists
 				survival_staging_area_enabled				  	0
 
 				custom_loot               						0
+				charge_pylons_raise_time_override               15
 
 				flowstate_enable_bullet_slow					1
+				enable_motd										0
 			}
 			gamemodes { survival { maps {
 				mp_rr_canyonlands_staging				   		1
@@ -4143,7 +4149,7 @@ playlists
 				name										   	"Survival Dev"
 				
 				// match teams will not fill with more than one party, up to max_teams of size max_team_size (or less) -- not exceeding max_players
-				max_team_size									1
+				max_team_size									2
 				max_players										120
 				min_players										1
 
@@ -4182,13 +4188,15 @@ playlists
 
 				flowstate_give_character_passive				1
 
-				custom_loot               						0
+				custom_loot               						1
+				enable_motd										0
 				
 			}
 			gamemodes { survival { maps {
 				mp_rr_party_crasher					 			1
 				mp_rr_aqueduct								 	1
 				mp_rr_arena_phase_runner						1
+				mp_rr_canyonlands_staging					  	1
 				mp_rr_canyonlands_64k_x_64k						1
 				mp_rr_canyonlands_mu1						  	1
 				mp_rr_canyonlands_mu1_night						1
