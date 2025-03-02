@@ -319,12 +319,12 @@ const string FUNCNAME_AbortCurrentDialogue = "SCB_AbortCurrentDialogue"
 
 void function Dialog_RegisterNetworking()
 {
-	Remote_RegisterClientFunction( FUNCNAME_PlayDialogueOnEntity, "int", -1, INT_MAX, "int", INT_MIN, INT_MAX, "int", INT_MIN, INT_MAX )
-	Remote_RegisterClientFunction( FUNCNAME_PlayDialogueAtPosition, "int", -1, INT_MAX, "int", INT_MIN, INT_MAX, "vector", -MAX_WORLD_COORD, MAX_WORLD_COORD, 32 )
-	Remote_RegisterClientFunction( FUNCNAME_PlayDialogueOnEnvironmentSpeakers, "int", 0, INT_MAX, "int", 0, INT_MAX, "int", 0, INT_MAX, "int", -1, INT_MAX, "entity", "int", -1, NUM_TOTAL_DIALOGUE_QUEUES )
-	Remote_RegisterClientFunction( FUNCNAME_PlayDialogueOnEnvironmentSpeakersNoResponse, "int", 0, INT_MAX, "int", 0, INT_MAX, "int", 0, INT_MAX, "int", -1, INT_MAX, "int", -1, NUM_TOTAL_DIALOGUE_QUEUES )
-	Remote_RegisterClientFunction( FUNCNAME_PlayDialogueOnCustomSpeakers, "int", 0, INT_MAX, "int", 0, INT_MAX, "int", -1, NUM_CUSTOM_QUEUES )
-	//Remote_RegisterClientFunction( FUNCNAME_AbortCurrentDialogue ) //(mk): moved to byRef
+	ScriptRemote_RegisterClientFunction( FUNCNAME_PlayDialogueOnEntity, "int", -1, INT_MAX, "int", INT_MIN, INT_MAX, "int", INT_MIN, INT_MAX )
+	ScriptRemote_RegisterClientFunction( FUNCNAME_PlayDialogueAtPosition, "int", -1, INT_MAX, "int", INT_MIN, INT_MAX, "vector", -MAX_WORLD_COORD, MAX_WORLD_COORD, 32 )
+	ScriptRemote_RegisterClientFunction( FUNCNAME_PlayDialogueOnEnvironmentSpeakers, "int", 0, INT_MAX, "int", 0, INT_MAX, "int", 0, INT_MAX, "int", -1, INT_MAX, "entity", "int", -1, NUM_TOTAL_DIALOGUE_QUEUES )
+	ScriptRemote_RegisterClientFunction( FUNCNAME_PlayDialogueOnEnvironmentSpeakersNoResponse, "int", 0, INT_MAX, "int", 0, INT_MAX, "int", 0, INT_MAX, "int", -1, INT_MAX, "int", -1, NUM_TOTAL_DIALOGUE_QUEUES )
+	ScriptRemote_RegisterClientFunction( FUNCNAME_PlayDialogueOnCustomSpeakers, "int", 0, INT_MAX, "int", 0, INT_MAX, "int", -1, NUM_CUSTOM_QUEUES )
+	//ScriptRemote_RegisterClientFunction( FUNCNAME_AbortCurrentDialogue ) //(mk): moved to byRef
 }
 
 

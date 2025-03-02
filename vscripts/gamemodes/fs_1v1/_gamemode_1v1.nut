@@ -3142,9 +3142,10 @@ void function Gamemode1v1_Init( int eMap )
 		AddClientCommandCallback( "lock1v1", ClientCommand_mkos_lock1v1_setting )
 		AddClientCommandCallback( "enable_input_banner", ClientCommand_enable_input_banner )
 		AddClientCommandCallback( "challenge", ClientCommand_mkos_challenge )
-	} else if( bIsCoachingMode() )
+	}
+	else if( bIsCoachingMode() )
 	{
-		INIT_CC_playeradmins()
+		//INIT_CC_playeradmins() //(mk): Already called in PIN_Init()
 		FS_Init_1v1_Coaching()
 	}
 	
@@ -3357,43 +3358,16 @@ void function Gamemode1v1_Init( int eMap )
 	thread Gamemode1v1_soloModeThread( getWaitingRoomLocation() )
 	
 	AddCallback_OnClientConnected
-	(
-		void function( entity player ) 
+	( 
+		void function( entity player )
 		{
-			#if TEST_WORLDDRAW
-			float imgWidth = 600
-			float imgHeight = 380
+			// init for IBMM
+			Init_IBMM( player )
 			
-			int refID = WorldDrawAsset_CreateOnClient
-			(
-				player,
-				"",
-				Gamemode1v1_GetNotificationPanel_Coordinates() + <0,0,imgHeight>,
-				Gamemode1v1_GetNotificationPanel_Angles(),
-				imgWidth,
-				imgHeight,
-				WorldDrawAsset_AssetRefToID( "rui/flowstate_custom/mkos/1v1banner" )
-			)
-			
-			// WorldDrawAsset_Timed
-			// (
-				// player, 
-				// "rui/flowstate_custom/mkos/1v1banner",
-				// Gamemode1v1_GetNotificationPanel_Coordinates() + <0,0,imgHeight>,
-				// Gamemode1v1_GetNotificationPanel_Angles(),
-				// imgWidth,
-				// imgHeight,
-				// -1, //WorldDrawAsset_AssetRefToID( "rui/flowstate_custom/mkos/1v1banner" ),
-				// -1, //no alpha change
-				// 15  //duration
-			// )
-			
-			#if DEVELOPER 
-				printt( "SERVER: Created WorldDrawImg on client for", player, "with ID:", refID )
+			#if !TRACKER
+				INIT_playerChallengesStruct( player ) //normally init after persistence loads
 			#endif
 			
-			#endif
-	
 			if( bIsCoachingMode() )
 			{
 				if( !IsAlive( player ) )
@@ -3404,26 +3378,14 @@ void function Gamemode1v1_Init( int eMap )
 		}
 	)
 	
-	AddCallback_OnClientConnected
-	( 
-		void function( entity player )
-		{
-			// init for IBMM
-			Init_IBMM( player )
-			
-			#if !TRACKER
-				INIT_playerChallengesStruct( player ) //normally init after persistence loads
-			#endif
-		}
-	)
-	
 	BannerImages_1v1Init()
 
 	if( !bIsCoachingMode() )
 	{
-		AddClientCommandCallback( "rest", ClientCommand_Maki_SoloModeRest )
 		Gamemode1v1_SetRestEnabled()
-	} else
+		AddClientCommandCallback( "rest", ClientCommand_Maki_SoloModeRest )
+	}
+	else
 		Gamemode1v1_SetRestEnabled( false )
 }
 

@@ -113,9 +113,9 @@ struct
 
 void function PathTT_OnNetworkRegistration()
 {
-	Remote_RegisterClientFunction( "SCB_PathTT_SetMessageIdxToCustomSpeakerIdx", "int", 0, NUM_TOTAL_DIALOGUE_QUEUES )
-	Remote_RegisterClientFunction( "SCB_PathTT_PlayRingAnnouncerDialogue", "int", 0, eRingAnnouncerLines._count )
-	RegisterNetworkedVariable( "PathTT_IsCrowdActive", SNDC_GLOBAL, SNVT_BOOL, false )
+	ScriptRemote_RegisterClientFunction( "SCB_PathTT_SetMessageIdxToCustomSpeakerIdx", "int", 0, NUM_TOTAL_DIALOGUE_QUEUES )
+	ScriptRemote_RegisterClientFunction( "SCB_PathTT_PlayRingAnnouncerDialogue", "int", 0, eRingAnnouncerLines._count )
+	ScriptRegisterNetworkedVariable( "PathTT_IsCrowdActive", SNDC_GLOBAL, SNVT_BOOL, false )
 
 	#if CLIENT
 		//RegisterNetVarBoolChangeCallback( "PathTT_IsCrowdActive", OnIsCrowdActiveChanged )

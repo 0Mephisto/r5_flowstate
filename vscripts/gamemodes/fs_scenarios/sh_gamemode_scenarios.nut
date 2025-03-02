@@ -299,10 +299,10 @@ void function FS_Scenarios_UpdatePlayerScore( entity player, int event, entity v
 	void function Scenarios_RegisterNetworking()
 	{
 		//recap type, stat type, value, count
-		Remote_RegisterUIFunction( "ServerCallback_SendScenariosStandings", "int", 0, 3, "int", -1, 999999, "int", -1, 999999, "int", -1, 9999 ) //Audit 2-22-2025
+		ScriptRemote_RegisterUIFunction( "ServerCallback_SendScenariosStandings", "int", 0, 3, "int", -1, 999999, "int", -1, 999999, "int", -1, 9999 ) //Audit 2-22-2025
 		
-		Remote_RegisterUIFunction( "ServerCallback_SignalScenariosStandings" )
-		Remote_RegisterUIFunction( "ServerCallback_UiConfirmRest" )
+		ScriptRemote_RegisterUIFunction( "ServerCallback_SignalScenariosStandings" )
+		ScriptRemote_RegisterUIFunction( "ServerCallback_UiConfirmRest" )
 	}
 	
 #endif //SERVER || CLIENT

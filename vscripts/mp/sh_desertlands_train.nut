@@ -275,7 +275,7 @@ void function DesertlandsTrain_PreMapInit()
 
 void function DesertlandsTrain_OnNetworkRegistration()
 {
-	Remote_RegisterClientFunction( "SCB_DLandsTrain_SetCustomSpeakerIdx", "int", 0, NUM_TOTAL_DIALOGUE_QUEUES )
+	ScriptRemote_RegisterClientFunction( "SCB_DLandsTrain_SetCustomSpeakerIdx", "int", 0, NUM_TOTAL_DIALOGUE_QUEUES )
 }
 
 #if CLIENT

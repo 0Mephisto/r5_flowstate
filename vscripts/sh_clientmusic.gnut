@@ -430,9 +430,9 @@ const string FUNCNAME_PLAYCUSTOMTRACKONCLIENT = "ClientMusic_PlayCustomTrackOnCl
 const string FUNCNAME_STOPCUSTOMTRACKONCLIENT = "ClientMusic_StopCustomTrackOnClient"
 void function ClientMusic_RegisterNetworking()
 {
-	Remote_RegisterClientFunction( "ClientMusic_ToggleForClient", "entity", "bool" )
-	Remote_RegisterClientFunction( FUNCNAME_PLAYCUSTOMTRACKONCLIENT, "entity", "int", -1, eMusicTrack._count )
-	Remote_RegisterClientFunction( FUNCNAME_STOPCUSTOMTRACKONCLIENT, "entity" )
+	ScriptRemote_RegisterClientFunction( "ClientMusic_ToggleForClient", "entity", "bool" )
+	ScriptRemote_RegisterClientFunction( FUNCNAME_PLAYCUSTOMTRACKONCLIENT, "entity", "int", -1, eMusicTrack._count )
+	ScriptRemote_RegisterClientFunction( FUNCNAME_STOPCUSTOMTRACKONCLIENT, "entity" )
 }
 
 //(mk): if this system was intended to be called from native it will need restored prior to 2/22/2025

@@ -113,7 +113,7 @@ void function Sh_EvacShip_Init()
 
 void function EvacShip_RegisterNetworking()
 {
-	Remote_RegisterClientFunction( "EvacShip_ServerCallback_DisplayShipFullHint" )
+	ScriptRemote_RegisterClientFunction( "EvacShip_ServerCallback_DisplayShipFullHint" )
 }
 
 

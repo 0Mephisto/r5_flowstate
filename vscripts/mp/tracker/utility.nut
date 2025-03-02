@@ -1420,7 +1420,7 @@ struct {
 						}
 						return true
 					#endif
-				return false;
+				return false
 			
 			case "groups":
 			
@@ -2282,11 +2282,9 @@ void function print_string_array( array<string> args )
 	string test = "\n\n------ PRINT STRING ARRAY ------\n\n"
 	
 	foreach( arg in args )
-	{
 		test += format( "	\"%s\", \n", arg )
-	}
 	
-	sqprint(test)
+	sqprint( test )
 }
 
 void function print_var_table( table<string,var> tbl )

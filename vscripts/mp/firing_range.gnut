@@ -150,7 +150,7 @@ void function FiringRangeGameMode_Init()
 	if( Playlist() != ePlaylists.survival_firingrange )
 		return
 	
-	if ( !IsFiringRangeGameMode() || GetCurrentPlaylistVarBool( "firingrange_aimtrainerbycolombia", false ))
+	if ( !IsFiringRangeGameMode() || GetCurrentPlaylistVarBool( "firingrange_aimtrainerbycolombia", false ) )
 		return
 
 	PrecacheModel( FIRINGRANGE_BLUE_STAND_ASSET )
@@ -159,7 +159,7 @@ void function FiringRangeGameMode_Init()
 	PrecacheParticleSystem( FIRINGRANGE_FLICK_TARGET_PARTICLE_HIT )
 	//PrecacheParticleSystem( FIRINGRANGE_ITEM_RESPAWN_PARTICLE )
 
-	Remote_RegisterClientFunction( "SCB_BroadcastFriendlyFireChange", "entity" )
+	ScriptRemote_RegisterClientFunction( "SCB_BroadcastFriendlyFireChange", "entity" )
 
 	#if SERVER
 		AddCallback_EntitiesDidLoad( OnEntitiesDidLoad )

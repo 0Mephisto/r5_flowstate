@@ -15,7 +15,7 @@ global function SCB_OnUltimateReady
 const string FUNCNAME_OnUltimateReady = "SCB_OnUltimateReady"
 void function Ultimates_RegisterNetworking()
 {
-	Remote_RegisterClientFunction( FUNCNAME_OnUltimateReady )
+	ScriptRemote_RegisterClientFunction( FUNCNAME_OnUltimateReady )
 }
 
 

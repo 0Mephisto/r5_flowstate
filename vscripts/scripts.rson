@@ -51,6 +51,7 @@ Scripts:
 	sh_consts.gnut
 	_threads.nut
 	_settings.nut
+	sh_net_wrapper.gnut
 	sh_utility_all.gnut
 	sh_assets.nut
 	sh_playlists.gnut

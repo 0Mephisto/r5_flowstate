@@ -180,8 +180,8 @@ const string FUNCNAME_TRIGGERTARGETHIGHLIGHTSFORPING = "Waypoint_TriggerTargetHi
 const string FUNCNAME_NETNOTIFY = "Waypoint_NetNotify"
 void function Waypoints_RegisterNetworking()
 {
-	Remote_RegisterClientFunction( FUNCNAME_TRIGGERTARGETHIGHLIGHTSFORPING, "entity" )
-	Remote_RegisterClientFunction( FUNCNAME_NETNOTIFY, "entity", "int", 0, eWaypointNotifyType._count )
+	ScriptRemote_RegisterClientFunction( FUNCNAME_TRIGGERTARGETHIGHLIGHTSFORPING, "entity" )
+	ScriptRemote_RegisterClientFunction( FUNCNAME_NETNOTIFY, "entity", "int", 0, eWaypointNotifyType._count )
 }
 
 

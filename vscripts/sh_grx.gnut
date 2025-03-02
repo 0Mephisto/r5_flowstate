@@ -429,8 +429,8 @@ void function ShGRX_LevelInit()
 	AddCallbackOrMaybeCallNow_OnAllItemFlavorsRegistered( OnAllItemFlavorsRegistered )
 
 	#if SERVER || CLIENT
-		Remote_RegisterUIFunction( "ServerToUI_PROTO_YouAreGreenLightedForGRX" )
-		//Remote_RegisterUIFunction( "ServerToUI_GRX_QueuedRewardsGiven" )
+		ScriptRemote_RegisterUIFunction( "ServerToUI_PROTO_YouAreGreenLightedForGRX" )
+		//ScriptRemote_RegisterUIFunction( "ServerToUI_GRX_QueuedRewardsGiven" )
 	#endif
 
 	#if SERVER

@@ -5893,3 +5893,18 @@ vector function MapAngleToRadius( float angle, float radius )
 		print( printText )
 	}
 #endif 
+
+// #if CLIENT
+	// void function TestFloatBits( float value )
+	// {
+		// printt( "Receieved Value in printt:", value )
+		// printf( "Accurately: %.8f", value )
+	// }
+// #endif
+
+// #if CLIENT
+	// void function VeryLongFunctionNameVeryLongFunctionNameVeryLongFunctionNameVeryLongVeryLong( bool v, bool _ )
+	// {
+		// printt( "boom" )
+	// }
+// #endif 

@@ -359,7 +359,7 @@ void function ShItems_LevelInit_Finish()
 		cb()
 
 	#if SERVER || CLIENT
-		Remote_RegisterClientFunction( "ServerToClient_ItemFlavorConsistencyCheckFailed", "bool", "int", INT_MIN, INT_MAX )
+		ScriptRemote_RegisterClientFunction( "ServerToClient_ItemFlavorConsistencyCheckFailed", "bool", "int", INT_MIN, INT_MAX )
 	#endif
 	#if ASSERTING
 		DoItemFlavorCrossVMCheck()

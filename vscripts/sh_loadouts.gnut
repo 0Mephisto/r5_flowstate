@@ -241,7 +241,7 @@ void function ShLoadouts_LevelInit_Begin()
 void function ShLoadouts_LevelInit_Finish()
 {
 	#if SERVER || CLIENT
-		Remote_RegisterClientFunction( "ServerToClient_LoadoutSlotDidChange", "int", 0, INT_MAX, "int", 0, fileLevel.loadoutSlotEntries.len() )
+		ScriptRemote_RegisterClientFunction( "ServerToClient_LoadoutSlotDidChange", "int", 0, INT_MAX, "int", 0, fileLevel.loadoutSlotEntries.len() )
 	#endif
 
 	foreach( LoadoutEntry entry in fileLevel.loadoutSlotEntries )
@@ -315,7 +315,7 @@ void function ShLoadouts_LevelInit_Finish()
 				fileLevel.networkVars[fullNetworkVarName] <- nvInfo
 				#if SERVER || CLIENT
 					nvInfo.type = desiredNetworkVarType
-					RegisterNetworkedVariable(
+					ScriptRegisterNetworkedVariable(
 						nvInfo.fullNetworkVarName, SNDC_PLAYER_GLOBAL,
 						nvInfo.type, SLOT_CONTENTS_SENTINEL_NOTREADY
 					)

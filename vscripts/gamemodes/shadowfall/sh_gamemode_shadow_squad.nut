@@ -200,23 +200,23 @@ void function Gamemode_ShadowSquad_RegisterNetworking()
 	SpamWarning( 10, "This is being registered!!!!!!!!!" )
 	// if ( !IsFallLTM() )
 	// {
-		// Remote_RegisterClientFunction( "ServerCallback_ShadowClientEffectsEnable", "entity", "bool"  )
+		// ScriptRemote_RegisterClientFunction( "ServerCallback_ShadowClientEffectsEnable", "entity", "bool"  )
 		// return
 	// }
 
-	RegisterNetworkedVariable( "livingShadowPlayerCount", SNDC_GLOBAL, SNVT_INT )
-	Remote_RegisterClientFunction( "ServerCallback_ModeShadowSquad_AnnouncementSplash", "int", 0, 999, "float", 0.0, 5000.0, 16 )
-	Remote_RegisterClientFunction( "ServerCallback_ShadowClientEffectsEnable", "entity", "bool" )
-	Remote_RegisterClientFunction( "ServerCallback_PlaySpectatorAudio", "bool" )
-	Remote_RegisterClientFunction( "ServerCallback_PlayerLandedNOCAudio", "bool" )
-	Remote_RegisterClientFunction( "ServerCallback_MoreNOCAudio", "int", 0, 256)
-	Remote_RegisterClientFunction( "ServerCallback_ModeShadowSquad_RestorePlayerHealthFx", "bool" )
-	RegisterNetworkedVariable( "playerCanRespawnAsShadow", SNDC_PLAYER_GLOBAL, SNVT_BOOL, false )
+	ScriptRegisterNetworkedVariable( "livingShadowPlayerCount", SNDC_GLOBAL, SNVT_INT )
+	ScriptRemote_RegisterClientFunction( "ServerCallback_ModeShadowSquad_AnnouncementSplash", "int", 0, 999, "float", 0.0, 5000.0, 16 )
+	ScriptRemote_RegisterClientFunction( "ServerCallback_ShadowClientEffectsEnable", "entity", "bool" )
+	ScriptRemote_RegisterClientFunction( "ServerCallback_PlaySpectatorAudio", "bool" )
+	ScriptRemote_RegisterClientFunction( "ServerCallback_PlayerLandedNOCAudio", "bool" )
+	ScriptRemote_RegisterClientFunction( "ServerCallback_MoreNOCAudio", "int", 0, 256 )
+	ScriptRemote_RegisterClientFunction( "ServerCallback_ModeShadowSquad_RestorePlayerHealthFx", "bool" )
+	ScriptRegisterNetworkedVariable( "playerCanRespawnAsShadow", SNDC_PLAYER_GLOBAL, SNVT_BOOL, false )
 
-	RegisterNetworkedVariable( "shadowSquadGamePhase", SNDC_GLOBAL, SNVT_UNSIGNED_INT, 0, 0, eShadowSquadGamePhase._count )
-	RegisterNetworkedVariable( "countdownTimerStart", SNDC_GLOBAL, SNVT_TIME, -1 )
-	RegisterNetworkedVariable( "countdownTimerEnd", SNDC_GLOBAL, SNVT_TIME, -1 )
-	RegisterNetworkedVariable( "shadowsWonTheMode", SNDC_GLOBAL, SNVT_BOOL, false )
+	ScriptRegisterNetworkedVariable( "shadowSquadGamePhase", SNDC_GLOBAL, SNVT_UNSIGNED_INT, 0, 0, eShadowSquadGamePhase._count )
+	ScriptRegisterNetworkedVariable( "countdownTimerStart", SNDC_GLOBAL, SNVT_TIME, -1 )
+	ScriptRegisterNetworkedVariable( "countdownTimerEnd", SNDC_GLOBAL, SNVT_TIME, -1 )
+	ScriptRegisterNetworkedVariable( "shadowsWonTheMode", SNDC_GLOBAL, SNVT_BOOL, false )
 
 	#if CLIENT
 		RegisterNetworkedVariableChangeCallback_int( "shadowSquadGamePhase", OnGamePhaseChanged )

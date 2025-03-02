@@ -214,9 +214,9 @@ struct
 
 void function CryptoTT_OnNetworkRegistration()
 {
-	Remote_RegisterClientFunction( "SCB_DisplayEnemiesOnMinimap_CryptoTT", "float", 0.0, 9999.9, 16 )
-	Remote_RegisterClientFunction( "SCB_PlayFullAndMinimapSequence_CryptoTT", "bool", "float", 0.0, 9999.9, 16 )
-	Remote_RegisterClientFunction( "SCB_ShowSatelliteChargeRUI", "float", 0.0, 9999.9, 24 )
+	ScriptRemote_RegisterClientFunction( "SCB_DisplayEnemiesOnMinimap_CryptoTT", "float", 0.0, 9999.9, 16 )
+	ScriptRemote_RegisterClientFunction( "SCB_PlayFullAndMinimapSequence_CryptoTT", "bool", "float", 0.0, 9999.9, 16 )
+	ScriptRemote_RegisterClientFunction( "SCB_ShowSatelliteChargeRUI", "float", 0.0, 9999.9, 24 )
 }
 
 #if CLIENT

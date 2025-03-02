@@ -1,4 +1,4 @@
-// Localized strings table 																	//mkos
+// Localized strings framework 																	//mkos
 
 global function INIT_Flowstate_Localization_Strings
 global function Flowstate_FetchToken
@@ -83,7 +83,9 @@ struct
 	bool bConsistencyCheckComplete = false
 #endif
 
-	//these must match the same order on client. Always add to tail.
+	//WARNING: do not update this on live servers/client or clients will not be able to connect unless server matches.
+	//these must match the same order on client. Always add to tail. 
+	//if the token is not registered here, it will not be callable from server with LocalMsg() or variants. 
 	array<string> allTokens = 
 	[
 		"#FS_NULL",

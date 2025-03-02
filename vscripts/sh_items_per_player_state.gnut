@@ -92,7 +92,7 @@ void function ShItemPerPlayerState_LevelInit()
 	#endif
 
 	#if SERVER || CLIENT
-		Remote_RegisterClientFunction( "ServerToClient_OnItemFlavorBecameNew", "int", -INT_MAX, INT_MAX, "bool" )
+		ScriptRemote_RegisterClientFunction( "ServerToClient_OnItemFlavorBecameNew", "int", -INT_MAX, INT_MAX, "bool" )
 	#endif
 }
 

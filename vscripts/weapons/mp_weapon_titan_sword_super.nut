@@ -86,9 +86,9 @@ void function MpWeaponTitanSword_Super_Init()
 	// PrecacheParticleSystem( VFX_TITAN_SWORD_SUPER_WEAPON_CONTINUOUS_1P )
 	// PrecacheParticleSystem( VFX_TITAN_SWORD_SUPER_WEAPON_CONTINUOUS_3P )
 
-	Remote_RegisterClientFunction( "ServerToClient_TitanSword_StartSuperFx" )
-	Remote_RegisterClientFunction( "ServerToClient_TitanSword_StopSuperFx" )
-	// Remote_RegisterClientFunction( "ServerToClient_TitanSword_AddChargeFx" )
+	ScriptRemote_RegisterClientFunction( "ServerToClient_TitanSword_StartSuperFx" )
+	ScriptRemote_RegisterClientFunction( "ServerToClient_TitanSword_StopSuperFx" )
+	// ScriptRemote_RegisterClientFunction( "ServerToClient_TitanSword_AddChargeFx" )
 	#if SERVER
 		RegisterSignal( SIG_TITAN_SWORD_ALIVE_THREAD )
 		RegisterSignal( SIG_TITAN_SWORD_SUPER_STOP )

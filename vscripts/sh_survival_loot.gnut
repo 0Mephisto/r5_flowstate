@@ -3540,13 +3540,13 @@ void function Dev_SpawnBotWithIncapShieldToView( int shieldTier )
 #if CLIENT || SERVER
 void function Inventory_RegisterNetworking()
 {
-	Remote_RegisterClientFunction( "ServerCallback_PickedupItem", "entity", "int", 0, 512, "int", 0, 512 )
-	Remote_RegisterClientFunction( "ServerCallback_DroppedItem", "entity", "int", 0, 512 )
+	ScriptRemote_RegisterClientFunction( "ServerCallback_PickedupItem", "entity", "int", 0, 512, "int", 0, 512 )
+	ScriptRemote_RegisterClientFunction( "ServerCallback_DroppedItem", "entity", "int", 0, 512 )
 	// Yes. This was changed.
 	// It's because if we don't, the game will flop itself when you pick certain items up.
 	// If there's a better solution, you're welcome to suggest it.
 	// They shouldn't have added ranges into this.
-	Remote_RegisterClientFunction( "ServerCallback_AttachedMod", "int", 0, 999, "int", 0, 999 )
+	ScriptRemote_RegisterClientFunction( "ServerCallback_AttachedMod", "int", 0, 999, "int", 0, 999 )
 }
 #endif // CLIENT || SERVER
 

@@ -300,7 +300,7 @@ bool function Flowstate_EnableReporting()							{ return SH_flowstateSettings.Fl
 void function DEV_RegisterNetworking_SpawnSystem()
 {
 	#if DEVELOPER
-		RegisterNetworkedVariable( "FS_Scenarios_currentDeathfieldRadius", SNDC_PLAYER_EXCLUSIVE, SNVT_TIME )
-		RegisterNetworkedVariable( "FS_Scenarios_currentDistanceFromCenter", SNDC_PLAYER_EXCLUSIVE, SNVT_TIME )
+		ScriptRegisterNetworkedVariable( "FS_Scenarios_currentDeathfieldRadius", SNDC_PLAYER_EXCLUSIVE, SNVT_TIME )
+		ScriptRegisterNetworkedVariable( "FS_Scenarios_currentDistanceFromCenter", SNDC_PLAYER_EXCLUSIVE, SNVT_TIME )
 	#endif
 }

@@ -373,7 +373,7 @@ void function EquipmentSlots_RegisterNetworkTrackingInts()
 	{
 		if ( slotData.trackingNetInt != "" )
 		{
-			RegisterNetworkedVariable( slotData.trackingNetInt, SNDC_PLAYER_GLOBAL, SNVT_INT, -1 )
+			ScriptRegisterNetworkedVariable( slotData.trackingNetInt, SNDC_PLAYER_GLOBAL, SNVT_INT, -1 )
 
 			#if CLIENT
 				RegisterNetworkedVariableChangeCallback_int( slotData.trackingNetInt, CreateTrackingNetVarFunction( slot ) )

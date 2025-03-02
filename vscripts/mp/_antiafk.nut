@@ -23,7 +23,7 @@ enum eAntiAfkPlayerState
 void function Flowstate_Afk_Init()
 {
 	file.Flowstate_antiafk_warn 	= GetCurrentPlaylistVarFloat( "Flowstate_antiafk_warn", 15.0 )
-	file.Flowstate_antiafk_grace 	= GetCurrentPlaylistVarFloat( "Flowstate_antiafk_grace", bAfkToRest() ? 30 : 120 )
+	file.Flowstate_antiafk_grace 	= GetCurrentPlaylistVarFloat( "Flowstate_antiafk_grace", bAfkToRest() ? 45 : 120 )
 	file.Flowstate_antiafk_interval = GetCurrentPlaylistVarFloat( "Flowstate_antiafk_interval", 10.0 )
 	file.flowstate_afk_kick_enable 	= GetCurrentPlaylistVarBool( "flowstate_afk_kick_enable", true )
 	file.enable_afk_thread 			= GetCurrentPlaylistVarBool( "enable_afk_thread", true )

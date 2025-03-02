@@ -305,17 +305,20 @@ void function PrintTable( tbl, int indent = 0, int maxDepth = 4 )
 
 string function TableIndent( int indent )
 {
-	return ("                                            ").slice( 0, indent )
+	string str = "                                            "
+	return str.slice( 0, minint( maxint( 0, indent ), str.len() ) )
 }
 
 string function TableIndent2( int indent )
 {
-	return ("...............................................................................................................................").slice( 0, indent )
+	string str = "..............................................................................................................................."
+	return str.slice( 0, minint( maxint( 0, indent ), str.len() ) )
 }
 
 string function TableIndent3( int indent )
 {
-	return ("                                                                                                                               ").slice( 0, indent )
+	string str = "                                                                                                                               "
+	return str.slice( 0, minint( maxint( 0, indent ), str.len() ) )
 }
 
 string function RepeatString( string str, int times )

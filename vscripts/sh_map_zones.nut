@@ -110,7 +110,7 @@ void function MapZones_SharedInit()
 const string FUNCNAME_OnPlayerEntersZone = "SCB_OnPlayerEntersMapZone"
 void function MapZones_RegisterNetworking()
 {
-	Remote_RegisterClientFunction( FUNCNAME_OnPlayerEntersZone, "int", 0, 128, "int", 0, 4 )
+	ScriptRemote_RegisterClientFunction( FUNCNAME_OnPlayerEntersZone, "int", 0, 128, "int", 0, 4 )
 }
 
 void function MapZones_RegisterDataTable( asset dataTableAsset )
