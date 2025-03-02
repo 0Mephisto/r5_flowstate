@@ -58,6 +58,7 @@ global enum eMaps
 	mp_lobby, //23
 	mp_rr_construct, //24
 	mp_flowstate, //25
+	mp_box, //26(prv)
 	
 	
 	_MAP_COUNT //LAST
