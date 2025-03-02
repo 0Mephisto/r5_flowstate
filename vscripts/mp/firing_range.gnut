@@ -144,17 +144,20 @@ struct {
 
 void function FiringRangeGameMode_Init()
 {
-	PrecacheModel( FIRINGRANGE_BLUE_STAND_ASSET )
-	PrecacheModel( FIRINGRANGE_FLICK_TARGET_ASSET )
-	PrecacheModel( TARGET_FOLDING_MODEL )
-	PrecacheParticleSystem( FIRINGRANGE_FLICK_TARGET_PARTICLE_HIT )
-	//PrecacheParticleSystem( FIRINGRANGE_ITEM_RESPAWN_PARTICLE )
-	
+	if ( GetMapName() != "mp_rr_canyonlands_staging" )
+		return
+
 	if( Playlist() != ePlaylists.survival_firingrange )
 		return
 	
 	if ( !IsFiringRangeGameMode() || GetCurrentPlaylistVarBool( "firingrange_aimtrainerbycolombia", false ))
 		return
+
+	PrecacheModel( FIRINGRANGE_BLUE_STAND_ASSET )
+	PrecacheModel( FIRINGRANGE_FLICK_TARGET_ASSET )
+	PrecacheModel( TARGET_FOLDING_MODEL )
+	PrecacheParticleSystem( FIRINGRANGE_FLICK_TARGET_PARTICLE_HIT )
+	//PrecacheParticleSystem( FIRINGRANGE_ITEM_RESPAWN_PARTICLE )
 
 	Remote_RegisterClientFunction( "SCB_BroadcastFriendlyFireChange", "entity" )
 

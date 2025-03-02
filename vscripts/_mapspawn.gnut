@@ -512,7 +512,7 @@ void function PrecacheSDKEntities()
 	PrecacheModel( $"mdl/dev/empty_model.rmdl" )
 	PrecacheModel( $"mdl/error.rmdl" ) // model used when no model is provided
 	PrecacheModel( $"mdl/fx/ar_survival_radius_1x100.rmdl")
-	
+	PrecacheModel( $"mdl/vehicle/olympus_hovercraft/olympus_hovercraft_v2.rmdl")
 	PrecacheModel( $"mdl/communication/terminal_usable_imc_01.rmdl" )
 }
 
