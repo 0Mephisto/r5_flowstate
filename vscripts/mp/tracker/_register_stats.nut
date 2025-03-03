@@ -2,7 +2,7 @@
 globalize_all_functions
 #if TRACKER && HAS_TRACKER_DLL																	//~mkos
 
-const bool STORE_STAT = true 
+const bool STORE_STAT = true //this constant is not a toggle.
 
 struct 
 {
