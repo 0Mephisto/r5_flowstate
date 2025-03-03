@@ -57,6 +57,8 @@ global struct ClientEntityStruct
 	
 	bool eyeForQuality_isScanned = false
 	bool isSelected = false
+	
+	table<string, TokenizedAnimEventData> tokenizedAnimEventDataForEntity
 
 	float localPingBeginTime = -999.0
 	int predictedUseCount = 0

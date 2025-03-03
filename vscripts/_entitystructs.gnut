@@ -215,6 +215,8 @@ global struct ServerEntityStruct
 
 	table<string,AnimEventData> animEventDataForEntity
 
+	table<string, TokenizedAnimEventData> tokenizedAnimEventDataForEntity
+
 	array<DamageHistoryStruct> recentDamageHistory
 	array<DamageHistoryStruct> recentDealtDamageHistory
 

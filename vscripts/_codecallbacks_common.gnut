@@ -102,7 +102,7 @@ global function CodeCallback_OnPlayerEndWallhang
 
 global function CodeCallback_GetBestObserverTarget
 global function CodeCallback_OnWeaponAttack
-
+global function CodeCallback_OnServerAnimEvent
 global function CodeCallback_OnNavMeshHotSwapBegin
 global function CodeCallback_OnNavMeshHotSwapEnd
 
@@ -195,6 +195,7 @@ void function CodeCallbacksCommon_Init()
 {
 	RegisterSignal( "OnPostDeathLogicEnd" )
 	settings.flowstate_spectator_team_only = GetCurrentPlaylistVarBool( "flowstate_spectator_team_only", false )
+	RegisterSignal( "TouchGround" )
 }
 
 entity function CodeCallback_GetBestObserverTarget( entity observer, bool reverse )
@@ -1262,6 +1263,90 @@ void function CodeCallback_OnPlayerEndWallhang( entity player )
 void function AddCallback_OnPlayerInventoryChanged( void functionref( entity ) callbackFunc )
 {
 	file.playerInventoryChangedCallbacks.append( callbackFunc )
+}
+
+// called by code when an animation does { event AE_SV_VSCRIPT_CALLBACK FrameNumber "some string" }
+// and by a script function OnFootstep, apparently.
+void function CodeCallback_OnServerAnimEvent( entity ent, string eventName )
+{
+	PerfStart( PerfIndexServer.CB_OnServerAnimEvent )
+	if ( HasAnimEvent( ent, eventName ) )
+		thread RunAnimEventCallbacks( ent, eventName )
+
+	// couldn't find this eventName on the ent or the global anim events,
+	// so try breaking it down. If we didn't find it, it means
+	// script needs to handle the event, even if it is just to
+	// do nothing with it
+
+	array<string> tokens = split( eventName, ":" )
+	string tokenName = tokens[0]
+
+	if ( HasAnimEventTokenized( ent, tokenName ) )
+		thread RunAnimEventTokenizedCallbacks( ent, tokenName, tokens )
+
+	if ( tokenName in svGlobal.globalAnimEventTokenizeCallbacks )
+	{
+		thread svGlobal.globalAnimEventTokenizeCallbacks[ tokenName ]( ent, tokens )
+		PerfEnd( PerfIndexServer.CB_OnServerAnimEvent )
+		return
+	}
+
+	if ( tokenName in svGlobal.globalAnimEventCallbacks )
+	{
+		thread svGlobal.globalAnimEventCallbacks[ tokenName ]( ent )
+		PerfEnd( PerfIndexServer.CB_OnServerAnimEvent )
+		return
+	}
+
+	switch ( tokenName )
+	{
+		case "worldsound":
+			GlobalAnimEventWithStringParameter_WorldSound( ent, tokens[1] )
+			break
+
+		case "signal":
+			SendSignalFromTokens( ent, tokens )
+			break
+
+		case "flagset":
+			GlobalAnimEventWithStringParameter_FlagSet( ent, tokens[1] )
+			break
+
+		case "cloak_start":
+			GlobalAnimEventWithStringParameter_CloakStart( ent, tokens[1] )
+			break
+
+		case "dialogue":
+			PlayDialogueForAnimEvent( ent, tokens[1] )
+			break
+
+		/*case "rampart_turret_spin_up":
+		case "rampart_turret_button_press":
+			OnAnimEvent_weapon_mounted_turret_weapon( ent, tokenName )
+			break
+		case "rampart_turret_mobile_spin_up":
+		case "rampart_turret_mobile_button_press":
+			OnAnimEvent_weapon_mobile_hmg( ent, tokenName )
+			break*/ //TODO: FIX THIS WHEN WE GET SHEILA
+		                   
+		case "loot_marvin_dispense_loot":
+			LootMarvin_OnDispenseLootAnimEvent( ent )
+			break
+
+		/*case "spawn_prop_in_world":
+			Emote_AnimEvent_SpawnModelInWorld( ent, tokens[1], tokens[2] )
+			break
+
+		case "spawn_spray_in_world":
+			Emote_AnimEvent_SpawnSprayInWorld( ent, tokens[1], tokens[2], tokens[3] )
+			break
+
+		case "ammo_swap_reload_complete":
+			OnAnimEvent_weapon_car_ammo_swap_complete(ent)
+			break*/
+	}
+
+	PerfEnd( PerfIndexServer.CB_OnServerAnimEvent )
 }
 
 void function AddCallback_OnPlayerUsedOffhandWeapon( void functionref( entity player, entity offhandWeapon ) callbackFunc )
