@@ -5,7 +5,7 @@ global function ClientCallback_BloodTT_StoryPropDialogueAborted
 global function GetBloodhoundTTAssetsToPrecache
 #endif
 
-#if SERVER && DEV
+#if SERVER && DEVELOPER
 global function Bloodhound_TT_SpawnProwlers
 global function Bloodhound_TT_KillProwlers
 global function Bloodhound_TT_TestSpotlight
@@ -2236,7 +2236,7 @@ void function TestBlackMarketBloodTTAlarm()
 // =================================================================================================================================
 
 
-#if SERVER && DEV
+#if SERVER && DEVELOPER
 void function Bloodhound_TT_SpawnProwlers( int numProwlers )
 {
 	for ( int idx = 0; idx < numProwlers; idx++ )
