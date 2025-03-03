@@ -195,7 +195,6 @@ void function CodeCallbacksCommon_Init()
 {
 	RegisterSignal( "OnPostDeathLogicEnd" )
 	settings.flowstate_spectator_team_only = GetCurrentPlaylistVarBool( "flowstate_spectator_team_only", false )
-	RegisterSignal( "TouchGround" )
 }
 
 entity function CodeCallback_GetBestObserverTarget( entity observer, bool reverse )

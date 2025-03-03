@@ -362,6 +362,7 @@ bool function IsNewLootEnabled( string ref )
 		
 		case "mp_weapon_bow":
 		case "mp_weapon_nemesis":
+		case "mp_weapon_3030":
 		case "arrows":
 		case "mp_weapon_dragon_lmg":
 		case "armor_pickup_lv0_evolving":
