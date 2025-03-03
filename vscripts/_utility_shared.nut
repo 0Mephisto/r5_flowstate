@@ -221,6 +221,9 @@ void function InitWeaponScripts()
 	//(cafe) Test stuff
 	// LobaTacticalTranslocation_LevelInit()
 	// MpAbilityAshDash_Init()
+	
+	//(kral) wip abilities
+	ShLobaPassiveEyeForQuality_LevelInit()				// Loba Passive
 
 	#if SERVER
 		//BallLightning_Init()

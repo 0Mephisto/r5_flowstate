@@ -81,6 +81,7 @@ Scripts:
 	sh_ability_shadow_zombie.nut
 
 	pilot/sh_pilot_tracking_vision.gnut
+	pilot/sh_pilot_passive_loot_highlight.gnut
 	sh_bird_cluster.nut
 
 	sh_extended_use.gnut
@@ -1062,7 +1063,7 @@ Scripts:
 	weapons/mp_weapon_droneplasma.nut
 	weapons/mp_weapon_dronerocket.nut
 	
-	// abilities/loba_tactical_translocation.nut
+	abilities/loba_passive_eye_for_quality.nut
 	// weapons/mp_ability_ash_dash.nut
 	
 	sh_clientmusic.gnut

@@ -370,6 +370,7 @@ void function Server_Init()
 
 	TrackingVision_Init()
 	PassiveGasGear_Init()
+	ShPassiveLootHighlight_Init()
 	Bombardment_Init()
 	ThreatDetection_Init()
 	Staging_Area_Init()

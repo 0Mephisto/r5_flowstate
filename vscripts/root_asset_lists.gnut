@@ -21,7 +21,7 @@ global const array<asset> CHARACTER_ASSETS =
 	$"settings/itemflav/character/wattson.rpak",
 	$"settings/itemflav/character/crypto.rpak",
 	$"settings/itemflav/character/revenant.rpak",
-	//$"settings/itemflav/character/loba.rpak",
+	$"settings/itemflav/character/loba.rpak",
 	$"settings/itemflav/character/dummie.rpak",
 	$"settings/itemflav/character/random.rpak",
 	//$"settings/itemflav/character/rampart.rpak",

@@ -21,6 +21,11 @@ global function IsNewLootEnabled
 global function IsEnabledForGroundLoot
 global function GetLockedSetFromName
 
+#if CLIENT || UI
+global function AddCallback_EditLootDesc
+global function RemoveCallback_EditLootDesc
+#endif
+
 #if CLIENT
 global function GetRarityColor
 #endif
@@ -204,6 +209,10 @@ struct
 		array< OverrideDeathBoxRUI_NetworkOptimizedStruct >              handcraftedProfilesMasterList //
 	#endif
 
+	#if CLIENT || UI
+	array<string functionref( string, entity , string)> editLootDescCallbacks
+	#endif
+
 	#if(UI)
 		bool                                                      overrideDeathBoxRUI_Initialized = false
 		table<string, OverrideDeathBoxRUI_NetworkOptimizedStruct> overrideDeathBoxRUIProfilesTable
@@ -352,7 +361,6 @@ bool function IsNewLootEnabled( string ref )
 		case "mp_weapon_grenade_gravity":
 		
 		case "mp_weapon_bow":
-		case "mp_weapon_3030":
 		case "mp_weapon_nemesis":
 		case "arrows":
 		case "mp_weapon_dragon_lmg":
@@ -1485,6 +1493,20 @@ void function SURVIVAL_UI_OnLevelInit()
 
 	thread SURVIVAL_UI_GatherFriendInfo()
 }
+#endif
+
+#if CLIENT || UI
+void function AddCallback_EditLootDesc( string functionref( string, entity, string ) callback )
+{
+	Assert( !file.editLootDescCallbacks.contains( callback ), "Tried to add a callback that was already added" )
+	file.editLootDescCallbacks.append( callback )
+}
+void function RemoveCallback_EditLootDesc( string functionref( string, entity, string ) callback )
+{
+	Assert( file.editLootDescCallbacks.contains( callback ), "Tried to remove a callback that was not added" )
+	file.editLootDescCallbacks.fastremovebyvalue( callback )
+}
+
 #endif
 
 

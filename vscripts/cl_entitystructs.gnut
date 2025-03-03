@@ -54,6 +54,9 @@ global struct ClientEntityStruct
 	//Legion Variables
 	bool ammoSwapPlaying = false
 	bool gunShieldActive = false
+	
+	bool eyeForQuality_isScanned = false
+	bool isSelected = false
 
 	float localPingBeginTime = -999.0
 	int predictedUseCount = 0
