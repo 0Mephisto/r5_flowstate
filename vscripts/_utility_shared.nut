@@ -218,9 +218,20 @@ void function InitWeaponScripts()
 	MpWeaponCoverWall_Init()
 	ShPassiveShotgunKick_Init()
 	
-	//(cafe) Test stuff
+	//(cafe) Custom Stuff
 	// LobaTacticalTranslocation_LevelInit()
 	// MpAbilityAshDash_Init()
+	MpUltimatePhaseChamber_Init()
+	MpWeaponPortalGun_Init()
+	MpWeaponTitanSword_Init() //Flowstate Sword
+	MpWeaponFlameThrower_Init()
+	MpNextBots_Init()
+	ChargePylons_Init()
+	MpWeaponRingFlare_Init()
+	if( Playlist() != ePlaylists.fs_1v1 && Playlist() != ePlaylists.fs_lgduels_1v1  && Playlist() != ePlaylists.fs_scenarios )
+		MpWeaponEmoteProjector_Init()
+	MpSpaceElevatorAbility_Init()
+	Clickweapon_Init() //Lightning Gun
 	
 	//(kral) wip abilities
 	ShLobaPassiveEyeForQuality_LevelInit()				// Loba Passive

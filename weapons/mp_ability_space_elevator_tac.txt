@@ -28,7 +28,7 @@ WeaponData
 	"OnWeaponRegenEnd"                              "OnWeaponRegenEndGeneric"
 
 	// Models
-	"viewmodel"										"mdl/dev/empty_model.rmdl"//"mdl/Weapons/ptpov_repulsor_held/ptpov_repulsor_held.rmdl"
+	"viewmodel"										"mdl/Weapons/ptpov_repulsor_held/ptpov_repulsor_held.rmdl"
 	"playermodel"									"mdl/dev/empty_model.rmdl"
 	"projectilemodel" 								"mdl/dev/empty_model.rmdl"
 	"offhand_default_inventory_slot"				"1"

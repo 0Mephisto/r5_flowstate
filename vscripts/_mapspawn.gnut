@@ -310,12 +310,14 @@ void function PrecacheFSEntities()
 		rankupmap_init()
 		break
 	}
-	
+
 	PrecacheWeapon( $"mp_ability_emote_projector" )
 	PrecacheWeapon( $"mp_weapon_vctblue_primary" )
 	PrecacheWeapon( $"melee_vctblue" )
 	PrecacheWeapon( $"mp_weapon_flamethrower" )
 	PrecacheWeapon( $"mp_ability_phase_chamber" )
+	PrecacheWeapon( $"mp_ability_phase_rewind" )
+	PrecacheWeapon( $"mp_ability_space_elevator_tac" )
 	PrecacheWeapon( $"mp_weapon_ringflare" )
 	PrecacheWeapon( $"mp_weapon_melee_halo" )
 	PrecacheWeapon( $"melee_pilot_emptyhanded_halo" )
@@ -343,6 +345,8 @@ void function PrecacheFSEntities()
 	PrecacheWeapon( $"melee_titan_sword" )
 	PrecacheWeapon( $"mp_weapon_titan_sword" )
 	PrecacheWeapon( $"npc_weapon_turret_volt" )
+	
+	// PrecacheWeapon( $"mp_weapon_portalgun_first" )
 
 	if( GetCurrentPlaylistVarBool( "enable_oddball_gamemode", false ) )
 	{
@@ -415,8 +419,6 @@ void function PrecacheSDKWeapons()
 
 	PrecacheWeapon( $"mp_weapon_mounted_turret_weapon" )
 	PrecacheWeapon( $"mp_weapon_mounted_turret_placeable" )
-	
-	
 	
 	//S0 Dev Protos
 	PrecacheWeapon( $"mp_weapon_cover_wall_proto" )

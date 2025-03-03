@@ -1335,15 +1335,15 @@ void function SetupCustomAbilities()
 
 	SetupDevCommand( "Dev: Haunt", "give mp_ability_haunt" )
 	SetupDevCommand( "Dev: Dodge Roll", "give mp_ability_dodge_roll" )	
+
+	// SetupDevCommand( "Tf2: Gravity Star", "give mp_weapon_grenade_gravity" ) //(cafe) it needs to be added to the datatable, but this means a new grenade, we should probably find a different approach for this weapon, probably make it offhand like an ultimate
 	
-	//SetupDevCommand( "Gravity Star", "give mp_weapon_grenade_gravity" )
-	
-	/*SetupDevCommand( "-> Custom abilities", "give mp" )
+	//(cafe) Custom
 	SetupDevCommand( "Custom: Gravity Lift", "give mp_ability_space_elevator_tac" )
 	SetupDevCommand( "Custom: Phase Rewind", "give mp_ability_phase_rewind" )
 	SetupDevCommand( "Custom: Suppressor Turret", "give mp_weapon_turret")
 	SetupDevCommand( "Custom: Phase Chamber", "give mp_ability_phase_chamber")
-	SetupDevCommand( "Custom: Ring Flare", "give mp_weapon_ringflare")*/
+	SetupDevCommand( "Custom: Ring Flare", "give mp_weapon_ringflare")
 	#endif
 }
 
