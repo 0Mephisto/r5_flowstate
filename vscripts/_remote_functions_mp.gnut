@@ -17,7 +17,7 @@ const int EHANDLE_MIN 			= -1 //(mk): Some custom gamemodes send -1 for invalid.
 const int EHANDLE_MAX 			= 1000000
 const int EDAMAGESOURCE_MIN 	= -1
 
-struct 
+struct
 {
 	table< string, void functionref() > functionrefs	//the actual func ref
 	table< int, string > intToFunctionRef				//for client to map: func index -> func name
@@ -224,18 +224,31 @@ string function FindFuncName_ByID( int funcID )
 	}
 #endif
 
+/*  (mk):
 
-//(mk): Param ranges INCLUSIVE for min int, NOT inclusive for max int.
-// This means, always add + 1 to your max for "int" params.
-
-/* 
+	Always use the script variant wrapper to register remote functions.
+	
+	ScriptRemote_RegisterClientFunction:
+	ScriptRemote_RegisterClientFunction:
+	ScriptRemote_RegisterUIFunction:
+	ScriptRemote_RegisterUntypedFunction_deprecated:
+		
 	Register a function name to be used in remote calls. 
+	The first paramater can be an optional array<int> of ePlaylist.name, 
+	which will only register the function/var if the current playlist is within the array,
+	otherwise, the first parameter is string "NameOfFunction".
+	
+	Optional array and/or function name is followed by argument paramaters:
 	Specify argument types with "bool", "int", "float", "vector", and "entity". 
-	"int" must be followed by min, max + 1. 
+	"int" must be followed by min, max + 1.
+	
 	"float" and "vector" must be followed by min, max, bit count. 
 	The value will be rounded to the nearest 1/2^(bit count) fraction of the specified range. 
 	Use 32 to send perfectly precise values. 
 */
+
+//(mk): Param ranges are inclusive for min int, NOT inclusive for max int.
+// always add + 1 to your max for "int" params.
 void function RemoteFunctions_Init_Begin()
 {
 	Remote_BeginRegisteringFunctions()

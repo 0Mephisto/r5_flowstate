@@ -320,12 +320,27 @@ void function ScriptRegisterNetworkedVariable( ... )
 		if( file.haltRegistration )
 			return 
 			
-		string varName 	= expect string( vargv[ 0 ] )
-		string category = IntToNetVarCat( expect int( vargv[ 1 ] ) )
-		string varType 	= IntToNetVarType( expect int( vargv[ 2 ] ) )
+		int iterOffset = 0	
+		if( typeof vargv[ 0 ] == "array" )
+		{
+			if( !IsValidToRun( vargv[ 0 ] ) )
+			{
+				#if VERBOSE_NET_PRINTS
+					printf( "var \"%s\" is not valid to register for current playlist", expect string( vargv[ 1 ] ) )
+				#endif
+				
+				return
+			}
+			else
+				iterOffset = 1
+		}
+			
+		string varName 	= expect string( vargv[ iterOffset ] )
+		string category = IntToNetVarCat( expect int( vargv[ iterOffset + 1 ] ) )
+		string varType 	= IntToNetVarType( expect int( vargv[ iterOffset + 2 ] ) )
 		
 		#if VERBOSE_NET_PRINTS
-			int varNameLen = varName.len()			
+			int varNameLen = varName.len()	
 			if( varNameLen > s_prntOffset )
 				s_prntOffset = varNameLen + 5
 			
@@ -415,7 +430,7 @@ void function ScriptRegisterNetworkedVariable( ... )
 	#endif
 	
 	array params = [ this ]
-	for ( int j = 0; j < vargc; j++ )
+	for ( int j = iterOffset; j < vargc; j++ )
 		params.append( vargv[ j ] )
 
 	RegisterNetworkedVariable.acall( params )
@@ -423,6 +438,21 @@ void function ScriptRegisterNetworkedVariable( ... )
 
 void function ScriptRemote_RegisterClientFunction( ... )
 {	
+	int iterOffset = 0	
+	if( typeof vargv[ 0 ] == "array" )
+	{
+		if( !IsValidToRun( vargv[ 0 ] ) )
+		{
+			#if VERBOSE_NET_PRINTS
+				printf( "func \"%s\" is not valid to register for current playlist", expect string( vargv[ 1 ] ) )
+			#endif
+			
+			return
+		}
+		else
+			iterOffset = 1
+	}
+	
 	int paramCount = expect int( vargc )
 		
 	#if DEBUG_NET
@@ -430,11 +460,11 @@ void function ScriptRemote_RegisterClientFunction( ... )
 			return
 			
 		array<var> vargz
-		for( int i = 0; i < paramCount; i++ )
+		for( int i = iterOffset; i < paramCount; i++ )
 			vargz.append( vargv[ i ] )
 			
 		int funcBufferConsumption = AddBufferConsumption( vargz )		
-		string funcName = expect string( vargv[ 0 ] )
+		string funcName = expect string( vargv[ iterOffset ] )
 		
 		SetFuncInfo( funcName, FILE_NAME( 1 ), "client", funcBufferConsumption )
 		
@@ -449,7 +479,7 @@ void function ScriptRemote_RegisterClientFunction( ... )
 	#endif
 	
 	array params = [ this ]
-	for ( int j = 0; j < paramCount; j++ )
+	for ( int j = iterOffset; j < paramCount; j++ )
 		params.append( vargv[ j ] )
 	
 #if DEBUG_NET	
@@ -477,6 +507,21 @@ void function ScriptRemote_RegisterClientFunction( ... )
 
 void function ScriptRemote_RegisterUIFunction( ... )
 {
+	int iterOffset = 0	
+	if( typeof vargv[ 0 ] == "array" )
+	{
+		if( !IsValidToRun( vargv[ 0 ] ) )
+		{
+			#if VERBOSE_NET_PRINTS
+				printf( "func \"%s\" is not valid to register for current playlist", expect string( vargv[ 1 ] ) )
+			#endif
+			
+			return
+		}
+		else
+			iterOffset = 1
+	}
+	
 	int paramCount = expect int( vargc )
 	
 	#if DEBUG_NET
@@ -484,11 +529,11 @@ void function ScriptRemote_RegisterUIFunction( ... )
 			return
 			
 		array<var> vargz
-		for( int i = 0; i < paramCount; i++ )
+		for( int i = iterOffset; i < paramCount; i++ )
 			vargz.append( vargv[ i ] )
 			
 		int funcBufferConsumption = AddBufferConsumption( vargz )			
-		string funcName = expect string( vargv[ 0 ] )
+		string funcName = expect string( vargv[ iterOffset ] )
 		
 		SetFuncInfo( funcName, FILE_NAME( 1 ), "ui", funcBufferConsumption )
 			
@@ -502,7 +547,7 @@ void function ScriptRemote_RegisterUIFunction( ... )
 	#endif
 	
 	array params = [ this ]
-	for ( int j = 0; j < paramCount; j++ )
+	for ( int j = iterOffset; j < paramCount; j++ )
 		params.append( vargv[ j ] )
 	
 #if DEBUG_NET	
@@ -529,13 +574,28 @@ void function ScriptRemote_RegisterUIFunction( ... )
 
 void function ScriptRemote_RegisterUntypedFunction_deprecated( ... )
 {
+	int iterOffset = 0	
+	if( typeof vargv[ 0 ] == "array" )
+	{
+		if( !IsValidToRun( vargv[ 0 ] ) )
+		{
+			#if VERBOSE_NET_PRINTS
+				printf( "func \"%s\" is not valid to register for current playlist", expect string( vargv[ 1 ] ) )
+			#endif
+			
+			return
+		}
+		else
+			iterOffset = 1
+	}
+	
 	int paramCount = expect int( vargc )
 	
 	#if DEBUG_NET
 		if( file.haltRegistration )
 			return
 			
-		string funcName = expect string( vargv[ 0 ] )
+		string funcName = expect string( vargv[ iterOffset ] )
 		SetFuncInfo( funcName, FILE_NAME( 1 ), "untyped", 0 )
 			
 		#if VERBOSE_NET_PRINTS
@@ -547,7 +607,7 @@ void function ScriptRemote_RegisterUntypedFunction_deprecated( ... )
 	#endif
 	
 	array params = [ this ]
-	for ( int j = 0; j < paramCount; j++ )
+	for ( int j = iterOffset; j < paramCount; j++ )
 		params.append( vargv[ j ] )
 	
 #if DEBUG_NET	
@@ -752,3 +812,11 @@ void function ScriptRemote_RegisterUntypedFunction_deprecated( ... )
 		PrintAll_Client_UI_Functions()
 	}
 #endif
+
+bool function IsValidToRun( var playlists )
+{
+	if( expect array( playlists ).contains( Playlist() ) )
+		return true 
+		
+	return false
+}
