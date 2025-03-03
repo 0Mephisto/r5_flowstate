@@ -71,6 +71,7 @@ void function Anim_Init()
 	AddGlobalAnimEvent( "footstep_human_small_R", GlobalAnimEvent_footstep_human_small_R )
 	AddGlobalAnimEvent( "prowler_bodyfall", GlobalAnimEvent_BodyFallProwler )
 	AddGlobalAnimEvent( "prowler_landing", GlobalAnimEvent_BodyFallProwler )
+	AddGlobalAnimEvent( "prowler_landing", GlobalAnimEvent_PutProwlerInSafeSpot ) //(cafe) Fixes bh tt prowlers from falling through the map
 	AddGlobalAnimEvent( "setWeaponSkin00", GlobalAnimEvent_SetWeaponSkin00 )
 	AddGlobalAnimEvent( "setWeaponSkin01", GlobalAnimEvent_SetWeaponSkin01 )
 	AddGlobalAnimEvent( "phase_shift_start", PhaseEmbarkPhaseStart )
@@ -421,6 +422,19 @@ void function GlobalAnimEvent_BodyFallProwler( entity guy )
 			printt( "AnimEvent: GlobalAnimEvent_BodyFallProwler")
 		#endif
 
+	}
+}
+
+void function GlobalAnimEvent_PutProwlerInSafeSpot( entity guy )
+{
+	if ( IsValid( guy ) && guy.GetCurrentSequenceName() == "animseq/creatures/prowler/ai_prowler_core/pr_bloodhoundTT_hatch_spawn.rseq" )
+	{
+		guy.Anim_Stop()
+		PutEntityInSafeSpot( guy, null, null, guy.GetOrigin() + <0,0,128>, guy.GetOrigin() )
+		
+		#if SCRIPT_ANIM_EVENT_DEBUG
+			printt( "AnimEvent: GlobalAnimEvent_PutProwlerInSafeSpot")
+		#endif
 	}
 }
 

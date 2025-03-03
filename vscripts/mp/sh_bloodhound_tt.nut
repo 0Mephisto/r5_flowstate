@@ -9,6 +9,8 @@ global function GetBloodhoundTTAssetsToPrecache
 global function Bloodhound_TT_SpawnProwlers
 global function Bloodhound_TT_KillProwlers
 global function Bloodhound_TT_TestSpotlight
+global function Bloodhound_TT_TpPlayerToDebugArea
+
 global function TestBlackMarketBloodTTAlarm
 #endif
 
@@ -2258,6 +2260,14 @@ void function OnProwlerKilled_Dev( entity prowler, var DamageInfo )
 	file.aliveProwlers.fastremovebyvalue( prowler )
 }
 
+void function Bloodhound_TT_TpPlayerToDebugArea()
+{
+	entity player = gp()[0]
+	player.SetVelocity( <0, 0, 0> )
+	player.SetPhysics( MOVETYPE_NOCLIP )
+	player.SetOrigin( <-24656.4883, 24307.1172, -2703.13452> )
+	player.SetAngles( <27, 30, 0> )
+}
 
 void function Bloodhound_TT_KillProwlers()
 {
@@ -2285,7 +2295,7 @@ void function Bloodhound_TT_TestSpotlight_Thread( int lightIdx, float duration =
 
 	thread LightShow_TurnOffSpotlight( lightIdx )
 }
-#endif // SERVER && DEV
+#endif // SERVER && DEVELOPER
 
 #if SERVER || CLIENT
 bool function IsBloodhoundTTEnabled()
