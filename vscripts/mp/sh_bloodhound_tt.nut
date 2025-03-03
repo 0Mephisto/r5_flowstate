@@ -2312,7 +2312,7 @@ bool function BloodHountTT_UseLootPositionOverrideHack()
 {
 	bool usePositionHack
 
-	usePositionHack = GetCurrentPlaylistVarBool( "blood_tt_loot_override_hack", true )
+	usePositionHack = GetCurrentPlaylistVarBool( "blood_tt_loot_override_hack", false )
 
 	return usePositionHack
 }
