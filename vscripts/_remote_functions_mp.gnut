@@ -14,7 +14,7 @@ global function FindFuncID_ByRef
 #endif
 
 const int EHANDLE_MIN 			= -1 //(mk): Some custom gamemodes send -1 for invalid. Needs call audits, then remove this and use:  EncodedEHandle_null.
-const int EHANDLE_MAX 			= 1000000
+const int EHANDLE_MAX 			= 0x7FFFFFFF
 const int EDAMAGESOURCE_MIN 	= -1
 
 struct
