@@ -2211,7 +2211,7 @@ void function MakeBlackMarketPlayerHighPriorityThreatToNPCs( entity player )
 #endif
 
 
-#if SERVER && DEV
+#if SERVER && DEVELOPER
 void function TestBlackMarketBloodTTAlarm()
 {
 	thread BloodTTBlackMarketAlarmSequence()
