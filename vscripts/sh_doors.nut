@@ -161,7 +161,7 @@ bool function IsDoor( entity ent )
 		case "survival_door_sliding":
 		case "survival_door_blockable":
 		case "survival_door_code":
-		return true
+			return true
 	}
 
 	return false
@@ -869,22 +869,33 @@ void function SurvivalDoorThink( entity door, int doorType )
 
 	while ( 1 )
 	{
-		entity player = expect entity( door.WaitSignal( "OnPlayerUse" ).player )
+		table result         = WaitSignal( door, "OnPlayerUse", "ForceToggleScriptedDoor" )
+		entity player        = expect entity( result.player )
+		string signalMessage = expect string( result.signal )
 
-			if ( !IsValid( player ) || !player.IsPlayer() ) // (dw): R5DEV-69114
+		if ( IsValid( player ) )
+		{
+			if ( IsScriptDoorLocked( door ) || !player.IsPlayer() )
 				continue
+		}
+		else if ( signalMessage != "ForceToggleScriptedDoor" )
+		{
+			continue
+		}
 
 		//Tell players with tracking vision that a pilot has recently distrubed the door.
 		#if MP
-			TrackingVision_CreatePOI( eTrackingVisionNetworkedPOITypes.DOOR_USE, door, doorIconOrigin, player.GetTeam(), player )
+			if ( IsValid( player ) )
+				TrackingVision_CreatePOI( eTrackingVisionNetworkedPOITypes.DOOR_USE, door, doorIconOrigin, player.GetTeam(), player )
 		#endif
 
 		door.Signal( "DoorOperating" )
 
-		foreach( entity linkedDoor in door.GetLinkEntArray() )
-			Signal( linkedDoor, "OnPlayerUse", { player = player } ) // todo(dw): this is hacky
+		foreach ( entity linkedDoor in door.GetLinkEntArray() )
+			ToggleDoor( linkedDoor, player ) // todo(dw): this is hacky
 
-		door.SetUsePrompts( "", "" )
+		if ( !IsScriptDoorLocked( door ) )
+			door.SetUsePrompts( "", "" )
 
 		if ( door.e.isOpen )
 		{
@@ -922,7 +933,8 @@ void function SurvivalDoorThink( entity door, int doorType )
 			GradeFlagsSet( door, eGradeFlags.IS_OPEN )
 			vector doorVec = AnglesToForward( defaultAngles )
 
-			HeatMapStat( player, "DoorOpened", door.GetOrigin() )
+			if ( IsValid( player ) )
+				HeatMapStat( player, "DoorOpened", door.GetOrigin() )
 
 			if ( IsValid( player ) )
 				PIN_Interact( player, "door_open" )
