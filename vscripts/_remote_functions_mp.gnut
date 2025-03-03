@@ -229,7 +229,6 @@ string function FindFuncName_ByID( int funcID )
 	Always use the script variant wrapper to register remote functions.
 	
 	ScriptRemote_RegisterClientFunction:
-	ScriptRemote_RegisterClientFunction:
 	ScriptRemote_RegisterUIFunction:
 	ScriptRemote_RegisterUntypedFunction_deprecated:
 		
@@ -245,6 +244,27 @@ string function FindFuncName_ByID( int funcID )
 	"float" and "vector" must be followed by min, max, bit count. 
 	The value will be rounded to the nearest 1/2^(bit count) fraction of the specified range. 
 	Use 32 to send perfectly precise values. 
+
+*/
+
+/*
+	
+	ScriptRegisterNetworkedVariable:
+	
+	OPTIONAL first param ( same as ScriptRemote_Register variants above ): array<int>, 
+	string name, int SNDC_category, int SNVT_type, var defaultValue = 0, float rangemin = 0, float rangemax = 0
+
+		=== SNVT_type defaultValue, rangemin/rangemax === Todo: Confirm category limits
+		
+
+		- SNVT_BOOL: 										true/false, 						NO range min/max
+		- SNVT_INT:											int between -512 and 511, 			NO range min/max
+		- SNVT_UNSIGNED_INT:								int between 0 and 1023, 			NO range min/max
+		- SNVT_BIG_INT:										int between INT_MIN and INT_MAX, 	NO range min/max 
+		- SNVT_FLOAT_RANGE:							 		float between FLT_MIN and FLT_MAX	range min/max ( range must be float..)
+		- SNVT_FLOAT_RANGE_OVER_TIME:						float between -1 and 50000  		range min/max ( range must be float..)
+		- SNVT_TIME: 										float, between FLT_MIN and FLT_MAX	range min/max ( range can be int/float )
+		- SNVT_ENTITY: 										NO default, 						NO range min/max
 */
 
 //(mk): Param ranges are inclusive for min int, NOT inclusive for max int.

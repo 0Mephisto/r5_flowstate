@@ -9,6 +9,7 @@ global function GetLocalizedStringsCount
 #if SERVER
 	global function Flowstate_FetchTokenID
 	global function LocalMsg
+	global function LocalMsg_TEMP
 	global function LocalVarMsg
 	global function MessageLong
 	global function LocalEventMsgDelayed
@@ -502,6 +503,36 @@ bool function ClientCommand_CheckLocalizationConsistency( entity player, array<s
 	}
 	
 	return true
+}
+
+/*
+	Purpose:
+		In-between release, a server may set tokens in their playlist file.  
+		This function can call those those tokens directly. This is best used 
+		with very short tokens under 5 chars in length.	
+
+		Example:		 LocalMsg_TEMP( player, "#TMP_1" )
+		
+		in playlists_r5_patch.txt:
+		
+		"LocalizedStrings"
+		{
+		  "lang"
+			{
+				"Language" "english"
+				"Tokens"
+				{
+					"TMP_1" "Some super long string that will get shipped in the playlist to the client when they join the server once and then can be called with LocalMsg_TEMP"
+				}
+			}
+		}
+*/
+void function LocalMsg_TEMP( entity player, string token, string token2 = "", int uiType = eMsgUI.DEFAULT, float duration = 5.0 )
+{
+	mAssert( token.find("#") == 0, "Should use a token with TempLocalMsg()" )
+	mAssert( token.len() <= 10, "Lag can be incurred with tokens over 10 in length." )
+	
+	LocalMsg( player, "#FS_NULL", "#FS_NULL", uiType, duration, token, token2 )
 }
 
 void function LocalMsg( entity player, string ref, string subref = "", int uiType = 0, float duration = 5.0, string varString = "", string varSubstring = "", string sound = "", bool long = false )
