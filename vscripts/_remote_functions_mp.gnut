@@ -883,7 +883,7 @@ void function RemoteFunctions_Init_Begin()
 	Waypoints_RegisterNetworking() //2 client, registered cleanly with enum max.
 	RespawnBeacons_RegisterNetworking()
 
-	if( Gamemode() == eGamemodes.fs_infected )
+	if( GetCurrentPlaylistVarInt( "mode_fall_ltm", 0 ) == 1 )
 		Gamemode_ShadowSquad_RegisterNetworking()
 
 	MapZones_RegisterNetworking() //1 func
