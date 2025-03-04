@@ -93,6 +93,11 @@ global const array<asset> MUSIC_PACK_ASSET_LIST =
 	$"settings/itemflav/musicpack/wraith.rpak",
 	$"settings/itemflav/musicpack/s03bp_crypto.rpak",
 	$"settings/itemflav/musicpack/s03bp_gibraltar.rpak",
+	$"settings/itemflav/musicpack/s03e02.rpak",//PORTED
+	$"settings/itemflav/musicpack/s04bp_revenant.rpak",//PORTED
+	$"settings/itemflav/musicpack/s04bp_assimilation.rpak",//PORTED
+	$"settings/itemflav/musicpack/s04e02.rpak",//PORTED
+	$"settings/itemflav/musicpack/s04e01.rpak",//PORTED
 ]
 
 
@@ -143,5 +148,5 @@ global const array<asset> WEAPON_ASSETS =
 	$"settings/itemflav/loot/main_weapon/chargerifle.rpak",
 	$"settings/itemflav/loot/main_weapon/sentinel.rpak",
 	$"settings/itemflav/loot/main_weapon/volt_smg.rpak",
-	$"settings/itemflav/loot/main_weapon/3030repeater.rpak",
+	//$"settings/itemflav/loot/main_weapon/3030repeater.rpak",
 ]

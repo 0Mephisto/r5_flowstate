@@ -439,6 +439,11 @@ const table<asset, asset> sourceTagToIcon = {
 	[ $"settings/itemflav/tag/source_s03e01.rpak" ] = $"rui/events/s03e01/item_source_icon",
 	[ $"settings/itemflav/tag/source_s03e01a.rpak" ] = $"rui/events/s03e01a/item_source_icon",
 	[ $"settings/itemflav/tag/source_s03e02.rpak" ] = $"rui/events/s03e02/item_source_icon",
+	[ $"settings/itemflav/tag/source_s03e03.rpak" ] = $"rui/events/s03e02/item_source_icon",
+	[ $"settings/itemflav/tag/source_s04e01.rpak" ] = $"rui/events/s04e01/item_source_icon",
+	[ $"settings/itemflav/tag/source_s04e02.rpak" ] = $"rui/events/s04e02/item_source_icon",
+	[ $"settings/itemflav/tag/source_battlepass_season04.rpak" ] = $"rui/events/s04bp/item_source_icon",
+	[ $"settings/itemflav/tag/source_r5reloaded_custom.rpak" ] = $"rui/custom/sdk/item_source_icon",
 	//
 	[ $"settings/itemflav/tag/source_retail01.rpak" ] = $"rui/menu/buttons/source_retail01",
 	[ $"settings/itemflav/tag/source_retail02.rpak" ] = $"rui/menu/buttons/source_retail02",

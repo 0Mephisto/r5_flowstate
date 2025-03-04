@@ -26,6 +26,8 @@
         {
             "#SETTING_DEFAULT"          ""
             "#GAMEUI_LANGUAGE_ENGLISH"  "english"
+            "#GAMEUI_LANGUAGE_PORTUGUESE"  "portuguese"
+            "#GAMEUI_LANGUAGE_TCHINESE"  "TCHINESE"
         }
 
         pin_to_sibling          SwchSpeakerConfig
@@ -35,7 +37,7 @@
         //visible                 0 //[$ENGLISH || $PORTUGUESE || $TCHINESE]
         visible                 1 [!$ENGLISH && !$PORTUGUESE && !$TCHINESE]
 
-        childGroupAlways        ChoiceButtonAlways
+        childGroupAlways        MultiChoiceButtonAlways
     }
 
     VoiceChatHeader
