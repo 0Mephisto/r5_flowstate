@@ -408,12 +408,7 @@ void function ShadowZombie_SetCallback_GetMaxHealthValueToSetForShadows( float f
 #if SERVER
 float function GetMaxHealthValueToSetForShadows()
 {
-	// If we have an override function to set a different value for shadow health use it
-	if ( file.GetMaxShadowHealth_Callback != null )
-		return file.GetMaxShadowHealth_Callback()
-
-	// Otherwise use the playlist var
-	return GetCurrentPlaylistVarFloat( "shadow_health", 60 )
+	return GetCurrentPlaylistVarFloat( "shadow_health", 30 )
 }
 #endif // SERVER
 
@@ -450,10 +445,10 @@ void function GiveShadowZombieAbilities( entity player )
 	if ( !IsAlive( player ) ) //Defensive fix, shouldn't need to be done in theory? R5DEV-187597
 		return
 
-	/*if ( !player.GetPlayerNetBool( "isPlayerShadowZombie" ) )
+	if ( !player.GetPlayerNetBool( "isPlayerShadowZombie" ) )
 	{
 			player.SetPlayerNetBool( "isPlayerShadowZombie", true )
-	}*/
+	}
 
 	if ( Bleedout_IsBleedingOut( player ) )
 	{
@@ -462,21 +457,6 @@ void function GiveShadowZombieAbilities( entity player )
 		Bleedout_ForceStop( player )
 		Bleedout_ReviveForceStop( player )
 	}
-
-                  
-                                                                            
-   
-                            
-                           
-                            
-                                         
-                                    
-
-                                    
-                                                     
-                                                       
-   
-                       
 
 	player.AddUsableValue( USABLE_CAN_USE_OVERRIDE ) //allow shadow zombies to revive eachother if bleedout is enabled
 
@@ -525,7 +505,7 @@ void function GiveShadowZombieAbilities( entity player )
 
 	TakeAllPassives( player )
 	array<string> mods = player.GetPlayerSettingsMods()
-	//TakePlayerSettingsMods( player, mods )
+	TakePlayerSettingsMods( player, mods )
 
 	player.TakeOffhandWeapon( OFFHAND_MELEE )
 	player.GiveWeapon( "mp_weapon_shadow_squad_hands_primary", WEAPON_INVENTORY_SLOT_PRIMARY_2 )
@@ -536,11 +516,11 @@ void function GiveShadowZombieAbilities( entity player )
 
 
 	player.GiveOffhandWeapon( melee_hands_weapon, OFFHAND_MELEE )
-	//GivePlayerSettingsMods( player, file.shadowModsArray )
-	if ( player.GetTeam() != TEAM_SPECTATOR )
+	GivePlayerSettingsMods( player, [ "enable_wallrun", "shadow_squad" ] )
+	/*if ( player.GetTeam() != TEAM_SPECTATOR )
 	{
-	//	GivePlayerSettingsMods( player, [ "targetinfo_alliance" ] )
-	}
+		GivePlayerSettingsMods( player, [ "disable_targetinfo" ] )
+	}*/
 	player.EnterShadowForm()
 	bool playerAlreadyHasHealthCallback = false
 	/*foreach ( func in player.e.entOnShadowHealthExhaustedCallbacks )
@@ -621,7 +601,7 @@ void function RemoveShadowZombieAbilities( entity player )
 
 	EmitSoundOnEntity( player, "ShadowLegend_Shadow_Regen" )
 	RemoveCinematicFlag( player, CE_FLAG_HIDE_MAIN_HUD )
-	//TakePlayerSettingsMods( player, file.shadowModsArray )
+	TakePlayerSettingsMods( player,[ "enable_wallrun", "shadow_squad" ] )
 	//player.TargetInfoDisableOn()
 	ForceAutoSprintOff( player )
 	player.LeaveShadowForm()
@@ -848,7 +828,7 @@ void function OnPlayerKilled( entity victim, entity attacker, var damageInfo )
 		return
 	}
 
-	//TakePlayerSettingsMods( victim, file.shadowModsArray )
+	TakePlayerSettingsMods( victim, [ "enable_wallrun", "shadow_squad" ] )
 }
 #endif //SERVER
 

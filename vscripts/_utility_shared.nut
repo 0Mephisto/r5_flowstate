@@ -5725,6 +5725,102 @@ table<int, array<entity> > function ArrangePlayersByTeam( array<entity> players 
 	return out
 }
 
+void function GivePlayerSettingsMods( entity player, array<string> additionalMods )
+{
+	#if CLIENT
+		if ( !player.GetPredictable() )
+			return
+	#endif
+
+	int oldMaxHealth = player.GetMaxHealth()
+	int oldHealth    = player.GetHealth()
+
+#if CLIENT
+	if ( InPrediction() )
+#endif
+	{
+		#if CLIENT
+			Assert( additionalMods.len() == 1 )
+		#endif
+
+		// check if we can add these mods, in dev we assert to force a fix, but if a rare case (usually involving spectators) gets through
+		// we skip the bad mods
+		array<string> modsToAdd
+		foreach( mod in additionalMods ) // only need to check new ones
+		{
+			bool isModAvailable = player.IsClassModAvailableForPlayerSetting( string( player.GetPlayerSettings() ), mod )
+			Assert( isModAvailable, "Undefined mod '" + mod + "' requested for player class '" + player.GetPlayerClass() + "'" )
+
+			if( isModAvailable )
+				modsToAdd.append( mod )
+		}
+
+		if( modsToAdd.len() > 0 )
+		{
+			if ( additionalMods.len() == 1 )
+			{
+				player.AddPlayerClassMod( additionalMods[ 0 ] )
+			}
+			else
+			{
+				#if SERVER
+					array<string> mods = player.GetPlayerSettingsMods()
+					mods.extend( modsToAdd ) // duplicates are OK
+					player.SetPlayerSettingsWithMods( player.GetPlayerSettings(), mods )
+				#endif
+			}
+		}
+	}
+
+	#if SERVER
+		if ( IsAlive( player ) )
+		{
+			player.SetMaxHealth( oldMaxHealth )
+			player.SetHealth( oldHealth )
+		}
+		//ApplyAppropriateCharacterSkin( player )//come back to this later (kral)
+	#endif
+}
+
+void function TakePlayerSettingsMods( entity player, array<string> modsToTake, bool isHealthReset = true )
+{
+	array<string> mods = player.GetPlayerSettingsMods()
+	int oldMaxHealth = player.GetMaxHealth()
+	int oldHealth    = player.GetHealth()
+
+#if CLIENT
+	if ( InPrediction() )
+#endif
+	{
+		#if CLIENT
+			Assert( modsToTake.len() == 1 )
+		#endif
+		if ( modsToTake.len() == 1 && mods.contains( modsToTake[ 0 ] ) )
+		{
+			player.RemovePlayerClassMod( modsToTake[ 0 ] )
+		}
+		else
+		{
+			foreach ( string modToTake in modsToTake )
+				mods.fastremovebyvalue( modToTake )
+
+			#if SERVER
+				player.SetPlayerSettingsWithMods( player.GetPlayerSettings(), mods )
+			#endif
+		}
+	}
+
+
+	#if SERVER
+		if ( IsAlive( player ) && isHealthReset )
+		{
+			player.SetMaxHealth( oldMaxHealth )
+			player.SetHealth( oldHealth )
+		}
+		//ApplyAppropriateCharacterSkin( player )
+	#endif
+}
+
 void function WaitForGameState(int state) {
 	while ( GetGameState() != state )
 	{
