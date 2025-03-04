@@ -353,7 +353,8 @@ void function RemoteFunctions_Init_Begin()
 	}
 
 	//Lightning Gun
-	ScriptRegisterNetworkedVariable( "isPlayerShootingFlowstateLightningGun", SNDC_PLAYER_GLOBAL, SNVT_BOOL, false )
+	if ( !IsFallLTM() )
+		ScriptRegisterNetworkedVariable( "isPlayerShootingFlowstateLightningGun", SNDC_PLAYER_GLOBAL, SNVT_BOOL, false )
 	ScriptRemote_RegisterClientFunction( "ServerCallback_CreatesLaserFXFromServer", "entity", "vector", -1.0, 66000.0, 32, "vector", -32000.0, 32000.0, 32 )
 	
 	//Sentinel
@@ -883,8 +884,7 @@ void function RemoteFunctions_Init_Begin()
 	Waypoints_RegisterNetworking() //2 client, registered cleanly with enum max.
 	RespawnBeacons_RegisterNetworking()
 
-	if( GetCurrentPlaylistVarInt( "mode_fall_ltm", 0 ) == 1 )
-		Gamemode_ShadowSquad_RegisterNetworking()
+	Gamemode_ShadowSquad_RegisterNetworking()
 
 	MapZones_RegisterNetworking() //1 func
 	Ultimates_RegisterNetworking() //1 func

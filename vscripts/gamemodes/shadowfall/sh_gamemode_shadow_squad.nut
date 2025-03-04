@@ -197,12 +197,8 @@ void function EntitiesDidLoad()
 
 void function Gamemode_ShadowSquad_RegisterNetworking()
 {
-	SpamWarning( 10, "This is being registered!!!!!!!!!" )
-	// if ( !IsFallLTM() )
-	// {
-		// ScriptRemote_RegisterClientFunction( "ServerCallback_ShadowClientEffectsEnable", "entity", "bool"  )
-		// return
-	// }
+	if ( !IsFallLTM() )
+		return
 
 	ScriptRegisterNetworkedVariable( "livingShadowPlayerCount", SNDC_GLOBAL, SNVT_INT )
 	ScriptRemote_RegisterClientFunction( "ServerCallback_ModeShadowSquad_AnnouncementSplash", "int", 0, 999, "float", 0.0, 5000.0, 16 )
@@ -213,7 +209,7 @@ void function Gamemode_ShadowSquad_RegisterNetworking()
 	ScriptRemote_RegisterClientFunction( "ServerCallback_ModeShadowSquad_RestorePlayerHealthFx", "bool" )
 	ScriptRegisterNetworkedVariable( "playerCanRespawnAsShadow", SNDC_PLAYER_GLOBAL, SNVT_BOOL, false )
 
-	ScriptRegisterNetworkedVariable( "shadowSquadGamePhase", SNDC_GLOBAL, SNVT_UNSIGNED_INT, 0, 0, eShadowSquadGamePhase._count )
+	ScriptRegisterNetworkedVariable( "shadowSquadGamePhase", SNDC_GLOBAL, SNVT_UNSIGNED_INT, 1.0 )
 	ScriptRegisterNetworkedVariable( "countdownTimerStart", SNDC_GLOBAL, SNVT_TIME, -1 )
 	ScriptRegisterNetworkedVariable( "countdownTimerEnd", SNDC_GLOBAL, SNVT_TIME, -1 )
 	ScriptRegisterNetworkedVariable( "shadowsWonTheMode", SNDC_GLOBAL, SNVT_BOOL, false )

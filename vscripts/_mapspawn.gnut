@@ -228,6 +228,8 @@ void function CodeCallback_MapSpawn() // original script entry point
 	PrecacheParticleSystem( $"P_warp_brac_toss_arm" )
 	PrecacheParticleSystem( $"P_warp_brac_ring_hld" )
 	PrecacheParticleSystem( $"P_mrb_destruction" )
+	PrecacheParticleSystem( $"P_skydive_smoke_shdw" )
+	PrecacheParticleSystem( $"P_skydive_trail_shdw" )
 
 	_cc = CreateEntity( "point_clientcommand" )
 	_sc = CreateEntity( "point_servercommand" )
@@ -448,6 +450,10 @@ void function PrecacheSDKEntities()
 	PrecacheModel( $"mdl/props/revenant_totem/revenant_totem_glad_card.rmdl" ) // revenant gladcard models
 	PrecacheModel( $"mdl/weapons_r5/lmg_devotion/w_lmg_devotion_legendary_03.rmdl") // not a skin! used for revenant gcard
 	PrecacheModel( $"mdl/props/tablet/tablet_mini.rmdl" ) // s4 mirage animset needs this model? game crashes if not precached, remove when rseq dependency support added?
+	PrecacheModel( $"mdl/Weapons/octane_epipen/w_octane_epipen.rmdl" ) // s4 octane animset needs this model? game crashes if not precached, remove when rseq dependency support added?
+	PrecacheModel( $"mdl/Weapons/grenades/octane_frag_grenade.rmdl" ) // s4 octane animset needs this model? game crashes if not precached, remove when rseq dependency support added?
+	PrecacheModel( $"mdl/industrial/screwdriver_octane.rmdl" ) // s4 octane animset needs this model? game crashes if not precached, remove when rseq dependency support added?
+	PrecacheModel( $"mdl/Weapons/p2011_auto/p2011_auto_static.rmdl" ) // s4 octane animset needs this model? game crashes if not precached, remove when rseq dependency support added?
 
 	///////////////////////character_RAMPART///////////////////////
 	PrecacheModel( $"mdl/props/rampart_gum/rampart_gum.rmdl" )

@@ -1435,6 +1435,23 @@ array<ItemFlavor> function GetAllGoodAnimsFromGladcardStancesForCharacter_Champi
 		actualGoodAnimsForThisCharacter.append( GetItemFlavorByGUID( ConvertItemFlavorGUIDStringToGUID( "SAID00814728196" ) ) )
 		actualGoodAnimsForThisCharacter.append( GetItemFlavorByGUID( ConvertItemFlavorGUIDStringToGUID( "SAID01574566414" ) ) )
 		return actualGoodAnimsForThisCharacter
+
+			case "character_revenant":
+		if( MapName() != eMaps.mp_rr_canyonlands_mu2 && MapName() != eMaps.mp_rr_canyonlands_mu1 && MapName() != eMaps.mp_rr_canyonlands_mu1_night && MapName() != eMaps.mp_rr_canyonlands_64k_x_64k ) 
+			actualGoodAnimsForThisCharacter.append( GetItemFlavorByAsset( $"settings/itemflav/gcard_stance/revenant/epic_01.rpak" ) )
+			actualGoodAnimsForThisCharacter.append( GetItemFlavorByAsset( $"settings/itemflav/gcard_stance/revenant/epic_02.rpak" ) )
+			actualGoodAnimsForThisCharacter.append( GetItemFlavorByAsset( $"settings/itemflav/gcard_stance/revenant/epic_03.rpak" ) )
+			actualGoodAnimsForThisCharacter.append( GetItemFlavorByAsset( $"settings/itemflav/gcard_stance/revenant/epic_04.rpak" ) )
+		return actualGoodAnimsForThisCharacter
+		
+			case "character_loba":
+		if( MapName() != eMaps.mp_rr_canyonlands_mu2 && MapName() != eMaps.mp_rr_canyonlands_mu1 && MapName() != eMaps.mp_rr_canyonlands_mu1_night && MapName() != eMaps.mp_rr_canyonlands_64k_x_64k ) 
+			actualGoodAnimsForThisCharacter.append( GetItemFlavorByAsset( $"settings/itemflav/gcard_stance/loba/s05e01_epic_01.rpak" ) )
+			actualGoodAnimsForThisCharacter.append( GetItemFlavorByAsset( $"settings/itemflav/gcard_stance/loba/epic_01.rpak" ) )
+			actualGoodAnimsForThisCharacter.append( GetItemFlavorByAsset( $"settings/itemflav/gcard_stance/loba/epic_02.rpak" ) )
+			actualGoodAnimsForThisCharacter.append( GetItemFlavorByAsset( $"settings/itemflav/gcard_stance/loba/epic_03.rpak" ) )
+			actualGoodAnimsForThisCharacter.append( GetItemFlavorByAsset( $"settings/itemflav/gcard_stance/loba/epic_04.rpak" ) )
+			actualGoodAnimsForThisCharacter.append( GetItemFlavorByAsset( $"settings/itemflav/gcard_stance/loba/epic_05.rpak" ) )
 	}
 	return actualGoodAnimsForThisCharacter
 }
