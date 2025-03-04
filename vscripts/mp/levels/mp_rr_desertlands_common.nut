@@ -107,6 +107,9 @@ void function EntitiesDidLoad()
 	if ( file.isTrainEnabled )
 		thread DesertlandsTrain_Init()
 
+	if ( GetMapName() == "mp_rr_desertlands_64k_x_64k_mv" )
+		thread ForgeTeaser()
+
 	FillLootTable()
 	
 	if( Gamemode() == eGamemodes.SURVIVAL ) 
@@ -122,8 +125,15 @@ void function EntitiesDidLoad()
 }
 #endif
 
-#if SERVER
+void function ForgeTeaser()
+{
+	entity forgeteaser = GetEntByScriptName( "f_prev_fbrush" )
+	entity forgeteaser2 = GetEntByScriptName( "f_prev_fbrush_target" )
+	forgeteaser.SetOrigin(<11660,-17934,-3613>)
+	forgeteaser2.SetOrigin(<11660,-17934,-3613>)
+}
 
+#if SERVER
 void function Desertlands_SetTrainEnabled( bool enabled )
 {
 	file.isTrainEnabled = enabled

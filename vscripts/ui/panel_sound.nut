@@ -247,14 +247,13 @@ void function RestoreSoundDefaults()
 	SetConVarToDefault( "closecaption" )
 	if ( IsAudioLanguageChangeAllowed() )
 		SetConVarToDefault( "miles_language" )
-	#if PC_PROG
+		SetConVarToDefault( "miles_channels" )
 		SetConVarToDefault( "TalkIsStream" )
 		SetConVarToDefault( "hudchat_play_text_to_speech" )
 		SetConVarToDefault( "sound_volume_voice" )
 		SetConVarToDefault( "miles_occlusion" )
 		SetConVarToDefault( "sound_without_focus" )
 		SetConVarToDefault( "speex_quiet_threshold" )
-	#endif
 
 	SaveSettingsConVars( file.conVarDataList )
 	SavePlayerSettings()
@@ -267,7 +266,7 @@ void function RestoreSoundDefaults()
 
 bool function IsAudioLanguageChangeAllowed()
 {
-	return Hud_IsVisible( file.audioLanguageButton ) && IsLobby()
+	return Hud_IsVisible( file.audioLanguageButton )
 }
 
 void function InitProcessingDialog( var menu )

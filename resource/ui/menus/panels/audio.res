@@ -24,18 +24,24 @@
         ConVar                  "miles_language"
         list
         {
-            "#SETTING_DEFAULT"          ""
+            //"#SETTING_DEFAULT"          ""
             "#GAMEUI_LANGUAGE_ENGLISH"  "english"
-            "#GAMEUI_LANGUAGE_PORTUGUESE"  "portuguese"
-            "#GAMEUI_LANGUAGE_TCHINESE"  "TCHINESE"
+            "#GAMEUI_LANGUAGE_FRENCH"  "french"
+            "#GAMEUI_LANGUAGE_GERMAN"  "german"
+            "#GAMEUI_LANGUAGE_ITALIAN"  "italian"
+            "#GAMEUI_LANGUAGE_JAPANESE"  "japanese"
+            "#GAMEUI_LANGUAGE_KOREAN"  "korean"
+            "#GAMEUI_LANGUAGE_MANDARIN"  "mandarin"
+            "#GAMEUI_LANGUAGE_POLISH"  "polish"
+            "#GAMEUI_LANGUAGE_RUSSIAN"  "russian"
+            "#GAMEUI_LANGUAGE_SPANISH"  "spanish"
         }
 
         pin_to_sibling          SwchSpeakerConfig
         pin_corner_to_sibling   TOP_LEFT
         pin_to_sibling_corner   BOTTOM_LEFT
 
-        //visible                 0 //[$ENGLISH || $PORTUGUESE || $TCHINESE]
-        visible                 1 [!$ENGLISH && !$PORTUGUESE && !$TCHINESE]
+        visible                 1
 
         childGroupAlways        MultiChoiceButtonAlways
     }
