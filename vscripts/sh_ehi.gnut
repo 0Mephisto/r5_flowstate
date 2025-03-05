@@ -921,30 +921,7 @@ void function EHI_GameStatePlaying()
 
 bool function ShouldPlayerNameBeAnonymized( EHI playerEHI )
 {
-	// Pure spectators must ALWAYS be able to know who's who for anti-cheat / competitions
-	if ( GetLocalClientPlayer().GetTeam() == TEAM_SPECTATOR )
-		return false
-
-	// Players in comp know who's in the lobby. Don't let players in on who just died
-	// Otherwise, it allows teammates to give info on trades/whos dying
-	if ( IsPrivateMatch() )
-		return ShouldPrivateMatchBeAnonymized()
-
-	// If the match is over or your squad is eliminated, ignore anonymization in case you want to report
-	//if ( IsDeathScreenBypassingAnonymization() )
-		//return false
-
-	if ( IsLobby() )
-		return false
-
-	if ( GetCurrentPlaylistVarBool( "DisablePlayerAnonymity", false ) == true )
-		return false
-
-	entity player = FromEHI( playerEHI )
-	if ( !IsValid( player ) )
-		return false
-
-	return player.GetPlayerNetBool( "anonymizePlayerName" )
+	return false
 }
 #endif
 

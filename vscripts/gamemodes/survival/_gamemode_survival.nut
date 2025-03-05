@@ -2532,10 +2532,6 @@ void function Survival_PlayerCharacterSetup( entity player, ItemFlavor character
 		asset setFile = CharacterClass_GetSetFile( character )
 		player.SetPlayerSettingsWithMods( setFile, [] )
 	}
-	
-	//Anonymous Mode
-	bool playerIsAnonymous = false//player.IsHudSettingAnonymousMode()
-	player.SetPlayerNetBool( "anonymizePlayerName", playerIsAnonymous )
 
 	// GiveLoadoutRelatedWeapons( player )
 

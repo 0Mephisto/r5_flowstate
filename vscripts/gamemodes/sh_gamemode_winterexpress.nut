@@ -373,6 +373,7 @@ void function WinterExpress_Init()
 		
 		RegisterSignal( "ReviveRuiThread" )
 		RegisterSignal( "CaptureEndTimeRui" )
+		RegisterSignal( "GameStateChanged" )
 		Sh_ArenaDeathField_Init()
 		ClSurvivalCommentary_Init()
 		BleedoutClient_Init()
