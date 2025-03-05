@@ -38,6 +38,7 @@ void function InitGamemodeSelectDialogV4( var newMenuArg )
 	AddMenuFooterOption( menu, LEFT, BUTTON_A, true, "#A_BUTTON_SELECT" )
 
 	Hud_AddEventHandler( Hud_GetChild(file.menu, "FreeRoamChangeMapButton"), UIE_CLICK, FreeRoamChangeMapButton )
+	Hud_AddEventHandler( Hud_GetChild(file.menu, "TrainingChangeMapButton"), UIE_CLICK, SelectTraining )
 	Hud_AddEventHandler( Hud_GetChild(file.menu, "FiringRangeButton"), UIE_CLICK, SelectFiringRange )
 	Hud_AddEventHandler( Hud_GetChild(file.menu, "AimtrainerButton"), UIE_CLICK, SelectAimTrainer )
 
@@ -71,6 +72,15 @@ void function FreeRoamChangeMapButton( var button )
 {
 	FreeRoamMapSelectionOpen = true
 	ShowPanel( Hud_GetChild(file.menu, "MapSelectPanel" ) )
+}
+
+void function SelectTraining( var button )
+{
+	string map = "mp_rr_canyonlands_staging"
+	string playlist = "survival_training"
+
+	R5RPlay_SetSelectedPlaylist(map, GetUIMapAsset(map, true), playlist, "Training")
+	CloseActiveMenu()
 }
 
 void function Servers_PageBackward( var button )
@@ -170,6 +180,7 @@ void function OnOpenModeSelectDialog()
 	
 	thread SetupGameSelectV4()
 
+	PlayVideoOnGamemodeButton(Hud_GetChild(file.menu, "TrainingChangeMapButton"), $"media/gamemodes/training.bik")
 	PlayVideoOnGamemodeButton(Hud_GetChild(file.menu, "FreeRoamChangeMapButton"), $"media/gamemodes/freerom_sdk.bik")
 	PlayVideoOnGamemodeButton(Hud_GetChild(file.menu, "AimtrainerButton"), $"media/gamemodes/training_flowstate.bik")
 	PlayVideoOnGamemodeButton(Hud_GetChild(file.menu, "FiringRangeButton"), $"media/gamemodes/firingrange_sdk.bik")

@@ -156,6 +156,36 @@ scripts/resource/ui/menus/dialog_gamemode_select_v2.menu
             pin_corner_to_sibling	CENTER
             pin_to_sibling_corner	CENTER
         }
+		
+		TrainingChangeMapButton
+        {
+            ControlName				RuiButton
+            wide					280
+            tall					120
+            ypos                    -80
+            xpos                    0
+            zpos                    90
+            rui                     "ui/gamemode_select_v2_lobby_button.rpak"
+            labelText               ""
+            visible					1
+            tabPosition             1
+            cursorVelocityModifier  0.7
+            sound_accept            "UI_Menu_GameMode_Select"
+            "scriptID"					"0"
+
+            ruiArgs
+            {
+                lockIconEnabled 0
+                modeNameText "TRAINING"
+                modeDescText ""
+                alwaysShowDesc 0
+                modeImage "rui/menu/gamemode/training"
+            }
+
+            pin_to_sibling			FiringRangeButton
+            pin_corner_to_sibling	CENTER
+            pin_to_sibling_corner	CENTER
+        }
 
         "FreeRoamText"
 		{
