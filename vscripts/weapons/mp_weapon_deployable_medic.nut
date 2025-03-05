@@ -492,7 +492,7 @@ void function DroneMedicHoverThink( entity droneMedic, vector velocity )
 	EndSignal( droneMedic, "OnDestroy" )
 
 	const DECEL_TIME = 0.5
-	const SETTLE_HEIGHT = 56
+	const SETTLE_HEIGHT = 36
 	const TRACE_HEIGHT = 128
 	const TRACE_HEIGHT_HIGH = 1024
 	const CLEAR_HOVER_DIST = 48
