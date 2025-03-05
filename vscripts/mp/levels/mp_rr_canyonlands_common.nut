@@ -1171,8 +1171,10 @@ void function StagingArea_MoveSkybox_Thread()
 
 	file.skyboxStartingOrigin = skyboxCamera.GetOrigin()
 	file.skyboxStartingAngles = skyboxCamera.GetAngles()
-	skyboxCamera.SetOrigin( skyboxCamera.GetOrigin() + <0, 0, SKYBOX_Z_OFFSET_STAGING_AREA> )
-
+	if (Playlist() == ePlaylists.survival_firingrange || Playlist() == ePlaylists.survival_training)
+		skyboxCamera.SetOrigin( skyboxCamera.GetOrigin() + <0, 0, 16> )
+	else
+		skyboxCamera.SetOrigin( skyboxCamera.GetOrigin() + <0, 0, SKYBOX_Z_OFFSET_STAGING_AREA> )
 	skyboxCamera.SetAngles( SKYBOX_ANGLES_STAGING_AREA )
 }
 

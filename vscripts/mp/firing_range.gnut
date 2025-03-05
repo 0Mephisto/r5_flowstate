@@ -340,25 +340,18 @@ void function WaitForPlayerSpawn_Thread(entity player)
 		wait 0.5
 	player.SetOrigin(<26539, -5637, -27479>)
 	player.SetAngles(<0, 0, 0>)
+	SetPlayerInventory( player, [] )
 	thread OnPlayerRespawned(player)
 }
 
 void function OnPlayerRespawned(entity player)
 {
 	array<entity> weapons = player.GetMainWeapons()
-	/*foreach(entity weapon in weapons)
-	{
-		if(GetSlotForWeapon(player, weapon) == WEAPON_INVENTORY_SLOT_PRIMARY_0 ||
-		GetSlotForWeapon(player, weapon) == WEAPON_INVENTORY_SLOT_PRIMARY_1)
-			return
-	}*/
 
-	entity primary = player.GiveWeapon("mp_weapon_semipistol", WEAPON_INVENTORY_SLOT_PRIMARY_0, [])
+	entity primary = player.GiveWeapon("mp_weapon_semipistol", WEAPON_INVENTORY_SLOT_PRIMARY_1, [])
 	//entity secondary = player.GiveWeapon("mp_weapon_semipistol", WEAPON_INVENTORY_SLOT_PRIMARY_1, ["bullets_mag_l3","optic_cq_threat"])
 	player.SetActiveWeaponByName( eActiveInventorySlot.mainHand, "mp_weapon_semipistol" )
-
-	FixWeapon(primary)
-	//FixWeapon(secondary)
+	entity weapon = player.GetActiveWeapon( eActiveInventorySlot.mainHand )
 
 	foreach(string ammo in ["bullet"])
 	{
