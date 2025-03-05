@@ -1005,9 +1005,20 @@ function TellClientPlayerTookDamage( entity player, damageInfo, entity attacker,
 	if ( !player.hasConnected )
 		return
 
-	local attackerEHandle = IsValid( attacker ) ? attacker.GetEncodedEHandle() : null
-	local weaponEHandle = IsValid( DamageInfo_GetWeapon( damageInfo ) ) ? DamageInfo_GetWeapon( damageInfo ).GetEncodedEHandle() : null
+	int attackerEHandle = IsValid( attacker ) ? attacker.GetEncodedEHandle() : -1
+	int weaponEHandle = IsValid( DamageInfo_GetWeapon( damageInfo ) ) ? DamageInfo_GetWeapon( damageInfo ).GetEncodedEHandle() : -1
 	vector damageOrigin = GetDamageOrigin( damageInfo, player )
+
+	// printt_verticle
+	// (
+		// player,
+		// "ServerCallback_PlayerTookDamage",
+		// DamageInfo_GetDamage( damageInfo ),
+		// damageOrigin,
+		// damageType,
+		// damageSourceId,
+		// attackerEHandle
+	// )
 
 	Remote_CallFunction_Replay
 	(

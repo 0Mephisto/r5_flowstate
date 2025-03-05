@@ -16,6 +16,7 @@ global function FindFuncID_ByRef
 const int EHANDLE_MIN 			= -1 //(mk): Some custom gamemodes send -1 for invalid. Needs call audits, then remove this and use:  EncodedEHandle_null.
 const int EHANDLE_MAX 			= 0x7FFFFFFF
 const int EDAMAGESOURCE_MIN 	= -1
+const int DAMAGE_TYPE_MIN		= 1 << 31
 
 struct
 {
@@ -805,7 +806,7 @@ void function RemoteFunctions_Init_Begin()
 	
 	ScriptRemote_RegisterClientFunction( "ServerCallback_SquadEliminated", "int", TEAM_INVALID, 127 )
 
-	ScriptRemote_RegisterClientFunction( "ServerCallback_SendDeathRecapData", "int", EHANDLE_MIN, EHANDLE_MAX, "int", EHANDLE_MIN, EHANDLE_MAX, "int", EDAMAGESOURCE_MIN, RT_EDAMAGESOURCE_MAX, "int", -1, INT_MAX, "int", -1, INT_MAX, "int", 0, INT_MAX, "int", 0, INT_MAX, "float", 0.0, 1.0, 32, "float", 0.0, 1.0, 32, "float", 0.0, 86400.0, 32, "int", -1, INT_MAX, "int", -1, 16 ) //Audit 2-22-2025
+	ScriptRemote_RegisterClientFunction( "ServerCallback_SendDeathRecapData", "int", EHANDLE_MIN, EHANDLE_MAX, "int", EHANDLE_MIN, EHANDLE_MAX, "int", EDAMAGESOURCE_MIN, RT_EDAMAGESOURCE_MAX, "int", DAMAGE_TYPE_MIN, INT_MAX, "int", -1, INT_MAX, "int", 0, INT_MAX, "int", 0, INT_MAX, "float", 0.0, 1.0, 32, "float", 0.0, 1.0, 32, "float", 0.0, 86400.0, 32, "int", -1, INT_MAX, "int", -1, 16 ) //Audit 2-22-2025
 	ScriptRemote_RegisterClientFunction( "ServerCallback_DeathRecapDataUpdated", "bool", "int", EHANDLE_MIN, EHANDLE_MAX ) //Audit 2-22-2025
 
 	if( Gamemode() == eGamemodes.SURVIVAL )
@@ -983,7 +984,7 @@ void function RemoteFunctions_Init_Begin()
 	ScriptRemote_RegisterClientFunction( "ServerCallback_OnEnemyDowned", "entity", "entity", "int", INT_MIN, INT_MAX, "int", EDAMAGESOURCE_MIN, RT_EDAMAGESOURCE_MAX )
 	ScriptRemote_RegisterClientFunction( "ServerCallback_PlayerConnectedOrDisconnected", "int", EHANDLE_MIN, EHANDLE_MAX, "int", 0, 20 ) //Audit 2-22-2025
 	ScriptRemote_RegisterClientFunction( "ServerCallback_PlayerChangedTeams", "entity", "int", TEAM_INVALID, 127, "int", TEAM_INVALID, 127 ) 
-	ScriptRemote_RegisterClientFunction( "ServerCallback_PlayerTookDamage", "float", 0.0, 50000.0, 16, "vector", -32000.0, 32000.0, 32, "int", 0, INT_MAX, "int", EDAMAGESOURCE_MIN, RT_EDAMAGESOURCE_MAX, "int", EHANDLE_MIN, EHANDLE_MAX ) //Audit 2-22-2025; Todo(mk): damage does not need to be allocated for 50000.0, however many mods call an arbituary number and these need audited in order to lower this value to a reasonable number. Note: Damage gets normalized, which used to be int. Therefore we can get away with using 16 bits on the float which should return n.xyz 
+	ScriptRemote_RegisterClientFunction( "ServerCallback_PlayerTookDamage", "float", 0.0, 50000.0, 16, "vector", -32000.0, 32000.0, 32, "int", DAMAGE_TYPE_MIN, INT_MAX, "int", EDAMAGESOURCE_MIN, RT_EDAMAGESOURCE_MAX, "int", EHANDLE_MIN, EHANDLE_MAX ) //Audit 2-22-2025; Todo(mk): damage does not need to be allocated for 50000.0, however many mods call an arbituary number and these need audited in order to lower this value to a reasonable number. Note: Damage gets normalized, which used to be int. Therefore we can get away with using 16 bits on the float which should return n.xyz 
 	
 	//ScriptRemote_RegisterClientFunction( "ServerCallback_ScreenShake", "float", 0.0, 20.0, "float", 0.001, 255.0, 8, "vector", -32000.0, 32000, 32 )  //Audit 2-22-2025 , not currently called.
 	//ScriptRemote_RegisterClientFunction( "ServerCallback_UpdateOverheadIconForNPC", "int", EHANDLE_MIN, EHANDLE_MAX )//Audit 2-22-2025 not currently used

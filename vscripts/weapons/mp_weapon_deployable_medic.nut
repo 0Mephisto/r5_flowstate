@@ -1153,17 +1153,23 @@ bool function DeployableMedic_ShouldAttemptHeal( entity player, entity droneMedi
 	}
 	//We can't heal a player who is currently in a cloud of gas
 	
-	//todo: Caustic Gas doesn't work for now so I will disable this (until a fix for daddy Caustic)
-	/*if ( IsGasCausingDamage( player ) )
+	//todo(kral): Caustic Gas doesn't work for now so I will disable this (until a fix for daddy Caustic) //(mk): done.
+	if ( IsGasCausingDamage( player ) )
 	{
-		//printt( "DON'T HEAL: PLAYER " + player + " IS IN GAS." )
+		#if DEVELOPER
+			printt( "DON'T HEAL: PLAYER " + player + " IS IN GAS." )
+		#endif
+		
 		return false
-	}*/
+	}
 
 	//If bleedout logic is active and the player is bleeding we should not heal them.
 	if ( Bleedout_IsBleedoutLogicActive() && Bleedout_IsBleedingOut( player ) )
 	{
-		//printt( "DON'T HEAL: PLAYER " + player + " IS BLEEDING OUT." )
+		#if DEVELOPER
+			printt( "DON'T HEAL: PLAYER " + player + " IS BLEEDING OUT." )
+		#endif
+		
 		return false
 	}
 
@@ -1186,6 +1192,7 @@ bool function DeployableMedic_ShouldAttemptHeal( entity player, entity droneMedi
 		//printt( "DON'T HEAL: PLAYER " + player + " DRONE IS OUT OF RESOURCE." )
 		return false
 	}
+	
 	if ( !CanBeHealedByDroneMedic( player ) )
 	{
 		//printt( "DON'T HEAL: PLAYER " + player + " CANNOT BE HEALED BY DRONE MEDIC." )

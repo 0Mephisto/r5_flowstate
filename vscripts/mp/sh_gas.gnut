@@ -227,7 +227,7 @@ bool function IsEntInGas( entity ent )
 
 bool function IsGasCausingDamage( entity ent )
 {
-	return ent.e.gasLastDamageTime != -1.0
+	return Time() < ent.e.gasLastDamageTime + GAS_CLOUD_DMG_TICK_RATE // + GAS_CLOUD_EXPOSURE_DBOUNCE //(mk): debounce not used, but if ever does, needs to be added here
 }
 
 void function GasCloud_HandleGasExposure( entity target, var damageInfo )

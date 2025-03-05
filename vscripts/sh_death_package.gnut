@@ -4,6 +4,7 @@ untyped
 
 global function Death_Package_Init
 global function PrintDamageFlags
+global function PrintAllDamageFlags
 global function GetDescStringForDamageFlags
 
 #if SERVER
@@ -617,6 +618,12 @@ const table<int, string> damageFlagsToNames =
 	//[DF_DOOM_PROTECTED		] = "DF_DOOM_PROTECTED",
 	[DF_DOOM_FATALITY		] = "DF_DOOM_FATALITY",
 	[DF_NO_HITBEEP			] = "DF_NO_HITBEEP"
+}
+
+void function PrintAllDamageFlags()
+{
+	foreach( k, v in damageFlagsToNames )
+		printf( "Damage Flag: %s = %d", v, k )
 }
 
 void function PrintDamageFlags( int flags )
