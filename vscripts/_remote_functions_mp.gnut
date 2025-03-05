@@ -973,7 +973,7 @@ void function RemoteFunctions_Init_Begin()
 	ScriptRemote_RegisterClientFunction( "ServerCallback_SetAssistInformation", "int", EDAMAGESOURCE_MIN, RT_EDAMAGESOURCE_MAX, "int", EHANDLE_MIN, EHANDLE_MAX, "int", EHANDLE_MIN, EHANDLE_MAX, "float", -1.0, 4000.0, 16 )//Audit 2-22-2025
 	ScriptRemote_RegisterClientFunction( "ServerCallback_DataKnifeStartLeech", "float", -1.0, 4000.0, 16 )//Audit 2-22-2025
 	ScriptRemote_RegisterClientFunction( "ServerCallback_DataKnifeCancelLeech" )
-	//ScriptRemote_RegisterClientFunction( "ServerCallback_ControlPanelRefresh", "int", EHANDLE_MIN, EHANDLE_MAX )//Audit 2-22-2025 currently not called.
+	ScriptRemote_RegisterClientFunction( "ServerCallback_ControlPanelRefresh", "int", EHANDLE_MIN, EHANDLE_MAX )//Audit 2-22-2025 currently not called.
 	//ScriptRemote_RegisterClientFunction( "ServerCallback_TurretRefresh", "int", EHANDLE_MIN, EHANDLE_MAX )//Audit 2-22-2025 not currently used
 	
 	
