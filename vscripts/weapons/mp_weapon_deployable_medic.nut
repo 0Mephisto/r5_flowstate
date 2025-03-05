@@ -759,9 +759,8 @@ bool function CanBeHealedByDroneMedic( entity player )
 {
 	if ( !player.IsPlayer() )
 	{
-		if ( IsSurvivalTraining() && player.GetScriptName() == "survival_training_target_dummy" )
+		if ( IsSurvivalTraining() )
 			return true
-
 		return false
 	}
 
@@ -1142,43 +1141,57 @@ bool function DeployableMedic_ShouldAttemptHeal( entity player, entity droneMedi
 	//We can't heal titans
 	if ( player.IsTitan() )
 	{
-		//	printt( "DON'T HEAL: PLAYER " + player + " IS A TITAN." )
+		//printt( "DON'T HEAL: PLAYER " + player + " IS A TITAN." )
 		return false
 	}
 
 	//We can't heal phase shifted players
 	if ( player.IsPhaseShifted() )
 	{
-		//	printt( "DON'T HEAL: PLAYER " + player + " PHASE SHIFTED." )
+		//printt( "DON'T HEAL: PLAYER " + player + " PHASE SHIFTED." )
 		return false
 	}
-
-	//todo: Caustic Gas doesn't work for now so I will disable this (until a fix for daddy Caustic)
 	//We can't heal a player who is currently in a cloud of gas
 	
-	//(mk): enabling this check
-	if ( IsGasCausingDamage( player ) )
+	//todo: Caustic Gas doesn't work for now so I will disable this (until a fix for daddy Caustic)
+	/*if ( IsGasCausingDamage( player ) )
 	{
-		//	printt( "DON'T HEAL: PLAYER " + player + " IS IN GAS." )
+		//printt( "DON'T HEAL: PLAYER " + player + " IS IN GAS." )
 		return false
-	}
+	}*/
 
 	//If bleedout logic is active and the player is bleeding we should not heal them.
 	if ( Bleedout_IsBleedoutLogicActive() && Bleedout_IsBleedingOut( player ) )
+	{
+		//printt( "DON'T HEAL: PLAYER " + player + " IS BLEEDING OUT." )
 		return false
+	}
 
 	// can't be executing and get healed.
 	if ( player.IsPlayer() && (player.ContextAction_IsMeleeExecution() || player.ContextAction_IsMeleeExecutionTarget()) )
+	{
+		//printt( "DON'T HEAL: PLAYER " + player + " IS IN MELEE EXECUTION." )
 		return false
+	}
 
 	//We can't heal players who have full health
 	if ( player.GetHealth() == player.GetMaxHealth() )
+	{
+		//printt( "DON'T HEAL: PLAYER " + player + " IS ALREADY IN MAX HEALTH." )
 		return false
+	}
 
 	if ( PlayerHealResourceDepleated( player, droneMedic ) )
+	{
+		//printt( "DON'T HEAL: PLAYER " + player + " DRONE IS OUT OF RESOURCE." )
 		return false
+	}
 	if ( !CanBeHealedByDroneMedic( player ) )
+	{
+		//printt( "DON'T HEAL: PLAYER " + player + " CANNOT BE HEALED BY DRONE MEDIC." )
 		return false
+	}
+
 	float distThresholdSqr = pow( DEPLOYABLE_MEDIC_HEAL_RADIUS*1.25, 2 )
 	float distSqr = DistanceSqr( player.GetOrigin(), droneMedic.GetOrigin() )
 	if ( distSqr > distThresholdSqr )

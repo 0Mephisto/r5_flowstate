@@ -39,8 +39,10 @@ global const asset FIRINGRANGE_QUARRY_BLOCK_ASSET = $"mdl/rocks/thunderdome_quar
 #if SERVER
 // To be used outside if needed
 global int firingrange_infinite_ammo = 0
+global function FiringRangeProps
 
 bool toggledFriendlyFire = false
+global function CreateGunRangeTargetsForRealm
 #endif
 
 #if CLIENT
@@ -147,16 +149,26 @@ void function FiringRangeGameMode_Init()
 	if ( GetMapName() != "mp_rr_canyonlands_staging" )
 		return
 
+	PrecacheModel( FIRINGRANGE_BLUE_STAND_ASSET )
+	PrecacheModel( FIRINGRANGE_FLICK_TARGET_ASSET )
+	PrecacheModel( TARGET_FOLDING_MODEL )
+	PrecacheModel( TARGET_SPINNING_MODEL )
+	PrecacheParticleSystem( FIRINGRANGE_FLICK_TARGET_PARTICLE_HIT )
+
+	RegisterSignal( "GunRangeTargetDamaged" )
+	RegisterSignal( "SlideTargetSpeedReset" )
+	RegisterSignal( "SlideTargetThinkStart" )
+	RegisterSignal( "SlideTargetWaitForReset" )
+
+	#if SERVER
+	AddSpawnCallback( "prop_survival", OnPropSurvivalSpawned )
+	#endif
 	if( Playlist() != ePlaylists.survival_firingrange )
 		return
 	
 	if ( !IsFiringRangeGameMode() || GetCurrentPlaylistVarBool( "firingrange_aimtrainerbycolombia", false ) )
 		return
 
-	PrecacheModel( FIRINGRANGE_BLUE_STAND_ASSET )
-	PrecacheModel( FIRINGRANGE_FLICK_TARGET_ASSET )
-	PrecacheModel( TARGET_FOLDING_MODEL )
-	PrecacheParticleSystem( FIRINGRANGE_FLICK_TARGET_PARTICLE_HIT )
 	//PrecacheParticleSystem( FIRINGRANGE_ITEM_RESPAWN_PARTICLE )
 
 	ScriptRemote_RegisterClientFunction( "SCB_BroadcastFriendlyFireChange", "entity" )
@@ -166,16 +178,11 @@ void function FiringRangeGameMode_Init()
 		AddCallback_OnClientConnected( WaitForPlayerSpawn )
 		AddCallback_OnPlayerKilled( OnPlayerKilled )
 		AddCallback_OnWeaponAttack( OnWeaponAttack )
-		AddSpawnCallback( "prop_survival", OnPropSurvivalSpawned )
 		AddCallback_ItemFlavorLoadoutSlotDidChange_AnyPlayer( Loadout_CharacterClass(), OnTeammateLoadoutSelectionChanged, false )
 		AddClientCommandCallback( "firingrange_toggle_friendlyfire", ClientCommand_ToggleFriendlyFire )
 
 		firingrange_infinite_ammo = GetCurrentPlaylistVarBool( "survival_infinite_ammo", false ) ? 1 : 2
 	#endif
-	RegisterSignal( "GunRangeTargetDamaged" )
-	RegisterSignal( "SlideTargetSpeedReset" )
-	RegisterSignal( "SlideTargetThinkStart" )
-	RegisterSignal( "SlideTargetWaitForReset" )
 	#if CLIENT
 		IntroDisplayThread()
 	#endif //CLIENT
@@ -197,34 +204,11 @@ void function SCB_BroadcastFriendlyFireChange( entity playerThatChanged )
 void function OnEntitiesDidLoad()
 {
 	#if SERVER
-
-	// Init
-	CreateLegendaryRack()//Create 6th weapon rack to support sniper ammo
 	array<entity> lootbins = GetEntArrayByScriptName("staging_loot_bin")
-	array<entity> movers = GetEntArrayByScriptName("script_mover_lightweight")
-
 	foreach(entity lootbin in lootbins)
 		lootbin.Destroy()
 
-	foreach(entity e in GetEntArrayByScriptName("weapon_racks"))
-	{
-		RackGroup r;	r.point = e
-		file.rackSpawns.append(r)
-	}
-
-	// Items
-	FillWeaponTable() // load first to know where the rest goes
-	FillAttachmentTable() // requires weapons to be loaded
-	FillEquipmentTable() // armor + helmet + bp + shield
-	FillOrdnanceTable() // nades
-	FillItemTable() // health + batts + the rest
-
-	CreateRackGroups()
-	SpawnAttachments()
-	SpawnEquipments()
-	SpawnOrdnance()
-	SpawnItems()
-	SpawnAmmo()
+	thread FiringRangeProps()
 
 	//array< entity > dummypts = GetEntArrayByScriptName( "spawnnpoint_frdummy" )
 	//foreach( dummypt in dummypts)
@@ -250,6 +234,34 @@ void function OnEntitiesDidLoad()
 }
 
 #if SERVER
+void function FiringRangeProps()
+{
+	// Init
+	CreateLegendaryRack()//Create 6th weapon rack to support sniper ammo
+	array<entity> movers = GetEntArrayByScriptName("script_mover_lightweight")
+
+	foreach(entity e in GetEntArrayByScriptName("weapon_racks"))
+	{
+		RackGroup r;	r.point = e
+		file.rackSpawns.append(r)
+	}
+
+	FillWeaponTable() // load first to know where the rest goes
+	FillAttachmentTable() // requires weapons to be loaded
+	FillEquipmentTable() // armor + helmet + bp + shield
+	FillOrdnanceTable() // nades
+	FillItemTable() // health + batts + the rest
+	
+	CreateRackGroups()
+	if ( !IsSurvivalTraining() )
+	{
+		SpawnEquipments()
+		SpawnOrdnance()
+		SpawnItems()
+		SpawnAttachments()
+	}
+	SpawnAmmo()
+}
 entity function CreateLegendaryRack()
 {
 	entity Rack_Index_Six = CreateEntity( "info_target" )

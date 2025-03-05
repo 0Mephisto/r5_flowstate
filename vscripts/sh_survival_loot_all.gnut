@@ -289,7 +289,7 @@ void function SURVIVAL_Loot_All_InitShared()
 	{
 		SURVIVAL_Loot_RegFromDataTable( GetDataTable( $"datatable/flowstate_all_new_halomod_survival_groundloot.rpak" ) )
 	} 
-	else if( Playlist() == ePlaylists.survival_firingrange ) 
+	else if (Playlist() == ePlaylists.survival_firingrange || Playlist() == ePlaylists.survival_training)
 	{
 		SURVIVAL_Loot_RegFromDataTable( GetDataTable( $"datatable/survival_loot_sdk_firingrange.rpak" ) )
 	} 
