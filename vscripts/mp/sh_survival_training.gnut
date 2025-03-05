@@ -158,7 +158,7 @@ void function ShSurvivalTraining_Init()
 		RegisterNetworkedVariableChangeCallback_time( "TrainingEndTime", TrainingEndTimeChanged )
 		SetCommsDialogueEnabled( false )
 
-		AddCreateCallback( "prop_dynamic", TrainingDeathBoxCreated )
+		AddCreateCallback( "prop_death_box", TrainingDeathBoxCreated )
 	#endif
 }
 
@@ -1572,6 +1572,7 @@ void function StartTraining_Respawn( entity player )
 	entity respawnChamberRadar
 	entity wp
 	entity wp2
+
 	EndSignal( player, "OnDeath" )
 
 	OnThreadEnd( function() : ( player, beaconFX, deathBox, dissolveDeathBox, respawnChamber, respawnChamberRadar, wp, wp2 )
