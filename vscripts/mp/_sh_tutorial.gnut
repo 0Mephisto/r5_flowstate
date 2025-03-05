@@ -149,8 +149,8 @@ void function ShTutorial_Init()
 	AddInputHint( eTutorialContext.FREEFALL, -1, "%zoom%", "#SURVIVAL_TUTORIAL_FREE_LOOK", TryActionFreeLook )
 
 
-	//AddInputHint( eTutorialContext.WEAPON, -1, "%scriptCommand3%", "Toggle Fire Mode", TryActionFireMode )
-	//AddInputHint( eTutorialContext.WEAPON, IN_OFFHAND1, "%offhand1%", "Tactical", TryActionTactical )
+	AddInputHint( eTutorialContext.WEAPON, -1, "%scriptCommand3%", "Toggle Fire Mode", TryActionFireMode )
+	AddInputHint( eTutorialContext.WEAPON, IN_OFFHAND1, "%offhand1%", "Tactical", TryActionTactical )
 }
 
 #if SERVER
@@ -189,7 +189,7 @@ void function OnPlayerConnected( entity player )
 void function TutorialContextPlayerThink( entity player )
 {
 	player.EndSignal( "OnDestroy" )
-	player.EndSignal( "FreefallEnded" )
+	//player.EndSignal( "FreefallEnded" )
 
 	OnThreadEnd(
 		function() : ( player )

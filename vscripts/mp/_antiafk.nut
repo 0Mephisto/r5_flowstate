@@ -145,18 +145,13 @@ void function CheckAfkKickThread(entity player)
 				break
 		}
 		
-		wait 1
-		
+		wait 1		
     }
 }
 
-bool function AfkThread_PlayerMoved( entity player ) //callback is defined as bool return func...
+void function AfkThread_PlayerMoved( entity player )
 {
-	// if( !IsValid( player ) ) //is this needed? lets find out.
-		// return false
-	
     player.p.lastmoved = Time()
-	return true
 }
 
 void function AfkThread_AddPlayerCallbacks( entity player )

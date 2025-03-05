@@ -66,7 +66,7 @@ global struct PlayerInputAxisEventCallbackStruct
 	float vertAxisMinThreshold   = -1.0
 	float vertAxisMaxThreshold   = 1.0
 
-	bool functionref( entity player ) callbackFunc
+	void functionref( entity player ) callbackFunc
 	float debounceTime       = 0.0
 	float lastTriggeredTime  = 0.0
 }
@@ -865,7 +865,7 @@ global struct ServerPlayerStruct
 	bool challengenotify 		= false //need to make a notify system
 	entity entLastChallenger
 	float lastInputChangeTime
-	float last_input_time
+	//float last_input_time
 	float IBMM_grace_period 	= -1 // <= 0 is disabled
 	int movevalue 				= 0
 	int p_damage 				= 3 //for lgduel default dmg/heal ; BAD var name (TODO: DEPRECATE)

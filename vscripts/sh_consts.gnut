@@ -21,7 +21,9 @@ global const bool ENTITYVAR_DEPRECATED		= false
 global const int INT_MIN = (1<<31)
 global const int INT_MAX = (1<<31) - 1
 global const float FLT_MAX = 3.40282e+38
-global const float FLT_EPSILON = 1.0e-6
+global const float FLT_MIN = 1.17549e-38 //smallest positive normalized https://www.gnu.org/software/libc/manual/html_node/Floating-Point-Parameters.html
+global const float FLT_LOWEST = -3.40282e+38
+global const float FLT_EPSILON = 1.0e-6 //1.19209e-7?
 
 global const void IN_SET = null
 global typedef IntSet table<int, void>

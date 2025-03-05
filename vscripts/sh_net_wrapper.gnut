@@ -290,7 +290,7 @@ struct
 		return consumption
 	}
 	
-	const RANGE_SNVT =
+	const array<string> RANGE_SNVT =
 	[
 		"SNVT_INT",
 		"SNVT_UNSIGNED_INT",
@@ -302,7 +302,7 @@ struct
 		return RANGE_SNVT.contains( varType )
 	}
 	
-	const TIME_SNVT =
+	const array<string> TIME_SNVT =
 	[
 		"SNVT_FLOAT_RANGE_OVER_TIME",
 		"SNVT_TIME"
@@ -314,6 +314,7 @@ struct
 	}
 #endif
 
+const int REQUIRED_VARS_OFFSET = 3
 void function ScriptRegisterNetworkedVariable( ... )
 {
 	#if DEBUG_NET
@@ -347,7 +348,7 @@ void function ScriptRegisterNetworkedVariable( ... )
 			int spacing = s_prntOffset - varNameLen - 2
 			string debugMsg = format( "\"%s\";%sparams: ( %s, %s", varName, TableIndent3( spacing ), category, varType )
 			
-			for( int i = 3; i < vargc; i++ )
+			for( int i = REQUIRED_VARS_OFFSET + iterOffset; i < vargc; i++ )
 				debugMsg += format( ", %s", string( vargv[ i ] ) )
 			
 			debugMsg = format( "%s )", debugMsg )
@@ -470,7 +471,7 @@ void function ScriptRemote_RegisterClientFunction( ... )
 		
 		#if VERBOSE_NET_PRINTS
 			int spacing = s_prntOffset - funcName.len()
-			Warning( format( "Registering Remote Client Func:       %s;%sparams: ( %s ) ", funcName, TableIndent3( spacing ), GetParamTypeString( vargz ) ) )
+			Warning( format( "Registering Remote Client Func:       %s;%sparams: ( %s ) ", funcName, TableIndent3( spacing ), GetRemoteFuncParamsAsString( vargz ) ) )
 		#endif
 		
 		if( IsOverUsage( funcName, funcBufferConsumption ) )
@@ -539,7 +540,7 @@ void function ScriptRemote_RegisterUIFunction( ... )
 			
 		#if VERBOSE_NET_PRINTS
 			int spacing = s_prntOffset - funcName.len()
-			Warning( format( "Registering Remote UI Function:       %s;%sparams: ( %s ) ", funcName, TableIndent3( spacing ), GetParamTypeString( vargz ) ) )
+			Warning( format( "Registering Remote UI Function:       %s;%sparams: ( %s ) ", funcName, TableIndent3( spacing ), GetRemoteFuncParamsAsString( vargz ) ) )
 		#endif
 		
 		if( IsOverUsage( funcName, funcBufferConsumption ) )
@@ -610,7 +611,7 @@ void function ScriptRemote_RegisterUntypedFunction_deprecated( ... )
 	for ( int j = iterOffset; j < paramCount; j++ )
 		params.append( vargv[ j ] )
 	
-#if DEBUG_NET	
+#if DEBUG_NET
 	try 
 	{
 #endif
@@ -632,7 +633,9 @@ void function ScriptRemote_RegisterUntypedFunction_deprecated( ... )
 }
 
 #if DEBUG_NET && VERBOSE_NET_PRINTS
-	string function GetParamTypeString( var vArgArr )
+	const int ASCII_ZERO = 48
+	const int ASCII_DOT	 = 46
+	string function GetRemoteFuncParamsAsString( var vArgArr )
 	{
 		int paramCount 	= expect array( vArgArr ).len()
 		int maxComma = paramCount - 2
@@ -656,8 +659,17 @@ void function ScriptRemote_RegisterUntypedFunction_deprecated( ... )
 					break 
 					
 				case "float":
-					vargs += format( "%f%s", expect float( vArgArr[ i ] ), comma )
-					break 
+					string formattedFloat = format( "%.7f", expect float( vArgArr[ i ] ) ) //retain decimal precision form without scientific notation %g
+					int sliceIdx = formattedFloat.len() - 1
+					
+					while ( sliceIdx >= 0 && formattedFloat[ sliceIdx ] == ASCII_ZERO ) //checling for "0" would fail here, as indexing a string returns the char. Iterate backwards to perform one slice.
+						sliceIdx--
+					
+					if ( sliceIdx >= 0 && formattedFloat[ sliceIdx ] == ASCII_DOT )
+						sliceIdx++ //keep a "0" for display purposes.
+					
+					vargs += format( "%s%s", formattedFloat.slice( 0, sliceIdx + 1 ), comma )
+					break
 					
 				case "vector":
 					vargs += format( "%s%s", VectorToString( expect vector( vArgArr[ i ] ) ), comma )
