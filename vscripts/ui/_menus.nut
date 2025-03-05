@@ -1388,7 +1388,7 @@ bool function ShouldShowPremiumCurrencyDialog()
 		return false
 
 	int premiumBalance  = GRXCurrency_GetPlayerBalance( GetUIPlayer(), GRX_CURRENCIES[GRX_CURRENCY_PREMIUM] )
-	int lastSeenBalance = GetPersistentVarAsInt( "lastSeenPremiumCurrency" )
+	int lastSeenBalance = 0//GetPersistentVarAsInt( "lastSeenPremiumCurrency" )
 	if ( premiumBalance == lastSeenBalance )
 		return false
 
@@ -1399,7 +1399,7 @@ bool function ShouldShowPremiumCurrencyDialog()
 void function ShowPremiumCurrencyDialog( bool dialogFlow )
 {
 	int premiumBalance  = GRXCurrency_GetPlayerBalance( GetUIPlayer(), GRX_CURRENCIES[GRX_CURRENCY_PREMIUM] )
-	int lastSeenBalance = GetPersistentVarAsInt( "lastSeenPremiumCurrency" )
+	int lastSeenBalance = 0//GetPersistentVarAsInt( "lastSeenPremiumCurrency" )
 	Assert( premiumBalance > lastSeenBalance )
 	Assert( GRX_IsInventoryReady() )
 

@@ -105,7 +105,7 @@ void function InitSystemPanelMain( var panel )
 void function ViewCinematic( var button )
 {
 	CloseActiveMenu()
-	thread PlayVideoMenu( false, "intro", "Apex_Opening_Movie", eVideoSkipRule.INSTANT )
+	thread PlayVideoMenu( false, "intro", "", eVideoSkipRule.INSTANT )
 }
 
 void function TryChangeCharacters()
