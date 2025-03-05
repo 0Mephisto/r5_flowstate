@@ -32,6 +32,7 @@ global function Flowstate_ModeDisablesRagdolls
 
 global enum eMaps
 {
+	_CUSTOM = -1,
 	mp_rr_box, //0
 	mp_rr_canyonlands_staging, //1
 	mp_rr_canyonlands_64k_x_64k, //2
@@ -66,6 +67,7 @@ global enum eMaps
 
 global enum ePlaylists
 {
+	_CUSTOM = -1,
 	fs_1v1, //0
 	fs_dm, //1
 	fs_tdm, //2
@@ -122,6 +124,7 @@ global enum ePlaylists
 
 global enum eGamemodes
 {
+	_CUSTOM = -1,
 	MENUFALL, //0
 	TEAM_DEATHMATCH, //1
 	SURVIVAL, //2
@@ -178,19 +181,13 @@ const PRINT_GAMEMODE_DEBUGS = true
 void function __EnumsToArrays_Init()
 {
 	foreach( string strname, int num in eMaps )
-	{
 		SH_globals.mapNames.append( strname.tolower() )
-	}
 	
 	foreach( string strname, int num in ePlaylists )
-	{
 		SH_globals.playlists.append( strname.tolower() )
-	}
 	
 	foreach( string strname, int num in eGamemodes )
-	{
 		SH_globals.gamemodes.append( strname.tolower() )
-	}
 }
 
 void function __ClearEnumArrays()
@@ -208,6 +205,10 @@ void function PlayLists_Mapnames_Gamemodes_Init()
 	
 	__EnumsToArrays_Init()
 	
+	bool bCustomGamode		= GetCurrentPlaylistVarBool( "custom_gamemode", false )
+	bool bCustomMap			= GetCurrentPlaylistVarBool( "custom_map", false )
+	bool bCustomPlaylist	= GetCurrentPlaylistVarBool( "custom_playlist", false )
+	
 	int playlistsArrayCount = SH_globals.playlists.len() - 1
 	int playlistsEnumsCount = ePlaylists._PLAYLISTS_COUNT
 	
@@ -216,11 +217,6 @@ void function PlayLists_Mapnames_Gamemodes_Init()
 	
 	int gamemodesArrayCount = SH_globals.gamemodes.len() - 1
 	int gamemodesEnumsCount = eGamemodes._GAMEMODES_COUNT
-	
-	//deprecated from old
-	// mAssert( playlistsArrayCount == playlistsEnumsCount, format( "Playlists not properly configured in enum/array structs: sh_mapname_playlist_gamemode_enums.nut - Array: %d ;Enum: %d ", playlistsArrayCount, playlistsEnumsCount ) )
-	// mAssert( mapnamesArrayCount == mapnamesEnumsCount, format( "Maps not properly configured in enum/array structs: sh_mapname_playlist_gamemode_enums.nut - Array: %d ;Enum: %d ", mapnamesArrayCount, mapnamesEnumsCount ) )
-	// mAssert( gamemodesArrayCount == gamemodesEnumsCount, format( "Gamemodes not properly configured in enum/array structs: sh_mapname_playlist_gamemode_enums.nut - Array: %d ;Enum: %d ", gamemodesArrayCount, gamemodesEnumsCount ) )
 	
 	#if SERVER || CLIENT
 		string level = GetMapName()
@@ -233,11 +229,15 @@ void function PlayLists_Mapnames_Gamemodes_Init()
 	#endif
 	
 		SH_globals.currentMap = getMapEnumFromName( level )
-		mAssert( SH_globals.currentMap != -1, format( "Current map \"%s\" is not registered in sh_mapname_playlist_gamemode_enums.nut", level ) )
+		
+		if( !bCustomMap )
+			mAssert( SH_globals.currentMap != -1, format( "Current map \"%s\" is not registered in sh_mapname_playlist_gamemode_enums.nut", level ) )
 		
 		#if UI 
 			if( level != "" )
 			{
+				if( bCustomGamode || bCustomMap || bCustomPlaylist )
+					uiGlobal.custom_mode = true
 		#endif
 			
 			string currentPlaylistName = GetCurrentPlaylistName()
@@ -250,7 +250,9 @@ void function PlayLists_Mapnames_Gamemodes_Init()
 			}
 			
 			SH_globals.currentPlaylist = getPlaylistEnumFromName( currentPlaylistName )
-			mAssert( SH_globals.currentPlaylist != -1, format( "Current playlist \"%s\" is not registered in sh_mapname_playlist_gamemode_enums.nut", currentPlaylistName ) )
+			
+			if( !bCustomPlaylist )
+				mAssert( SH_globals.currentPlaylist != -1, format( "Current playlist \"%s\" is not registered in file: %s", currentPlaylistName, FILE_NAME() ) )
 		
 		#if UI 
 			}
@@ -271,7 +273,9 @@ void function PlayLists_Mapnames_Gamemodes_Init()
 	#endif
 		
 		SH_globals.currentGamemode = currentGamemodeEnum
-		mAssert( SH_globals.currentGamemode != -1, format( "Current gamemode \"%s\" is not registered in sh_mapname_playlist_gamemode_enums.nut", curentGamemodeName ) )
+		
+		if( !bCustomGamode )
+			mAssert( SH_globals.currentGamemode != -1, format( "Current gamemode \"%s\" is not registered in file: %s", curentGamemodeName, FILE_NAME() ) )
 	
 	AllModeConditionals_Init()
 	
