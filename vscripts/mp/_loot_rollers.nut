@@ -194,6 +194,7 @@ void function OnSpawnPartyBallRotator( entity mover )
 	vector angles = <0,0,0>
 	entity partyBall = SpawnLootRoller_DispatchSpawn( origin, angles )
 	partyBall.SetParent( mover )
+	partyBall.SetModelScale( 0.5 )
 	thread Flowstate_BuildLootForDrone( partyBall, true )
 	thread Flowstate_StartRollerLootLoop( partyBall, 3, 4, false )
 }
