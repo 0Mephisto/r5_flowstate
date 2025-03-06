@@ -270,6 +270,7 @@ global struct UIGlobals
 	array    stickConfigs
 
 	bool videoSettingsChanged = false
+	bool SoundSettingsChanged = false
 
 	bool playingVideo = false
 	bool playingCredits = false
