@@ -9,6 +9,7 @@ global function LootRollerSpawned
 #if SERVER
 global function Flowstate_ReturnDroneLootForCurrentTier
 global function Flowstate_StartRollerLootLoop
+global function Flowstate_BuildLootForDrone
 #endif
 
 #if CLIENT
@@ -113,7 +114,7 @@ const int BLUE_LOOT_TO_SPAWN = 2
 const int PURPLE_LOOT_TO_SPAWN = 1
 const int YELLOW_LOOT_TO_SPAWN = 1
 
-void function Flowstate_BuildLootForDrone( entity roller )
+void function Flowstate_BuildLootForDrone( entity roller, bool isMirageRoller = false )
 {
 	file.allLootRollers[ roller ] <- {}
 	int lootToSpawn
@@ -153,10 +154,8 @@ void function Flowstate_BuildLootForDrone( entity roller )
 }
 
 #if SERVER
-void function Flowstate_StartRollerLootLoop( entity roller )
+void function Flowstate_StartRollerLootLoop( entity roller, int tier = 2, int max_tier = 4, bool isMirageRoller = false )
 {
-	int tier = 2
-	int max_tier = 4
 	float timeToWait
 	
 	while ( IsValid( roller ) && IsValid( roller.GetParent() ) )
@@ -186,6 +185,13 @@ void function Flowstate_StartRollerLootLoop( entity roller )
 			tier = 3
 		else if( tier == 3 )
 			tier = 2
+	}
+	
+	if( isMirageRoller )
+	{
+		roller.e.currentTier = tier
+		foreach( player in GetPlayerArray() )
+			Remote_CallFunction_NonReplay( player, "ServerCallback_SetLootRollerLootTierFX", roller.GetEncodedEHandle(), tier, roller.e.hasVaultKey )
 	}
 }
 

@@ -2,6 +2,7 @@ global function InitLootRollers
 global function SpawnLootRoller_Parented
 global function SpawnLootRoller_NoDispatchSpawn
 global function SpawnLootRoller_DispatchSpawn
+global function OnSpawnPartyBallRotator
 global function LaunchLootRoller
 global const string LOOT_ROLLER_MODEL_SCRIPTNAME   = "LootRollerModel"
 
@@ -67,6 +68,8 @@ entity function SpawnLootRoller_DispatchSpawn( vector origin, vector angles )
 	roller.SetHealth( 1 )
 	roller.SetTakeDamageType( DAMAGE_EVENTS_ONLY )
 	DispatchSpawn( roller )
+	thread Flowstate_BuildLootForDrone( roller, true )
+	thread Flowstate_StartRollerLootLoop( roller, 3, 4, true )
 	AddEntityCallback_OnKilled( roller, LootRollers_OnKilled)
 	AddEntityCallback_OnDamaged( roller, SoloRollers_OnDamaged)
     roller.kv.CollisionGroup = TRACE_COLLISION_GROUP_NONE
@@ -183,6 +186,16 @@ void function LaunchLootRoller( entity rollerModel, vector launchDirection = <0,
 
 	rollerModel.SetVelocity( launchDirection * speed )
 	rollerModel.SetAngularVelocity( launchDirection.x * speed, launchDirection.y * speed, launchDirection.z * speed )
+}
+
+void function OnSpawnPartyBallRotator( entity mover )
+{
+	vector origin = mover.GetOrigin() - <0,0,15>
+	vector angles = <0,0,0>
+	entity partyBall = SpawnLootRoller_DispatchSpawn( origin, angles )
+	partyBall.SetParent( mover )
+	thread Flowstate_BuildLootForDrone( partyBall, true )
+	thread Flowstate_StartRollerLootLoop( partyBall, 3, 4, false )
 }
 
 void function LootDrone_Panic( LootDroneData data )

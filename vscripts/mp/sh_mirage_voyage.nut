@@ -200,6 +200,7 @@ void function MirageVoyage_Init()
 
 	PrecacheParticleSystem( MIRAGE_DECOY_FX )
 	PrecacheParticleSystem( LOOT_LAUNCHER_FX )
+	AddSpawnCallback_ScriptName( "partyball_rotator", OnSpawnPartyBallRotator )
 
 	FlagInit( FLAG_MIRAGE_VOYAGE_BUTTON_ENABLED )
 	FlagInit( FLAG_MIRAGE_VOYAGE_MAIN_FX )
@@ -529,7 +530,7 @@ void function SetMirageVoyagePartyActive( entity button, bool activatedFromPlane
 		thread FillerFXSequence()
 
 	// change the console skin
-	button.SetUsePrompts( "Party Already Active", "Party Already Active" )
+	button.SetUsePrompts( "#VOYAGE_PARTY_ACTIVE_HINT", "#VOYAGE_PARTY_ACTIVE_HINT" )
 	button.SetSkin( 1 )
 
 	// play music
@@ -696,7 +697,7 @@ void function SetMirageVoyagePartyDisabled( entity button )
 
 	wait 1
 
-	button.SetUsePrompts( "Press %use% To Party", "Press %use% To Party" )
+	button.SetUsePrompts( "#VOYAGE_PARTY_HINT", "#VOYAGE_PARTY_HINT" )
 	button.SetSkin( 0 )
 
 	FlagClear( FLAG_MIRAGE_VOYAGE_BUTTON_ENABLED )
