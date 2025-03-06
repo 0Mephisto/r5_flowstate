@@ -177,7 +177,7 @@ void function FiringRangeGameMode_Init()
 		AddCallback_EntitiesDidLoad( OnEntitiesDidLoad )
 		AddCallback_OnClientConnected( WaitForPlayerSpawn )
 		AddCallback_OnPlayerKilled( OnPlayerKilled )
-		AddCallback_OnWeaponAttack( OnWeaponAttack )
+		//AddCallback_OnWeaponAttack( OnWeaponAttack )
 		AddCallback_ItemFlavorLoadoutSlotDidChange_AnyPlayer( Loadout_CharacterClass(), OnTeammateLoadoutSelectionChanged, false )
 		AddClientCommandCallback( "firingrange_toggle_friendlyfire", ClientCommand_ToggleFriendlyFire )
 
@@ -1482,7 +1482,7 @@ void function OnWeaponAttack( entity player, entity weapon, string weaponName, i
 
 void function FixWeapon(entity weapon)
 {
-	try
+	/*try
 	{
 		switch(firingrange_infinite_ammo)
 		{
@@ -1496,7 +1496,7 @@ void function FixWeapon(entity weapon)
 				break
 		}
 	}
-	catch(error){}
+	catch(error){}*/
 }
 #endif
 
