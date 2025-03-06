@@ -550,7 +550,9 @@ void function OnDoorSpawned( entity door )
 		}
 	}
 
-	file.allDoors[door] <- doorType
+	#if DEVELOPER
+		file.allDoors[door] <- doorType
+	#endif
 
 	ArrayRemoveInvalid( file.bigPropDoors )
 	file.bigPropDoors.append( door )
