@@ -50,7 +50,7 @@ void function Olympus_MapInit_Common()
 			AddSpawnCallback( "info_target", Rift_Init )
 		}
 
-		thread KillPlayersUnderMap_Thread( MAP_KILL_VOLUME_OFFSET_OLYMPUS ) //-28320
+		//thread KillPlayersUnderMap_Thread( MAP_KILL_VOLUME_OFFSET_OLYMPUS ) //-28320
 
 		/////////////////////////////////////////////////////////////REMOVE THESE ONCE FIXED/////////////////////////////////////////////////////////////////////////
 
