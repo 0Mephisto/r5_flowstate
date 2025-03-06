@@ -133,7 +133,7 @@ void function ShDoors_Init()
 
 		#if DEVELOPER
 			RegisterSignal( "HaltDoorThink" )
-			AddClientCommandCallback( "dev_spawn_blockable_door", ClientCommand_dev_spawn_blockable_door )
+			AddClientCommandCallback( "dev_spawn_blockable_door", ClientCommand_dev_spawn_blockable_door ) // dev
 		#endif
 
 	#endif
@@ -178,7 +178,7 @@ bool function IsDoorOpen( entity door )
 	}
 	else
 	{
-		return GradeFlagsHas( door, eGradeFlags.IS_OPEN ) //
+		return GradeFlagsHas( door, eGradeFlags.IS_OPEN ) //door.GetCurrentSequenceName().find( "open" ) > 0
 	}
 
 	return false
@@ -218,7 +218,6 @@ bool function ClientCommand_dev_spawn_blockable_door( entity player, array<strin
 	door.SetOrigin( tr.endPos )
 	door.SetAngles( AnglesCompose( VectorToAngles( FlattenNormalizeVec( tr.endPos - player.GetOrigin() ) ), <0, -90, 0> ) )
 	DispatchSpawn( door )
-
 	return true
 }
 #endif
@@ -281,9 +280,9 @@ void function OnDoorSpawned( entity door )
 		door.Destroy()
 		return
 	}
-	
+
 	string scriptName = door.GetScriptName()
-	// printt( "Cafe. Big Door spawned!", scriptName, door.GetOrigin(), door.GetModelName() )
+
 	int doorType
 	switch( scriptName )
 	{
@@ -291,8 +290,8 @@ void function OnDoorSpawned( entity door )
 			// Special legacy case for a specific door model
 			// Faster to do these experiments in script than to keep changing models in leveled and recompiling
 			// TODO: Should eventually delete
-			bool useBlockableDoors = file.useBlockableDoors
-			bool useCodeDoors = file.useCodeDoors
+			bool useBlockableDoors = GetCurrentPlaylistVarBool( "survival_force_blockable_doors", true )
+			bool useCodeDoors = GetCurrentPlaylistVarBool( "survival_force_code_doors", true )
 			if ( useCodeDoors )
 			{
 				bool makeLeftDoor  = false, makeRightDoor = false
@@ -317,6 +316,7 @@ void function OnDoorSpawned( entity door )
 
 					case "mdl/door/door_104x64x8_generic_both_animated.rmdl":
 						// elevator-style double
+
 					case "mdl/door/door_108x60x4_generic_both_animated.rmdl":
 						// brown-style double
 						makeLeftDoor = true
@@ -437,7 +437,7 @@ void function OnDoorSpawned( entity door )
 			}
 			else
 			{
-				if ( file.forceSlidingDoors )
+				if ( GetCurrentPlaylistVarBool( "survival_force_sliding_doors", false ) )
 				{
 					entity ent
 					if ( door.GetModelName() == "mdl/door/door_108x60x4_generic_right_animated.rmdl" )
@@ -500,7 +500,7 @@ void function OnDoorSpawned( entity door )
 
 		case "survival_door_plain":
 			// increase use radius for large doors
-			door.AddUsableValue( USABLE_USE_DISTANCE_OVERRIDE | USABLE_HORIZONTAL_FOV )
+			door.AddUsableValue( USABLE_USE_DISTANCE_OVERRIDE )
 			door.SetUsableDistanceOverride( 150 ) // no point going higher without increasing context_use_entity_search_range
 			doorType = eDoorType.PLAIN
 			break
@@ -550,9 +550,7 @@ void function OnDoorSpawned( entity door )
 		}
 	}
 
-	#if DEVELOPER
-		file.allDoors[door] <- doorType
-	#endif
+	file.allDoors[door] <- doorType
 
 	ArrayRemoveInvalid( file.bigPropDoors )
 	file.bigPropDoors.append( door )
