@@ -133,12 +133,12 @@ WeaponData
     "ammo_no_remove_from_stockpile"					"0"
     "uses_ammo_pool"								"1"
 
-    "damage_near_value"   					        "15"
-    "damage_far_value"						        "15"
-    "damage_very_far_value"					        "15"
-    "damage_near_value_titanarmor"			        "15"
-    "damage_far_value_titanarmor" 			        "15"
-    "damage_very_far_value_titanarmor" 		        "15"
+    "damage_near_value"   					        "16"
+    "damage_far_value"						        "16"
+    "damage_very_far_value"					        "16"
+    "damage_near_value_titanarmor"			        "16"
+    "damage_far_value_titanarmor" 			        "16"
+    "damage_very_far_value_titanarmor" 		        "16"
 
 	"red_crosshair_range" 							"0"
 
