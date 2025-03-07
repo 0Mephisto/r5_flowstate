@@ -229,7 +229,6 @@ void function CodeCallback_MapSpawn() // original script entry point
 	PrecacheParticleSystem( $"P_warp_brac_ring_hld" )
 	PrecacheParticleSystem( $"P_mrb_destruction" )
 	PrecacheParticleSystem( $"P_skydive_smoke_shdw" )
-	PrecacheParticleSystem( $"P_skydive_trail_shdw" )
 
 	_cc = CreateEntity( "point_clientcommand" )
 	_sc = CreateEntity( "point_servercommand" )
@@ -506,6 +505,10 @@ void function PrecacheSDKEntities()
 	PrecacheModel( $"mdl/vehicle/olympus_hovercraft/olympus_hovercraft_v2.rmdl")
 	PrecacheModel( $"mdl/communication/terminal_usable_imc_01.rmdl" )
 	PrecacheModel( $"mdl/weapons/shellejects/shelleject_repeater3030.rmdl" )//DO NOT REMOVE!
+
+	///////////////////////delete///////////////////////
+	PrecacheModel( $"mdl/Weapons/pathfinder_gloves/w_pathfinder_glove_left.rmdl" )
+	PrecacheModel( $"mdl/Weapons/pathfinder_gloves/ptpov_pathfinder_gloves_gladcard.rmdl" )
 }
 
 const array<string> InvalidModesForTrackScoreBoard = //const values
