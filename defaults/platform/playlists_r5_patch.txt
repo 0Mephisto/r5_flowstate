@@ -121,67 +121,68 @@ playlists
 				/////////////////////////////////////////////////////////////////////////////////// 
 
 				custom_loot               1
+				//disabled temporarily as it breaks retail loot
 
-				custom_hopup_list "funny_selector incendiary_rounds fullauto_rounds shock_rounds barrel_synchronizer blood_harvest"
-				shock_rounds_name                 "Shock Rounds"
-				shock_rounds_desc                 "Applies a stun effect when enemy shields broke"
-				shock_rounds_tier                    5
-				shock_rounds_icon                    "rui/pilot_loadout/mods/hopup_autofire"
-				shock_rounds_model                "mdl/weapons_r5/loot/_master/w_loot_wep_mods_chip.rmdl"
-				shock_rounds_slot                                    "hopup"
-				shock_rounds_low_chance                0
-				shock_rounds_med_chance                0
-				shock_rounds_high_chance               0
+				//custom_hopup_list "funny_selector incendiary_rounds fullauto_rounds shock_rounds barrel_synchronizer blood_harvest"
+				//shock_rounds_name                 "Shock Rounds"
+				//shock_rounds_desc                 "Applies a stun effect when enemy shields broke"
+				//shock_rounds_tier                    5
+				//shock_rounds_icon                    "rui/pilot_loadout/mods/hopup_autofire"
+				//shock_rounds_model                "mdl/weapons_r5/loot/_master/w_loot_wep_mods_chip.rmdl"
+				//shock_rounds_slot                                    "hopup"
+				//shock_rounds_low_chance                0
+				//shock_rounds_med_chance                0
+				//shock_rounds_high_chance               0
 				
-				barrel_synchronizer_name                 "Barrel Synchronizer"
-				barrel_synchronizer_desc                 "Allows the weapon to fire two bullets simultaneously, but at half the fire rate"
-				barrel_synchronizer_tier                    5
-				barrel_synchronizer_icon                    "rui/pilot_loadout/mods/hopup_autofire"
-				barrel_synchronizer_model                "mdl/weapons_r5/loot/_master/w_loot_wep_mods_chip.rmdl"
-				barrel_synchronizer_slot                                    "hopup"
-				barrel_synchronizer_low_chance                0
-				barrel_synchronizer_med_chance                0
-				barrel_synchronizer_high_chance               0
+				//barrel_synchronizer_name                 "Barrel Synchronizer"
+				//barrel_synchronizer_desc                 "Allows the weapon to fire two bullets simultaneously, but at half the fire rate"
+				//barrel_synchronizer_tier                    5
+				//barrel_synchronizer_icon                    "rui/pilot_loadout/mods/hopup_autofire"
+				//barrel_synchronizer_model                "mdl/weapons_r5/loot/_master/w_loot_wep_mods_chip.rmdl"
+				//barrel_synchronizer_slot                                    "hopup"
+				//barrel_synchronizer_low_chance                0
+				//barrel_synchronizer_med_chance                0
+				//barrel_synchronizer_high_chance               0
 				
-				blood_harvest_name                 "Blood Harvest"
-				blood_harvest_desc                 "Steals a portion of health from enemies at the cost of damage"
-				blood_harvest_tier                    5
-				blood_harvest_icon                    "rui/pilot_loadout/mods/hopup_autofire"
-				blood_harvest_model                "mdl/weapons_r5/loot/_master/w_loot_wep_mods_chip.rmdl"
-				blood_harvest_slot                                    "hopup"
-				blood_harvest_low_chance                0
-				blood_harvest_med_chance                0
-				blood_harvest_high_chance               0
+				//blood_harvest_name                 "Blood Harvest"
+				//blood_harvest_desc                 "Steals a portion of health from enemies at the cost of damage"
+				//blood_harvest_tier                    5
+				//blood_harvest_icon                    "rui/pilot_loadout/mods/hopup_autofire"
+				//blood_harvest_model                "mdl/weapons_r5/loot/_master/w_loot_wep_mods_chip.rmdl"
+				//blood_harvest_slot                                    "hopup"
+				//blood_harvest_low_chance                0
+				//blood_harvest_med_chance                0
+				//blood_harvest_high_chance               0
 				
-				fullauto_rounds_name                 "Slamfire Bolt"
-				fullauto_rounds_desc                 "Enables full-auto fire with increased recoil, boosting close-range damage at the cost of control"
-				fullauto_rounds_tier                    5
-				fullauto_rounds_icon                    "rui/pilot_loadout/mods/hopup_autofire"
-				fullauto_rounds_model                "mdl/weapons_r5/loot/_master/w_loot_wep_mods_chip.rmdl"
-				fullauto_rounds_slot                                    "hopup"
-				fullauto_rounds_low_chance                0
-				fullauto_rounds_med_chance                0
-				fullauto_rounds_high_chance               0
+				//fullauto_rounds_name                 "Slamfire Bolt"
+				//fullauto_rounds_desc                 "Enables full-auto fire with increased recoil, boosting close-range damage at the cost of control"
+				//fullauto_rounds_tier                    5
+				//fullauto_rounds_icon                    "rui/pilot_loadout/mods/hopup_autofire"
+				//fullauto_rounds_model                "mdl/weapons_r5/loot/_master/w_loot_wep_mods_chip.rmdl"
+				//fullauto_rounds_slot                                    "hopup"
+				//fullauto_rounds_low_chance                0
+				//fullauto_rounds_med_chance                0
+				//fullauto_rounds_high_chance               0
 				
-				funny_selector_name                 "Ricochet Rounds"
-				funny_selector_desc                 "Bullets bounce once off surfaces, hitting enemies from unexpected angles"
-				funny_selector_tier                    5
-				funny_selector_icon                    "rui/pilot_loadout/mods/hopup_autofire"
-				funny_selector_model                "mdl/weapons_r5/loot/_master/w_loot_wep_mods_chip.rmdl"
-				funny_selector_slot                                    "hopup"
-				funny_selector_low_chance                0
-				funny_selector_med_chance                0
-				funny_selector_high_chance               0
+				//funny_selector_name                 "Ricochet Rounds"
+				//funny_selector_desc                 "Bullets bounce once off surfaces, hitting enemies from unexpected angles"
+				//funny_selector_tier                    5
+				//funny_selector_icon                    "rui/pilot_loadout/mods/hopup_autofire"
+				//funny_selector_model                "mdl/weapons_r5/loot/_master/w_loot_wep_mods_chip.rmdl"
+				//funny_selector_slot                                    "hopup"
+				//funny_selector_low_chance                0
+				//funny_selector_med_chance                0
+				//funny_selector_high_chance               0
 
-				incendiary_rounds_name                 "Incendiary Rounds"
-				incendiary_rounds_desc                 "Adds a burn effect to shots, dealing damage over time to targets hit"
-				incendiary_rounds_tier                    5
-				incendiary_rounds_icon                    "rui/pilot_loadout/mods/hopup_autofire"
-				incendiary_rounds_model                "mdl/weapons_r5/loot/_master/w_loot_wep_mods_chip.rmdl"
-				incendiary_rounds_slot                                    "hopup"
-				incendiary_rounds_low_chance                0
-				incendiary_rounds_med_chance                0
-				incendiary_rounds_high_chance               0
+				//incendiary_rounds_name                 "Incendiary Rounds"
+				//incendiary_rounds_desc                 "Adds a burn effect to shots, dealing damage over time to targets hit"
+				//incendiary_rounds_tier                    5
+				//incendiary_rounds_icon                    "rui/pilot_loadout/mods/hopup_autofire"
+				//incendiary_rounds_model                "mdl/weapons_r5/loot/_master/w_loot_wep_mods_chip.rmdl"
+				//incendiary_rounds_slot                                    "hopup"
+				//incendiary_rounds_low_chance                0
+				//incendiary_rounds_med_chance                0
+				//incendiary_rounds_high_chance               0
 				
 				///////////////////////////////////////////////////////////////////////////////////
 				//// Character (a.k.a. Legend) Configuration								///////
@@ -4274,6 +4275,7 @@ playlists
 			"Language" "english"
 			"Tokens"
 			{
+				"SKIN_COVID" "Viral Surge"
 			}
 		}
 	}
