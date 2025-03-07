@@ -2488,7 +2488,7 @@ void function soloModePlayerToWaitingList( entity player )
 	deleteSoloPlayerResting( player )
 
 	if( isScenariosMode() && FS_Scenarios_GetMatchIsEnding() )
-		LocalMsg( player, "#FS_Scenarios_WaitingForRoundEnd", "", eMsgUI.EVENT, g_fCurrentRoundEndTime - Time() )
+		LocalMsg( player, "#FS_Scenarios_WaitingForRoundEnd", "", eMsgUI.EVENT, max( 1, g_fCurrentRoundEndTime - Time() ) )
 	else if( !bIsCoachingMode() )
 		LocalMsg( player, "#FS_IN_QUEUE", "", eMsgUI.EVENT, settings.roundTime )
 

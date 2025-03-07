@@ -32,8 +32,14 @@ void function mAssert( var condition, string errorMsg = "error" )
 }
 
 #if CLIENT
+bool s_bAssertHasRan
 void function ErrorClientPlayer( string errorMsg )
 {
+	if( s_bAssertHasRan )
+		return 
+	else
+		s_bAssertHasRan = true 
+		
 	entity player = GetLocalClientPlayer()
 	thread WaitValidPlayerThenError( player, errorMsg )
 }

@@ -178,19 +178,13 @@ const PRINT_GAMEMODE_DEBUGS = true
 void function __EnumsToArrays_Init()
 {
 	foreach( string strname, int num in eMaps )
-	{
 		SH_globals.mapNames.append( strname.tolower() )
-	}
 	
 	foreach( string strname, int num in ePlaylists )
-	{
 		SH_globals.playlists.append( strname.tolower() )
-	}
 	
 	foreach( string strname, int num in eGamemodes )
-	{
 		SH_globals.gamemodes.append( strname.tolower() )
-	}
 }
 
 void function __ClearEnumArrays()
@@ -207,21 +201,7 @@ void function PlayLists_Mapnames_Gamemodes_Init()
 	#endif 
 	
 	__EnumsToArrays_Init()
-	
-	int playlistsArrayCount = SH_globals.playlists.len() - 1
-	int playlistsEnumsCount = ePlaylists._PLAYLISTS_COUNT
-	
-	int mapnamesArrayCount = SH_globals.mapNames.len() - 1
-	int mapnamesEnumsCount = eMaps._MAP_COUNT
-	
-	int gamemodesArrayCount = SH_globals.gamemodes.len() - 1
-	int gamemodesEnumsCount = eGamemodes._GAMEMODES_COUNT
-	
-	//deprecated from old
-	// mAssert( playlistsArrayCount == playlistsEnumsCount, format( "Playlists not properly configured in enum/array structs: sh_mapname_playlist_gamemode_enums.nut - Array: %d ;Enum: %d ", playlistsArrayCount, playlistsEnumsCount ) )
-	// mAssert( mapnamesArrayCount == mapnamesEnumsCount, format( "Maps not properly configured in enum/array structs: sh_mapname_playlist_gamemode_enums.nut - Array: %d ;Enum: %d ", mapnamesArrayCount, mapnamesEnumsCount ) )
-	// mAssert( gamemodesArrayCount == gamemodesEnumsCount, format( "Gamemodes not properly configured in enum/array structs: sh_mapname_playlist_gamemode_enums.nut - Array: %d ;Enum: %d ", gamemodesArrayCount, gamemodesEnumsCount ) )
-	
+		
 	#if SERVER || CLIENT
 		string level = GetMapName()
 	#elseif UI 
@@ -233,7 +213,7 @@ void function PlayLists_Mapnames_Gamemodes_Init()
 	#endif
 	
 		SH_globals.currentMap = getMapEnumFromName( level )
-		mAssert( SH_globals.currentMap != -1, format( "Current map \"%s\" is not registered in sh_mapname_playlist_gamemode_enums.nut", level ) )
+		mAssert( SH_globals.currentMap != -1, format( "Current map \"%s\" is not registered in %s", level, FILE_NAME() ) )
 		
 		#if UI 
 			if( level != "" )
@@ -250,7 +230,7 @@ void function PlayLists_Mapnames_Gamemodes_Init()
 			}
 			
 			SH_globals.currentPlaylist = getPlaylistEnumFromName( currentPlaylistName )
-			mAssert( SH_globals.currentPlaylist != -1, format( "Current playlist \"%s\" is not registered in sh_mapname_playlist_gamemode_enums.nut", currentPlaylistName ) )
+			mAssert( SH_globals.currentPlaylist != -1, format( "Current playlist \"%s\" is not registered in %s", currentPlaylistName, FILE_NAME() ) )
 		
 		#if UI 
 			}
