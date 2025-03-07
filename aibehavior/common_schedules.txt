@@ -1356,6 +1356,30 @@ Schedule
 End_Schedule
 
 //=========================================================
+// SCHED_REPOSITION_AROUND_DOWNED_ENEMY
+//
+//=========================================================
+Schedule
+
+	SCHED_REPOSITION_AROUND_DOWNED_ENEMY
+
+		Tasks
+			TASK_REPOSITION_WITHIN_RANGE_TO_ENEMY		0
+			TASK_MOVE_PATH					0
+			TASK_WAIT_FOR_MOVEMENT			0
+			TASK_SET_SCHEDULE				SCHEDULE:SCHED_COMBAT_FACE
+
+		Interrupts
+			COND_NO_ENEMY_BLEEDOUT_INTERRUPTS
+			COND_IN_DANGER
+			COND_NEW_ENEMY
+			COND_ENEMY_DEAD
+			COND_LOST_ENEMY
+			COND_INSIDE_DANGEROUS_AREA
+			COND_REACT_SURPRISED
+End_Schedule
+
+//=========================================================
 // SCHED_MOVE_TO_SQUAD_RANGE
 //
 //=========================================================
@@ -2299,6 +2323,7 @@ Schedule
 
 		Interrupts
 			COND_ANY_MELEE_ATTACK
+			COND_BLOCKED_BY_DOOR
 			COND_INSIDE_DANGEROUS_AREA
 			COND_REACT_SURPRISED
 			COND_REACT_CLOAK
@@ -2680,6 +2705,22 @@ Schedule
 			TASK_MOVE_AWAY_PATH						120
 			TASK_MOVE_PATH							0
 			TASK_WAIT_FOR_MOVEMENT					0
+
+		Interrupts
+End_Schedule
+
+//=========================================================
+//=========================================================
+Schedule
+
+	SCHED_MOVE_AROUND_DOOR
+
+		Tasks
+			TASK_STOP_MOVING                            0
+			TASK_DESTROY_DOOR_IF_NECESSARY              0
+			TASK_SET_MOVE_AROUND_DOOR_POS               0
+			TASK_MOVE_PATH								0
+			TASK_WAIT_FOR_MOVEMENT						3
 
 		Interrupts
 End_Schedule

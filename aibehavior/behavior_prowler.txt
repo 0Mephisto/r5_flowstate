@@ -1,12 +1,13 @@
 Selector Common
 
-	//SelectSchedule_FallToGround
+	SelectSchedule_FallToGround
 	SelectSchedule_Flinch
 	SelectSchedule_DisplaceFromDangerousArea
 	//SelectSchedule_FleeFromBulletImpact
 	SelectSchedule_ReactCloak
-	//SelectSchedule_ReactBullet
+	SelectSchedule_ReactBullet
 	SelectSchedule_ReactSurprised
+	SelectSchedule_ReactCloak
 	SelectSchedule_SyncedMeleeAttack
 	SelectSchedule_PressToInitiateSyncedMeleeAttack
 	SelectSchedule_LayeredBehavior
@@ -35,7 +36,7 @@ Selector Combat
 	//SelectSchedule_TauntDownedEnemy
 	SelectSchedule_MeleeAttack
 	SelectSchedule_MeleeAttackJumpUp
-	//SelectSchedule_TauntEnemy
+	SelectSchedule_Taunt
 	SelectSchedule_NewEnemySignal
 	//SelectSchedule_CircleStrafe
 	SelectSchedule_ChaseEnemy
