@@ -69,7 +69,6 @@ global function IsCurrentState
 global function ValidateBlacklistedWeapons
 
 global typedef PanelTable table<string, entity>
-const bool TEST_WORLDDRAW	= false
 const bool DEBUG_STATE		= false
 
 //DEV 
@@ -2487,9 +2486,11 @@ void function soloModePlayerToWaitingList( entity player )
 	//检查resting list 是否有该玩家
 	deleteSoloPlayerResting( player )
 
-	if( isScenariosMode() && FS_Scenarios_GetMatchIsEnding() )
-		LocalMsg( player, "#FS_Scenarios_WaitingForRoundEnd", "", eMsgUI.EVENT, max( 1, g_fCurrentRoundEndTime - Time() ) )
-	else if( !bIsCoachingMode() )
+	// if( isScenariosMode() && FS_Scenarios_GetMatchIsEnding() ) (mk): why was this removed..?
+		// LocalMsg( player, "#FS_Scenarios_WaitingForRoundEnd", "", eMsgUI.EVENT, max( 1, g_fCurrentRoundEndTime - Time() ) )
+	// else 
+	
+	if( !bIsCoachingMode() )
 		LocalMsg( player, "#FS_IN_QUEUE", "", eMsgUI.EVENT, settings.roundTime )
 
 	if( bIsCoachingMode() )
@@ -3927,6 +3928,9 @@ void function soloModeThread( LocPair waitingRoomLocation )
 				{
 					maki_tp_player( player, g_randomWaitingSpawns.getrandom() ) //waiting player should be in waiting room,not battle area
 					HolsterAndDisableWeapons_Raw( player ) //(mk): dirty fix I wanted to avoid.
+					
+					if( !isPlayerInRestingList( player ) && !isPlayerInWaitingList( player ) )
+						soloModePlayerToWaitingList( player ) //(mk): dirty patch
 				}
 			//#endif
 		}
@@ -4246,8 +4250,7 @@ void function soloModeThread( LocPair waitingRoomLocation )
 			newGroup.player1_handle = newGroup.player1.p.handle
 			newGroup.player2_handle = newGroup.player2.p.handle
 		
-			//TODO: verify this
-			if ( ( Fetch_IBMM_Timeout_For_Player( newGroup.player1 ) == false && Fetch_IBMM_Timeout_For_Player( newGroup.player2 ) == false ) || newGroup.player1.p.input == newGroup.player2.p.input )			
+			if( GroupIsLockable( newGroup ) )
 				newGroup.GROUP_INPUT_LOCKED = true
 			else
 				newGroup.GROUP_INPUT_LOCKED = false
@@ -4358,8 +4361,8 @@ void function FS_1v1_OnPlayerDisconnected( entity player )
 	if( IsValid( opponent ) )
 		endLock1v1( opponent )
 	
-	if( playerHandle in file.acceptedChallenges )
-		delete file.acceptedChallenges[ playerHandle ]
+	// if( playerHandle in file.acceptedChallenges ) //potential B1D
+		// delete file.acceptedChallenges[ playerHandle ]
 	
 	foreach( index, zstruct in file.allChallenges )
 	{
@@ -5204,6 +5207,10 @@ void function SetInput_IN_FORWARD( entity player )
 	player.p.movevalue = 6
 }
 
+bool function GroupIsLockable( soloGroupStruct newGroup )
+{
+	return ( newGroup.player1.p.lastmoved > 2 && newGroup.player2.p.lastmoved > 2 && ( ( Fetch_IBMM_Timeout_For_Player( newGroup.player1 ) == false && Fetch_IBMM_Timeout_For_Player( newGroup.player2 ) == false ) || newGroup.player1.p.input == newGroup.player2.p.input ) )	
+}
 
 bool function ClientCommand_mkos_IBMM_wait( entity player, array<string> args )
 {

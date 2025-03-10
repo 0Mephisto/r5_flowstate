@@ -508,7 +508,7 @@ bool function ClientCommand_CheckLocalizationConsistency( entity player, array<s
 /*
 	Purpose:
 		In-between release, a server may set tokens in their playlist file.  
-		This function can call those those tokens directly. This is best used 
+		This function can call those tokens directly. This is best used 
 		with very short tokens under 5 chars in length.	
 
 		Example:		 LocalMsg_TEMP( player, "#TMP_1" )
@@ -529,7 +529,7 @@ bool function ClientCommand_CheckLocalizationConsistency( entity player, array<s
 */
 void function LocalMsg_TEMP( entity player, string token, string token2 = "", int uiType = eMsgUI.DEFAULT, float duration = 5.0 )
 {
-	mAssert( token.find("#") == 0, "Should use a token with TempLocalMsg()" )
+	mAssert( token.find("#") == 0, "Should use a token with LocalMsg_TEMP()" )
 	mAssert( token.len() <= 10, "Lag can be incurred with tokens over 10 in length." )
 	
 	LocalMsg( player, "#FS_NULL", "#FS_NULL", uiType, duration, token, token2 )

@@ -120,6 +120,7 @@ void function RegisterAllChatCommands() //if chat commands enabled.
 		case ePlaylists.fs_scenarios:
 		
 			Commands_Register( "!rest", cmd_rest, [ "/rest", "\\rest" ] )
+			Commands_Register( "!team", cmd_team, [ "/team", "\\team" ] )
 			break 
 			
 		case ePlaylists.fs_1v1:
@@ -337,6 +338,11 @@ void function UnlockOrLockServer( entity activator, string state )
 	ClientCommand_mkos_admin( activator, args )
 }
 
+void function cmd_team( string tag, array<string> args, entity activator )
+{
+	FS_Scenarios_CustomTeamCmd( activator, args )
+}
+
 /////////////
 /// Chat  //////////////////////////////////////////////////////////////////////////////////////////
 /////////////
@@ -373,7 +379,7 @@ void function Chat_Init()
 		AddClientCommandCallbackNew( "say", ClientCommand_ParseSay )
 	
 		if( settings.opt_in_spam_mute )
-		{		
+		{			
 			file.offensePenaltyTiers = CheckAndGenerateOffenceTierArray()
 				
 			array<string> args = []
@@ -584,9 +590,15 @@ string function Chat_GetMutedReason( string uid = "", entity player = null )
 void function Chat_SpamCheck_StartThread( entity player )
 {
 	thread 
-	(
+	(		
 		void function() : ( player )
 		{
+			if( settings.chatInterval <= 0 )
+			{
+				mAssert( false, "Cannot configure \"chat_interval\" less than or equal to zero, as the vm would hang during thread loop." )
+				return
+			}
+			
 			//check again since this was threaded off 
 			if( !IsValid( player ) )
 				return 
@@ -605,6 +617,12 @@ void function Chat_SpamCheck_StartThread( entity player )
 	
 	if( Chat_OffenceTiersEnabled() )
 	{
+		if( settings.chatMutePenaltyDecayTime <= 0 )
+		{
+			mAssert( false, "Cannot configure \"textmute_offence_decay_time\" less than or equal to zero, as the vm would hang during thread loop." )
+			return
+		}
+	
 		thread 
 		(
 			void function() : ( player )

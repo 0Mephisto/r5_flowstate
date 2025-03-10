@@ -1,3 +1,6 @@
+// Designed by @CafeFPS
+// stats/persistence/standings - mkos
+
 global function FS_Scenarios_Score_System_Init
 global function FS_Scenarios_GetEventScoreValue
 global function Scenarios_RegisterNetworking
@@ -51,7 +54,7 @@ const int STANDINGS_ROUND 	= 2
 global const int SCORE_BOMBPLANTED_REWARD = 500
 global const int SCORE_BOMBCARRIERKILLED_BONUS = 100
 global const int SCORE_BOMBCARRIERKILLED = 100
-
+global const int SCENARIOS_MAX_ALLOWED_TEAMSIZE = 5
 
 typedef ScenariosStructType table<string, table<int, int> > 
 typedef ScenariosOnlineStats table< string, table< string, int > >
@@ -394,8 +397,8 @@ void function FS_Scenarios_UpdatePlayerScore( entity player, int event, entity v
 	
 	table<int,int> function ScenariosPersistence_FetchPlayerScoreTable( string uid )
 	{
-		#if DEVELOPER 
-			mAssert( ScenariosPersistence_PlayerExists( uid ) )
+		#if DEVELOPER
+			mAssert( ScenariosPersistence_PlayerExists( uid ), format( "Scenarios pData slot doesn't exist for \"%s\"", uid ) )
 		#endif
 		
 		return file.scenariosPlayerScorePersistence[ uid ]
@@ -641,7 +644,7 @@ void function FS_Scenarios_UpdatePlayerScore( entity player, int event, entity v
 			//Todo(mk): remove with bot nuke
 			{				
 				string botCheck = playerName.slice( 0, 1 ) //don't .find entire string.	
-				if( botCheck == "[" ) //even faster, pointer comp.
+				if( botCheck == "[" ) //(mk): pointer comp, even faster.
 					continue
 			}
 				

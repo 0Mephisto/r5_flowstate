@@ -684,7 +684,7 @@ void function DEV_ManualLogKill( bool ship )
 {
 	if( ship )
 	{
-		TrackerLogEvent__internal( Tracker_BuildAllPlayerMetrics( true ), file.LogE )
+		TrackerLogEvent__internal( Tracker_BuildAllPlayerMetrics( true ) + "\n" + GetShipWeaponVarData(), file.LogE )
 		__UpdateMetricsNow()
 	}
 	
@@ -4363,6 +4363,23 @@ SerializedData function __t_serial( PlayerSettingsUpdate settingsArray )
     return json
 }
 
+SerializedData function GetShipWeaponVarData()
+{
+	int iter = 0
+	int endIter = file.SpecialWeaponsBulletsPerShot.len() - 1
+	
+	string json = "^||{"  
+	foreach ( int weaponSource, int bulletsPerShot in file.SpecialWeaponsBulletsPerShot )
+	{
+		string comma = iter == endIter ? "" : ","
+        json += format( "\"%s\": %d%s ", DamageSourceIDToString( weaponSource ), bulletsPerShot, comma ) 
+		iter++
+	}
+	
+    json += "}"
+	return json
+}
+
 // This function is responsible for summing up global stats between rounds 
 // Kills/deaths/glides get reset per round, therefore globals have to be reset. 
 // This is because players that stay for multiple rounds will not resync online stats
@@ -5047,7 +5064,7 @@ void function FinishGameStatsRound()
 			
 			TrackerLogEvent__internal
 			(
-				format( "#|Season: %d\n|| Game ended at %d\n\n %s", Tracker_GetQueryInt( "season" ), GetUnixTimestamp(), Tracker_BuildAllPlayerMetrics( true ) ),
+				format( "#|Season: %d\n|| Game ended at %d\n\n%s\n%s", Tracker_GetQueryInt( "season" ), GetUnixTimestamp(), Tracker_BuildAllPlayerMetrics( true ), GetShipWeaponVarData() ),
 				file.LogE
 			)
 

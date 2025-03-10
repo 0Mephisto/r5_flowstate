@@ -1188,6 +1188,7 @@ Scripts:
 	gamemodes/fs_1v1/_gamemode_1v1.nut
 	gamemodes/fs_lgduels_1v1/_fs_lgduels_1v1.nut
 	gamemodes/fs_scenarios/_gamemode_scenarios.nut
+	gamemodes/fs_scenarios/_gamemode_scenarios_teams.nut
 	gamemodes/custom_ctf/_gamemode_custom_ctf.nut
 	gamemodes/fs_duckhunt/_gamemode_duckhunt.nut
 	gamemodes/fs_prophunt/_gamemode_prophunt.nut
