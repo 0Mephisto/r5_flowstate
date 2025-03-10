@@ -302,7 +302,7 @@ void function FS_Scenarios_UpdatePlayerScore( entity player, int event, entity v
 	void function Scenarios_RegisterNetworking()
 	{
 		//recap type, stat type, value, count
-		ScriptRemote_RegisterUIFunction( "ServerCallback_SendScenariosStandings", "int", 0, 3, "int", -1, 999999, "int", -1, 999999, "int", -1, 9999 ) //Audit 2-22-2025
+		ScriptRemote_RegisterUIFunction( "ServerCallback_SendScenariosStandings", "int", 0, 3, "int", INT_MIN, INT_MAX, "int", INT_MIN, INT_MAX, "int", INT_MIN, INT_MAX ) //Audit 2-22-2025 // Todo: determine min/max potential scores 
 		
 		ScriptRemote_RegisterUIFunction( "ServerCallback_SignalScenariosStandings" )
 		ScriptRemote_RegisterUIFunction( "ServerCallback_UiConfirmRest" )

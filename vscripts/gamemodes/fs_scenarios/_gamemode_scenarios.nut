@@ -149,6 +149,7 @@ struct
 	float fs_scenarios_ringclosing_maxtime = 120
 	float fs_scenarios_matchmaking_delay_after_dying = 8.0
 	bool fs_scenarios_recharge_tactical_only
+	bool fs_scenarios_forcegame_enabled
 	
 	int waitingRoomRadius = 3000
 	array<LocPair> lobbyLocs
@@ -184,6 +185,7 @@ void function Init_FS_Scenarios()
 	settings.fs_scenarios_ringclosing_maxtime = GetCurrentPlaylistVarFloat( "fs_scenarios_ringclosing_maxtime", 100 )
 	settings.fs_scenarios_matchmaking_delay_after_dying = GetCurrentPlaylistVarFloat( "fs_scenarios_matchmaking_delay_after_dying", 8.0 )
 	settings.fs_scenarios_recharge_tactical_only = GetCurrentPlaylistVarBool( "fs_scenarios_recharge_tactical_only", true )
+	settings.fs_scenarios_forcegame_enabled = GetCurrentPlaylistVarBool( "fs_scenarios_forcegame_enabled", true )
 
 	settings.lobbyLocs.append( NewLobbyPair( <-495.617645, 1285.12402, 50272.0625> , <0, -42.2699738, 0>))
 	settings.lobbyLocs.append( NewLobbyPair( <-460.676514, 20.4265499, 50272.0625> , <0, 49.0330009, 0>))
@@ -2577,6 +2579,11 @@ void function FS_Scenarios_StartRingMovementForGroup( scenariosGroupStruct group
 	}
 
 	WaitSignal( group.dummyEnt, "FS_Scenarios_GroupIsReady" )
+
+		ArrayRemoveInvalid( players )
+	
+	float closingSpeed = settings.fs_scenarios_zonewars_ring_ringclosingspeed // Per frame
+	float frameDuration = 0.05 // 1 / GetConVarFloat( "script_server_fps" ) // Time per frame in seconds
 
 	float starttime = Time()
 	float startradius = group.currentRingRadius

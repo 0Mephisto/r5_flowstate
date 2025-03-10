@@ -2554,7 +2554,7 @@ array<int> function ArrayUniqueInt( array<int> arr )
 	{
 		if( !newArr.contains( item ) )
 			newArr.append( item )
-		#if DEVELOPER 
+		#if DEVELOPER && ( false )
 		else
 			printw( "ArrayUniqueInt: item", item, "was a duplicate and omitted" )
 		#endif			
