@@ -76,7 +76,6 @@ global const int GAMEPAD_CUSTOM_BUTTONS_COUNT = 15
 global const array<string> CUSTOM_BIND_ALIASES_PILOT =
 [
 	//					 			Default:
-	"dodge",						// "+dodge"
 	"jump",							// "+jump"				bind "A_BUTTON"		"+ability 0"
 	"toggle_duck",					// "+toggle_duck"		bind "B_BUTTON"		"+ability 1"
 	"useandreload",					// "+useandreload"		bind "X_BUTTON"		"+ability 2"
@@ -165,8 +164,6 @@ void function ShGamepad_LevelInit()
 void function SetStandardAbilityBindingsForPilot( entity player )
 {
 	// Keyboard:
-	SetAbilityBinding( player, 3, "+dodge", "-dodge", KBT_TAPPED )									// 				"+ability 3"
-	SetAbilityBinding( player, 5, "+dodge", "-dodge", KBT_TAPPED )									// 				"+ability 5"
 	SetAbilityBinding( player, 15, "+jump", "-jump", KBT_TAPPED )						// 				"+ability 15"
 	SetAbilityBinding( player, 20, "+speed", "-speed", KBT_TAPPED )						// 				"+ability 20"
 
