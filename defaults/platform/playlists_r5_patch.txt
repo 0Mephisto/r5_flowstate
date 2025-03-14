@@ -4189,7 +4189,7 @@ playlists
 
 				flowstate_give_character_passive				1
 
-				dodge_dash_enabled								1
+				dodge_dash_enabled								0
 
 				custom_loot               						1
 				enable_motd										0
