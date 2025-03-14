@@ -4042,8 +4042,10 @@ Scheme
 
 		WeaponCategoryButton
 		{
-            wide					572
-            tall					275
+            wide					457
+			wide_nx_handheld		550 		[$NX || $NX_UI_PC]
+            tall					220
+            tall_nx_handheld		264	 		[$NX || $NX_UI_PC]
 			visible					1
 			enabled					1
             rui						"ui/weapon_category_button.rpak"

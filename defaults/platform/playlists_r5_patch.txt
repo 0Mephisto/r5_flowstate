@@ -4189,11 +4189,14 @@ playlists
 
 				flowstate_give_character_passive				1
 
+				dodge_dash_enabled								1
+
 				custom_loot               						1
 				enable_motd										0
 				
 			}
 			gamemodes { survival { maps {
+				mp_rr_olympus						 			1
 				mp_rr_party_crasher					 			1
 				mp_rr_aqueduct								 	1
 				mp_rr_arena_phase_runner						1
@@ -4276,6 +4279,18 @@ playlists
 			"Tokens"
 			{
 				"SKIN_COVID" "Viral Surge"
+				"ADVANCED_VIDEO_MENU_LOD_QUALITY_DESC" "Adjusts the rendering quality of distant objects and environments. Higher settings improve detail clarity at long distances but may impact performance. Lower settings boost performance by reducing detail in faraway objects."
+				"LOD_QUALITY" "Level of Detail (LOD) Quality"
+				"LOD_0"  "Potato"
+				"LOD_1"  "Default"
+				"LOD_2"  "Enhanced"
+				"LOD_3"  "Improved"
+				"LOD_4"  "High"
+				"LOD_5"  "Ultra"
+				"LOD_6"  "Extreme"
+				"LOD_7"  "Cinematic"
+				"LOD_8"  "Insane"
+				"LOD_9"  "Overkill"
 			}
 		}
 	}

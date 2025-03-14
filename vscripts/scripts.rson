@@ -686,6 +686,7 @@ Scripts:
 	pilot/_pilot_passive_medic.gnut //Should be shared. Cafe
 	pilot/sh_pilot_passive_voices.gnut
 	pilot/sh_pilot_passive_adrenaline.gnut
+	pilot/sh_pilot_passive_dash.gnut
 	
 	mp/sh_desertlands_train.nut
 	sh_scoreboard.gnut
@@ -759,6 +760,7 @@ Scripts:
 	cl_survival_ship.gnut
 
 	pilot/cl_pilot_tracking_vision.gnut
+	pilot/cl_pilot_passive_dash.gnut
 	client/cl_bleedout.gnut
 	mp/cl_jump_pads.gnut
 ]
