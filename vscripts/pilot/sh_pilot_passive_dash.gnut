@@ -46,20 +46,18 @@ void function GivePlayerDashAbility( entity player, table< string, string > Dash
 	bool SuperDash = GetCurrentPlaylistVarBool( "super_dash_enabled", false )
 	bool djumpwrun = GetCurrentPlaylistVarBool( "djumpnwrun_dash_enabled", false )
 
+	if( !SuperDash ){
 	foreach( string setting, string dodgeValues in DashTable )
-		player.SetClassVar( setting, dodgeValues )
-
+		player.SetClassVar( setting, dodgeValues )}
+	else{
+		foreach( string setting, string dodgeValues in SuperDashTable )
+			player.SetClassVar( setting, dodgeValues )}
+	
 	if( InfiniteDash )
 		player.SetClassVar( "dodgePowerDrain", "0.0" )
 
 	if( djumpwrun )
 		GivePlayerSettingsMods( player, [ "enable_wallrun", "enable_doublejump" ] )
-
-	if( SuperDash )
-	{
-		foreach( string setting, string dodgeValues in SuperDashTable )
-			player.SetClassVar( setting, dodgeValues )
-	}
 }
 
 // Triggers when the player has respawned as a different character
