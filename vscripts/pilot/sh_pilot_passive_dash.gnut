@@ -65,7 +65,7 @@ void function GivePlayerDashAbility( entity player, table< string, string > Dash
 // Triggers when the player has respawned as a different character
 void function OnPlayerClassChanged( entity player )
 {
-	if ( !IsValid( player ) && player.IsBot() )
+	if ( !IsValid( player ) || player.IsBot() )
 		return
 	
 	if ( isDashEnabled() )
