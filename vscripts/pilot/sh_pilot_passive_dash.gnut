@@ -32,19 +32,21 @@ const table< string, string > DASH =
 
 const table< string, string > SUPER_DASH =
 {
-	[ "dodge" ]     				= "true",
-	[ "dodgePowerDrain" ]         	= "0.0",
 	[ "dodgeHeight" ]               = "120.0",
 	[ "dodgeHeightMax" ]            = "120.0",
 	[ "dodgeVerticalHeight" ]       = "880.0",
 	[ "dodgeKeepSpeedFrac" ]        = "0.60"
 }
 
-void function GivePlayerDashAbility( entity player, table< string, string > DashTable = DASH )
+void function GivePlayerDashAbility( entity player, bool DisableDash = false, table< string, string > DashTable = DASH )
 {
 	bool InfiniteDash = GetCurrentPlaylistVarBool( "infinite_dash_enabled", false )
 	bool SuperDash = GetCurrentPlaylistVarBool( "super_dash_enabled", false )
 	bool djumpwrun = GetCurrentPlaylistVarBool( "djumpnwrun_dash_enabled", false )
+
+	if( DisableDash ){
+		player.SetClassVar( "dodge", "false" )
+		return}
 
 	if( SuperDash )
 		DashTable = SUPER_DASH
