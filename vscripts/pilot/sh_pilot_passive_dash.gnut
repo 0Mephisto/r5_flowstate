@@ -38,13 +38,13 @@ const table< string, string > SUPER_DASH =
 	[ "dodgeKeepSpeedFrac" ]        = "0.60"
 }
 
-void function GivePlayerDashAbility( entity player, bool DisableDash = false, table< string, string > DashTable = DASH )
+void function GivePlayerDashAbility( entity player, bool EnableDash = true, table< string, string > DashTable = DASH )
 {
 	bool InfiniteDash = GetCurrentPlaylistVarBool( "infinite_dash_enabled", false )
 	bool SuperDash = GetCurrentPlaylistVarBool( "super_dash_enabled", false )
 	bool djumpwrun = GetCurrentPlaylistVarBool( "djumpnwrun_dash_enabled", false )
 
-	if( DisableDash ){
+	if( !EnableDash ){
 		player.SetClassVar( "dodge", "false" )
 		return}
 
