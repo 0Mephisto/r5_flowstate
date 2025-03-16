@@ -1283,17 +1283,17 @@ void function FS_SendPlayerHUDData()
 		foreach( splayer in team1 )
 		{
 			if( IsValid( player ) && IsValid( splayer ) )
-				Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddAllyHandle", splayer.GetEncodedEHandle() )
+				Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddAllyHandle", splayer )
 		}
 		foreach( splayer in team2 )
 		{
 			if( IsValid( player ) && IsValid( splayer ) )
-				Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddEnemyHandle", splayer.GetEncodedEHandle() )
+				Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddEnemyHandle", splayer )
 		}
 		foreach( splayer in team3 )
 		{
 			if( IsValid( player ) && IsValid( splayer ) )
-				Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddEnemyHandle2", splayer.GetEncodedEHandle() )
+				Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddEnemyHandle2", splayer )
 		}
 	}
 	
@@ -1302,17 +1302,17 @@ void function FS_SendPlayerHUDData()
 		foreach( splayer in team1 )
 		{
 			if( IsValid( player ) && IsValid( splayer ) )
-				Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddEnemyHandle", splayer.GetEncodedEHandle() )
+				Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddEnemyHandle", splayer )
 		}
 		foreach( splayer in team2 )
 		{
 			if( IsValid( player ) && IsValid( splayer ) )
-				Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddAllyHandle", splayer.GetEncodedEHandle() )
+				Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddAllyHandle", splayer )
 		}
 		foreach( splayer in team3 )
 		{
 			if( IsValid( player ) && IsValid( splayer ) )
-				Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddEnemyHandle2", splayer.GetEncodedEHandle() )
+				Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddEnemyHandle2", splayer )
 		}
 	}
 
@@ -1321,17 +1321,17 @@ void function FS_SendPlayerHUDData()
 		foreach( splayer in team1 )
 		{
 			if( IsValid( player ) && IsValid( splayer ) )
-				Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddEnemyHandle", splayer.GetEncodedEHandle() )
+				Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddEnemyHandle", splayer )
 		}
 		foreach( splayer in team2 )
 		{
 			if( IsValid( player ) && IsValid( splayer ) )
-				Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddEnemyHandle2", splayer.GetEncodedEHandle() )
+				Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddEnemyHandle2", splayer )
 		}
 		foreach( splayer in team3 )
 		{
 			if( IsValid( player ) && IsValid( splayer ) )
-				Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddAllyHandle", splayer.GetEncodedEHandle() )
+				Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddAllyHandle", splayer )
 		}
 	}
 }
@@ -1378,7 +1378,7 @@ void function OnPlayerKilled_GameState( entity victim, entity attacker, var atta
 	
 	if( settings.winter_express_show_player_cards )
 		foreach ( player in GetConnectedPlayers() )
-			Remote_CallFunction_Replay( player, "FS_Scenarios_ChangeAliveStateForPlayer", victim.GetEncodedEHandle(), false )
+			Remote_CallFunction_Replay( player, "FS_Scenarios_ChangeAliveStateForPlayer", victim, false )
 	
 	file.deadPlayers.append( victim )
 
@@ -2573,7 +2573,7 @@ void function WinterExpress_OnPlayerRespawnedThread( entity player, bool startin
 	if( settings.winter_express_show_player_cards && !startingGame )
 	{
 		foreach ( sPlayer in GetConnectedPlayers() )
-			Remote_CallFunction_Replay( sPlayer, "FS_Scenarios_ChangeAliveStateForPlayer", player.GetEncodedEHandle(), true )
+			Remote_CallFunction_Replay( sPlayer, "FS_Scenarios_ChangeAliveStateForPlayer", player, true )
 	}
 }
 

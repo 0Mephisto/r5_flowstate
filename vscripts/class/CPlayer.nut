@@ -400,7 +400,7 @@ function CodeCallback_RegisterClass_CPlayer()
 		SetPlayerStatInt( expect entity(this).p.UID, expect string( statname ), expect int( value ) )
 	}
 	
-	function CPlayer::SetCanUseZipline( setting ) //todo: move to code 
+	function CPlayer::SetCanUseZipline( setting ) //todo(mk): move to code 
 	{
 		entity player = expect entity ( this )
 		

@@ -424,13 +424,13 @@ bool function ClientCommand_FS_Scenarios_Requeue(entity player, array<string> ar
 void function FS_Scenarios_OnPlayerKilled( entity victim, entity attacker, var damageInfo )
 {
 	#if DEVELOPER
-		printt( "[+] OnPlayerKilled Scenarios -", victim, "by", attacker )
+		printt( "[Scenarios][+] OnPlayerKilled -", victim, "by", attacker )
 	#endif
 
 	if ( !IsValid( victim ) || !IsValid( attacker ) || !victim.IsPlayer() )
 	{
 		#if DEVELOPER
-			printw( "player died but returned" )
+			printw( "[Scenarios] player died but returned" )
 		#endif
 		return
 	}
@@ -465,7 +465,7 @@ void function FS_Scenarios_OnPlayerKilled( entity victim, entity attacker, var d
 			soloModePlayerToWaitingList( victim )
 			
 			#if DEVELOPER
-				printt( victim, "sent to waiting room and added to 'WaitingList" )
+				printt( "[Scenarios]", victim, "sent to waiting room and added to 'WaitingList" )
 			#endif
 		}
 	}()
@@ -478,7 +478,7 @@ void function FS_Scenarios_OnPlayerKilled( entity victim, entity attacker, var d
 		if( group.isValid )
 		{
 			foreach( splayer in FS_Scenarios_GetAllPlayersForGroup( group ) )
-				Remote_CallFunction_Replay( splayer, "FS_Scenarios_ChangeAliveStateForPlayer", victim.GetEncodedEHandle(), false )
+				Remote_CallFunction_Replay( splayer, "FS_Scenarios_ChangeAliveStateForPlayer", victim, false )
 			
 			if( group.isReady )
 				elapsedTime = Time() - group.startTime
@@ -537,7 +537,7 @@ bool function FS_Scenarios_IsFullTeamBleedout( entity attacker, entity victim )
 	}
 	
 	#if DEVELOPER
-		printt( "FS_Scenarios_IsFullTeamBleedout", count )
+		printt( "[Scenarios] FS_Scenarios_IsFullTeamBleedout", count )
 	#endif
 	
 	return count == 0
@@ -546,7 +546,7 @@ bool function FS_Scenarios_IsFullTeamBleedout( entity attacker, entity victim )
 void function FS_Scenarios_OnPlayerConnected( entity player )
 {
 	#if DEVELOPER
-		printt( "[+] OnPlayerConnected Scenarios -", player )
+		printt( "[Scenarios] [+] OnPlayerConnected -", player )
 	#endif
 
 	ValidateDataTable( player, "datatable/flowstate_scenarios_score_system.rpak" )
@@ -615,7 +615,7 @@ void function FS_Scenarios_OnPlayerDamaged( entity victim, var damageInfo )
 void function FS_Scenarios_OnPlayerDisconnected( entity player )
 {
 	#if DEVELOPER
-		printt( "[+] OnPlayerDisconnected Scenarios -", player )
+		printt( "[Scenarios] [+] OnPlayerDisconnected -", player )
 	#endif
 	
 	_CleanupPlayerEntities( player )
@@ -710,7 +710,7 @@ void function FS_Scenarios_SpawnBigDoorsForGroup( scenariosGroupStruct group )
         }
 	}
 	#if DEVELOPER
-		printt( "created", count, "big doors for group", group.groupHandle )
+		printt( "[Scenarios] created", count, "big doors for group", group.groupHandle )
 	#endif
 }
 
@@ -738,7 +738,7 @@ void function FS_Scenarios_SaveDoorsData()
 			if( data.linked && IsValid( data.door ) && IsValid( data2.door ) && data.door.GetLinkEnt() == data2.door )
 			{
 				file.allMapDoors.remove( j )
-				// printt( "removed double door" )
+				// printt( "[Scenarios] removed double door" )
 				data2.door.Destroy() //save edicts even more
 				j--
 			}
@@ -827,7 +827,7 @@ void function FS_Scenarios_SpawnDoorsForGroup( scenariosGroupStruct group )
 		}
 	}
 	#if DEVELOPER
-		printt( "spawned", group.doors.len(), "doors for realm", realm )
+		printt( "[Scenarios] spawned", group.doors.len(), "doors for realm", realm )
 	#endif
 }
 
@@ -846,7 +846,7 @@ void function FS_Scenarios_DestroyDoorsForGroup( scenariosGroupStruct group )
 		}
 
 	#if DEVELOPER
-		printt( "destroyed", count, "doors for group", group.groupHandle )
+		printt( "[Scenarios] destroyed", count, "doors for group", group.groupHandle )
 	#endif
 }
 
@@ -868,7 +868,7 @@ void function FS_Scenarios_StoreAliveDeathbox( entity deathbox )
 	file.aliveDeathboxes.append( deathbox )
 	
 	#if DEVELOPER
-		printt( "added deathbox to alive deathboxes array", deathbox )
+		printt( "[Scenarios] added deathbox to alive deathboxes array", deathbox )
 	#endif
 }
 
@@ -921,14 +921,14 @@ void function FS_Scenarios_DestroyAllAliveDeathboxesForRealm( int realm = -1 )
 		}
 	}
 	#if DEVELOPER
-		printt( "removed", count, "deathboxes for realm", realm )
+		printt( "[Scenarios] removed", count, "deathboxes for realm", realm )
 	#endif
 }
 
 void function FS_Scenarios_DestroyAllAliveDroppedLootForRealm( int realm = -1 )
 {
 	#if DEVELOPER
-		Warning("FS_Scenarios_DestroyAllAliveDroppedLootForRealm" )
+		Warning("[Scenarios] FS_Scenarios_DestroyAllAliveDroppedLootForRealm" )
 	#endif
 	
 	int count = 0
@@ -938,7 +938,7 @@ void function FS_Scenarios_DestroyAllAliveDroppedLootForRealm( int realm = -1 )
 		{
 			if( realm == -1 || drop.IsInRealm( realm )  )
 			{
-				// printt( "FS_Scenarios_DestroyAllAliveDroppedLootForRealm", drop, drop.GetParent() )
+				// printt( "[Scenarios] FS_Scenarios_DestroyAllAliveDroppedLootForRealm", drop, drop.GetParent() )
 				if( IsValid( drop.GetParent() ) &&  drop.GetParent().GetClassName() == "prop_physics" )
 					drop.GetParent().Destroy() // Destroy physics. This is not always the physics. [Cafe]
 				
@@ -949,7 +949,7 @@ void function FS_Scenarios_DestroyAllAliveDroppedLootForRealm( int realm = -1 )
 		}
 	}
 	#if DEVELOPER
-		printw( "[+] Removed", count, "prop_survival items for realm", realm )
+		printw( "[Scenarios] [+] Removed", count, "prop_survival items for realm", realm )
 	#endif
 }
 
@@ -961,7 +961,7 @@ void function FS_Scenarios_StoreAliveDropship( entity dropship )
 	file.aliveDropships.append( dropship )
 	
 	#if DEVELOPER
-		printt( "added dropship to alive dropships array", dropship )
+		printt( "[Scenarios] added dropship to alive dropships array", dropship )
 	#endif
 }
 
@@ -1066,7 +1066,7 @@ void function FS_Scenarios_SpawnLootbinsForGroup( scenariosGroupStruct group )
 	}
 	
 	#if DEVELOPER
-		printt("spawned", count, "lootbins for group", group.groupHandle, "in realm", group.slotIndex, "- WEAPONS: ", weapons )
+		printt("[Scenarios] spawned", count, "lootbins for group", group.groupHandle, "in realm", group.slotIndex, "- WEAPONS: ", weapons )
 	#endif
 }
 
@@ -1099,7 +1099,7 @@ void function FS_Scenarios_DestroyLootbinsForGroup( scenariosGroupStruct group )
 		}
 		
 	#if DEVELOPER
-		printt( "destroyed", count, "lootbins for group", group.groupHandle )
+		printt( "[Scenarios] destroyed", count, "lootbins for group", group.groupHandle )
 	#endif
 }
 
@@ -1197,7 +1197,7 @@ void function FS_Scenarios_SpawnLootForGroup( scenariosGroupStruct group )
 	}
 
 	#if DEVELOPER
-		printt("spawned", count, "ground loot for group", group.groupHandle, "in realm", group.slotIndex, "- WEAPONS: ", weapons )
+		printt("[Scenarios] spawned", count, "ground loot for group", group.groupHandle, "in realm", group.slotIndex, "- WEAPONS: ", weapons )
 	#endif
 }
 
@@ -1215,7 +1215,7 @@ void function FS_Scenarios_DestroyLootForGroup( scenariosGroupStruct group )
 		}
 		
 	#if DEVELOPER
-		printt( "destroyed", count, "ground loot for group", group.groupHandle )
+		printt( "[Scenarios] destroyed", count, "ground loot for group", group.groupHandle )
 	#endif
 }
 
@@ -1252,7 +1252,7 @@ void function FS_Scenarios_SetIsUsedBoolForTeamSlot( int team, bool usedState )
 	catch(e)
 	{	
 		#if DEVELOPER
-			sqprint("SetIsUsedBoolForRealmSlot crash " + e )
+			sqprint("[Scenarios] SetIsUsedBoolForRealmSlot crash " + e )
 		#endif
 	}
 }
@@ -1275,7 +1275,7 @@ bool function FS_Scenarios_IsPlayerIn3v3Mode( entity player )
 	if( !IsValid (player) )
 	{	
 		#if DEVELOPER
-			sqprint("isPlayerInSoloMode entity was invalid")
+			sqprint("[Scenarios] isPlayerInSoloMode entity was invalid")
 		#endif
 		
 		return false 
@@ -1287,7 +1287,7 @@ bool function FS_Scenarios_IsPlayerIn3v3Mode( entity player )
 bool function FS_Scenarios_GroupToInProgressList( scenariosGroupStruct newGroup, array<entity> players ) 
 {
 	#if DEVELOPER
-		printt( "FS_Scenarios_GroupToInProgressList" )
+		printt( "[Scenarios] FS_Scenarios_GroupToInProgressList" )
 	#endif
 
 	int slotIndex = getAvailableRealmSlotIndex()
@@ -1329,7 +1329,7 @@ bool function FS_Scenarios_GroupToInProgressList( scenariosGroupStruct newGroup,
 		if( !( groupHandle in file.scenariosGroupsInProgress ) )
 		{
 			#if DEVELOPER
-				sqprint(format("adding group: %d", groupHandle ))
+				sqprint(format("[Scenarios] adding group: %d", groupHandle ))
 			#endif
 
 			foreach( player in players )
@@ -1365,7 +1365,7 @@ bool function FS_Scenarios_GroupToInProgressList( scenariosGroupStruct newGroup,
 	catch(e)
 	{
 		#if DEVELOPER
-			sqprint("addGroup crash: " + e)
+			sqprint("[Scenarios] addGroup crash: " + e)
 		#endif
 		return false
 	}
@@ -1386,14 +1386,14 @@ void function FS_Scenarios_RemoveGroup( scenariosGroupStruct groupToRemove )
 	if( groupToRemove.groupHandle in file.scenariosGroupsInProgress )
 	{
 		#if DEVELOPER
-			sqprint(format("removing group: %d", groupToRemove.groupHandle) )
+			sqprint(format("[Scenarios] removing group: %d", groupToRemove.groupHandle) )
 		#endif
 		delete file.scenariosGroupsInProgress[groupToRemove.groupHandle]
 	}
 	else 
 	{
 		#if DEVELOPER
-			sqprint(format("groupToRemove.groupHandle: %d not in file.groupsInProgress", groupToRemove.groupHandle ))
+			sqprint(format("[Scenarios] groupToRemove.groupHandle: %d not in file.groupsInProgress", groupToRemove.groupHandle ))
 		#endif
 	}
 
@@ -1407,7 +1407,7 @@ scenariosGroupStruct ornull function FS_Scenarios_ReturnGroupForPlayer( entity p
 	if( !IsValid (player) )
 	{	
 		#if DEVELOPER
-			sqprint("FS_Scenarios_ReturnGroupForPlayer entity was invalid")
+			sqprint("[Scenarios] FS_Scenarios_ReturnGroupForPlayer entity was invalid")
 		#endif
 		
 		return null
@@ -1420,7 +1420,7 @@ scenariosGroupStruct ornull function FS_Scenarios_ReturnGroupForPlayer( entity p
 	}else 
 	{
 		#if DEVELOPER
-			sqprint("FS_Scenarios_ReturnGroupForPlayer player handle not in group map")
+			sqprint("[Scenarios] FS_Scenarios_ReturnGroupForPlayer player handle not in group map")
 		#endif
 	}
 
@@ -1460,7 +1460,7 @@ void function FS_Scenarios_RespawnIn3v3Mode( entity player )
 		catch (erroree)
 		{	
 			#if DEVELOPER
-				sqprint("Caught an error that would crash the server" + erroree)
+				sqprint("[Scenarios] Caught an error that would crash the server" + erroree)
 			#endif
 		}
 	
@@ -1490,7 +1490,7 @@ void function FS_Scenarios_Main_Thread()
 	(
 		function() : (  )
 		{
-			Warning( Time() + "Solo thread is down!!!!!!!!!!!!!!!" )
+			Warning( Time() + "[Scenarios] Solo thread is down!!!!!!!!!!!!!!!" )
 			GameRules_ChangeMap( GetMapName(), GameRules_GetGameMode() )
 		}
 	)
@@ -1591,7 +1591,7 @@ void function FS_Scenarios_Main_Thread()
 			if ( group.IsFinished )
 			{
 				#if DEVELOPER
-					printw( "[+] GROUP FINISHED MATCH", group.groupHandle )
+					printw( "[Scenarios] [+] GROUP FINISHED MATCH", group.groupHandle )
 				#endif
 
 				FS_Scenarios_SendRecapData( group )
@@ -1627,7 +1627,7 @@ void function FS_Scenarios_Main_Thread()
 					}
 				}
 				#if DEVELOPER
-					printt( "tracked ents removed", ents.len(), "for group", group.groupHandle )
+					printt( "[Scenarios] tracked ents removed", ents.len(), "for group", group.groupHandle )
 				#endif 
 				
 				DestroyScriptManagedEntArray( group.trackedEntsArrayIndex )
@@ -1705,7 +1705,7 @@ void function FS_Scenarios_Main_Thread()
 			// if( player.p.InDeathRecap ) //Has player closed Death Recap? //Not reliable until we solve all the death recap. Cafe
 				// continue
 			// #if DEVELOPER
-				// Warning( "Checking for player " + (Time() - player.p.lastRequeueUsedTime) )
+				// Warning( "[Scenarios] Checking for player " + (Time() - player.p.lastRequeueUsedTime) )
 			// #endif
 			
 			// if( Time() - player.p.lastRequeueUsedTime < settings.fs_scenarios_matchmaking_delay_after_dying ) // Penalizar a los que mueren.
@@ -1734,7 +1734,7 @@ void function FS_Scenarios_Main_Thread()
 		
 		#if DEVELOPER
 			if( forceGame )
-				Warning( "Force game because players have waited a long time " + playersThatForceMatchmaking )
+				Warning( "[Scenarios] Force game because players have waited a long time " + playersThatForceMatchmaking )
 		#endif
 		
 		// Hay suficientes jugadores para crear un equipo?
@@ -1747,7 +1747,7 @@ void function FS_Scenarios_Main_Thread()
 		Assert( waitingPlayers.len() < ( settings.fs_scenarios_playersPerTeam * settings.fs_scenarios_teamAmount ) )
 
 		#if DEVELOPER
-			printt("------------------MATCHING GROUP------------------")
+			printt("[Scenarios] ------------------MATCHING GROUP------------------")
 		#endif
 
 		waitingPlayers.randomize()
@@ -1854,14 +1854,14 @@ void function FS_Scenarios_Main_Thread()
 		newGroup.calculatedRingCenter = OriginToGround_Inverse( groupLocStruct.Center )//to ensure center is above ground. Colombia
 
 		#if DEVELOPER
-			printt( "Calculated center for ring: ", newGroup.calculatedRingCenter )
+			printt( "[Scenarios] Calculated center for ring: ", newGroup.calculatedRingCenter )
 			DebugDrawSphere( newGroup.calculatedRingCenter, 30, 255,0,0, true, 300 )
 		#endif
 
 		newGroup.trackedEntsArrayIndex = CreateScriptManagedEntArray()
 		
 		#if DEVELOPER
-			printt( "tracked ents script managed array created for group", newGroup.groupHandle, newGroup.trackedEntsArrayIndex )
+			printt( "[Scenarios] tracked ents script managed array created for group", newGroup.groupHandle, newGroup.trackedEntsArrayIndex )
 		#endif
 		
 		//fix this to iterate over all group.teams teams
@@ -1882,17 +1882,17 @@ void function FS_Scenarios_Main_Thread()
 				foreach( splayer in team1 )
 				{
 					if( IsValid( player ) && IsValid( splayer ) )
-						Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddAllyHandle", splayer.GetEncodedEHandle() )
+						Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddAllyHandle", splayer )
 				}
 				foreach( splayer in team2 )
 				{
 					if( IsValid( player ) && IsValid( splayer ) )
-						Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddEnemyHandle", splayer.GetEncodedEHandle() )
+						Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddEnemyHandle", splayer )
 				}
 				foreach( splayer in team3 )
 				{
 					if( IsValid( player ) && IsValid( splayer ) )
-						Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddEnemyHandle2", splayer.GetEncodedEHandle() )
+						Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddEnemyHandle2", splayer )
 				}
 			}
 			
@@ -1901,17 +1901,17 @@ void function FS_Scenarios_Main_Thread()
 				foreach( splayer in team1 )
 				{
 					if( IsValid( player ) && IsValid( splayer ) )
-						Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddEnemyHandle", splayer.GetEncodedEHandle() )
+						Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddEnemyHandle", splayer )
 				}
 				foreach( splayer in team2 )
 				{
 					if( IsValid( player ) && IsValid( splayer ) )
-						Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddAllyHandle", splayer.GetEncodedEHandle() )
+						Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddAllyHandle", splayer )
 				}
 				foreach( splayer in team3 )
 				{
 					if( IsValid( player ) && IsValid( splayer ) )
-						Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddEnemyHandle2", splayer.GetEncodedEHandle() )
+						Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddEnemyHandle2", splayer )
 				}
 			}
 
@@ -1920,20 +1920,21 @@ void function FS_Scenarios_Main_Thread()
 				foreach( splayer in team1 )
 				{
 					if( IsValid( player ) && IsValid( splayer ) )
-						Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddEnemyHandle", splayer.GetEncodedEHandle() )
+						Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddEnemyHandle", splayer )
 				}
 				foreach( splayer in team2 )
 				{
 					if( IsValid( player ) && IsValid( splayer ) )
-						Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddEnemyHandle2", splayer.GetEncodedEHandle() )
+						Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddEnemyHandle2", splayer )
 				}
 				foreach( splayer in team3 )
 				{
 					if( IsValid( player ) && IsValid( splayer ) )
-						Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddAllyHandle", splayer.GetEncodedEHandle() )
+						Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddAllyHandle", splayer )
 				}
 			}
-		} else //Show compass if cards won't show
+		}
+		else //Show compass if cards won't show
 		{
 			foreach ( entity player in players )
 			{
@@ -1999,7 +2000,7 @@ void function FS_Scenarios_Main_Thread()
 			#if DEVELOPER
 				else
 				{
-					printt( "ground loot is disabled from playlist!" )
+					printt( "[Scenarios] ground loot is disabled from playlist!" )
 				}
 			#endif
 
@@ -2035,7 +2036,7 @@ void function FS_Scenarios_Main_Thread()
 				}
 				
 				#if DEVELOPER
-					printw("spawning player in slot", spawnSlot, player )
+					printw("[Scenarios] spawning player in slot", spawnSlot, player )
 				#endif
 
 				if ( spawnSlot == -1 ) 
@@ -2229,7 +2230,7 @@ void function FS_Scenarios_Main_Thread()
 				if( settings.fs_scenarios_characterselect_enabled )
 				{
 					#if DEVELOPER 
-						printt( "STARTING CHARACTER SELECT FOR GROUP", newGroup.groupHandle, "IN REALM", newGroup.slotIndex )
+						printt( "[Scenarios] STARTING CHARACTER SELECT FOR GROUP", newGroup.groupHandle, "IN REALM", newGroup.slotIndex )
 					#endif 
 					
 					waitthread FS_Scenarios_StartCharacterSelectForGroup( newGroup )
@@ -2409,7 +2410,7 @@ void function FS_Scenarios_HandleGroupIsFinished( entity player )
 			}
 			
 			#if DEVELOPER
-				printt( "Group has finished delayed" )
+				printt( "[Scenarios] Group has finished delayed" )
 			#endif
 		}()
 
@@ -2434,7 +2435,7 @@ void function FS_Scenarios_StartCharacterSelectForGroup( scenariosGroupStruct gr
 	}
 
 	#if DEVELOPER
-	printt( "GIVING LOCKSTEP ORDER FOR PLAYERS GROUP", group.groupHandle, "IN REALM", group.slotIndex )
+	printt( "[Scenarios] GIVING LOCKSTEP ORDER FOR PLAYERS GROUP", group.groupHandle, "IN REALM", group.slotIndex )
 	#endif
 
 	float startime = Time()
@@ -2680,7 +2681,7 @@ void function FS_Scenarios_CreateCustomDeathfield( scenariosGroupStruct group )
 
 	group.currentRingRadius = ringRadius + settings.fs_scenarios_default_radius_padding
 
-	printw( "RING RADIUS WAS CREATED WITH ", group.currentRingRadius, "UNITS" )
+	printw( "[Scenarios] RING RADIUS WAS CREATED WITH ", group.currentRingRadius, "UNITS" )
 	int realm = group.slotIndex
 	float radius = group.currentRingRadius
 

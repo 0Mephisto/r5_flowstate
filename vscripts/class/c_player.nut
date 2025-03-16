@@ -10,7 +10,7 @@ var function CodeCallback_RegisterClass_C_Player()
 	
 	C_Player.canUseZipline <- true
 	
-	function C_Player::SetCanUseZipline( setting ) //todo: move to code 
+	function C_Player::SetCanUseZipline( setting ) //todo(mk): move to code 
 	{
 		entity player = expect entity ( this )
 		

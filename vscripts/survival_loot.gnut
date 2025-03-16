@@ -4419,7 +4419,7 @@ void function SURVIVAL_AutoEquipOrdnanceFromInventory( entity player, bool shoul
 {
 	#if DEVELOPER
 	// DumpStack()
-	Warning( "SURVIVAL_AutoEquipOrdnanceFromInventory" )
+	// Warning( "SURVIVAL_AutoEquipOrdnanceFromInventory" )
 	#endif
 	
 	if( Flowstate_IsHaloMode() )
@@ -4560,8 +4560,8 @@ void function SURVIVAL_TryGivePlayerDefaultMeleeWeapons( entity player )
 void function SURVIVAL_EquipOrdnanceFromInventory( entity player, string item, bool forceDontSwitch = false )
 {
 	#if DEVELOPER
-	DumpStack()
-	Warning( "SURVIVAL_EquipOrdnanceFromInventory " + player + " " + item + " " + forceDontSwitch )
+		// DumpStack()
+		// Warning( "SURVIVAL_EquipOrdnanceFromInventory " + player + " " + item + " " + forceDontSwitch )
 	#endif
 	if ( !SURVIVAL_PlayerCanSwitchOrdnance( player ) )
 		return

@@ -1748,11 +1748,12 @@ vector function GetVictorySquadFormationPosition( vector mainPosition, vector an
 	return OffsetPointRelativeToVector( mainPosition, offset, AnglesToForward( angles ) )
 }
 
-void function DM_HintCatalog(int index, int eHandle)
+void function DM_HintCatalog( int index, entity otherPlayer )
 {
-	if(!IsValid(GetLocalViewPlayer())) return
+	if( !IsValid( GetLocalViewPlayer() ) ) 
+		return
 
-	switch(index)
+	switch( index )
 	{
 		case 0:
 		DM_QuickHint( "Hold %use% to lock nearest enemy", true, 10)
@@ -2172,37 +2173,31 @@ void function FS_Scenarios_InitPlayersCards()
 	}
 }
 
-void function FS_Scenarios_AddEnemyHandle( int handle )
+void function FS_Scenarios_AddEnemyHandle( entity enemyPlayer )
 {
-	entity enemyPlayer = GetEntityFromEncodedEHandle( handle )
-	
 	if( !IsValid( enemyPlayer ) )
 		return
 
 	// printt( "added handle for enemy team player", handle )
-	file.enemyTeamHandles.append( handle )
+	file.enemyTeamHandles.append( enemyPlayer.GetEncodedEHandle() )
 }
 
-void function FS_Scenarios_AddEnemyHandle2( int handle )
+void function FS_Scenarios_AddEnemyHandle2( entity enemyPlayer )
 {
-	entity enemyPlayer = GetEntityFromEncodedEHandle( handle )
-	
 	if( !IsValid( enemyPlayer ) )
 		return
 
 	// printt( "added handle for enemy team player", handle )
-	file.enemyTeamHandles2.append( handle )
+	file.enemyTeamHandles2.append( enemyPlayer.GetEncodedEHandle() )
 }
 
-void function FS_Scenarios_AddAllyHandle( int handle )
+void function FS_Scenarios_AddAllyHandle( entity allyPlayer )
 {
-	entity allyPlayer = GetEntityFromEncodedEHandle( handle )
-	
 	if( !IsValid( allyPlayer ) )
 		return
 
 	// printt( "added handle for ally team player", handle )
-	file.allyTeamHandles.append( handle )
+	file.allyTeamHandles.append( allyPlayer.GetEncodedEHandle() )
 }
 
 void function FS_Scenarios_SetupPlayersCards( bool onlyUpdate )
@@ -2380,8 +2375,10 @@ void function FS_Scenarios_TogglePlayersCardsVisibility( bool show, bool reset )
 	}
 }
 
-void function FS_Scenarios_ChangeAliveStateForPlayer( int eHandle, bool alive )
+void function FS_Scenarios_ChangeAliveStateForPlayer( entity player, bool alive )
 {
+	int eHandle = player.GetEncodedEHandle()
+	
 	foreach( int i, int handle in file.allyTeamHandles )
 	{
 		if( handle == eHandle )

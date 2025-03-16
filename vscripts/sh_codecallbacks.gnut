@@ -1,4 +1,4 @@
-untyped //todo: remove after SetCanUseZipline move to code
+untyped //todo(mk): remove after SetCanUseZipline move to code
 
 global function CodeCallbacksShared_Init
 

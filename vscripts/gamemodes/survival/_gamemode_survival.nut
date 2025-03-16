@@ -1022,19 +1022,16 @@ void function Sequence_Playing()
 	}
 
 	// Set settings for the drop-in
-	foreach ( entity player in GetPlayerArray() )
+	bool shouldSetDropSettings = true
+	if ( Gamemode() == eGamemodes.WINTEREXPRESS || Playlist() == ePlaylists.survival_dev || Playlist() == ePlaylists.dev_default || GetCurrentPlaylistVarBool( "is_practice_map", false ) || Playlist() == ePlaylists.fs_movementrecorder )
+		shouldSetDropSettings = false
+	
+	if ( shouldSetDropSettings )
 	{
-		bool shouldSetDropSettings = true
-
-		if ( Gamemode() == eGamemodes.WINTEREXPRESS || Playlist() == ePlaylists.survival_dev || Playlist() == ePlaylists.dev_default || GetCurrentPlaylistVarBool( "is_practice_map", false ) || Playlist() == ePlaylists.fs_movementrecorder )
-			shouldSetDropSettings = false
-
-		if ( shouldSetDropSettings )
-		{
+		foreach ( entity player in GetPlayerArray() )
 			SetPlayerIntroDropSettings( player )
-		}
 	}
-
+	
 	FlagClear( "PlaneStartMoving" )
 	FlagClear( "PlaneDoorOpen" )
 	FlagClear( "PlaneAtLaunchPoint" )
@@ -1062,7 +1059,8 @@ void function Sequence_Playing()
 		{
 			WaitFrame()
 		}
-	} else if ( !GetCurrentPlaylistVarBool( "match_ending_enabled", true ) || GetConVarInt( "mp_enablematchending" ) < 1 )
+	} 
+	else if ( !GetCurrentPlaylistVarBool( "match_ending_enabled", true ) || GetConVarInt( "mp_enablematchending" ) < 1 )
 	{
 		WaitForever() // match never ending
 	}

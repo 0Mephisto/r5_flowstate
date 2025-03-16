@@ -1,3 +1,4 @@
+untyped
 // Localized strings framework 																	//mkos
 
 global function INIT_Flowstate_Localization_Strings
@@ -40,7 +41,7 @@ global function GetLocalizedStringsCount
 	#endif 
 #endif
 
-	const ASSERT_LOCALIZATION = false
+	const ASSERT_LOCALIZATION = true
 	const DEBUG_VARMSG = false
 
 global enum eMsgUI
@@ -80,7 +81,7 @@ struct
 	string motd_text = ""
 	string motd_text2 = ""
 	
-	table<int, string> variableVars = {}
+	array<string> variableVars = []
 	bool bConsistencyCheckComplete = false
 #endif
 
@@ -529,7 +530,7 @@ bool function ClientCommand_CheckLocalizationConsistency( entity player, array<s
 */
 void function LocalMsg_TEMP( entity player, string token, string token2 = "", int uiType = eMsgUI.DEFAULT, float duration = 5.0 )
 {
-	mAssert( token.find("#") == 0, "Should use a token with LocalMsg_TEMP()" )
+	mAssert( token.find( "#" ) == 0, "Should use a token with LocalMsg_TEMP()" )
 	mAssert( token.len() <= 10, "Lag can be incurred with tokens over 10 in length." )
 	
 	LocalMsg( player, "#FS_NULL", "#FS_NULL", uiType, duration, token, token2 )
@@ -546,18 +547,23 @@ void function LocalMsg( entity player, string ref, string subref = "", int uiTyp
 	#endif 
 	//original template by @Cafe ( Message() function )
 	
-	if ( !IsValid( player ) ) return
-	if ( !player.IsPlayer() ) return
-	if ( !player.p.isConnected ) return
+	if ( !IsValid( player ) ) 
+		return
+		
+	if ( !player.IsPlayer() ) 
+		return
+		
+	if ( !player.p.isConnected ) 
+		return
 	
 	int datalen = varString.len() + varSubstring.len()
 	int varStringLen = varString.len()
 	int varSubStringLen = varSubstring.len()
 	
-	string appendSubstring;
-	string appendString;
-	bool uiTypeValidLong;
-	string sendMessage;
+	string appendSubstring
+	string appendString
+	bool uiTypeValidLong
+	string sendMessage
 	bool isMotd
 	
 	if( uiType == eMsgUI.VAR_MOTD )
@@ -611,45 +617,35 @@ void function LocalMsg( entity player, string ref, string subref = "", int uiTyp
 	
 	if ( datalen > 0 )
 	{
-		for ( int textType = 0 ; textType < 2 ; textType++ )
+		for ( int textType = 0; textType < 2; textType++ )
 		{
 			sendMessage = textType == 0 ? varString : varSubstring
 
 			for ( int i = 0; i < sendMessage.len(); i++ )
-			{
-				Remote_CallFunction_NonReplay( player, "FS_BuildLocalizedTokenWithVariableString", textType, isMotd, sendMessage[i] )
-			}
+				Remote_CallFunction_NonReplay( player, "FS_BuildLocalizedTokenWithVariableString", textType, isMotd, sendMessage[ i ] )
 		}
 	}
 	
 	if ( long )
 	{
 		if( uiTypeValidLong )
-		{
 			MessageLong( player, ref, subref, uiType, duration, appendString, "", sound, false )
-		}
 		else 
-		{
 			MessageLong( player, ref, subref, uiType, duration, "", appendSubstring, sound, false )
-		}
 		
 		return
 	}
 	
-	int tokenID = Flowstate_FetchTokenID(ref)
+	int tokenID = Flowstate_FetchTokenID( ref )
 	int subTokenID = 0
 	
 	if( subref != "" )
-	{
-		subTokenID = Flowstate_FetchTokenID(subref)
-	}
+		subTokenID = Flowstate_FetchTokenID( subref )
 	
 	Remote_CallFunction_NonReplay( player, "FS_DisplayLocalizedToken", tokenID, subTokenID, uiType, duration )
 	
 	if ( sound != "" )
-	{
 		thread EmitSoundOnEntityOnlyToPlayer( player, player, sound )
-	}
 }
 
 void function MessageLong( entity player, string ref, string subref = "", int uiType = 0, float duration = 5.0, string varString = "", string varSubstring = "", string sound = "", bool long = true )
@@ -679,21 +675,15 @@ void function LocalVarMsg( entity player, string ref, int uiType = 2, float dura
 		if ( !ValidateType( vargv[i] ) ) 
 			return
 		
-		string send = "";
+		string send = ""
 
-		if( typeof( vargv[i] ) != "string" )
-		{
-			send = string( vargv[i] )
-		}
+		if( typeof( vargv[ i ] ) != "string" )
+			send = string( vargv[ i ] )
 		else
-		{
-			send = expect string( vargv[i] );
-		}
+			send = expect string( vargv[ i ] )
 
-		for ( int k = 0; k <= send.len() - 1; k++)
-		{
-			Remote_CallFunction_NonReplay( player, "FS_BuildLocalizedMultiVarString", i, send[k] )
-		}
+		for ( int k = 0; k <= send.len() - 1; k++ )
+			Remote_CallFunction_NonReplay( player, "FS_BuildLocalizedMultiVarString", i, send[ k ] )
 	}
 	
 	Remote_CallFunction_NonReplay( player, "FS_ShowLocalizedMultiVarMessage", tokenID, uiType, duration )	
@@ -842,9 +832,9 @@ void function FS_BuildLocalizedTokenWithVariableString( int Type, bool isMotd, .
 		for ( int i = 0; i < vargc; i++ )
 		{
 			if( isMotd )
-				file.motd_text += format( "%c", vargv[i] )
+				file.motd_text += format( "%c", vargv[ i ] )
 			else
-				file.fs_variableString += format( "%c", vargv[i] )
+				file.fs_variableString += format( "%c", vargv[ i ] )
 		}
 	}
 	else
@@ -852,9 +842,9 @@ void function FS_BuildLocalizedTokenWithVariableString( int Type, bool isMotd, .
 		for ( int i = 0; i < vargc; i++ )
 		{
 			if( isMotd )
-				file.motd_text2 += format( "%c", vargv[i] )
+				file.motd_text2 += format( "%c", vargv[ i ] )
 			else
-				file.fs_variableSubString += format( "%c", vargv[i] )
+				file.fs_variableSubString += format( "%c", vargv[ i ] )
 		}
 	}
 }
@@ -865,23 +855,23 @@ void function FS_BuildLocalizedVariable_InfoPanel( int Type, ... )
 	if ( Type == 0 )
 	{
 		for ( int i = 0; i < vargc; i++ )
-			file.fs_variableString_InfoPanel += format( "%c", vargv[i] )
+			file.fs_variableString_InfoPanel += format( "%c", vargv[ i ] )
 	}
 	else 
 	{
 		for ( int i = 0; i < vargc; i++ )
-			file.fs_variableSubString_InfoPanel += format( "%c", vargv[i] )
+			file.fs_variableSubString_InfoPanel += format( "%c", vargv[ i ] )
 	}
 }
 
-int function countStringArgs( string str )
+int function CountStringArgs( string str )
 {
 	int found = RegexpFindAll( str, "%s" ).len()
-	// var pattern = MakeRegexp( "%s" )
-	// int found = Regexp_Match( pattern, str ).len()
+	
 	#if DEVELOPER && DEBUG_VARMSG
 		printt( "REGEX FOUND %s count:", found )
 	#endif
+	
 	return found
 }
 
@@ -923,8 +913,8 @@ void function FS_DisplayLocalizedToken( int token, int subtoken, int uiType, flo
 	string Msg = " ";
 	string SubMsg = " ";
 
-	string add_placeholder_to_msg = countStringArgs( Localize( localToken ) ) == 0 ? "%s" : "";
-	string add_placeholder_to_submsg = countStringArgs( Localize( localSubToken ) ) == 0 ? "%s" : "";
+	string add_placeholder_to_msg = CountStringArgs( Localize( localToken ) ) == 0 ? "%s" : "";
+	string add_placeholder_to_submsg = CountStringArgs( Localize( localSubToken ) ) == 0 ? "%s" : "";
 	
 	#if DEVELOPER && DEBUG_VARMSG
 		printt("msg placeholder: ", add_placeholder_to_msg, " ; submsg placeholder: ", add_placeholder_to_submsg )
@@ -935,7 +925,7 @@ void function FS_DisplayLocalizedToken( int token, int subtoken, int uiType, flo
 	{
 		Msg = format( ( Localize( localToken ) + add_placeholder_to_msg ) , " " + S )
 	}
-	catch(e)
+	catch( e )
 	{
 		printt("Error ", e ," ; Function: ", FUNC_NAME(), " ;Invalid format qualifiers in message ID: ", token )
 		Msg = Localize( trim( localToken ) ) + " " + S
@@ -949,17 +939,17 @@ void function FS_DisplayLocalizedToken( int token, int subtoken, int uiType, flo
 	{
 		SubMsg = format( ( Localize( localSubToken ) + add_placeholder_to_submsg ) , SubS )
 	}
-	catch(e2)
+	catch( e2 )
 	{
-		printt("Error ", e2 ," ; Function: ", FUNC_NAME(), " ;Invalid format qualifiers in message ID: ", subtoken )
+		printt( "Error ", e2 ," ; Function: ", FUNC_NAME(), " ;Invalid format qualifiers in message ID: ", subtoken )
 	}
 	
 	#if DEVELOPER && DEBUG_VARMSG
-		printt("msg: ", StringReplaceLimited( Msg, "\n", "\\n", 999 ), " ;SubMsg: ", StringReplaceLimited( SubMsg, "\n", "\\n", 999 ) )
+		printt( "msg: ", StringReplaceLimited( Msg, "\n", "\\n", 999 ), " ;SubMsg: ", StringReplaceLimited( SubMsg, "\n", "\\n", 999 ) )
 	#endif
 	
 
-	switch(uiType)
+	switch( uiType )
 	{
 		case eMsgUI.DEFAULT: DisplayMessage( Msg, SubMsg, duration ); break
 		case eMsgUI.EVENT: Flowstate_AddCustomScoreEventMessage(  Msg, duration ); break
@@ -1088,7 +1078,7 @@ void function FS_CreateTextInfoPanelWithID_Localized( int token, int subToken, v
 	{
 		string S = file.fs_variableString_InfoPanel
 		string localToken = Flowstate_FetchToken( token )
-		string add_placeholder_to_msg = countStringArgs( Localize( localToken ) ) == 0 ? "%s " : "";
+		string add_placeholder_to_msg = CountStringArgs( Localize( localToken ) ) == 0 ? "%s " : "";
 		
 		#if DEVELOPER && DEBUG_VARMSG
 			printt( "S: [", S + "]", "msg placeholder:[", add_placeholder_to_msg + "]" )
@@ -1098,7 +1088,7 @@ void function FS_CreateTextInfoPanelWithID_Localized( int token, int subToken, v
 		{
 			Msg = format( ( Localize( localToken ) + add_placeholder_to_msg ), S )
 		}
-		catch(e)
+		catch( e )
 		{
 			printt("Error ", e ," ; Function: ", FUNC_NAME(), " ;Invalid format qualifiers in message ID: ", token )
 			Msg = Localize( trim( localToken ) ) + " " + S
@@ -1113,7 +1103,7 @@ void function FS_CreateTextInfoPanelWithID_Localized( int token, int subToken, v
 	{
 		string SubS = file.fs_variableSubString_InfoPanel
 		string localSubToken = Flowstate_FetchToken( subToken )
-		string add_placeholder_to_submsg = countStringArgs( Localize( localSubToken ) ) == 0 ? "%s " : "";
+		string add_placeholder_to_submsg = CountStringArgs( Localize( localSubToken ) ) == 0 ? "%s " : "";
 		
 		#if DEVELOPER && DEBUG_VARMSG
 			printt( "SubS: [", SubS + "]", "; submsg placeholder:[", add_placeholder_to_submsg + "]" )
@@ -1123,7 +1113,7 @@ void function FS_CreateTextInfoPanelWithID_Localized( int token, int subToken, v
 		{
 			SubMsg = format( ( Localize( localSubToken ) + add_placeholder_to_submsg ), SubS )
 		}
-		catch(e2)
+		catch( e2 )
 		{
 			printt("Error ", e2 ," ; Function: ", FUNC_NAME(), " ;Invalid format qualifiers in message ID: ", subToken )
 		
@@ -1160,15 +1150,11 @@ void function FS_BuildLocalizedMultiVarString( int varNum, ... )
 {	
 	for ( int i = 0; i < vargc; i++ )
 	{ 
-		if( !( varNum in file.variableVars ) )
-		{
-			file.variableVars[ varNum ] <- format( "%c", vargv[i] )
-		} 
+		if( file.variableVars.len() <= varNum )
+			file.variableVars.append( format( "%c", vargv[ i ] ) )
 		else 
-		{
-			file.variableVars[ varNum ] += format( "%c", vargv[i] )
-		} 
-	} 
+			file.variableVars[ varNum ] += format( "%c", vargv[ i ] )
+	}
 }
 
 
@@ -1178,21 +1164,12 @@ void function FS_ShowLocalizedMultiVarMessage( int token, int uiType, float dura
 	string localTokenString = Localize( localToken )
 	
 	int varCount = file.variableVars.len()
-	int tokenPlaceholdersCount = countStringArgs( localTokenString )
+	int tokenPlaceholdersCount = CountStringArgs( localTokenString )
 	
-	if( varCount > 10 )
-	{
-		for( int k = varCount; k >= 11; k-- )
-		{
-			if( k in file.variableVars )
-				delete file.variableVars[ k ]
-		}
-		
-		#if DEVELOPER && ASSERT_LOCALIZATION
-			mAssert( file.variableVars.len() == 10, "Variable vars were removed, but do not equal max vars" )
-		#endif
-	}
-
+	#if DEVELOPER && ASSERT_LOCALIZATION //assert here, because we should not have to correct tokens below.
+		mAssert( file.variableVars.len() == tokenPlaceholdersCount, "Variable vars(%d) do not match token placeholders(%d)", file.variableVars.len(), tokenPlaceholdersCount )
+	#endif
+	
 	if( tokenPlaceholdersCount > varCount )
 	{
 		int placeholdersToRemove = tokenPlaceholdersCount - varCount;	
@@ -1200,51 +1177,34 @@ void function FS_ShowLocalizedMultiVarMessage( int token, int uiType, float dura
 	}
 	else if( varCount > tokenPlaceholdersCount )
 	{
-		int placeholdersToAdd = varCount - tokenPlaceholdersCount;  
-		
-		for( int i = 0; i <= placeholdersToAdd - 1; i++ )
-		{
-			localTokenString += " %s";
-		}
+		int placeholdersToAdd = varCount - tokenPlaceholdersCount 
+		localTokenString += RepeatString( " %s", placeholdersToAdd )
 	}
 	
-	string Msg = "";	
+	string Msg = ""	
 	
-	//find me a variadic method, ty. 
 	try 
 	{
-		switch( varCount )
-		{
-			case 0: break;
-			case 1: Msg = format( localTokenString, file.variableVars[0] ); break;
-			case 2: Msg = format( localTokenString, file.variableVars[0], file.variableVars[1] ); break;
-			case 3: Msg = format( localTokenString, file.variableVars[0], file.variableVars[1], file.variableVars[2] ); break;
-			case 4: Msg = format( localTokenString, file.variableVars[0], file.variableVars[1], file.variableVars[2], file.variableVars[3] ); break;
-			case 5: Msg = format( localTokenString, file.variableVars[0], file.variableVars[1], file.variableVars[2], file.variableVars[3], file.variableVars[4] ); break;
-			case 6: Msg = format( localTokenString, file.variableVars[0], file.variableVars[1], file.variableVars[2], file.variableVars[3], file.variableVars[4], file.variableVars[5] ); break;
-			case 7: Msg = format( localTokenString, file.variableVars[0], file.variableVars[1], file.variableVars[2], file.variableVars[3], file.variableVars[4], file.variableVars[5], file.variableVars[6] ); break;
-			case 8: Msg = format( localTokenString, file.variableVars[0], file.variableVars[1], file.variableVars[2], file.variableVars[3], file.variableVars[4], file.variableVars[5], file.variableVars[6], file.variableVars[7] ); break;
-			case 9: Msg = format( localTokenString, file.variableVars[0], file.variableVars[1], file.variableVars[2], file.variableVars[3], file.variableVars[4], file.variableVars[5], file.variableVars[6], file.variableVars[7], file.variableVars[8] ); break;
-			case 10: Msg = format( localTokenString, file.variableVars[0], file.variableVars[1], file.variableVars[2], file.variableVars[3], file.variableVars[4], file.variableVars[5], file.variableVars[6], file.variableVars[7], file.variableVars[8], file.variableVars[9] ); break;
-			default: break
-		}
-	} 
-	catch (e)
+		array vars = [ this, localTokenString ] 	
+		vars.extend( file.variableVars )
+		Msg = expect string( format.acall( vars ) )
+	}
+	catch ( e )
 	{
-		Warning( format("Error " + e + " ;Invalid format qualifiers in message ID: %d , Text: %s", token, Localize( Flowstate_FetchToken( token ) ) ) )
+		Warning( "Error " + e + " ;Invalid format qualifiers in message ID: %d , Text: %s", token, Localize( Flowstate_FetchToken( token ) ) )
 	}
 	
 	#if DEVELOPER && DEBUG_VARMSG
-		int count = 0;
+		int count = 0
 		foreach( vVar in file.variableVars )
 		{
-			count++;
-			printt( "var: ", count, vVar )
+			count++
+			printt( "var:", count, vVar )
 		}
 		
-		printt("Message: ", Msg )
-		printt("uiType: ", uiType )
-		printt("Var count was: " + varCount + ", place holder count was: ", tokenPlaceholdersCount )
+		printt( "Message:", Msg )
+		printt( "uiType:", uiType )
+		printt( "Var count was:" + varCount + ", place holder count was:", tokenPlaceholdersCount )
 	#endif 
 	
 	switch( uiType )
@@ -1255,7 +1215,7 @@ void function FS_ShowLocalizedMultiVarMessage( int token, int uiType, float dura
 
 		default:
 			#if DEVELOPER
-				Warning( format( "Server tried to call ui that doesn't exist: uiType: %d, function: %s()", uiType, FUNC_NAME()  ) )
+				Warning( "Server tried to call ui that doesn't exist: uiType: %d, function: %s()", uiType, FUNC_NAME() )
 			#endif
 			break
 	}

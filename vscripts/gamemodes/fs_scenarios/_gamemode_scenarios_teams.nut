@@ -382,7 +382,7 @@ bool function __SetCustomTeamSetting_internal( CustomTeam team, string setting, 
 	}
 	else
 	{
-		mAssert( 0, format( "invalid setting was attempted to be set in table in %s()", FUNC_NAME() ) )
+		mAssert( 0, "invalid setting was attempted to be set in table in %s()", FUNC_NAME() )
 		return false
 	}
 		

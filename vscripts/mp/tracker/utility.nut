@@ -34,7 +34,6 @@ global function DEV_PrintTrackerWeapons
 global function ValidateIBMMWaitTime
 global function VerifyAdmin
 global function IsSafeString
-global function GetPlaylistMaps
 global function TP
 global function Tracker_DetermineNextMap
 global function Tracker_GotoNextMap
@@ -2328,29 +2327,7 @@ void function ResetRate( entity player )
 	player.p.ratelimit = 0
 }
 
-//taken from sh_playlists.gnut
 #if SERVER	
-array<string> function GetPlaylistMaps( PlaylistName playlistName )
-{
-	array<string> mapsArray
-
-	int numModes = GetPlaylistGamemodesCount( playlistName )
-	for ( int modeIndex = 0; modeIndex < numModes; modeIndex++ )
-	{
-		int numMaps = GetPlaylistGamemodeByIndexMapsCount( playlistName, modeIndex )
-		for ( int mapIndex = 0; mapIndex < numMaps; mapIndex++ )
-		{
-			string mapName = GetPlaylistGamemodeByIndexMapByIndex( playlistName, modeIndex, mapIndex )
-			if ( mapsArray.contains( mapName ) )
-				continue
-
-			mapsArray.append( mapName )
-		}
-	}
-
-	return mapsArray
-}
-
 bool function VerifyAdmin( string PlayerName, string PlayerUID )
 {
 	if ( PlayerName in player_admins ) 

@@ -1,6 +1,8 @@
 //Flowstate 1v1 gamemode -- made by __makimakima__
 //Gamemode redesigned and maintained by @CafeFPS & Mkos
 
+// Todo(mk): Needs core loop rewrote
+
 global function isPlayerInRestingList
 global function Gamemode1v1_ForceRest
 global function INIT_playerChallengesStruct
@@ -1566,7 +1568,7 @@ bool function ClientCommand_mkos_challenge(entity player, array<string> args)
 void function INIT_playerChallengesStruct( entity player )
 {
 	#if DEVELOPER
-		mAssert( !isChalValid( getChallengeListForPlayer( player ) ), "Chal struct already appended for player " + string( player ) )
+		mAssert( !isChalValid( getChallengeListForPlayer( player ) ), "Chal struct already appended for player %s", string( player ) )
 	#endif
 	
 	ChallengesStruct chalStruct
@@ -3171,7 +3173,7 @@ void function Gamemode1v1_Init( int eMap )
 		AddCallback_OnPlayerRespawned( DisablePlayerCollision )
 	
 	file.characters = GetAllCharacters()
-	characterslist = [0,1,2,3,4,5,6,7,8,9,10,11,12,13]
+	characterslist = [0,1,2,3,4,5,6,7,8,9,10,11,12,13] //TODO(mk): uniform legend system
 	Init_ValidLegendRange()
 	
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -3227,10 +3229,13 @@ void function Gamemode1v1_Init( int eMap )
 	
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
+	
 	if( Playlist() == ePlaylists.fs_vamp_1v1 ) //Todo(mk): This should be handled by the mode's script file using AddCallback_FlowstateSpawnsSettings
 		SpawnSystem_SetCustomPlaylist( "fs_1v1" )
 
 	eMap = SpawnSystem_FindBaseMapForPak( eMap )
+	
+	FlagWait( "EntitiesDidLoad" )
 	array<SpawnData> allSoloLocations = SpawnSystem_ReturnAllSpawnLocations( eMap )
 	
 	file.notificationPanel_Coordinates = Gamemode1v1_GetNotificationPanel_Coordinates()
@@ -3255,7 +3260,7 @@ void function Gamemode1v1_Init( int eMap )
 				Message( player, "Map Config Error", "No valid spawns defined." )
 			
 			#if DEVELOPER 
-				mAssert( false, "No valid spawns defined; Release behavior: Tracker_GotoNextMap.  Current Map: " + GetMapName()  )
+				mAssert( false, "No valid spawns defined; Release behavior: Tracker_GotoNextMap.  Current Map: %s", GetMapName()  )
 				return
 			#endif
 			
@@ -3276,7 +3281,7 @@ void function Gamemode1v1_Init( int eMap )
 			spawnPakTeamCount = potentialTeamCount.tointeger()
  
 		if( spawnPakTeamCount > SCENARIOS_MAX_ALLOWED_TEAMSIZE )
-			mAssert( false, "Configured spawn pak teamCount of " + spawnPakTeamCount + " exceeds scenarios max allowed teamsize of " + SCENARIOS_MAX_ALLOWED_TEAMSIZE )
+			mAssert( false, "Configured spawn pak teamCount of \"%s\" exceeds scenarios max allowed teamsize of %d", spawnPakTeamCount, SCENARIOS_MAX_ALLOWED_TEAMSIZE )
 		
 		for ( int i = 0; i < allSoloLocations.len(); i = i + teamAmount )
 		{
@@ -3923,7 +3928,7 @@ void function soloModeThread( LocPair waitingRoomLocation )
 			if( IsPlayerInSoloMode( player ) )
 				continue
 			
-			//#if !DEVELOPER 
+			#if !DEVELOPER 
 				if( Distance2D( player.GetOrigin(), waitingRoomLocation.origin ) > file.waitingRoomRadius )
 				{
 					maki_tp_player( player, g_randomWaitingSpawns.getrandom() ) //waiting player should be in waiting room,not battle area
@@ -3932,7 +3937,7 @@ void function soloModeThread( LocPair waitingRoomLocation )
 					if( !isPlayerInRestingList( player ) && !isPlayerInWaitingList( player ) )
 						soloModePlayerToWaitingList( player ) //(mk): dirty patch
 				}
-			//#endif
+			#endif
 		}
 		
 
@@ -5441,31 +5446,30 @@ void function Gamemode1v1_OnPlayerDied( entity victim, entity attacker, var dama
 
 	if( bIsCoachingMode() )
 	{
-		//stops recording
+		//(cafe)stops recording
 		FS_Coaching_StopRecording( FS_Coaching_GetAvailableMatchIdentifier(), victim, attacker )
 	}
 	
-	// if( isPlayerInWaitingList( victim ) )
-	// {
-		// LocPair waitingRoomLocation = getWaitingRoomLocation()
-
-		// if( !IsAlive( victim ) )
-		// {
-			// Gamemode1v1_SetPlayerGamestate( victim, e1v1State.SEQUENCE )
-			// DecideRespawnPlayer( victim, false )
-		// }
+	if( isPlayerInWaitingList( victim ) )
+	{
+		if( !IsAlive( victim ) )
+		{
+			Gamemode1v1_SetPlayerGamestate( victim, e1v1State.SEQUENCE )
+			DecideRespawnPlayer( victim, false )
+		}
 		
-		// if ( !IsValid( waitingRoomLocation ) )
-		// {//(mk): this should never be hit, Maki had it checked. 
-			// mAssert( false, "Waiting room location was invalid." )
-			// return
-		// }
+		LocPair waitingRoomLocation = getWaitingRoomLocation()
+		if ( !IsValid( waitingRoomLocation ) )
+		{//(mk): this should never be hit, Maki had it checked. 
+			mAssert( false, "Waiting room location was invalid." )
+			return
+		}
+		
+		ClearInvincible( victim )
+		maki_tp_player( victim, waitingRoomLocation )
 			
-		// ClearInvincible( victim )
-		// maki_tp_player( victim, waitingRoomLocation )
-			
-		// return
-	// }
+		return
+	}
 	
 	if( !isScenariosMode() )
 		HandleGroupIsFinished( victim ) //, damageInfo )
@@ -5560,13 +5564,13 @@ void function DecideToggleCollision_Rest( entity player, bool enable )
 void function SetupPlayerReserveAmmo( entity player, entity weapon )
 {
 	int ammoType = weapon.GetWeaponAmmoPoolType()
-	player.AmmoPool_SetCount( ammoType, 0 ) //always reset
+	player.AmmoPool_SetCount( ammoType, 0 ) //(mk):always reset
 	
 	string ammoRef = AmmoType_GetRefFromIndex( ammoType )
 	LootData data = SURVIVAL_Loot_GetLootDataByRef( ammoRef )
 
 	int amount = settings.give_weapon_stack_count_amount * FS_GetWeaponsThatUseThisAmmo( player, ammoRef ).len() //Revisit this
-	//todo remove the remaining ammo if player does not have two guns of the same ammo anymore
+	//(Cafe)todo remove the remaining ammo if player does not have two guns of the same ammo anymore
 	
 	//Clean up ammo. Cafe
 	foreach ( ammo, type in eAmmoPoolType )
@@ -5621,7 +5625,7 @@ void function HandleOpponentInfo( soloGroupStruct group )
 
 void function Gamemode1v1_TakeAll( entity player )
 {
-	if( !IsValid( player ) ) //this can fire after a player has quit, delayed.
+	if( !IsValid( player ) ) //(mk):this can fire after a player has quit, delayed.
 		return
 		
 	TakeUltimate( player )

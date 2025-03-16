@@ -216,6 +216,8 @@ void function SV_CL_Init()
 	MpWeaponSmartPistol_Init()
 	MpWeaponProximityMine_Init()
 	MpWeaponRocketLauncher_Init()
+	
+	Dash_Init()
 
 	//MpWeaponMountedTurretPlaceable_Init()
 	MpWeaponMountedTurretWeapon_Init()
@@ -247,20 +249,20 @@ void function SV_CL_Init()
 	}
 
 	#if CLIENT	
-	if( GetCurrentPlaylistVarBool( "enable_oddball_gamemode", false ) )
-	{
-		RegisterNetworkedVariableChangeCallback_ent( "FSDM_Oddball_BallOrCarrierEntity", Oddball_BallOrCarrierEntityChanged )
-		// RegisterNetworkedVariableChangeCallback_time( "FSIntro_StartTime", Flowstate_IntroTimeChanged )
-		// RegisterNetworkedVariableChangeCallback_time( "FSIntro_EndTime", Flowstate_IntroEndTimeChanged )
-		// RegisterNetworkedVariableChangeCallback_time( "FSVoteTeam_EndTime", Flowstate_VoteTeamEndTimeChanged )
-		if( Gamemode() == eGamemodes.fs_dm )
-			RegisterNetworkedVariableChangeCallback_int( "FSDM_GameState", FSDM_GameStateChanged )		
-	}
-	
-	if( Gamemode() == eGamemodes.CUSTOM_CTF )
-	{
-		RegisterNetworkedVariableChangeCallback_int( "FSDM_GameState", FSCTF_GameStateChanged )
-	}
+		if( GetCurrentPlaylistVarBool( "enable_oddball_gamemode", false ) )
+		{
+			RegisterNetworkedVariableChangeCallback_ent( "FSDM_Oddball_BallOrCarrierEntity", Oddball_BallOrCarrierEntityChanged )
+			// RegisterNetworkedVariableChangeCallback_time( "FSIntro_StartTime", Flowstate_IntroTimeChanged )
+			// RegisterNetworkedVariableChangeCallback_time( "FSIntro_EndTime", Flowstate_IntroEndTimeChanged )
+			// RegisterNetworkedVariableChangeCallback_time( "FSVoteTeam_EndTime", Flowstate_VoteTeamEndTimeChanged )
+			if( Gamemode() == eGamemodes.fs_dm )
+				RegisterNetworkedVariableChangeCallback_int( "FSDM_GameState", FSDM_GameStateChanged )		
+		}
+		
+		if( Gamemode() == eGamemodes.CUSTOM_CTF )
+		{
+			RegisterNetworkedVariableChangeCallback_int( "FSDM_GameState", FSCTF_GameStateChanged )
+		}
 	#endif
 	RemoteFunctions_Init_Finish()
 }
@@ -341,7 +343,6 @@ void function Server_Init()
 	GoblinDropship_Init()
 	AiPersonalShield()
 	ATTurrets_Init()
-	Dash_Init()
 	HoverTank_Init()
 	ThreatTracker_Init()
 	MobilityExperiments_Init()

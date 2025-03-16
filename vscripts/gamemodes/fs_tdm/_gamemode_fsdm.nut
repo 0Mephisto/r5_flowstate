@@ -315,9 +315,6 @@ bool function bIs1v1Mode()
 	if( GetPlaylistMaps( GetCurrentPlaylistName() ).contains( GetMapName() ) )
 		return true
 
-	if( Playlist() == ePlaylists.fs_1v1 )
-		mAssert( false, format( "Map \"%s\" is not enabled for %s in platform/playlists_r5_patch.txt", GetMapName(), GetCurrentPlaylistName() ) )
-
 	return false
 }
 
@@ -3293,7 +3290,7 @@ void function SimpleChampionUI()
 
 						//Message( player, "Oddball", file.selectedLocation.name, 5, "" )
 						LocalMsg( player, "#FS_Oddball", "", eMsgUI.DEFAULT, 5, "", file.selectedLocation.name )
-						// Remote_CallFunction_NonReplay( player, "DM_HintCatalog", 2, 0)
+						// Remote_CallFunction_NonReplay( player, "DM_HintCatalog", 2, null )
 						thread function ( ) : ( player )
 						{
 							wait 2 // -.-
@@ -6068,7 +6065,7 @@ void function BecomeHacker(entity player)
 	
 	// AddButtonPressedPlayerInputCallback( player, IN_USE, CheckForHoldInput_Thread )
 	
-	// Remote_CallFunction_NonReplay( player, "DM_HintCatalog", 0, 0)
+	// Remote_CallFunction_NonReplay( player, "DM_HintCatalog", 0, null )
 	
 	// entity tactical = player.GetOffhandWeapon( OFFHAND_TACTICAL )
 	
@@ -6133,7 +6130,7 @@ void function CheckForHoldInput_Thread( entity player ) //, entity weapon )
 			{
 				player.p.enableAimbot = false
 
-				Remote_CallFunction_NonReplay( player, "DM_HintCatalog", 0, 0)
+				Remote_CallFunction_NonReplay( player, "DM_HintCatalog", 0, null )
 
 			}
 		)
@@ -6141,7 +6138,7 @@ void function CheckForHoldInput_Thread( entity player ) //, entity weapon )
 		while ( player.IsInputCommandHeld( IN_USE ) )
 		{
 			if(!player.p.enableAimbot)
-				Remote_CallFunction_NonReplay( player, "DM_HintCatalog", 1, 0)
+				Remote_CallFunction_NonReplay( player, "DM_HintCatalog", 1, null )
 			
 			player.p.enableAimbot = true
 			

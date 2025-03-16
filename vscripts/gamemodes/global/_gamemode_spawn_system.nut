@@ -28,6 +28,7 @@ global function SpawnSystem_GenerateRandomSpawns
 global function SpawnSystem_SetValidateSpawnsOnLoad
 global function SpawnSystem_CreateLocPairObject
 global function SpawnSystem_GetPakInfoForKey
+global function SpawnSystem_CheckSpawn
 
 #if DEVELOPER
 	global function DEV_SpawnType
@@ -65,6 +66,7 @@ global function SpawnSystem_GetPakInfoForKey
 	global function DEV_SetSpawnInfo
 	global function DEV_SpawnsPlaylist
 	global function DEV_SpawnsBaseMap
+	global function DEV_TraceSpawnLine
 	
 	const float HIGHLIGHT_SPAWN_DELAY 	= 7.0
 	const int SPAWN_POSITIONS_BUDGET 	= 210
@@ -95,7 +97,15 @@ global function SpawnSystem_GetPakInfoForKey
 	
 	const int MASTER_PANEL_ORIGIN_OFFSET = 400
 	const int MAX_GENERATE_RANDOM_ATTEMPTS = 2000
-	const bool OVERIDE_VERIFY_SPAWNS = false //set this to always skip hullcheck fails for all spawns not just ones marked as "OOB"
+	
+	const vector MAX_ALLOWED_EXTENTS	= < 1730, 1730, 1730 > //for debug
+	const vector MAX_SPAWN_EXTENTS 		= < 300, 300, 300 >
+	const bool OVERIDE_VERIFY_SPAWNS 	= true //set this to always skip hullcheck fails for all spawns not just ones marked as "OOB"
+	const int MAX_SPAWN_CORRECTION_ITER = 500
+	const float CORRECTION_STEP_LARGE 	= 5.0
+	const float CORRECTION_STEP_SMALL 	= 1.0
+	const int CORRECTION_STEP_SWITCH 	= 10
+	const bool PRINT_SPAWN_CORRECTIONS	= false
 	
 	struct
 	{
@@ -153,7 +163,7 @@ global function SpawnSystem_GetPakInfoForKey
 					[" ==== SETTINGS ===="] = "",
 					["....."] = "",
 					[" script DEV_SpawnsPlaylist( string playlist = \"\" ) "] = "Sets the playlist this spawn pak should load for. This will also automatically apply the values saved in the playlists_r5_patch.txt for the specified playlist.",
-					[" script DEV_SetAutoSave( bool value = true )"] = "Disabled by default. Make sure folder 'output' in r5reloaded/platform exists",
+					[" script DEV_SetAutoSave( bool value = true )"] = "Disabled by default. Make sure folder 'spawns' in r5reloaded/platform exists",
 					[" script DEV_LoadPak( string pak = \"\", string playlist = \"\" )"] = "Loads spawn pak specifying rpak asset and playlist. If none provided, loads current pak. If custom spawns are wrote into the script test function, it loads those instead.",
 					[" script DEV_SpawnType( string setToType = \"\" )"] = "Params: \"csv\" or \"sq\" Sets/Converts the current array of print outs to specified type, and further additions are added as the specified type. Returns the current type if no parameters are provided. ( call with printt() )",
 					[" script DEV_SetTeamCount( int size )"] = "Sets the count of teams per spawn set formatting the PrintSpawns() array",
@@ -343,7 +353,7 @@ array<SpawnData> function SpawnSystem_ReturnAllSpawnLocations( int eMap, table<s
 						}
 						success = true
 					}
-					catch(e)
+					catch( e )
 					{
 						Warning( "Warning: " + e )
 						
@@ -551,10 +561,7 @@ array<SpawnData> function GenerateCustomSpawns( int eMap, int coreSpawnsLen = -1
 				g_waitingRoomPanelLocation = SetWaitingRoomAndGeneratePanelLocs( defaultWaitingRoom )
 			}
 			else 
-			{
-				mAssert( false, "No valid player start spawn detected \n If this is intentional disable this Assert." )
-				Warning( "No valid player start spawn detected" )
-			}
+				mAssert( 0, "No valid player start spawn detected \n If this is intentional disable this Assert." )
 		
 		break ////////////////////////////////////////////////////////////////////////////
 		//////////////////////////////////////////////////////////////////////////////////		
@@ -671,7 +678,7 @@ string function GenerateAssetStringForMapAndGamemode( int eMap, string set, stri
 		}
 		
 		// set spawnset
-		spawnset 					= "datatable/fs_spawns_" + dtbl_PlaylistRef + "_" + dtbl_MapRef + set + ".rpak"		
+		spawnset = "datatable/fs_spawns_" + dtbl_PlaylistRef + "_" + dtbl_MapRef + set + ".rpak"		
 	}
 	
 	file.currentSpawnPak = spawnset
@@ -682,77 +689,180 @@ array<SpawnData> function FetchReturnAllLocations( int eMap, string set = "_set_
 {
 	array<SpawnData> allSoloLocations
 	
-	try
-	{
-		string spawnset 	= GenerateAssetStringForMapAndGamemode( eMap, set, customRpak, customPlaylist )
+	string spawnset 	= GenerateAssetStringForMapAndGamemode( eMap, set, customRpak, customPlaylist )
+	
+	LocPair offsets 	= GenerateMapGamemodeBasedOffset()
+	vector originOffset = offsets.origin
+	vector anglesOffset = offsets.angles
+	
+	asset fetchasset 	= CastStringToAsset( spawnset )
+	var datatable 		= GetDataTable( fetchasset )	
+	
+	int spawnsCount 	= GetDatatableRowCount( datatable )
+	int originCol 		= GetDataTableColumnByName( datatable, "origin" )
+	int anglesCol 		= GetDataTableColumnByName( datatable, "angles" )
+	int nameCol			= GetDataTableColumnByName( datatable, "name" )
+	int infoCol			= GetDataTableColumnByName( datatable, "info" )
+	
+	
+	bool verify = 
+	(
+		originCol != -1 && 
+		anglesCol != -1
+	)
+	
+	mAssert( verify, "Loaded spawn rpak is an invalid format." )
+	
+	#if DEVELOPER
+		string print_data = "\n\n spawnset: " + spawnset + "\n--- LOCATIONS ---\n\n"
+	#endif
+	
+	int classCol = infoCol != -1 ? infoCol : nameCol	
+	for ( int i = 0; i < spawnsCount; i++ )
+	{		
+		string info   = GetDataTableString( datatable, i, classCol )
 		
-		LocPair offsets 	= GenerateMapGamemodeBasedOffset()
-		vector originOffset = offsets.origin
-		vector anglesOffset = offsets.angles
+		if( info.find( "pakData." ) != -1 )
+		{
+			if( info.find( ":" ) != -1 )
+			{
+				__ResolveAndSetPakData( info )
+				continue
+			}
+		}
 		
-		asset fetchasset 	= CastStringToAsset( spawnset )
-		var datatable 		= GetDataTable( fetchasset )	
-		
-		int spawnsCount 	= GetDatatableRowCount( datatable )
-		int originCol 		= GetDataTableColumnByName( datatable, "origin" )
-		int anglesCol 		= GetDataTableColumnByName( datatable, "angles" )
-		int nameCol			= GetDataTableColumnByName( datatable, "name" )
-		int infoCol			= GetDataTableColumnByName( datatable, "info" )
-		
-		
-		bool verify = 
-		(
-			originCol != -1 && 
-			anglesCol != -1
-		)
-		
-		mAssert( verify, "Loaded spawn rpak is an invalid format." )
+		vector origin = GetDataTableVector( datatable, i, originCol ) + originOffset
+		vector angles = GetDataTableVector( datatable, i, anglesCol ) + anglesOffset
 		
 		#if DEVELOPER
-			string print_data = "\n\n spawnset: " + spawnset + "\n--- LOCATIONS ---\n\n"
+			print_data += "Found origin: " + VectorToString( origin ) + " angles: " + VectorToString( angles ) + " SpawnInfo: " + info + "\n"	
 		#endif
 		
-		int classCol = infoCol != -1 ? infoCol : nameCol	
-		for ( int i = 0; i < spawnsCount; i++ )
-		{		
-			string info   = GetDataTableString( datatable, i, classCol )
+		if( ( OVERIDE_VERIFY_SPAWNS || ( file.bValidateSpawns && info.toupper() != "OOB" ) ) && !SpawnSystem_CheckSpawn( origin ) )
+		{
+			string oobSpawnInfo = format( "%s index: %d", VectorToString( origin ), ( allSoloLocations.len() ) )//appended after		
 			
-			if( info.find( "pakData." ) != -1 )
+			mAssert( NavMesh_IsUpToDate(), "Navmesh is not loaded or not the correct version. \n Cannot correct OOB spawn at origin %s", oobSpawnInfo )
+			mAssert( Flag( "EntitiesDidLoad" ), "Spawn system tried to run spawns correction, but EntitiesDidLoad flag is false. (navmesh not loaded)" )
+			
+			vector ornull newOrigin	
+			float fallbackAngle = 0.0				
+			float fraction
+			int iter = 0
+			
+			for( ; ; )
 			{
-				if( info.find( ":" ) != -1 )
+				++iter
+				
+				newOrigin = NavMesh_GetNearestPosInBounds( origin, MAX_SPAWN_EXTENTS, HULL_HUMAN )
+				if( newOrigin == null || iter > MAX_SPAWN_CORRECTION_ITER )
+					mAssert( 0, "Could not find safe spot via navmesh for OOB spawn at origin %s", oobSpawnInfo )
+				
+				expect vector ( newOrigin )
+				TraceResults result = TraceLine( newOrigin, newOrigin + < 0, 0, 72 >, null, TRACE_MASK_PLAYERSOLID_BRUSHONLY, TRACE_COLLISION_GROUP_PLAYER )
+				float stepSize = iter < CORRECTION_STEP_SWITCH ? CORRECTION_STEP_SMALL : CORRECTION_STEP_LARGE
+				
+				if( newOrigin == origin ) //for when navmesh returns a spawn within collision boundary
 				{
-					__ResolveAndSetPakData( info )
-					continue
+					fallbackAngle = WrapAngle360( fallbackAngle + 15.0 )
+					vector offsetDir = AnglesToForward( <0, fallbackAngle, 0> ) * stepSize
+
+					float distBefore = Distance( origin, newOrigin )
+					float distAfter  = Distance( origin + offsetDir, newOrigin )
+					if( distAfter > distBefore )
+						offsetDir = -offsetDir
+
+					origin += offsetDir
+
+					#if PRINT_SPAWN_CORRECTIONS
+						printt( "Navmesh result was in collision. Moving away from collision to:", VectorToString( origin ) )
+					#endif
+				}
+				else if( result.fraction < 1.0 ) //traceline cheap checks for collision
+				{
+					#if PRINT_SPAWN_CORRECTIONS
+						Warning( "collision detected" )
+						printt( "Start pos:", newOrigin )
+						PrintTraceResults( result )
+					#endif
+
+					float horizontal = sqrt
+					(
+						( result.surfaceNormal.x * result.surfaceNormal.x ) +
+						( result.surfaceNormal.y * result.surfaceNormal.y )
+					)
+
+					if( horizontal > 0.7 ) //probably a wall
+					{
+						vector moveDir = < result.surfaceNormal.x, result.surfaceNormal.y, 0 >
+						moveDir = Normalize( moveDir )
+						origin += moveDir * stepSize
+
+						#if PRINT_SPAWN_CORRECTIONS
+							printt( "Traceline in collision, moving x,y to:", VectorToString( origin ) )
+						#endif
+					}
+					else if( fabs( result.surfaceNormal.z ) > 0.7 ) //ceiling/floor
+					{
+						if( result.surfaceNormal.z < 0 ) //feet in ground
+							origin.z += stepSize
+						else
+							origin.z -= stepSize //head hit
+
+						#if PRINT_SPAWN_CORRECTIONS
+							printt( "Traceline in collision, adjusting z to:", VectorToString( origin ) )
+						#endif
+					}
+					else
+					{
+						vector moveDir = < result.surfaceNormal.x, result.surfaceNormal.y, 0 >
+						moveDir = Normalize( moveDir )
+						origin += moveDir * stepSize
+
+						if( result.surfaceNormal.z < 0 )
+							origin.z += stepSize * 0.5
+
+						#if PRINT_SPAWN_CORRECTIONS
+							printt( "Traceline in collision, adjusting angled to:", VectorToString( origin ) )
+						#endif
+					}
+				}
+				else if( !SpawnSystem_CheckSpawn( origin ) ) //final expensive check
+				{
+					fallbackAngle = WrapAngle360( fallbackAngle + 15.0 )
+					vector offsetDir = AnglesToForward( <0, fallbackAngle, 0> ) * stepSize
+					origin += offsetDir
+
+					#if PRINT_SPAWN_CORRECTIONS
+						printt( "Traceline cleared, hullcheck failed, spiraling to:", VectorToString( origin ) )
+					#endif
+				}
+				else
+				{
+					break
 				}
 			}
+
+			string correct = format( "Spawn %s was corrected via NavMesh/SpawnSystem to: %s", oobSpawnInfo, VectorToString( origin ) )
 			
-			vector origin = GetDataTableVector( datatable, i, originCol ) + originOffset
-			vector angles = GetDataTableVector( datatable, i, anglesCol ) + anglesOffset
-			
-			#if DEVELOPER
-				print_data += "Found origin: " + VectorToString( origin ) + " angles: " + VectorToString( angles ) + " SpawnInfo: " + info + "\n"	
+			#if TRACKER
+				sqwarning( correct )
+			#else 
+				Warning( correct )	
 			#endif
-			
-			
-			if( OVERIDE_VERIFY_SPAWNS || file.bValidateSpawns && info != "OOB" && !CheckSpawn( origin ) )
-				mAssert( false, "OOB spawn at origin " + VectorToString( origin ) + " index: " + ( allSoloLocations.len() - 1 ) )
-			
-			SpawnData spawnInfo = SpawnSystem_CreateSpawnObject( NewLocPair( origin, angles ), info, i )
-			allSoloLocations.append( spawnInfo )
-			
-			//gamemode sets with SpawnSystem_SetMetaDataHandler
-			if( file.PakMetaDataHandler != null )
-				file.PakMetaDataHandler( spawnInfo )
 		}
-		#if DEVELOPER 
-			printt( print_data )
-			printt("Unpacked [",allSoloLocations.len()," ] spawn locations from locations asset.")
-		#endif 
+		
+		SpawnData spawnInfo = SpawnSystem_CreateSpawnObject( NewLocPair( origin, angles ), info, i )
+		allSoloLocations.append( spawnInfo )
+		
+		//gamemode sets with SpawnSystem_SetMetaDataHandler
+		if( file.PakMetaDataHandler != null )
+			file.PakMetaDataHandler( spawnInfo )
 	}
-	catch(e)
-	{
-		sqerror( "Error: " + e )
-	}
+	#if DEVELOPER 
+		printt( print_data )
+		printt("Unpacked [",allSoloLocations.len()," ] spawn locations from locations asset.")
+	#endif 
 	
 	array<SpawnData> extraSpawnLocations = GenerateCustomSpawns( eMap, allSoloLocations.len() )
 	
@@ -888,7 +998,7 @@ bool function SpawnSystem_SetCustomPak( string custom_rpak )
 			GetDataTable( test )
 			success = true
 		}
-		catch(e)
+		catch( e )
 		{
 			Warning( "Custom Rpak Error: " + e )
 			Warning( "Skipping custom spawn rpak" )
@@ -931,7 +1041,7 @@ asset function SpawnSystem_GetCurrentSpawnAsset()
 		returnAsset = CastStringToAsset( file.currentSpawnPak )
 		GetDataTable( returnAsset )
 	}
-	catch(e)
+	catch( e )
 	{
 		Warning( "Warning -- cast failed: " + e )
 	}
@@ -973,7 +1083,7 @@ array<LocPair> function SpawnSystem_GenerateRandomSpawns( vector origin, vector 
 	{
 		vector spawnOrigin = GetRandom3DPointIn2DCircle( radiusFrac, origin )
 		
-		if( CheckSpawn( spawnOrigin ) )
+		if( SpawnSystem_CheckSpawn( spawnOrigin ) )
 		{
 			spawnOrigins.append( spawnOrigin )
 			spawnsAdded++
@@ -1010,19 +1120,37 @@ array<LocPair> function SpawnSystem_GenerateRandomSpawns( vector origin, vector 
 	return generatedSpawns
 }
 
-bool function CheckSpawn( vector origin )
+
+/* 
+	mins:
+	X: -16  => 16 units to the left of the origin.
+	Y: -16  => 16 units behind the origin.
+	Z:  0   => bottom of the bounding box.
+
+	maxs:
+	X: 16   => 16 units to the right of the origin.
+	Y: 16   => 16 units in front of the origin.
+	Z: 72   => 72 units above the origin; height.
+*/
+
+bool function SpawnSystem_CheckSpawn( vector origin, vector minsOffset = ZERO_VECTOR, vector maxsOffset = ZERO_VECTOR )
 {
-	vector mins = <-16, -16, 0>
-	vector maxs = <16, 16, 72>
+	vector mins = <-16, -16, 0> //HULL_HUMAN
+	vector maxs = <16, 16, 72>  //HULL_HUMAN
 	
-	TraceResults result = TraceHull( origin, origin + <0, 0, 1>, mins, maxs, null, TRACE_MASK_PLAYERSOLID, TRACE_COLLISION_GROUP_PLAYER )
+	if( minsOffset != ZERO_VECTOR )
+		mins += minsOffset
+		
+	if( maxsOffset != ZERO_VECTOR )
+		maxs += maxsOffset
+	
+	TraceResults result = TraceHull( origin, origin, mins, maxs, null, TRACE_MASK_PLAYERSOLID_BRUSHONLY, TRACE_COLLISION_GROUP_PLAYER )
+	//PrintTraceResults( result )
 
 	if ( result.startSolid )
 		return false
 
-	bool traceFinalResult = result.fraction == 1.0
-	
-	return traceFinalResult
+	return result.fraction == 1.0	
 }
 
 void function SpawnSystem_SetRunCallbacks( bool setting )
@@ -1100,8 +1228,8 @@ void function DEV_PrintSortedSpawns( table< string, array< SpawnData > > printSp
 			setName = "_EMPTY_CLASS"
 			
 		int count = 0
-		printt( " " )
-		printt( " " )
+		printl( " " )
+		printl( " " )
 		printt( "=== Spawns for:", setName, "===" )	
 		foreach( SpawnData data in spawnDataz )
 		{		
@@ -1110,8 +1238,8 @@ void function DEV_PrintSortedSpawns( table< string, array< SpawnData > > printSp
 		}
 	}
 	
-	printt( " " )
-	printt( " " )
+	printl( " " )
+	printl( " " )
 }
 
 bool function IsValidSpawnIndex( int index )
@@ -1805,6 +1933,12 @@ string function __WritePakInfoKV( string keyValue )
 	unreachable //this should not happen.
 }
 
+const array<string> DEV_PLAYLISTS_STRINGS =
+[
+	"dev_default",
+	"survival_dev",
+]
+
 void function DEV_WriteSpawnFile( string type = "", bool bAutoSave = false )
 {
 	if( file.dev_positions.len() <= 0 )
@@ -1874,7 +2008,7 @@ void function DEV_WriteSpawnFile( string type = "", bool bAutoSave = false )
 	
 	int uTime 			= GetUnixTimestamp()
 	string file 		= "fs_spawns_" + DEV_SpawnsPlaylist() + "_" + DEV_SpawnsBaseMap() + "_set_" + string( uTime ) + fType
-	string directory 	= "output/"
+	string directory 	= "scripts/spawns/"
 	
 	if( bAutoSave )
 		file = "spawns_autosave.nut"
@@ -1909,17 +2043,22 @@ void function DEV_WriteSpawnFile( string type = "", bool bAutoSave = false )
 		array<string> errors = []
 		foreach ( int index, LocPair spawn in GetSpawns() )
 		{
-			if( !CheckSpawn( spawn.origin ) )
+			if( !SpawnSystem_CheckSpawn( spawn.origin ) )
 			{
 				string originString = VectorToString( spawn.origin )
 				string anglesString = VectorToString( spawn.angles )
-				errors.append( "INVALID: index[ " + index + " ]" + "Loc: " + originString + anglesString )
+				errors.append( "OOB spawn: index[ " + index + " ]" + "Loc: " + originString + anglesString )
 			}
+		}
+		
+		if( DEV_PLAYLISTS_STRINGS.contains( DEV_SpawnsPlaylist() ) )
+		{
+			errors.append( "Warning: playlist was set to " + DEV_SpawnsPlaylist() + "\n If this was not the target playlist for these spawns, set with: script DEV_SpawnsPlaylist(\"intended_playlist_name_here\")" )
 		}
 		
 		if( errors.len() > 0 )
 		{
-			string header = "=== The following spawns did not pass player hull checks (OOB) ==="
+			string header = "=== Errors ==="
 			{
 				printw( header )		
 				foreach( string errorMsg in errors )
@@ -2915,7 +3054,7 @@ string function CheckFirstUse()
     msg.append( "|                                                 |" )
     msg.append( "---------------------------------------------------" )
     msg.append( " " )
-	msg.append( "NOTICE: Make sure to have a folder called 'output' in r5reloaded/platform directory" )
+	msg.append( "NOTICE: Make sure to have a folder called 'spawns' in r5reloaded/platform directory" )
 	msg.append( "NOTICE: AutoSave is disabled by default. To turn on run 'script DEV_SetAutoSave()'" )	
 	msg.append( "NOTICE: You should run DEV_SpawnsPlaylist( \"fs_playlistname_here\" ) with the intended playlist for spawns." )
 	
@@ -3623,7 +3762,7 @@ void function InitClonedSettings()
 	clonedSettings.fs_scenarios_bleedout_enabled 				= GetCurrentPlaylistVarBool( "fs_scenarios_bleedout_enabled", true )
 	clonedSettings.fs_scenarios_show_death_recap_onkilled 		= GetCurrentPlaylistVarBool( "fs_scenarios_show_death_recap_onkilled", true )
 	clonedSettings.fs_scenarios_zonewars_ring_mode 				= GetCurrentPlaylistVarBool( "fs_scenarios_zonewars_ring_mode", true )
-	clonedSettings.fs_scenarios_zonewars_ring_ringclosingspeed 	=  GetCurrentPlaylistVarFloat( "fs_scenarios_zonewars_ring_ringclosingspeed", 1.0 )
+	clonedSettings.fs_scenarios_zonewars_ring_ringclosingspeed 	= GetCurrentPlaylistVarFloat( "fs_scenarios_zonewars_ring_ringclosingspeed", 1.0 )
 	clonedSettings.fs_scenarios_ring_damage_step_time 			= GetCurrentPlaylistVarFloat( "fs_scenarios_ring_damage_step_time", 1.5 )
 	clonedSettings.fs_scenarios_game_start_time_delay 			= GetCurrentPlaylistVarFloat( "fs_scenarios_game_start_time_delay", 3.0 )
 	clonedSettings.fs_scenarios_ring_damage 					= GetCurrentPlaylistVarFloat( "fs_scenarios_ring_damage", 25.0 )
@@ -3808,5 +3947,11 @@ array<LocPair> function customDevSpawnsList()
 	]
 	
 	return spawns
+}
+
+void function DEV_TraceSpawnLine( vector newOrigin )
+{
+	TraceResults result = TraceLine( newOrigin, newOrigin + < 0, 0, 72 >, null, TRACE_MASK_PLAYERSOLID_BRUSHONLY, TRACE_COLLISION_GROUP_PLAYER )
+	PrintTraceResults( result )
 }
 #endif //DEVELOPER

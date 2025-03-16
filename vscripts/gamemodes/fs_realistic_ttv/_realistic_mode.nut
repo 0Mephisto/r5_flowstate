@@ -12,7 +12,7 @@ global function RealisticMode_GetBestSpawnPointFFA
 const vector TTV_BUILDING_ORIGIN = < 9864.35, 5497.93, -3567.97 >
 const float TTV_BUILDING_RADIUS = 4500.0
 const float DOOR_RESPAWN_PLAYER_RADIUS_LIMIT = 130.0
-const float DOOR_REGEN_GRACE = 60
+const float DOOR_REGEN_GRACE = 15 //60
 const int HIGH_PLAYER_COUNT_THRESHOLD = 15
 
 const array<string> STANDARD_REALISTIC_KILL_LOOT = 
@@ -26,7 +26,7 @@ const array<string> STANDARD_REALISTIC_KILL_LOOT =
 
 const array<string> STANDARD_SPAWN_LOOT = 
 [
-	"health_pickup_combo_small", //1
+	"health_pickup_combo_small", //1 count
 	"health_pickup_combo_small", //2
 	"health_pickup_health_small", //3
 	"health_pickup_health_small", //4
@@ -46,6 +46,7 @@ struct DoorDataStruct
     asset model
     string scriptName
 	float lastDestroyTime
+	int linkedDoorIdx = -1
 }
 
 struct 
@@ -168,8 +169,11 @@ void function RunDoorMonitor_Thread( entity door )
 
 void function CollectAllDoors()
 {
-    foreach ( door in GetAllPropDoors() )
+	array<entity> allPropDoors = GetAllPropDoors()
+	int allDoorsArrayLen = allPropDoors.len()
+    for ( int i = 0; i < allDoorsArrayLen; i++ )
     {
+		entity door = allPropDoors[ i ]
         if ( !IsValid( door ) )
             continue
 								
@@ -191,7 +195,26 @@ void function CollectAllDoors()
         doorData.model = door.GetModelName()
         doorData.scriptName = door.GetScriptName()
 
+		int thisDoorIdx = file.trackedDoors.len()
         file.trackedDoors.append( doorData )
+		
+		array<entity> linkedArr = door.GetLinkEntArray()
+		if ( linkedArr.len() > 0 )
+		{
+			entity linkedEnt = linkedArr[ 0 ]
+			int trackedDoorsLen = file.trackedDoors.len()
+			for ( int j = 0; j < trackedDoorsLen; j++ )
+			{
+				if ( file.trackedDoors[ j ].door == linkedEnt )
+				{
+					file.trackedDoors[ thisDoorIdx ].linkedDoorIdx = j
+					file.trackedDoors[ j ].linkedDoorIdx = thisDoorIdx
+					
+					break
+				}
+			}
+		}
+		
 		RunDoorMonitor( door )
 		
         #if DEVELOPER
@@ -205,8 +228,114 @@ void function CollectAllDoors()
 	#endif
 }
 
-void function RespawnDoor( DoorDataStruct doorData )
+void function TryLinkDoor( int doorIndex )
 {
+	DoorDataStruct doorData = file.trackedDoors[ doorIndex ]
+	int linkedDoorIndex    = doorData.linkedDoorIdx
+
+	if ( linkedDoorIndex < 0 )
+	{
+		printt( "not linking, door index was", doorIndex )
+		return
+	}
+
+	entity thisDoor = doorData.door
+	if ( !IsValid( thisDoor ) )
+	{
+		print( "thisDoor is not valid." )
+		return
+	}
+
+	entity linkedDoor = file.trackedDoors[ linkedDoorIndex ].door
+	if ( !IsValid( linkedDoor ) )
+		return
+
+	array<entity> links = thisDoor.GetLinkEntArray()
+	if ( links.contains( linkedDoor ) )
+	{
+		printw( "Already linked:", linkedDoor )
+		return
+	}
+	else 
+	{
+		printw( "Not linked, linking both doors." )
+	}
+
+	thisDoor.LinkToEnt( linkedDoor )
+	linkedDoor.LinkToEnt( thisDoor )	
+	
+	AddCallback_OnUseEntity( thisDoor, LinkedDoorUseCallback )
+	AddCallback_OnUseEntity( linkedDoor, LinkedDoorUseCallback )
+	
+	#if DEVELOPER
+		Warning( "Spawning visual debug sphere at %s", VectorToString( doorData.origin ) )
+		DebugDrawSphere( doorData.origin, DOOR_RESPAWN_PLAYER_RADIUS_LIMIT, 255, 0, 0, true, 5.0 )
+		
+		DoorDataStruct linkedDoorData = GetDoorDataFromDoorEnt( linkedDoor )
+		if( IsDoorDataValid( linkedDoorData ) )
+		{
+			Warning( "Spawning visual debug sphere at %s", VectorToString( linkedDoorData.origin ) )
+			DebugDrawSphere( linkedDoorData.origin, DOOR_RESPAWN_PLAYER_RADIUS_LIMIT, 255, 0, 0, true, 5.0 )
+		}
+		
+		printt( "Door re-linked:", doorIndex, "<-->", linkedDoorIndex )
+	#endif
+}
+
+
+DoorDataStruct function GetDoorDataFromIndex( int dataIndex )
+{
+	return file.trackedDoors[ dataIndex ]
+}
+
+DoorDataStruct function GetDoorDataFromDoorEnt( entity door )
+{
+	foreach( DoorDataStruct doorData in file.trackedDoors )
+	{
+		if( doorData.door == door )
+			return doorData
+	}
+	
+	DoorDataStruct data
+	return data
+}
+
+
+void function LinkedDoorUseCallback( entity door, entity player, int useInputFlags )
+{
+	DoorDataStruct doorData = GetDoorDataFromDoorEnt( door )
+	if ( !IsDoorDataValid( doorData ) )
+		return
+
+	if ( doorData.linkedDoorIdx < 0 )
+		return
+
+	entity linkedDoor = file.trackedDoors[ doorData.linkedDoorIdx ].door
+	if ( !IsValid( linkedDoor ) )
+		return
+
+	if ( door > linkedDoor )
+        return
+
+	if ( IsDoorOpen( door ) && !IsDoorOpen( linkedDoor ) )
+		OpenDoor( linkedDoor, player )
+	else if ( !IsDoorOpen( door ) && IsDoorOpen( linkedDoor ) )
+		CloseDoor( linkedDoor, player )
+		
+	#if DEVELOPER
+		printw("LinkedDoorUseCallback: Door", door, "used by", player, "forwarding signal to linkedDoor", linkedDoor )
+	#endif
+}
+
+
+bool function IsDoorDataValid( DoorDataStruct doorData )
+{
+	return IsValid( doorData.door )
+}
+
+void function RespawnDoor( int dataIndex )
+{
+	DoorDataStruct doorData = file.trackedDoors[ dataIndex ]
     if ( IsValid( doorData.door ) )
         return
 	
@@ -241,8 +370,11 @@ void function RespawnDoor( DoorDataStruct doorData )
     newDoor.SetScriptName( doorData.scriptName )
 
     DispatchSpawn( newDoor )
-    doorData.door = newDoor
+    
+	doorData.door = newDoor
+	file.trackedDoors[ dataIndex ] = doorData //reassign ref.
 
+	TryLinkDoor( dataIndex )
 	RunDoorMonitor( newDoor )
 	
     #if DEVELOPER
@@ -252,13 +384,14 @@ void function RespawnDoor( DoorDataStruct doorData )
 
 void function DoorRespawn_Thread()
 {
-    for( ; ; )
-    {
-        foreach ( doorData in file.trackedDoors )
-            RespawnDoor( doorData )
-
-        wait 5
-    }
+	for( ; ; )
+	{
+		int allDoorsLen = file.trackedDoors.len()
+		for ( int i = 0; i < allDoorsLen; i++ )
+			RespawnDoor( i )
+			
+		wait 5
+	}
 }
 
 void function InitializeDoorTracking()

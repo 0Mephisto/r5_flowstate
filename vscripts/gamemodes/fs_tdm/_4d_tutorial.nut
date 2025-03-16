@@ -64,11 +64,11 @@ vector function GetOffsetForRealm( int realmId )
     return <0,0,0>
 }
 
-void function Tutorial4D_JumpPad(entity player)
+void function Tutorial4D_JumpPad( entity player )
 {
-    if (Get4DTutorialPhase(player) < 3)
+    if ( Get4DTutorialPhase( player ) < 3 )
     {
-        Remote_CallFunction_NonReplay( player, "DM_HintCatalog", 4, 0 )
+        Remote_CallFunction_NonReplay( player, "DM_HintCatalog", 4, null )
         return
     }
 

@@ -398,7 +398,7 @@ void function FS_Scenarios_UpdatePlayerScore( entity player, int event, entity v
 	table<int,int> function ScenariosPersistence_FetchPlayerScoreTable( string uid )
 	{
 		#if DEVELOPER
-			mAssert( ScenariosPersistence_PlayerExists( uid ), format( "Scenarios pData slot doesn't exist for \"%s\"", uid ) )
+			mAssert( ScenariosPersistence_PlayerExists( uid ), "Scenarios pData slot doesn't exist for \"%s\"", uid )
 		#endif
 		
 		return file.scenariosPlayerScorePersistence[ uid ]
@@ -459,7 +459,7 @@ void function FS_Scenarios_UpdatePlayerScore( entity player, int event, entity v
 		foreach( int statType, ScenariosRecapData recapStruct in currentGlobalStandings )
 		{
 			#if DEVELOPER
-				mAssert( recapStruct.isValid, "Invalid struct data for player " + string( player ) + " was invalid for statType: " + string( statType ) + " ENUMFIELD: " + GetEnumString( "FS_ScoreType", statType )  )
+				mAssert( recapStruct.isValid, "Invalid struct data for player \"%s\" for statType: \"%d\" ENUMFIELD: \"%s\"", string( player ), statType, GetEnumString( "FS_ScoreType", statType ) )
 			#endif
 				
 			Remote_CallFunction_UI( player, "ServerCallback_SendScenariosStandings", STANDINGS_GLOBAL, statType, recapStruct.value, recapStruct.count )
@@ -473,7 +473,7 @@ void function FS_Scenarios_UpdatePlayerScore( entity player, int event, entity v
 		foreach( int statType, ScenariosRecapData recapStruct in currentRoundStandings )
 		{
 			#if DEVELOPER
-				mAssert( recapStruct.isValid, "Invalid struct data for player " + string( player ) + " was invalid for statType: " + string( statType ) + " ENUMFIELD: " + GetEnumString( "FS_ScoreType", statType )  )
+				mAssert( recapStruct.isValid, "Invalid struct data for player \"%s\" for statType: \"%d\" ENUMFIELD: \"%s\"", string( player ), statType, GetEnumString( "FS_ScoreType", statType ) )
 			#endif
 			
 			Remote_CallFunction_UI( player, "ServerCallback_SendScenariosStandings", STANDINGS_ROUND, statType, recapStruct.value, recapStruct.count )

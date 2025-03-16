@@ -489,7 +489,7 @@ playlists
 				logging_encryption								1
 				logging_shipstats 								1		// Enabling this will transfer data at end of match ( TODO: rename to tracker_shipstats )
 				use_global_stats								1		// Enabling this will use API data ( which only transfers at the start/end of a match or when a non batched player connects for stat queries )
-				use_online_motd 								0		// Still indev ( don't enable )
+				//use_online_motd 								0		// DEPRECATED: use FS_PLAYLIST_MOTD token at bottom of this config file.
 				tracker_max_wait								7.0		// Max wait for batch load. Reducing means faster loading of data, at the trade off of missing some connecting players still loading, who will get individually queue tasks to fetch stats and codecallback when complete for each player respectively.
 				
 				// You should configure the following in "platform/r5rdev_config.json", but also set to 1 to enable here.
@@ -500,6 +500,8 @@ playlists
 				restricted_server								0		// Enables restricted (private) server settings
 				restricted_join_message							"Welcome to the restricted server. \n\n You meet the minimum requirements to play on this server."
 				restricted_whitelist_message					"You have been whitelisted for this restricted server"
+				restricted_whitelist_only						0
+				
 				restricted_kills								500		// Minimum kills required to join
 				restricted_kd									0.7		// Minimum K/D ratio required to join
 				restricted_playtime								10000	// Minimum play time in seconds required to join
@@ -1443,6 +1445,8 @@ playlists
 				flowstate_enable_bullet_slow					1
 				
 				flowstate_modified_movement						0 // 0 = Apex || 1 = Titanfall 2 || 2 = Titanfall 2 High Air Accel || 3 = Titanfall 2 Low Grav || 4 = CSGO || 5 = CSGO High Air Accel || 6 = Surf || 7 = Half-Life 1 || 8 = Halo || 9 = Superglide Boost || 10 = Instagib || 11 = Fun Mode || 12 = Halo Movement NEW		
+			
+				dodge_dash_enabled								0
 			}
 			gamemodes { fs_dm { maps {
 				mp_rr_canyonlands_64k_x_64k						1
@@ -2154,9 +2158,12 @@ playlists
 						
 				enable_challenges								0 //Disable challenges in scenarios to prevent crash
 						
-				///////////////////////////////////////
-				// The following can be used to create custom loadouts 
+				////////////////////////////////////////////////////////////////////////////////
+				// The following "custom_1v1..." vars can be used to create custom loadouts (works for scenarios)
+				
 				// "weapon_name attachment atachment, weapon_name2"
+				
+				// Invalid weapons, and invalid attachments for weapons will be removed automatically and a console warning issued.
 				// https://discord.com/channels/873158454850756638/876944169594159105
 				
 				// Each string you place here can only be 1000 characters long, 
@@ -2186,15 +2193,13 @@ playlists
 				//installing or enabling extra spawn paks
 				// to add paks, prefix a mapname with spawnsets_  and list the paks to enable "1,2,3"
 				
-				spawnsets_mp_rr_canyonlands_64k_x_64k			"1"
-				spawnsets_mp_rr_desertlands_64k_x_64k			"1,2"
-				spawnsets_mp_rr_aqueduct 						"1"
-				spawnsets_mp_rr_arena_phase_runner				"1"
+				spawnsets_mp_rr_desertlands_64k_x_64k			"1"
 				
-				spawnpaks_use_sets 								1	// bool, enables using other than stock spawn paks
+				spawnpaks_use_sets 								0	// bool, enables using other than stock spawn paks
 				spawnpaks_use_random							0	// bool, loads random configured pak on mapstart
-				spawnpaks_prefer								1	// bool, enables the below setting 
-				spawnpaks_preferred_pak							2 	//integer, pak number 
+				
+				spawnpaks_prefer								0	// bool, enables the below setting 
+				spawnpaks_preferred_pak							0 	//integer, pak number 
 			}
 			gamemodes { fs_dm { maps {
 				mp_rr_desertlands_64k_x_64k 					1
@@ -2296,9 +2301,12 @@ playlists
 				patch_for_dropoff								1
 				patch_waiting_area								1 //makes a barrier between waiting and fighting areas
 				
-				///////////////////////////////////////
-				// The following can be used to create custom loadouts 
+				////////////////////////////////////////////////////////////////////////////////
+				// The following "custom_1v1..." vars can be used to create custom loadouts
+				
 				// "weapon_name attachment atachment, weapon_name2"
+				
+				// Invalid weapons, and invalid attachments for weapons will be removed automatically and a console warning issued.
 				// https://discord.com/channels/873158454850756638/876944169594159105
 				
 				// Each string you place here can only be 1000 characters long, 
@@ -2579,9 +2587,20 @@ playlists
 				patch_for_dropoff								0
 				patch_waiting_area								1 //makes a barrier between waiting and fighting areas
 				
-				//The following can be used to create custom loadouts 
+				////////////////////////////////////////////////////////////////////////////////
+				// The following "custom_1v1..." vars can be used to create custom loadouts
+				
+				// "weapon_name attachment atachment, weapon_name2"
+				
+				// Invalid weapons, and invalid attachments for weapons will be removed automatically and a console warning issued.
+				// https://discord.com/channels/873158454850756638/876944169594159105
+				
+				// Each string you place here can only be 1000 characters long, 
+				// use _continue respectively for large lists
+				
 				custom_1v1_weapons_primary 						""
 				custom_1v1_weapons_primary_continue 			""
+				
 				custom_1v1_weapons_secondary 					""
 				custom_1v1_weapons_secondary_continue 			""
 				
@@ -2725,9 +2744,20 @@ playlists
 				patch_for_dropoff								0
 				patch_waiting_area								1 //makes a barrier between waiting and fighting areas
 				
-				//The following can be used to create custom loadouts 
+				////////////////////////////////////////////////////////////////////////////////
+				// The following "custom_1v1..." vars can be used to create custom loadouts
+				
+				// "weapon_name attachment atachment, weapon_name2"
+				
+				// Invalid weapons, and invalid attachments for weapons will be removed automatically and a console warning issued.
+				// https://discord.com/channels/873158454850756638/876944169594159105
+				
+				// Each string you place here can only be 1000 characters long, 
+				// use _continue respectively for large lists
+				
 				custom_1v1_weapons_primary 						""
 				custom_1v1_weapons_primary_continue 			""
+				
 				custom_1v1_weapons_secondary 					""
 				custom_1v1_weapons_secondary_continue 			""
 				
@@ -4279,6 +4309,18 @@ playlists
 			"Language" "english"
 			"Tokens"
 			{
+				//////////////////////////////////////
+				//		TOKENS FOR SERVER HOSTS		//
+				//////////////////////////////////////
+				
+				"FS_PLAYLIST_MOTD" "An R5Reloaded Server" //set your servers message of the day. 1000 char max
+				"FS_PLAYLIST_MOTD_CONTINUE" "" // appends to first, 1000 char max.
+			
+			
+				//////////////////////////////////////////////////
+				// TEMP TOKENS (remove before release shipping )//
+				//////////////////////////////////////////////////
+				
 				"SKIN_COVID" "Viral Surge"
 				"ADVANCED_VIDEO_MENU_LOD_QUALITY_DESC" "Adjusts the rendering quality of distant objects and environments. Higher settings improve detail clarity at long distances but may impact performance. Lower settings boost performance by reducing detail in faraway objects."
 				"LOD_QUALITY" "Level of Detail (LOD) Quality"
@@ -4291,13 +4333,66 @@ playlists
 				"LOD_6"  "Extreme"
 				"LOD_7"  "Cinematic"
 				"LOD_8"  "Insane"
-				"LOD_9"  "Overkill"
+				"LOD_9"  "Overkill"			
+				
+				"TMP_0" "\n\n\n\n\n\n\n\n\n\n\n\n/team help                           - lists commands\n/team list                             - lists teams #\n/team make [name]                                               - makes a team\n/team info [player|uid|team ID]                       - info about team\n/team join [captain name/uid | team id]      - joins a team\n/team leave                                                               - leaves a team -> if no captains exist, team is destroyed\n\nCaptain only:\n\n/team accept [player|uid|id]                    - accepts join request by player or request id\n/team reject [player|uid|id]                      - declines join request by player or request id\n/team kick [player|uid|team member #]                       - kicks member from team\n/team makecaptain [player|uid|team member #]    - gives player captain privileges\n/team settings                                                 - lists teams settings and their values\n/team set [setting] [value]                         - sets a team setting"
+				"TMP_1" "Already in team"
+				"TMP_2" "Error with command parameter length"
+				"TMP_3" "Invalid team"
+				"TMP_4" "Player does not own a team"
+				"TMP_6" "Team is full"
+				"TMP_7" "Join request cooldown"
+				"TMP_8" "Not in a team"
+				"TMP_9" "Player left the team: "
+				"TMP_10" "Player joined the team: "
+				"TMP_11" "You joined team: "
+				"TMP_12" "Failed to join team: "
+				"TMP_13" "New join request: "
+				"TMP_14" "Team join request sent to: "
+				"TMP_15" "You left team: "
+				"TMP_16" "Failed to leave team: "
+				"TMP_17" "Join request failed for team: "
+				"TMP_18" "Failed. Max length for teamname is: "
+				"TMP_19" "Team created successfully"
+				"TMP_20" "Failed to create team"
+				"TMP_21" "Command \"team info\" Requires team # or player of team as last parameter"
+				"TMP_22" "All Teams"
+				"TMP_23" "Team info"
+				"TMP_24" "Help info"
+				"TMP_25" "Team was dismantled"
+				"TMP_26" "Join requests"
+				"TMP_27" "Command requires last parameter of id/player"
+				"TMP_28" "Failed to accept/reject request"
+				"TMP_29" "Invalid request player"
+				"TMP_30" "Request revoked for: "
+				"TMP_31" "Invalid team player"
+				"TMP_32" "Failed to kick player"
+				"TMP_33" "Player not on team"
+				"TMP_34" "Player already captain"
+				"TMP_35" "Added as captain: "
+				"TMP_36" "Team Settings"
+				"TMP_37" "Not captain of team"
+				"TMP_38" "Invalid setting"
+				"TMP_39" "Setting is already this value"
+				"TMP_40" "Invalid value for setting. Numbers only"
+				"TMP_41" "Setting successfully set"
+				"TMP_42" "Command requires setting & value. ex: /team set fill 0"
+				"TMP_43" "Admin has disable teams"
+				"TMP_44" "Not on any team"
+				"TMP_45" "Success"
+				"TMP_46" "Failed"
 			}
 		}
 	}
 	
 	"KVFileOverrides"
 	{
+		///////////////////////////////////////////////////////////////////////////////////
+		///////////////////////////////////////////////////////////////////////////////////
+		///////////////////////////	SECTION 5: OVERRIDES	///////////////////////////////
+		///////////////////////////////////////////////////////////////////////////////////
+		///////////////////////////////////////////////////////////////////////////////////
+		
 		
 	}
 }

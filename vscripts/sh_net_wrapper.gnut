@@ -9,8 +9,6 @@ global function ScriptRemote_RegisterUntypedFunction_deprecated 	//wrapper for R
 global function PrintNetworkFunctions
 global function TestNetworkedVarLimit
 
-const bool DEBUG_NET = true  // this enables the system. On Registration failure, you will get relevent debug info. This should be disabled in release.
-
 #if DEBUG_NET
 	const bool VERBOSE_NET_PRINTS	= false //this will print functions/vars in the order they are called.
 	const int MAX_ENTRIES			= 256  //must stay in sync with native
@@ -425,7 +423,7 @@ void function ScriptRegisterNetworkedVariable( ... )
 			string debugCoreMsg = format( "Tried to register networked variable \"%s\" of type \"%s\" in category \"%s\". Maximum allowed %s(%d) reached.", varName, varType, category, varMaxStr, maxAllowed )
 			Warning( debugCoreMsg )
 			
-			mAssert( false, debugCoreMsg )
+			mAssert( 0, debugCoreMsg )
 			return
 		}
 	#endif
@@ -780,7 +778,7 @@ void function ScriptRemote_RegisterUntypedFunction_deprecated( ... )
 			Warning( "Buffer of ( %d/%d ) consumed.", file.allFuncInfo.totalBuffer, MAX_BUFFER, "\n\n" )
 			
 			DumpStack()
-			mAssert( false, errorMsg )
+			mAssert( 0, errorMsg )
 		}
 	}
 

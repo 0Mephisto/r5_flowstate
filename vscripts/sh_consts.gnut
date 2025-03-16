@@ -13,10 +13,22 @@ global const SCRIPT_GAME_VERSION__RELEASE = true
 //r5r.dev
 global const bool TRACKER 					= false
 global const bool HAS_TRACKER_DLL 			= false
+
+//
 global const bool MULTIPLAYER_DEBUG_PRINTS 	= false
 global const bool NOTIFY_RATELIMIT_FAILED	= false
 global const bool MKOS						= false
-global const bool ENTITYVAR_DEPRECATED		= false
+global const bool ENTITYVAR_DEPRECATED		= false //Todo(mk): fully remove this deprecated system
+
+
+//////////////////////////////////////////////////////////////
+// (mk): This enables network registration debug system. 
+// On Registration failure, you will get relevant debug info. 
+// This should be DISABLED in release.
+//////////////////////////////////////////////////////////////
+global const bool DEBUG_NET 				= true
+//////////////////////////////////////////////////////////////
+
 
 global const int INT_MIN = (1<<31)
 global const int INT_MAX = (1<<31) - 1

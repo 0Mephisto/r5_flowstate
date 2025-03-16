@@ -1,3 +1,5 @@
+//Todo: Make custom playlists synced
+
 //script init:
 global function PlayLists_Mapnames_Gamemodes_Init
 
@@ -11,6 +13,10 @@ global function AllMapsArray
 global function AllGamemodesArray
 global function AllPlaylistsArray
 global function shGlobalErrorCheck
+
+#if SERVER 
+	global function GetPlaylistMaps
+#endif 
 
 //mode functions:
 global function g_bIs1v1GameType
@@ -157,7 +163,7 @@ struct
 
 //this is the global location for defining a mode that is 1v1 based
 const array<int> playlist1v1Types = 
-[	
+[
 	ePlaylists.fs_1v1,
 	ePlaylists.fs_lgduels_1v1,
 	ePlaylists.fs_vamp_1v1,
@@ -253,8 +259,16 @@ void function PlayLists_Mapnames_Gamemodes_Init()
 		SH_globals.currentGamemode = currentGamemodeEnum
 		mAssert( SH_globals.currentGamemode != -1, format( "Current gamemode \"%s\" is not registered in sh_mapname_playlist_gamemode_enums.nut", curentGamemodeName ) )
 	
-	AllModeConditionals_Init()
 	
+	#if SERVER //prevents errors of gamemodes not loading
+		if( MapName() != eMaps.mp_lobby && !Dev_CommandLineHasParm( "-scriptdev" ) )
+		{
+			array< string > validMaps = GetPlaylistMaps( GetCurrentPlaylistName() )
+			mAssert( validMaps.contains( GetMapName() ), "Map \"%s\" is not enabled for \"%s\" in platform/playlists_r5_patch.txt. Launch with \"-scriptdev\" to ignore this assert.", GetMapName(), GetCurrentPlaylistName() )
+		}
+	#endif
+	
+	AllModeConditionals_Init()	
 	SH_globals.errorCheck = true
 }
 
@@ -299,6 +313,7 @@ int function getGamemodeEnumFromName( string gamemodeString )
 // 		global script functions			//
 //////////////////////////////////////////
 
+//Todo: Change these to eMap(), ePlaylist(), eGamemode()
 int function MapName()
 {
 	return SH_globals.currentMap
@@ -337,6 +352,29 @@ bool function shGlobalErrorCheck()
 {
 	return SH_globals.errorCheck
 }
+
+#if SERVER 
+	array<string> function GetPlaylistMaps( string playlistName )
+	{
+		array<string> mapsArray
+
+		int numModes = GetPlaylistGamemodesCount( playlistName )
+		for ( int modeIndex = 0; modeIndex < numModes; modeIndex++ )
+		{
+			int numMaps = GetPlaylistGamemodeByIndexMapsCount( playlistName, modeIndex )
+			for ( int mapIndex = 0; mapIndex < numMaps; mapIndex++ )
+			{
+				string mapName = GetPlaylistGamemodeByIndexMapByIndex( playlistName, modeIndex, mapIndex )
+				if ( mapsArray.contains( mapName ) )
+					continue
+
+				mapsArray.append( mapName )
+			}
+		}
+
+		return mapsArray
+	}
+#endif 
 
 //////////////////////////////////////////
 //	gamemode conditional INIT functions	//
