@@ -63,6 +63,12 @@ const table< string, string > SUPER_DASH =
 
 void function GivePlayerDashAbility( entity player, bool EnableDash = true, table< string, string > DashTable = DASH )
 {
+	if( !EnableDash )
+	{
+		player.SetClassVar( "dodge", "false" )
+		return
+	}
+
 	if( settings.SuperDash )
 		DashTable = SUPER_DASH
 
