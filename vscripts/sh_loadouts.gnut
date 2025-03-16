@@ -1858,8 +1858,8 @@ bool function ValidateAndFixLoadoutSlot( EHI playerEHI, LoadoutEntry entry, bool
 	if ( shouldReset )
 	{
 		array<ItemFlavor> exceptions = []
-		if ( entry == Loadout_CharacterClass() )
-			exceptions  = [ GetItemFlavorByAsset( CHARACTER_RANDOM ), GetItemFlavorByAsset( CHARACTER_DUMMIE ) ]
+		//if ( entry == Loadout_CharacterClass() )
+			//exceptions  = [ GetItemFlavorByAsset( CHARACTER_RANDOM ), GetItemFlavorByAsset( CHARACTER_DUMMIE ) ]
 
 		if ( entry.type == eLoadoutEntryType.ITEM_FLAVOR )
 		{

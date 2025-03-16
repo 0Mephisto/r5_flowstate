@@ -1081,6 +1081,7 @@ void function OnClientConnected( entity player )
 			case eMaps.mp_rr_desertlands_64k_x_64k:
 			case eMaps.mp_rr_desertlands_64k_x_64k_nx:
 			case eMaps.mp_rr_desertlands_64k_x_64k_tt:
+			case eMaps.mp_rr_desertlands_64k_x_64k_mv:
 			case eMaps.mp_rr_desertlands_mu1:
 			case eMaps.mp_rr_desertlands_holiday:
 				player.SetOrigin( <4838.49658, 13516.8604, -4025.90625> )

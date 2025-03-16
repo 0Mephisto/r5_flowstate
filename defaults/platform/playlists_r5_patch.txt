@@ -188,9 +188,9 @@ playlists
 				//// Character (a.k.a. Legend) Configuration								///////
 				///////////////////////////////////////////////////////////////////////////////////
 				
-				character_dummie								hide
-				character_random								hide
-				//character_loba									hide
+				character_dummie								DISABLED
+				character_random								DISABLED
+				character_loba									DISABLED
 
 				///////////////////////////////////////////////////////////////////////////////////
 				//// Character (a.k.a. Legend) Damage Balancing								///////
@@ -4207,6 +4207,7 @@ playlists
 				mp_rr_desertlands_64k_x_64k						1
 				mp_rr_desertlands_64k_x_64k_nx				 	1
 				mp_rr_desertlands_64k_x_64k_tt				 	1
+				mp_rr_desertlands_64k_x_64k_mv				 	1
 				mp_rr_desertlands_mu1				 			1
 				mp_rr_desertlands_mu1_tt				 		1
 			} } }
