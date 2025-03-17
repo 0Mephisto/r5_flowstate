@@ -362,7 +362,7 @@ int function SetCustomTeamSetting( entity player, string setting, string value )
 	if( !ALLOWED_SETTINGS[ setting ].contains( "number" ) && !ALLOWED_SETTINGS[ setting ].contains( value ) )
 		return -4
 		
-	if( !IsNumeric( value ) )	
+	if( !IsStringNumeric( value ) )	
 		return -4
 		
 	if( !__SetCustomTeamSetting_internal( team, setting, value.tointeger() ) )
@@ -533,7 +533,7 @@ CustomTeam ornull function FindTeamFromQuery( string query ) //✓
 	
 	if( !IsValid( captainOfTeam ) )
 	{
-		if( IsNumeric( query ) )
+		if( IsStringNumeric( query ) )
 			return GetCustomTeamByID( query.tointeger() )
 	}
 	else 
@@ -602,13 +602,13 @@ entity function FindTeamPlayerFromQuery( string param, CustomTeam team, string t
 		{
 			case "action":
 				int teamLen = team.players.len()
-				if( teamLen > 0 && IsNumeric( param, 0, teamLen - 1 ) )
+				if( teamLen > 0 && IsStringNumeric( param, 0, teamLen - 1 ) )
 					targetPlayer = team.players[ param.tointeger() ]
 				break 
 			
 			case "requests":
 				int requestsLen = team.teamJoinRequests.len()
-				if( requestsLen > 0 && IsNumeric( param, 0, requestsLen - 1 ) )
+				if( requestsLen > 0 && IsStringNumeric( param, 0, requestsLen - 1 ) )
 					targetPlayer = team.teamJoinRequests[ param.tointeger() ]			
 				break
 		}

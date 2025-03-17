@@ -5598,7 +5598,7 @@ bool function ClientCommand_SaveCurrentWeapons(entity player, array<string> args
 	
 	if ( !isPlayerInRestingList( player ) )
 	{
-		if( trim( weaponname1 ) == "" || trim( weaponname2 ) == "" )
+		if( strip( weaponname1 ) == "" || strip( weaponname2 ) == "" )
 		{	
 			#if DEVELOPER
 				if (weaponname1 == ""){ sqerror("Player: " + player.GetPlatformUID() + " weaponname1 empty") }
@@ -5617,7 +5617,7 @@ bool function ClientCommand_SaveCurrentWeapons(entity player, array<string> args
 	
 	string concatenate_weps = weaponname1 + "; " + weaponname2;
 	
-	if( !single_save && trim( weaponname1 ) == "" && trim( weaponname2 ) == "" )
+	if( !single_save && strip( weaponname1 ) == "" && strip( weaponname2 ) == "" )
 	{
 		LocalMsg( player, "#FS_FAILEDSAVE" )
 		return true
@@ -5643,7 +5643,7 @@ bool function ClientCommand_SaveCurrentWeapons(entity player, array<string> args
 string function modChecker( string weaponMods )
 {	
 	//sqprint("weaponMods: " + weaponMods)
-	if( trim(weaponMods) == "") return "";  //return empty weapon mods
+	if( strip(weaponMods) == "") return "";  //return empty weapon mods
 	
 	array<string> weaponMod = split(weaponMods , " ")
 	array<string> rifles = ["mp_weapon_energy_ar","mp_weapon_esaw","mp_weapon_rspn101","mp_weapon_vinson","mp_weapon_lmg","mp_weapon_g2","mp_weapon_hemlok"]
@@ -5720,7 +5720,7 @@ void function LoadCustomWeapon(entity player)
 		//check if weapon's mods is allowed by server
 		foreach(index,weapon in weapons)
 		{	
-			if ( trim(weapon) == "" ) continue
+			if ( strip(weapon) == "" ) continue
 			
             weapon =modChecker(weapon)
 			weapons[index]=weapon
@@ -5732,7 +5732,7 @@ void function LoadCustomWeapon(entity player)
 				sqprint(rweapon)
 			#endif
 			
-			if ( trim(rweapon) == "" ) continue
+			if ( strip(rweapon) == "" ) continue
 			
 			int slot
 			if(index == 0)

@@ -731,12 +731,12 @@ void function ValidateWeaponList( string weaponList, string weaponListContinue, 
 			int listLen = outputArrayByRef.len() - 1
 			for ( int i = listLen; i >= 0; --i )
 			{
-				string before = trim( outputArrayByRef[ i ] )
+				string before = strip( outputArrayByRef[ i ] )
 				
-				outputArrayByRef[ i ] = ParseWeapon( trim( outputArrayByRef[ i ] ) )
+				outputArrayByRef[ i ] = ParseWeapon( strip( outputArrayByRef[ i ] ) )
 				
-				if ( trim( outputArrayByRef[ i ] ) != before )
-					sqerror( format( "Weapon %d was invalid and corrected. \n Old:\n \"%s\" \n New: \n \"%s\" \n\n", i, before, trim( outputArrayByRef[ i ] ) ) )
+				if ( strip( outputArrayByRef[ i ] ) != before )
+					sqerror( format( "Weapon %d was invalid and corrected. \n Old:\n \"%s\" \n New: \n \"%s\" \n\n", i, before, strip( outputArrayByRef[ i ] ) ) )
 					
 				if ( outputArrayByRef[ i ] == "" )
 					outputArrayByRef.remove( i )
@@ -1456,7 +1456,7 @@ bool function ClientCommand_mkos_challenge(entity player, array<string> args)
 			int index = -1;
 			int indexMapLen = LEGEND_INDEX_ARRAY.len()
 			
-			// if( IsNumeric( param, 0, indexMapLen ) )
+			// if( IsStringNumeric( param, 0, indexMapLen ) )
 			// {
 				// index = param.tointeger()
 			// }
@@ -1474,7 +1474,7 @@ bool function ClientCommand_mkos_challenge(entity player, array<string> args)
 			
 			if( param2 != "" )
 			{
-				if( IsNumeric( param2 ) )
+				if( IsStringNumeric( param2 ) )
 					index = CharacterGuidRefToIndex( param2 )
 			}
 			
@@ -5238,7 +5238,7 @@ bool function ClientCommand_mkos_IBMM_wait( entity player, array<string> args )
 		return true
 	}
 				
-	if ( args.len() > 0 && !IsNumeric( param, 0, limit ) )
+	if ( args.len() > 0 && !IsStringNumeric( param, 0, limit ) )
 	{
 		LocalMsg( player, "#FS_FAILED", "#FS_IBMM_Time_Failed", eMsgUI.DEFAULT, 5, "", limit.tostring() )
 		return true

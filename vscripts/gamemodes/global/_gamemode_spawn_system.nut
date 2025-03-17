@@ -345,11 +345,10 @@ array<SpawnData> function SpawnSystem_ReturnAllSpawnLocations( int eMap, table<s
 						setpaks = StringToArray( currentMapSpawnSets )
 						for( int i = 0; i < setpaks.len(); i++ )
 						{
-							if( !IsNumeric( setpaks[i] ) )
-							{
-								throw " error: " + setpaks[i] + " is not numeric..";
-							}
-							setpaks[i] = "_set_" + setpaks[i];
+							if( !IsStringNumeric( setpaks[i] ) )
+								throw " error: " + setpaks[i] + " is not numeric.."
+								
+							setpaks[i] = "_set_" + setpaks[i]
 						}
 						success = true
 					}

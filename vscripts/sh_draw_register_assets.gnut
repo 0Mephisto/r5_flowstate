@@ -423,7 +423,7 @@ void function WorldDrawAsset_RegisterAllAssets()
 		array<int> invalidAssets
 		foreach( arg in args )
 		{
-			if( !IsNumeric( arg, 0, 99999 ) )
+			if( !IsStringNumeric( arg, 0, 99999 ) )
 				continue
 			
 			invalidAssets.append( int( arg ) )

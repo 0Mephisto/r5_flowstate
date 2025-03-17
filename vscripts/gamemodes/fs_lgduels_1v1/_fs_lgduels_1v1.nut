@@ -146,7 +146,7 @@ void function LgDuelLoadSettings( entity player, string data )
 	
 	foreach( str in values )
 	{
-		if( !IsNumeric( str ) )
+		if( !IsStringNumeric( str ) )
 		{
 			#if DEVELOPER
 				sqerror( "Data for lgduel setting not numeric: " + str + ";Data:" + data )
@@ -277,7 +277,7 @@ bool function ClientCommand_mkos_LGDuel_hitsound( entity player, array<string> a
 			return true
 		}				
 					
-		if( args.len() > 0 && !IsNumeric( param, 0, 16 ) )
+		if( args.len() > 0 && !IsStringNumeric( param, 0, 16 ) )
 		{
 			LocalMsg( player, "#FS_FAILED", "#FS_HitsoundNumFail" )
 			return true

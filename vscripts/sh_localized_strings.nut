@@ -9,12 +9,13 @@ global function GetLocalizedStringsCount
 
 #if SERVER
 	global function Flowstate_FetchTokenID
-	global function LocalMsg
-	global function LocalMsg_TEMP
-	global function LocalVarMsg
-	global function MessageLong
-	global function LocalEventMsgDelayed
+	global function LocalMsg //supports 2 tokens, 2 variable data
+	global function LocalMsg_TEMP // Use this to call tokens placed in playlists_r5_patch.txt
+	global function LocalVarMsg //supports 2 tokens, 251 variable data  ( 255 function call limit minus pre-defined args)
+	global function MessageLong //For streaming text over 599 chars (deprecated in favor of tokens)
 	global function LocalEventMsg //wrapper for LocalMsg ui type 1
+	global function LocalEventMsgDelayed
+	
 	global function IBMM_Notify
 	global function LocalizedTokenExists
 	global function CreatePanelText_Localized
@@ -85,10 +86,70 @@ struct
 	bool bConsistencyCheckComplete = false
 #endif
 
+	//////////////////////////////////////////////////////////////////////////
+	//																		//
+	//					SERVER-TO-CLIENT TOKEN REGISTRATION					//
+	//																		//
+	//////////////////////////////////////////////////////////////////////////
+
+	/*
+	
+		Previously, server-to-client text was streamed one character at a time via 
+		rpc from server to client, using the byte ascii of the letter in number form, one call per letter. 
+	
+		This system aims to reduce calling the a single int -- the index of the token registered 
+		on both the server and client in the same order -- in the list below.
+		
+		1. 
+		
+			In order for this system to work, the token must exist in localization files, found in:
+			\platform\mods\MODNAME\resource   (Flowstate is the basemod)
+		
+			The mod.vdf file will also define the format of localization files:
+			For flowstate:
+			
+			  "LocalizationFiles"
+			  {
+				"resource/flowstate_%language%.txt" "1"
+			  }
+		
+			This means when the users client is set to english, it will load tokens from resource/flowstate_english.txt 
+			
+			Within resource/flowstate_english.txt for example, is where you place your tokens. Optionally you can translate the same token 
+			into all other languages. You 
+
+			////////////////////////////////////////////////
+			Left is the token, and on the right is the text:
+			
+				"TOKEN_NAME" "This is my super long text that will now exist on the client when they download the game."
+				
+				
+			Note that the token name when inside of localization files does not contain a "#"  (hash symbol).
+		
+		2.
+		
+			Once the tokens exist, they can be called on CLIENT or UI vm with Localize( "#MY_TOKEN" )
+			However, in order for the SERVER to call those tokens on a client, 
+			they must be registered HERE, for remote streaming.
+			
+			Add the tokens you wish to call from the server BELOW (allRegisteredTokens), 
+			for usage via LocalMsg() | LocalVarMsg() | LocalEventMsg
+			Be sure to prepend '#' before the token on the registration list.
+			
+			
+		Extra.
+		
+			It is possible to stream tokens to the client when they join via the playlists file, 
+			and call those tokens with LocalMsg_TEMP. See inline-documentation above function LocalMsg_TEMP in this file.
+			Tokens using this temp method do not need to be registered here. Only in the playlists file. 
+	*/
+
+
+
 	//WARNING: do not update this on live servers/client or clients will not be able to connect unless server matches.
-	//these must match the same order on client. Always add to tail. 
-	//if the token is not registered here, it will not be callable from server with LocalMsg() or variants. 
-	array<string> allTokens = 
+	//these must match the same order on client between releases. Always add to tail. 
+	//if the token is not registered here, it will not be callable from server with LocalMsg() or variants. (except LocalMsg_TEMP())
+	array<string> allRegisteredTokens = 
 	[
 		"#FS_NULL",
 		"#FS_1v1_Banner",
@@ -346,7 +407,7 @@ void function INIT_Flowstate_Localization_Strings()
 		printt( "Initializing all localization tokens" )
 	#endif
 	
-	int iTokensCount = file.allTokens.len()
+	int iTokensCount = file.allRegisteredTokens.len()
 	file.iConsistencyCheck = iTokensCount
 	
 	Localization_ConsistencyCheck()
@@ -356,14 +417,14 @@ void function INIT_Flowstate_Localization_Strings()
 	
 	for ( int i = 0; i <= iTokensCount - 1; i++ )
 	{
-		file.FS_LocalizedStrings[ i ] <- file.allTokens[ i ]
+		file.FS_LocalizedStrings[ i ] <- file.allRegisteredTokens[ i ]
 		
 		#if SERVER
-			file.FS_LocalizedStringMap[ file.allTokens[ i ] ] <- i
+			file.FS_LocalizedStringMap[ file.allRegisteredTokens[ i ] ] <- i
 		#endif
 	}
 	
-	file.allTokens.clear()
+	file.allRegisteredTokens.clear()
 	
 	#if DEVELOPER && ASSERT_LOCALIZATION
 		Warning( "ASSERTS ENABLED for script: " + FILE_NAME() )
@@ -455,30 +516,6 @@ void function Localization_ConsistencyCheck()
 	
 #endif
 
-#if CLIENT
-string function trim( string str ) 
-{
-	return strip( str )
-/*
-	int start = 0;
-	int end = str.len() - 1;
-	string whitespace = " \t\n\r";
-
-	while ( start <= end && whitespace.find( str.slice( start, start + 1 )) != -1 ) 
-	{
-		start++;
-	}
-
-	while (end >= start && whitespace.find( str.slice( end, end + 1 )) != -1 ) 
-	{
-		end--;
-	}
-
-	return str.slice(start, end + 1);
-*/
-}
-#endif
-
 //########################################################
 //					 SERVER FUNCTIONS					//
 //########################################################
@@ -492,7 +529,7 @@ bool function ClientCommand_CheckLocalizationConsistency( entity player, array<s
 		
 	string param = args[ 0 ]
 	
-	if( !IsNumeric( param ) )
+	if( !IsStringNumeric( param ) )
 		return true
 		
 	int clientCount = int( param )
@@ -928,7 +965,7 @@ void function FS_DisplayLocalizedToken( int token, int subtoken, int uiType, flo
 	catch( e )
 	{
 		printt("Error ", e ," ; Function: ", FUNC_NAME(), " ;Invalid format qualifiers in message ID: ", token )
-		Msg = Localize( trim( localToken ) ) + " " + S
+		Msg = Localize( strip( localToken ) ) + " " + S
 		
 		#if DEVELOPER && DEBUG_VARMSG 
 			printt("New msg:", Msg )
@@ -1091,7 +1128,7 @@ void function FS_CreateTextInfoPanelWithID_Localized( int token, int subToken, v
 		catch( e )
 		{
 			printt("Error ", e ," ; Function: ", FUNC_NAME(), " ;Invalid format qualifiers in message ID: ", token )
-			Msg = Localize( trim( localToken ) ) + " " + S
+			Msg = Localize( strip( localToken ) ) + " " + S
 			
 			#if DEVELOPER && DEBUG_VARMSG 
 				printt("New msg:", Msg )
@@ -1258,7 +1295,7 @@ void function ParseFSTokens( string path )
     string fpattern = "\"(FS_[^\"]+)\"";
 
     array<string> found = RegexpFindAll( fileData, fpattern);
-	//file.allTokens.extend(found)
+	//file.allRegisteredTokens.extend(found)
 	
 	string buildPrint = ""
 	

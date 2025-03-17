@@ -3,25 +3,27 @@
 //script init:
 global function PlayLists_Mapnames_Gamemodes_Init
 
-//public:
 global function MapName
 global function Playlist
 global function Gamemode
 
-//utility:
 global function AllMapsArray
 global function AllGamemodesArray
 global function AllPlaylistsArray
-global function shGlobalErrorCheck
+
+global function PrintMaps
+global function PrintGamemodes
+global function PrintRegisteredPlaylists
 
 #if SERVER 
-	global function GetPlaylistMaps
-#endif 
+	global function GetPlaylistMaps //client has a copy already
+#endif
 
 //mode functions:
 global function g_bIs1v1GameType
 global function g_bSinglePlayerChampion
 
+//Todo deprecate this strategy of calling functions to return bools, make SH_globals global and index directly.
 global function Flowstate_PassivesAllowedForMode
 global function Flowstate_IsTrackerSupportedMode
 global function Flowstate_PlayerDoesRespawn
@@ -156,9 +158,7 @@ struct
 	int currentMap = -1
 	int currentPlaylist = -1
 	int currentGamemode = -1
-	
-	bool errorCheck = false
-	
+
 } SH_globals
 
 //this is the global location for defining a mode that is 1v1 based
@@ -261,15 +261,14 @@ void function PlayLists_Mapnames_Gamemodes_Init()
 	
 	
 	#if SERVER //prevents errors of gamemodes not loading
-		if( MapName() != eMaps.mp_lobby && !Dev_CommandLineHasParm( "-scriptdev" ) )
+		if( MapName() != eMaps.mp_lobby && Playlist() != ePlaylists.dev_default && Playlist() != ePlaylists.survival_dev && !Dev_CommandLineHasParm( "-scriptdev" ) )
 		{
 			array< string > validMaps = GetPlaylistMaps( GetCurrentPlaylistName() )
 			mAssert( validMaps.contains( GetMapName() ), "Map \"%s\" is not enabled for \"%s\" in platform/playlists_r5_patch.txt. Launch with \"-scriptdev\" to ignore this assert.", GetMapName(), GetCurrentPlaylistName() )
 		}
 	#endif
 	
-	AllModeConditionals_Init()	
-	SH_globals.errorCheck = true
+	AllModeConditionals_Init()
 }
 
 int function getMapEnumFromName( string mapString ) 
@@ -347,10 +346,30 @@ array<string> function AllPlaylistsArray()
 {
 	return SH_globals.playlists
 }
-	
-bool function shGlobalErrorCheck()
+
+void function PrintMaps()
 {
-	return SH_globals.errorCheck
+	_printstringarray( SH_globals.mapNames, "All registered maps" )
+}
+
+void function PrintGamemodes() //should hook registered modes system
+{
+	_printstringarray( SH_globals.gamemodes, "All registered gamemodes" )
+}
+
+void function PrintRegisteredPlaylists() //can iterate playlist file as well with PrintPlaylists()
+{
+	_printstringarray( SH_globals.playlists, "All registered playlists" )
+}
+
+void function _printstringarray( array<string> arr, string title = "???" )
+{
+	string prnt = format( "\n\n------ %s ------\n\n", title )
+	
+	foreach( item in arr )
+		prnt += format( "	\"%s\", \n", item )
+	
+	printl( prnt )
 }
 
 #if SERVER 

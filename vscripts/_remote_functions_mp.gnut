@@ -1160,7 +1160,7 @@ bool s_callbackRegistrationIsClosed = false
 array<void functionref()> s_setupCallbacks
 void function AddCallback_OnNetworkRegistration( void functionref() func )
 {
-	mAssert( !s_callbackRegistrationIsClosed, "Must be called before network registration has finished." )
+	mAssert( !s_callbackRegistrationIsClosed, "AddCallback_OnNetworkRegistration Must be called before network registration has finished. Cannot add %s()", string( func ) )
 	s_setupCallbacks.append( func )
 }
 
@@ -1173,7 +1173,7 @@ void function ExecuteSetupCallbacks()
 // purpose: finalize remote function registration and send checksum to the server
 void function RemoteFunctions_Init_Finish()
 {
-	#if DEVELOPER
+	#if DEVELOPER && DEBUG_NET
 		Warning( "Remote_EndRegisteringFunctions \n" )
 	#endif
 	
@@ -1236,8 +1236,8 @@ void function ByRef_ConsistencyCheck()
 			
 		string param = args[ 0 ]
 		
-		if( !IsNumeric( param ) )
-			return true
+		if( !IsStringNumeric( param ) )
+			return true //should probably kick here as well
 			
 		int clientCount = int( param )
 		

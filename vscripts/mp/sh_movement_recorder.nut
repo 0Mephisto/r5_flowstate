@@ -555,7 +555,7 @@ bool function ClientCommand_PlayAnimInSlot( entity player, array<string> args )
 	
 	int slot = 0
 	
-	if( IsNumeric( args[ 0 ] ) )
+	if( IsStringNumeric( args[ 0 ] ) )
 	{
 		slot = args[ 0 ].tointeger()
 	}
@@ -1251,7 +1251,7 @@ void function ClientCommand_DestroyDummys( entity player, array<string> args )
 		
 		case "Admin":
 		
-			if( !VerifyAdmin( player.p.name, player.p.UID ) )
+			if( !IsServerAdmin( player.p.UID ) )
 				return
 	
 			if( IsValid( svGlobal.levelEnt ) )

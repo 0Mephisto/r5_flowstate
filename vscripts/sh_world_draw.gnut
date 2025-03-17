@@ -306,7 +306,7 @@ int function WorldDrawAsset_AssetRefToID( string ref )
 			
 		string cmdgroup = args[0]
 		
-		if( !IsNumeric( cmdgroup, 0, MAX_VIDEO_CHANNELS ) )
+		if( !IsStringNumeric( cmdgroup, 0, MAX_VIDEO_CHANNELS ) )
 			return false
 		
 		int group = int( cmdgroup )	

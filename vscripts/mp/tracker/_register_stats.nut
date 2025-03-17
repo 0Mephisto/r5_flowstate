@@ -258,7 +258,7 @@ var function TrackerStats_FSDMRailjumps( string uid )
 }
 
 //Tracker already has a gamemode play count, which is different from this stat.
-var function TrackerStats_GamesCompleted( string uid )
+var function TrackerStats_GamesCompleted( string uid ) //Todo: Handle accumulation from rejoins
 {
 	entity player = GetPlayerEntityByUID( uid ) 
 	if( !IsValid( player ) )

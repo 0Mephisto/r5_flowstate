@@ -328,7 +328,7 @@ void function cmd_unlock( string tag, array<string> args, entity activator )
 
 void function UnlockOrLockServer( entity activator, string state )
 {
-	if( !VerifyAdmin( activator.p.name, activator.p.UID ) )
+	if( !IsServerAdmin( activator.p.UID ) )
 		return
 		
 	array<string> args
@@ -909,7 +909,7 @@ int function ParseTimeString( array<string> args )
 		if ( i >= args.len() )
 			return -1
 			
-		if( !IsNumeric( args[ i ] ) )
+		if( !IsStringNumeric( args[ i ] ) )
 			continue 
 		
 		if( Commands_AllArgAliasesContains( args[ i ] ) )
@@ -1162,7 +1162,7 @@ void function SetUnmuteTime( entity player, string potentialTimestamp )
 {
 	int timestamp = -1
 	
-	if( !IsNumeric( potentialTimestamp ) )
+	if( !IsStringNumeric( potentialTimestamp ) )
 		return
 	
 	try
@@ -1221,7 +1221,7 @@ void function SetupForTiers( entity player )
 	
 	// string challengeCode = args[0]
 	
-	// if( !IsNumeric( challengeCode, 10000000, 99999999 ) )
+	// if( !IsStringNumeric( challengeCode, 10000000, 99999999 ) )
 		// return true
 	
 	// if( challengeCode.len() != 8 )
