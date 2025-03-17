@@ -1672,11 +1672,9 @@ void function PIN_Init()
 	file.DISCORD_MATCHES_WEBHOOK = ( GetCurrentPlaylistVarString( "DISCORD_MATCHES_WEBHOOK", "" ) )
 	
 	//initialize array/table maps
-	INIT_CC_GameTypes()
-	INIT_CC_MapNames()
 	
 	if( IsClientCommandAdminEnabled() )
-		INIT_CC_playeradmins()
+		__PlayerAdminsInit()
 	
 	if ( file.restricted_server ) 
 		PlayerWhitelistInit()
