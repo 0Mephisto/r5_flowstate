@@ -53,6 +53,12 @@ global function Tracker_GotoNextMap
 global function PrepareForJson
 global function ArrayUniqueInt
 
+#if DEVELOPER
+	global function RegExpUnitTest
+	global function RegExpUnitTest2
+	global function StringUnitTest
+#endif
+
 #if TRACKER && HAS_TRACKER_DLL
 	global function PrintMatchIDtoAll
 #endif
@@ -1928,7 +1934,7 @@ void function SetDefaultIBMM( entity player )
 
 bool function IsStringNumber( string str ) 
 {
-    if ( str.len() == 0 )
+	if ( str.len() == 0 )
 		return false
 	
     int start = ( str[0] == '-' && str.len() > 1 ) ? 1 : 0    
@@ -1950,16 +1956,129 @@ bool function IsStringNumber( string str )
     return true
 }
 
+bool function IsStringNumber2( string str )
+{
+	return DoesMatchRegexp( str, "^-?(\\d+\\.\\d+|\\d+)$" ) 
+}
+
+array<float> s_unitTestArr1
+void function RegExpUnitTest( string str )
+{
+	mAssert( IsThreadTop(), "Thread this function" )
+	
+	int iter = 0	
+	bool test
+	
+	TimerStart()
+	while( iter < 100000 )
+	{
+		test = IsStringNumber2( str )
+		iter++
+	}
+	
+	float finish = TimerEnd()
+	s_unitTestArr1.append( finish )
+	
+	printt( "Unit test1; regexp; 100000 iterations: ms:", finish, ";Criteria:", str )
+	
+	if( s_unitTestArr1.len() > 5 )
+	{
+		float total
+		foreach( float entry in s_unitTestArr1 )
+		{
+			printt( "entry =", entry )
+			total += entry
+		}
+			
+		float avg = total / 6
+		printt( "Unit test 1 avg = ms", avg )
+		
+		s_unitTestArr1.clear()
+	}
+}
+
+
+array<float> s_unitTestArr2
+void function RegExpUnitTest2( string str )
+{
+	mAssert( IsThreadTop(), "Thread this function" )
+	
+	int iter = 0	
+	bool test
+	
+	TimerStart()
+	while( iter < 100000 )
+	{
+		test = IsStringNumber( str )
+		iter++
+	}
+	
+	float finish = TimerEnd()
+	s_unitTestArr2.append( finish )
+	
+	printt( "Unit test1; custom; 100000 iterations: ms:", finish, ";Criteria:", str )
+	
+	if( s_unitTestArr2.len() > 5 )
+	{
+		float total
+		foreach( float entry in s_unitTestArr2 )
+		{
+			printt( "entry =", entry )
+			total += entry
+		}
+			
+		float avg = total / 6
+		printt( "Unit test 2 avg ms =", avg )
+		
+		s_unitTestArr2.clear()
+	}
+}
+
+array<float> s_unitTestArr3
+void function StringUnitTest( string str )
+{
+	mAssert( IsThreadTop(), "Thread this function" )
+	
+	int iter = 0	
+	bool test
+	
+	TimerStart()
+	while( iter < 100000 )
+	{
+		test = IsSafeString( str )
+		iter++
+	}
+	
+	float finish = TimerEnd()
+	s_unitTestArr3.append( finish )
+	
+	printt( "Unit test3; regexp IsSafeString; 100000 iterations: ms:", finish, ";Criteria:", str )
+	
+	if( s_unitTestArr3.len() > 5 )
+	{
+		float total
+		foreach( float entry in s_unitTestArr3 )
+		{
+			printt( "entry =", entry )
+			total += entry
+		}
+			
+		float avg = total / 6
+		printt( "Unit test 3 avg ms =", avg )
+		
+		s_unitTestArr3.clear()
+	}
+}
+
 int function stringcmp( string a, string b ) 
 {
-    if ( a.len() != b.len() ){ return a.len() < b.len() ? -1 : 1; }
+    if ( a.len() != b.len() )
+		return a.len() < b.len() ? -1 : 1
 	
-    for (int i = 0; i < a.len(); ++i) 
+    for ( int i = 0; i < a.len(); ++i ) 
 	{
-		if (a[i] != b[i])
-		{
-			return a[i] < b[i] ? -1 : 1;
-		}
+		if ( a[i] != b[i] )
+			return a[i] < b[i] ? -1 : 1
 	}
 
     return 0
@@ -1967,7 +2086,6 @@ int function stringcmp( string a, string b )
 
 bool function IsStringNumeric( string str, int ornull min = null, int ornull max = null )
 {
-
 	string minStr = min == null ? "-2147483647" : expect int ( min ).tostring()
 	string maxStr = max == null ? "2147483647" : expect int ( max ).tostring()
 	
@@ -1978,7 +2096,7 @@ bool function IsStringNumeric( string str, int ornull min = null, int ornull max
 	{
         if ( stringcmp( str.slice( 1 ), minStr.slice( 1 ) ) > 0 ) 
             return false
-    } 
+    }
 	else 
 	{
         if ( stringcmp( str, maxStr ) > 0 ) 
