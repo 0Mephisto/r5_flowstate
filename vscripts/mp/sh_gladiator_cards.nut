@@ -438,6 +438,17 @@ void function ShGladiatorCards_LevelInit()
 	#if SERVER
 		for ( int trackerIndex = 0; trackerIndex < GLADIATOR_CARDS_NUM_TRACKERS; trackerIndex++ )
 			RegisterSignal( "StopGladCardStatTracker" + trackerIndex )
+		array<ItemFlavor> frameAsset = []
+		foreach( asset frameAssets in SHARED_BANNERFRAMES_ASSET_LIST )
+		{
+			if ( frameAssets == $"" )
+				continue
+
+			ItemFlavor ornull frameOrNull = RegisterItemFlavorFromSettingsAsset( frameAssets )
+			if ( frameOrNull == null )
+				continue
+			frameAsset.append( expect ItemFlavor(frameOrNull) )
+		}
 	#endif
 }
 

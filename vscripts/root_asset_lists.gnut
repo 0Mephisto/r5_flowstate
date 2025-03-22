@@ -122,6 +122,11 @@ global const array<asset> ENTITLEMENT_ASSETS = [
 ]
 
 
+global const array<asset> SHARED_BANNERFRAMES_ASSET_LIST = [
+	$"settings/itemflav/gcard_frame_template_rare_01.rpak",
+]
+
+
 global const array<asset> WEAPON_ASSETS =
 [
 	$"settings/itemflav/loot/main_weapon/alternator.rpak",
