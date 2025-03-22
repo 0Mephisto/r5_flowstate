@@ -2,7 +2,7 @@
 // the engine and SDK have been loaded, but before the first level pak is being
 // loaded. The unloading happens after all the level paks have been unloaded,
 // but before the core paks are being unloaded. The listed paks will be loaded
-// and unloaded in the same order as defined in the array.
+// in the same order as defined in the array, and unloaded in the reverse order.
 
 Paks:
 [
