@@ -459,15 +459,16 @@ void function CodeCallback_DamagePlayerOrNPC( entity ent, var damageInfo )
 				attacker.SetPlayerNetInt( "damage", attacker.GetPlayerNetInt( "damage" ) + DamageInfo_GetDamage( damageInfo ) )
 			}
 		}
-
-		//(mk): was missing damage history for shields for non-players
-		float actualDamageDone = damage ? damage : DamageInfo_GetDamage( damageInfo )
 		
 		if( !ent.IsPlayer() && file.register_dummie_kill_as_actual_kill && !file.firingrange_aimtrainerbycolombia )
+		{
+			//(mk): was missing damage history for shields for non-players
+			float actualDamageDone = damage ? damage : DamageInfo_GetDamage( damageInfo )
 			StoreDamageHistoryAndUpdate( ent, MAX_DAMAGE_HISTORY_TIME, actualDamageDone, attacker.GetOrigin(), DamageInfo_GetCustomDamageType( damageInfo ), damageSourceId, attacker, GetWeaponModsFromDamageInfo( damageInfo ) )
+		}
 
 		float damageAmount = DamageInfo_GetDamage( damageInfo )
-		bool isKillShot = (damageAmount >= ent.GetHealth() + ent.GetShieldHealth() )
+		bool isKillShot = ( damageAmount >= ent.GetHealth() + ent.GetShieldHealth() )
 	
 		if ( isKillShot && attacker.IsPlayer() && !entIsPlayer )
 		{
@@ -487,9 +488,9 @@ void function CodeCallback_DamagePlayerOrNPC( entity ent, var damageInfo )
 				
 				__IncrementPlayerNetInt( attacker, "kills" )
 				
-				#if TRACKER 
+				#if TRACKER
 					Tracker_EndFight( ent, attacker, damageInfo )
-				#endif 
+				#endif
 			}
 
 			if( file.flowstate_evo_shields && Gamemode() == eGamemodes.SURVIVAL && IsValid( attacker ) && attacker.IsPlayer() && IsAlive( attacker ) )

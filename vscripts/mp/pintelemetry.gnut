@@ -321,13 +321,6 @@ global struct Tracker
 } 
 global Tracker tracker
 
-struct DeleteEvents 
-{
-	int victim_handle
-	int attacker_handle	
-	float fightEndTime
-}
-
 //verify struct
 struct PlayerVerifyCount 
 {
@@ -929,26 +922,23 @@ bool function AddCallback_QueryString( string query, QueryFunc ornull callbackFu
 
 string function GetQueryDataString()
 {
-	string query_data_string;
-
-	int omitFinalCommaOn = file.queryStringInitFuncs.len() //number of queries as keys
+	string query_data_string
+	int omitFinalCommaOn = file.queryStringInitFuncs.len() //number of queries as keys	
 	
-	int iter = 0
+	int iter = 0	
 	foreach( string query, callbackArray in file.queryStringInitFuncs )
 	{
-		iter++;
+		iter++
 		
 		string queryFormatted = StringReplace( query, ",", "" )
 		
 		if( queryFormatted.find( ":" ) == -1 )
-		{
 			queryFormatted += ":"
-		}
 		
 		query_data_string += queryFormatted + ( iter != omitFinalCommaOn ? "," : "" )
 		
 		int querySlice = query.find( ":" )
-		file.queryStringCallbackFuncs[query.slice( 0, querySlice )] <- callbackArray //returns setting and sets as key 
+		file.queryStringCallbackFuncs[ query.slice( 0, querySlice ) ] <- callbackArray //returns setting and sets as key 
 	}
 	
 	return query_data_string
@@ -1002,12 +992,10 @@ void function INIT_Global_R5RDEV_VarTable()
 		
 		if( values.len() >= 1)
 		{
-			string data_type = strip(values[0]);
+			string data_type = strip( values[0] )
 			
-			int i;
-			for (i = 1; i < values.len(); i++)
-			{	
-				
+			for ( int i = 1; i < values.len(); i++ )
+			{				
 				array<string> setting = split( values[i], ":" )
 				
 				switch(data_type)
@@ -1529,7 +1517,7 @@ void function UpdatePlayerData( entity player, table<string,var> syncData, bool 
 		else
 		{
 			#if DEVELOPER
-				sqerror( format("Setting %s does not exist in PlayerSettingsMap", key ) )
+				sqerror( format("Setting \"%s\" does not exist in PlayerSettingsMap", key ) )
 			#endif
 		}
 	}
@@ -2607,11 +2595,6 @@ DamageEvent function Tracker_CreateDamageEvent( int weaponSource, float damage, 
 
 void function RemoveDamageEvents( int attacker_handle, int victim_handle ) //Todo possibly a queue
 {
-	// DeleteEvents event
-	// event.attacker_handle = attacker_handle 
-	// event.victim_handle = victim_handle
-	// event.fightEndTime = Time()
-	
 	RemoveEvents
 	(
 		victim_handle, 

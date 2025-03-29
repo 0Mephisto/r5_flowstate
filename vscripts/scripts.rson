@@ -120,10 +120,10 @@ Scripts:
 	sh_weapon_cosmetics.nut
 ]
 
-When: "SERVER"
+When: "SERVER || CLIENT"
 Scripts:
 [
-	mp/banner/_banner_asset.nut
+	mp/banner/sh_banner_asset.nut
 ]
 
 When: "CLIENT"

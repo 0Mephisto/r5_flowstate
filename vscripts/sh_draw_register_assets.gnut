@@ -411,6 +411,9 @@ void function WorldDrawAsset_RegisterAllAssets()
 		if( !IsValid( player ) )
 			return false
 			
+		if( player.p.bannersValidated )
+			return true
+			
 		string signal = "BannersValidated"
 		
 		if( args.len() < 1 )

@@ -8,8 +8,10 @@ global function ScriptRemote_RegisterUntypedFunction_deprecated 	//wrapper for R
 
 global function PrintNetworkFunctions
 global function TestNetworkedVarLimit
+global function DebugRemoteFunctionsInit
 
-#if DEBUG_NET
+
+#if DEBUG_REMOTE_FUNCS
 	const bool VERBOSE_NET_PRINTS	= false //this will print functions/vars in the order they are called.
 	const int MAX_ENTRIES			= 256  //must stay in sync with native
 	const int MAX_BUFFER			= 2048 //must stay in sync with native
@@ -51,7 +53,7 @@ global function TestNetworkedVarLimit
 
 struct 
 {
-	#if DEBUG_NET
+	#if DEBUG_REMOTE_FUNCS
 		table< string, CategoryInfo > categoryCatalog
 		RemoteFuncInfo allFuncInfo
 		bool haltRegistration		
@@ -59,7 +61,18 @@ struct
 	
 } file 
 
-#if DEBUG_NET
+void function DebugRemoteFunctionsInit()
+{
+	#if DEBUG_REMOTE_FUNCS	
+		Warning( "DEBUG_REMOTE_FUNCS is enabled in \"sh_consts.gnut\"" )
+		
+		#if VERBOSE_NET_PRINTS
+			Warning( "VERBOSE_NET_PRINTS is enabled in \"%s\"", FILE_NAME() )
+		#endif
+	#endif
+}
+
+#if DEBUG_REMOTE_FUNCS
 	//all of the below must stay in sync with native
 	string function IntToNetVarCat( int value )
 	{
@@ -315,7 +328,7 @@ struct
 const int REQUIRED_VARS_OFFSET = 3
 void function ScriptRegisterNetworkedVariable( ... )
 {
-	#if DEBUG_NET
+	#if DEBUG_REMOTE_FUNCS
 		if( file.haltRegistration )
 			return 
 			
@@ -454,7 +467,7 @@ void function ScriptRemote_RegisterClientFunction( ... )
 	
 	int paramCount = expect int( vargc )
 		
-	#if DEBUG_NET
+	#if DEBUG_REMOTE_FUNCS
 		if( file.haltRegistration )
 			return
 			
@@ -481,13 +494,13 @@ void function ScriptRemote_RegisterClientFunction( ... )
 	for ( int j = iterOffset; j < paramCount; j++ )
 		params.append( vargv[ j ] )
 	
-#if DEBUG_NET	
+#if DEBUG_REMOTE_FUNCS	
 	try 
 	{
 #endif
 		Remote_RegisterClientFunction.acall( params )
 
-#if DEBUG_NET
+#if DEBUG_REMOTE_FUNCS
 	}
 	catch( e )
 	{
@@ -523,7 +536,7 @@ void function ScriptRemote_RegisterUIFunction( ... )
 	
 	int paramCount = expect int( vargc )
 	
-	#if DEBUG_NET
+	#if DEBUG_REMOTE_FUNCS
 		if( file.haltRegistration )
 			return
 			
@@ -549,13 +562,13 @@ void function ScriptRemote_RegisterUIFunction( ... )
 	for ( int j = iterOffset; j < paramCount; j++ )
 		params.append( vargv[ j ] )
 	
-#if DEBUG_NET	
+#if DEBUG_REMOTE_FUNCS	
 	try 
 	{
 #endif
 		Remote_RegisterUIFunction.acall( params )
 
-#if DEBUG_NET
+#if DEBUG_REMOTE_FUNCS
 	}
 	catch( e )
 	{
@@ -590,7 +603,7 @@ void function ScriptRemote_RegisterUntypedFunction_deprecated( ... )
 	
 	int paramCount = expect int( vargc )
 	
-	#if DEBUG_NET
+	#if DEBUG_REMOTE_FUNCS
 		if( file.haltRegistration )
 			return
 			
@@ -609,13 +622,13 @@ void function ScriptRemote_RegisterUntypedFunction_deprecated( ... )
 	for ( int j = iterOffset; j < paramCount; j++ )
 		params.append( vargv[ j ] )
 	
-#if DEBUG_NET
+#if DEBUG_REMOTE_FUNCS
 	try 
 	{
 #endif
 		Remote_RegisterUntypedFunction_deprecated.acall( params )
 
-#if DEBUG_NET
+#if DEBUG_REMOTE_FUNCS
 	}
 	catch( e )
 	{
@@ -630,7 +643,7 @@ void function ScriptRemote_RegisterUntypedFunction_deprecated( ... )
 #endif
 }
 
-#if DEBUG_NET && VERBOSE_NET_PRINTS
+#if DEBUG_REMOTE_FUNCS && VERBOSE_NET_PRINTS
 	const int ASCII_ZERO = 48
 	const int ASCII_DOT	 = 46
 	string function GetRemoteFuncParamsAsString( var vArgArr )
@@ -679,7 +692,7 @@ void function ScriptRemote_RegisterUntypedFunction_deprecated( ... )
 	}
 #endif
 
-#if DEBUG_NET
+#if DEBUG_REMOTE_FUNCS
 	void function SetFuncInfo( string funcName, string fileName, string category, int consumption )
 	{
 		if( funcName in file.allFuncInfo.functionInfoTbl )

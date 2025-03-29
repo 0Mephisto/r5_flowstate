@@ -275,6 +275,7 @@ string function FindFuncName_ByID( int funcID )
 // always add + 1 to your max for "int" params.
 void function RemoteFunctions_Init_Begin()
 {
+	DebugRemoteFunctionsInit()
 	Remote_BeginRegisteringFunctions()
 	_RegisteringFunctions = true
 
@@ -486,6 +487,9 @@ void function RemoteFunctions_Init_Begin()
 			break
 		
 		case eGamemodes.fs_aimtrainer:
+			
+			BannerAssets_SetEnabled( false )
+			
 			ScriptRemote_RegisterUIFunction( "OpenFRChallengesMenu" )
 			ScriptRemote_RegisterUIFunction( "CloseFRChallengesMenu" )
 			ScriptRemote_RegisterUIFunction( "OpenFRChallengesMainMenu", "int", 0, 999999 )
@@ -515,7 +519,10 @@ void function RemoteFunctions_Init_Begin()
 			
 			break
 		
-		case eGamemodes.fs_snd: //(mk): can save 15 slots byRef
+		case eGamemodes.fs_snd: //(mk): can save 15 slots byRef || save buffer by using entity over encodedEhandle
+			
+			BannerAssets_SetEnabled( false )
+			
 			ScriptRemote_RegisterClientFunction("Sh_SetAttackingLocations", "int", 0, 10)
 			ScriptRemote_RegisterClientFunction("Sh_SetAttackerTeam", "int", 0, 10, "int", INT_MIN, INT_MAX)
 			ScriptRemote_RegisterClientFunction("SND_HintCatalog", "int", 0, 20, "int", INT_MIN, INT_MAX)
@@ -557,6 +564,9 @@ void function RemoteFunctions_Init_Begin()
 			break
 		
 		case eGamemodes.fs_infected:
+		
+			BannerAssets_SetEnabled( false )
+		
 			ScriptRegisterNetworkedVariable( "isPlayerShadowForm", SNDC_PLAYER_GLOBAL, SNVT_BOOL, false )
 			ScriptRemote_RegisterClientFunction("ApplyInfectedHUD")
 			ScriptRemote_RegisterClientFunction("CleanUpInfectedClientEffects")
@@ -611,6 +621,9 @@ void function RemoteFunctions_Init_Begin()
 			// break
 			
 		case eGamemodes.fs_prophunt:
+		
+			BannerAssets_SetEnabled( false )
+			
 			ScriptRemote_RegisterClientFunction("ServerCallback_FSDM_SetScreen", "int", 0, 255, "int", INT_MIN, INT_MAX, "int", INT_MIN, INT_MAX, "int", 0, 255)
 			ScriptRemote_RegisterClientFunction("ServerCallback_FSDM_OpenVotingPhase", "bool")
 			ScriptRemote_RegisterClientFunction("ServerCallback_FSDM_ChampionScreenHandle", "bool", "int", INT_MIN, INT_MAX, "int", INT_MIN, INT_MAX )
@@ -640,6 +653,9 @@ void function RemoteFunctions_Init_Begin()
 		
 		case eGamemodes.CUSTOM_CTF:
 			// CTF: Server to Client
+			
+			BannerAssets_SetEnabled( false )
+			
 			ScriptRemote_RegisterClientFunction( "ServerCallback_CTF_AddPointIcon", "entity", "entity", "int", 0, 255)
 			ScriptRemote_RegisterClientFunction( "ServerCallback_CTF_RecaptureFlag", "int", 0, 999, "float", 0.0, 999.0, 32, "float", 0.0, 999.0, 32, "bool")
 			ScriptRemote_RegisterClientFunction("ServerCallback_CTF_FlagCaptured", "entity", "int", 0, 255)
@@ -691,7 +707,7 @@ void function RemoteFunctions_Init_Begin()
 	//ScriptRemote_RegisterUntypedFunction_deprecated( "ServerCallback_BLEEDOUT_StopFirstAidProgressBar" ) //Audit 2-22-2025 unused
 	#if DEVELOPER
 		ScriptRemote_RegisterUntypedFunction_deprecated( "ServerCallback_ModelViewerDisableConflicts" ) //Audit 2-22-2025 dev only
-	#endif 
+	#endif
 	
 	//ScriptRemote_RegisterClientFunction( "VeryLongFunctionNameVeryLongFunctionNameVeryLongFunctionNameVeryLongVeryLong", "bool", "bool" ) //(mk): test
 	
@@ -1110,20 +1126,23 @@ void function RemoteFunctions_Init_Begin()
 	ScriptRegisterNetworkedVariable( "stats_loaded", SNDC_PLAYER_GLOBAL, SNVT_BOOL, false )
 
 	
-	ScriptRemote_RegisterUntypedFunction_deprecated( "__BuildWorldAssetString" ) //optional, else called by int ref
-	
-	//(mk): Temporarily moved some to deprecated to save room for typed buffer. 
-	ScriptRemote_RegisterClientFunction( "ServerCallback_CreateWorldAsset", "vector", -32000.0, 32000.0, 32, "vector", -32000.0, 32000.0, 32, "float", -1.0, 9999.0, 16, "float", -1.0, 9999.0, 16, "int", -1, 999, "int", -1, 999, "int", -1, 999, "float", -1.0, 1.0, 16, "bool", "float", -1.0, 5000.0, 16 )
-	//ScriptRemote_RegisterClientFunction( "ServerCallback_DestroyWorldAsset", "int", -2, 999 )
-	//ScriptRemote_RegisterClientFunction( "ServerCallback_SetWorldAssetVisibility", "int", 0, 999, "int", 0, 999, "bool", "bool", "bool", "int", -2, 999, "int", -5, 3, "bool" )
-	ScriptRemote_RegisterClientFunction( "ServerCallback_ModifyWorldAsset", "int", -2, 999, "int", -2, 999, "vector", -32000.0, 32000.0, 32, "vector",  -32000.0, 32000.0, 32, "float", -1.0, 9999.0, 16, "float", -1.0, 9999.0, 16, "float", -1.0, 1.0, 16, "int", -1, 999 )
-	//ScriptRemote_RegisterClientFunction( "ServerCallback_CreateChannel", "int", -1, 30 )
+	if( BannerAssets_IsEnabled() )
+	{
+		ScriptRemote_RegisterUntypedFunction_deprecated( "__BuildWorldAssetString" ) //optional, else called by int ref (should be deprecated feature of server asset system)
+		
+		//(mk): Temporarily moved some to deprecated to save room for typed buffer. 
+		ScriptRemote_RegisterClientFunction( "ServerCallback_CreateWorldAsset", "vector", -32000.0, 32000.0, 32, "vector", -32000.0, 32000.0, 32, "float", -1.0, 9999.0, 16, "float", -1.0, 9999.0, 16, "int", -1, 999, "int", -1, 999, "int", -1, 999, "float", -1.0, 1.0, 16, "bool", "float", -1.0, 5000.0, 16 )
+		//ScriptRemote_RegisterClientFunction( "ServerCallback_DestroyWorldAsset", "int", -2, 999 )
+		//ScriptRemote_RegisterClientFunction( "ServerCallback_SetWorldAssetVisibility", "int", 0, 999, "int", 0, 999, "bool", "bool", "bool", "int", -2, 999, "int", -5, 3, "bool" )
+		ScriptRemote_RegisterClientFunction( "ServerCallback_ModifyWorldAsset", "int", -2, 999, "int", -2, 999, "vector", -32000.0, 32000.0, 32, "vector",  -32000.0, 32000.0, 32, "float", -1.0, 9999.0, 16, "float", -1.0, 9999.0, 16, "float", -1.0, 1.0, 16, "int", -1, 999 )
+		//ScriptRemote_RegisterClientFunction( "ServerCallback_CreateChannel", "int", -1, 30 )
 
-	//ScriptRemote_RegisterUntypedFunction_deprecated( "ServerCallback_CreateWorldAsset" )
-	ScriptRemote_RegisterUntypedFunction_deprecated( "ServerCallback_DestroyWorldAsset" )
-	ScriptRemote_RegisterUntypedFunction_deprecated( "ServerCallback_SetWorldAssetVisibility" )
-	ScriptRemote_RegisterUntypedFunction_deprecated( "ServerCallback_CreateChannel" )
-	//end temp
+		//ScriptRemote_RegisterUntypedFunction_deprecated( "ServerCallback_CreateWorldAsset" )
+		ScriptRemote_RegisterUntypedFunction_deprecated( "ServerCallback_DestroyWorldAsset" )
+		ScriptRemote_RegisterUntypedFunction_deprecated( "ServerCallback_SetWorldAssetVisibility" )
+		ScriptRemote_RegisterUntypedFunction_deprecated( "ServerCallback_CreateChannel" )
+		//end temp
+	}
 	
 	//TestNetworkedVarLimit() //(mk): for testing sh_net_wrapper.gnut
 	//ScriptRemote_RegisterClientFunction( "TestFloatBits", "float", 0.0, 2000.0, 32 )
@@ -1173,7 +1192,7 @@ void function ExecuteSetupCallbacks()
 // purpose: finalize remote function registration and send checksum to the server
 void function RemoteFunctions_Init_Finish()
 {
-	#if DEVELOPER && DEBUG_NET
+	#if DEVELOPER && DEBUG_REMOTE_FUNCS
 		Warning( "Remote_EndRegisteringFunctions \n" )
 	#endif
 	

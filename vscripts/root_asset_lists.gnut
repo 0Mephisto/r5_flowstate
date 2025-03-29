@@ -123,7 +123,8 @@ global const array<asset> ENTITLEMENT_ASSETS = [
 
 
 global const array<asset> SHARED_BANNERFRAMES_ASSET_LIST = [
-	$"settings/itemflav/gcard_frame_template_rare_01.rpak",
+	$""
+	//$"settings/itemflav/gcard_frame_template_rare_01.rpak", //(mk): removed missing rpak until available in assets repo.
 ]
 
 

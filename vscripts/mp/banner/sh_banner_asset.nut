@@ -1,10 +1,16 @@
 // banner assets															//mkos
 
+global function BannerAssets_SetEnabled				// ( bool state )
+global function BannerAssets_IsEnabled				// ()
+
+#if SERVER
 global function BannerAssets_Init
 global function BannerAssets_RegisterGroup			// ( string name, LocPair groupLoc, float width, float height, float alpha = 1.0, bool visible = true, int cycleTime = 10, bool useRandom = false, float intermediateTime = 0.0, int fadeSpeed = SLOWEST )
 global function BannerAssets_SetAllGroupsFunc		// ( void functionref() callbackFunc )
 global function BannerAssets_SetAllAssetsFunc 		// ( void functionref() callbackFunc )
 global function BannerAssets_GroupAppendAsset 		// ( string groupName, int assetIdRef, bool bLoopVideo = false, string assetName = "", string assetResourceRef = "" )
+
+global function BannerAssets_GetAssetRefByName		// ( string assetName )
 global function BannerAssets_ModifyGroupData 		// ( string groupName, table tbl )
 global function BannerAssets_SyncAllPlayers			// ( int assetRefId = -1, bool bLocked = false, int groupId = -1, string assetRef = "",  )
 global function BannerAssets_DoesSignalExist    	// ( string signal )
@@ -13,13 +19,12 @@ global function BannerAssets_Lock					// ( int groupId )
 global function BannerAssets_Unlock					// ( int groupId )
 global function BannerAssets_KillAllBanners			// ()
 global function BannerAssets_Restart				// ()
-global function BannerAssets_IsEnabled				// ()
 global function BannerAssets_BannerVisibilityMover 	// ( vector initialPosition, vector initialAngles, float bannerWidth, float bannerHeight, float adjustmentDistance = 5.0, float maxIterations = 1000 ) 
+
 global function BannerAssets_RegisterAudioGroup		// ( string name, bool interupt = true )
 global function BannerAssets_PlayAudio				// ( entity player, string assetRef )
 global function BannerAssets_PlayAudioID			// ( entity player, int assetId = -1 )
 global function BannerAssets_PlayAudioName			// ( entity player, string audioName )
-global function BannerAssets_GetAssetRefByName		// ( string assetName )
 global function BannerAssets_GetPlayCountForPlayer	// ( entity player, int assetIdRef )
 global function BannerAssets_GetLastPlayTime		// ( entity player, int assetIdRef )
 
@@ -35,10 +40,6 @@ const int FAST 		= 1
 const int FASTER	= 2
 
 const DEBUG_BANNER_ASSET = false
-
-//script local global
-bool _bBannerImages_Loaded 	= false
-int	 _uniqueGroupId			= -1
 
 struct BannerImageData
 {
@@ -83,30 +84,49 @@ struct AudioHistory
 	bool isValid = false 
 }
 
+#endif //SERVER
+
 struct
 {
-	table< string, table< int, AudioHistory > > audioHistoryMap
-	table< string, BannerGroupData > groupDataMap
-	table< string, bool > groupSignals
-	array< int > __channelRequiredGroups
+	#if SERVER
+		table< string, table< int, AudioHistory > > audioHistoryMap
+		table< string, BannerGroupData > groupDataMap
+		table< string, bool > groupSignals
+		array< int > __channelRequiredGroups
+		
+		void functionref() groupsInitCallbackFunc
+		void functionref() runImageAppendtoGroupsFunc
+		
+		entity dummyEnt
+		int	 _uniqueGroupId			= -1
+	#endif //SERVER
 	
-	void functionref() groupsInitCallbackFunc
-	void functionref() runImageAppendtoGroupsFunc
+	bool _bBannerImages_Loaded 	= false
+	bool isEnabled = true
 	
-	entity dummyEnt
-	bool isEnabled
-	
-} file 
+} file
 
+void function BannerAssets_SetEnabled( bool state )
+{
+	mAssert( !file._bBannerImages_Loaded, "Tried to set banner assets enabled state with %s() but initialization is already complete. ( Not called early enough )", FUNC_NAME() )
+	file.isEnabled = state
+}
+
+bool function BannerAssets_IsEnabled()
+{
+	return file.isEnabled && GetCurrentPlaylistVarBool( "enable_banner_assets", false )
+}
+
+#if SERVER
 void function BannerAssets_Init()
 {
-	file.isEnabled = GetCurrentPlaylistVarBool( "enable_banner_assets", false )	
+	file.isEnabled = BannerAssets_IsEnabled()
 	file.dummyEnt = CreateEntity( "info_target" )
 
 	RegisterSignal( "KillAllBannerGroups" )
 	RegisterSignal( "VisibilityChanged" )
 	RegisterSignal( "AudioQueue_Once" )
-	RegisterSignal( "AudioQueue_Pop" )
+	RegisterSignal( "AudioQueue_Dequeue" )
 	
 	if( file.isEnabled && file.groupsInitCallbackFunc != null )
 	{
@@ -153,7 +173,7 @@ void function BannerAssets_Init()
 		__SetupThreads()
 	}
 	
-	_bBannerImages_Loaded = true
+	file._bBannerImages_Loaded = true
 }
 
 bool function BannerAssets_DoesSignalExist( string signal )
@@ -163,11 +183,11 @@ bool function BannerAssets_DoesSignalExist( string signal )
 
 void function BannerAssets_RegisterGroup( string name, LocPair groupLoc, float width, float height, float alpha = -1.0, float startDelay = 0, bool isVisible = true, int cycleTime = 10, bool useRandom = false, float intermediateTime = 2.00, int fadeSpeed = SLOWEST, bool isAudioQueue = false, bool interupt = true )
 {	
-	mAssert( !_bBannerImages_Loaded, "Tried to register BannerAssets_RegisterGroup [" + name + "] but group registration is already complete." )
+	mAssert( !file._bBannerImages_Loaded, "Tried to register BannerAssets_RegisterGroup [" + name + "] but group registration is already complete." )
 
 	BannerGroupData bannerGroup 
 	
-	bannerGroup.groupId		= ++_uniqueGroupId
+	bannerGroup.groupId		= ++file._uniqueGroupId
 	bannerGroup.groupName 	= name
 	bannerGroup.org 		= groupLoc.origin
 	bannerGroup.ang 		= groupLoc.angles
@@ -237,13 +257,13 @@ void function BannerAssets_RegisterAudioGroup( string name, bool interupt = true
 
 void function BannerAssets_SetAllGroupsFunc( void functionref() callbackFunc )
 {
-	mAssert( !_bBannerImages_Loaded, "Tried to register BannerAssets_SetAllGroupsFunc [ " + string( callbackFunc ) + "() ] but group registration is already complete." )
+	mAssert( !file._bBannerImages_Loaded, "Tried to register BannerAssets_SetAllGroupsFunc [ " + string( callbackFunc ) + "() ] but group registration is already complete." )
 	file.groupsInitCallbackFunc = callbackFunc
 }
 
 void function BannerAssets_SetAllAssetsFunc( void functionref() callbackFunc )
 {
-	mAssert( !_bBannerImages_Loaded, "Tried to register " + FUNC_NAME() + "() [ " + string( callbackFunc ) + "() ] but group registration is already complete." )
+	mAssert( !file._bBannerImages_Loaded, "Tried to register " + FUNC_NAME() + "() [ " + string( callbackFunc ) + "() ] but group registration is already complete." )
 	file.runImageAppendtoGroupsFunc = callbackFunc
 }
 
@@ -559,9 +579,7 @@ table<int,int> function CreateAssetTbl()
 	table< int, int > tbl = {} 
 	
 	foreach( keyName, value in eAssetType )
-	{
 		tbl[ value ] <- -1
-	}
 	
 	return tbl
 }
@@ -724,11 +742,6 @@ bool function IsPositionClear( vector position, vector simulateEyePos )
 	return traceResult.fraction == 1.0
 }
 
-bool function BannerAssets_IsEnabled()
-{
-	return file.isEnabled
-}
-
 void function UpdateAudioHistory( entity player, int assetIdRef )
 {
 	AudioHistory history = GetAudioHistoryForPlayer( player, assetIdRef )
@@ -784,11 +797,11 @@ void function __AudioQueue( entity player, BannerImageData baseBannerVideo, Bann
 		
 		if( AudioQueue_Len( player ) > 0 )
 		{
-			bannerImageId = AudioQueue_Pop( player )
+			bannerImageId = AudioQueue_Dequeue( player )
 		}
 		else
 		{
-			table results = player.WaitSignal( "AudioQueue_Pop" )	
+			table results = player.WaitSignal( "AudioQueue_Dequeue" )	
 			
 			if ( results.len() == 0 )
 				continue
@@ -886,17 +899,17 @@ AudioHistory function CheckAudioTrackingForPlayer( entity player, int assetIdRef
 	return history
 }
 
-int function AudioQueue_Pop( entity player )
+int function AudioQueue_Dequeue( entity player )
 {
 	#if DEVELOPER
 		if( player.p.audioQueue.len() == 0 )
-			mAssert( false, "Tried to pop audio queue with no items in it." )
+			mAssert( 0, "Tried to pop audio queue with no items in it." )
 	#endif 
 	
-	return player.p.audioQueue.remove(0) //pop()
+	return player.p.audioQueue.remove( 0 )
 }
 
-void function AudioQueue_Append( entity player, int audio )
+void function AudioQueue_Enqueue( entity player, int audio )
 {
 	player.p.audioQueue.append( audio )
 }
@@ -923,41 +936,33 @@ int function AudioQueue_Len( entity player )
 
 void function HandleAudioQueue( entity player, int audioId )
 {
-	if( IsPlayingAudioForPlayer( player ) )
-		AudioQueue_Append( player, audioId )
+	if( audioId != -1 )
+	{
+		if( IsPlayingAudioForPlayer( player ) )
+			AudioQueue_Enqueue( player, audioId )
+		//else ( else statement not tested for timing issues)
+			player.Signal( "AudioQueue_Dequeue", { assetRefId = audioId } )
+	}
 }
 
-//Wrapper for playing audio files: 
+//Wrappers for playing audio files: 
 void function BannerAssets_PlayAudio( entity player, string assetRef )
 {
 	int assetId = WorldDrawAsset_AssetRefToID( assetRef )
-	
-	if( assetId != -1 )
-	{
-		HandleAudioQueue( player, assetId )
-		player.Signal( "AudioQueue_Pop", { assetRefId = assetId } )
-	}
+	HandleAudioQueue( player, assetId )
 }
 
 void function BannerAssets_PlayAudioID( entity player, int assetId = -1 )
 {
-	if( assetId != -1 )
-	{
-		HandleAudioQueue( player, assetId )
-		player.Signal( "AudioQueue_Pop", { assetRefId = assetId } )
-	}
+	HandleAudioQueue( player, assetId )
 }
 
 void function BannerAssets_PlayAudioName( entity player, string audioName )
 {
 	string assetRef = BannerAssets_GetAssetRefByName( audioName )
 	int assetId = WorldDrawAsset_AssetRefToID( assetRef )
-	
-	if( assetId != -1 )
-	{
-		HandleAudioQueue( player, assetId )
-		player.Signal( "AudioQueue_Pop", { assetRefId = assetId } )
-	}
+
+	HandleAudioQueue( player, assetId )
 }
 
 string function BannerAssets_GetAssetRefByName( string assetName )
@@ -965,8 +970,7 @@ string function BannerAssets_GetAssetRefByName( string assetName )
 	if( assetName in WorldDrawAsset_GetAssetLookupTable() )
 		return WorldDrawAsset_GetAssetLookupTable()[ assetName ]
 		
-	string retString
-	return retString
+	return ""
 }
 
 void function __Singlethread( entity player, BannerGroupData groupData )
@@ -1358,3 +1362,5 @@ void function __Singlethread( entity player, BannerGroupData groupData )
 		Warning( "BannerGroupData: " + groupData.groupName + " was set to invalid for player " + string( player ) + " and shutdown." )
 	#endif 
 }
+
+#endif //SERVER

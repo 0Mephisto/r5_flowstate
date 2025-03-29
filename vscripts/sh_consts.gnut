@@ -24,9 +24,13 @@ global const bool ENTITYVAR_DEPRECATED		= false //Todo(mk): fully remove this de
 //////////////////////////////////////////////////////////////
 // (mk): This enables network registration debug system. 
 // On Registration failure, you will get relevant debug info. 
+//
 // This should be DISABLED in release.
+//
+// There is also a 'VERBOSE_NET_PRINTS' toggle in 
+//  sh_net_wrapper.gnut for more prints
 //////////////////////////////////////////////////////////////
-global const bool DEBUG_NET 				= true
+global const bool DEBUG_REMOTE_FUNCS 		= true
 //////////////////////////////////////////////////////////////
 
 
