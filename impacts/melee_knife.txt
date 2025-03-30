@@ -2,88 +2,37 @@ ImpactTable
 {
 	FX
 	{
-		"C" "P_knife_impact_base" //Concrete, rock, porcelain, boulder, gravel, asphalt, brick, concrete_block, plaster
-		"D" "P_knife_impact_base" //Dirt, slipperyslime, snow, carpet, cardboard, floatingstandable, ceiling_tile, papercup, lava_rock
-		"E" "P_knife_impact_base" // metal_titan
+		"C" "" //Concrete, rock, porcelain, boulder, gravel, asphalt, brick, concrete_block, plaster
+		"D" "" //Dirt, slipperyslime, snow, carpet, cardboard, floatingstandable, ceiling_tile, papercup
+		"E" "" // metal_titan
 
-		"F" "P_knife_impact_base" //flesh
-		"G" "P_knife_impact_base" //metalgrate, chainlink, chain
-		"H" "P_knife_impact_base" //alienflesh
+		"F" "" //flesh
+		"G" "" //metalgrate, chainlink, chain
+		"H" "" //alienflesh
 
-		"J" "P_knife_impact_base" //grass
-		"K" "P_knife_impact_base" //Mud
-		"L" "P_knife_impact_base" //plastic_barrel, plastic_box, item, rubber, rubbertire, jeeptire, slidingrubbertire, brakingrubbertire, slidingrubbertire_front, slidingrubbertire_rear
-		"M" "P_knife_impact_base" //Default, metal, metal_box, solidmetal, armorflesh, metal_bouncy, slippery_metal, shellcasing_small, shellcasing_large, metal_barrel, floating_metal_barrel, weapon
-		"N" "P_knife_impact_base" //slime
-		"O" "P_knife_impact_base" //Foliage
-		"P" "P_knife_impact_base" //metal_spectre
+		"J" "" //grass
+		"K" "" //Mud
+		"L" "" //plastic_barrel, plastic_box, item, rubber, rubbertire, jeeptire, slidingrubbertire, brakingrubbertire, slidingrubbertire_front, slidingrubbertire_rear
+		"M" "" //Default, metal, metal_box, solidmetal, armorflesh, metal_bouncy, slippery_metal, shellcasing_small, shellcasing_large, metal_barrel, floating_metal_barrel, weapon
+//		"N" "openslot"
+		"O" ""  //Foliage
+		"P" "" //Computer
 
-		"Q" "P_knife_impact_base" //metalpanel, grenade, canister
-		"R" "P_knife_impact_base" //metalpanel, grenade, canister
-		"S" "P_knife_impact_base" //water, slime
-		"T" "P_knife_impact_base" //tile
-		"U" "P_knife_impact_base" // glass_breakable
-		"V" "P_knife_impact_base" //Metal Vent
-		"W" "P_knife_impact_base"//Wood, Wood_lowdensity, Wood_Box, Wood_Crate, Wood_Plank, Wood_Solid, Wood_Furniture, Wood_Panel watermelon
+		"R" "" //metalpanel, grenade, canister
+		"S" "" //water, slime
+		"T" "" //tile
+		"U" "" // glass_breakable
+		"V" "" //Metal Vent
+		"W" "" //Wood, Wood_lowdensity, Wood_Box, Wood_Crate, Wood_Plank, Wood_Solid, Wood_Furniture, Wood_Panel watermelon
 
-		"X" "P_knife_impact_base" //xo_shield
+		"X" "" //xo_shield
 
-		"Y" "P_knife_impact_base" //glass, brokenglass, glassbottle, pottery
-		"Z" "P_knife_impact_base" //sand
-
-		"0" "P_knife_impact_base"
-		"1" "P_knife_impact_base" //lava_flow
-		"2" "P_knife_impact_base" //lava_rock_hot
-		"3" "P_knife_impact_base"
-		"4" "P_knife_impact_base"
-		"5" "P_knife_impact_base"
-		"6" "P_knife_impact_base"
-		"7" "P_knife_impact_base"
-		"8" "P_knife_impact_base"
-		"9" "P_knife_impact_base"
-
-		"splash" "P_knife_impact_base" //brush water
-		"slime_splash" "P_knife_impact_base"
-		"airburst" ""
-		"shieldhit" "P_knife_impact_base"
-		"critical_hit" "P_knife_impact_base"
-	}
-
-	FX
-	{
-		"C" "P_melee_default" //Concrete, rock, porcelain, boulder, gravel, asphalt, brick, concrete_block, plaster
-		"D" "P_melee_dirt" //Dirt, slipperyslime, snow, carpet, cardboard, floatingstandable, ceiling_tile, papercup
-		"E" "P_melee_metal" // metal_titan
-
-		"F" "impact_flesh" //flesh
-		"G" "P_melee_metal" //metalgrate, chainlink, chain
-		"H" "P_melee_default" //alienflesh
-
-		"J" "P_melee_dirt" //grass
-		"K" "P_melee_dirt" //Mud
-		"L" "P_melee_default" //plastic_barrel, plastic_box, item, rubber, rubbertire, jeeptire, slidingrubbertire, brakingrubbertire, slidingrubbertire_front, slidingrubbertire_rear
-		"M" "P_melee_metal" //Default, metal, metal_box, solidmetal, armorflesh, metal_bouncy, slippery_metal, shellcasing_small, shellcasing_large, metal_barrel, floating_metal_barrel, weapon
-		"N" "P_impact_slime" //slime
-		"O" "P_melee_dirt"  //Foliage
-		"P" "P_melee_metal" //metal_spectre
-
-		"Q" "P_melee_snow"  //Snow
-		"R" "P_melee_ice" //Ice
-
-		"S" "P_impact_water" //water, slime
-		"T" "P_melee_default" //tile
-		"U" "P_melee_glass" // glass_breakable
-		"V" "P_melee_metal" //Metal Vent
-		"W" "P_melee_default"//Wood, Wood_lowdensity, Wood_Box, Wood_Crate, Wood_Plank, Wood_Solid, Wood_Furniture, Wood_Panel watermelon
-
-		"X" "P_impact_xo_shield_cp" //xo_shield
-
-		"Y" "P_melee_glass" //glass, brokenglass, glassbottle, pottery
-		"Z" "P_melee_dirt"  //sand
+		"Y" "" //glass, brokenglass, glassbottle, pottery
+		"Z" "" //sand
 
 //		"0" "openslot"
-		"1" "P_impact_lava_nodecal" //lava_flow
-		"2" "P_impact_lava" //lava_rock_hot
+//		"1" "openslot"
+//		"2" "openslot"
 //		"3" "openslot"
 //		"4" "openslot"
 //		"5" "openslot"
@@ -92,11 +41,11 @@ ImpactTable
 //		"8" "openslot"
 //		"9" "openslot"
 
-		"splash" "P_impact_water" //brush water
-		"slime_splash" "P_impact_water"
-		"airburst" ""
-		"shieldhit" "P_armor_impact"
-		"critical_hit" "P_melee_default"
+		"splash" "" //brush water
+		"slime_splash" ""
+		"airburst" ""  //No Surface
+		"shieldhit" ""
+		"critical_hit" ""
 	}
 
 	Sound

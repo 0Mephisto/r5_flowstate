@@ -437,6 +437,10 @@ void function PrecacheSDKWeapons()
 	PrecacheWeapon( $"mp_ability_haunt" )
 	PrecacheWeapon( $"mp_ability_ground_slam" )
 	PrecacheWeapon( $"mp_ability_dodge_roll" )
+
+	//Custom Heirlooms
+	PrecacheWeapon( $"melee_macks_knife" )
+	PrecacheWeapon( $"mp_weapon_macks_knife_primary" )
 }
 
 void function PrecacheSDKEntities()

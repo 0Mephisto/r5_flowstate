@@ -79,6 +79,11 @@ void function SetupHeirloom( int heirloomIndex )
 		player.GiveWeapon( "mp_weapon_gloves_primary", WEAPON_INVENTORY_SLOT_PRIMARY_2, [] )
 		player.GiveOffhandWeapon( "melee_gloves", OFFHAND_MELEE, [] )
 		break
+		
+		case 6:
+		player.GiveWeapon( "mp_weapon_macks_knife_primary", WEAPON_INVENTORY_SLOT_PRIMARY_2, [] )
+		player.GiveOffhandWeapon( "melee_macks_knife", OFFHAND_MELEE, [] )
+		break
 	}
 
 	EmitSoundOnEntity( player, "LootCeremony_LootHologram_Appear_Heirloom" )
