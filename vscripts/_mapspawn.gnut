@@ -441,6 +441,8 @@ void function PrecacheSDKWeapons()
 	//Custom Heirlooms
 	PrecacheWeapon( $"melee_macks_knife" )
 	PrecacheWeapon( $"mp_weapon_macks_knife_primary" )
+	PrecacheWeapon( $"melee_bolo_sword" )
+	PrecacheWeapon( $"mp_weapon_bolo_sword_primary" )
 }
 
 void function PrecacheSDKEntities()

@@ -317,6 +317,7 @@ void function SetupDefaultDevCommandsMP()
 		} //TODO: CAFE NEEDS TO FIX MISSING OR BROKEN ASSETS - LorryLeKral
 
 		SetupDevMenu( "Respawn Player(s)", SetDevMenu_RespawnPlayers )
+		SetupDevMenu( "Equip Custom Heirlooms", SetDevMenu_CustomHeirlooms )
 		SetupDevCommand( "Recharge Abilities", "recharge" )
 		
 		SetupDevMenu( "Spawn NPC at Crosshair [Friendly]", SetDevMenu_AISpawnFriendly )
@@ -690,6 +691,10 @@ void function SetDevMenu_RespawnPlayers( var _ )
 	ChangeToThisMenu( SetupRespawnPlayersDevMenu )
 }
 
+void function SetDevMenu_CustomHeirlooms( var _ )
+{
+	ChangeToThisMenu( SetupHeirloomsDevMenu )
+}
 
 void function SetupRespawnPlayersDevMenu()
 {
@@ -702,6 +707,12 @@ void function SetupRespawnPlayersDevMenu()
 	SetupDevCommand( "Respawn dead bots", "respawn deadbots" )
 	SetupDevCommand( "Respawn my teammates", "respawn allies" )
 	SetupDevCommand( "Respawn my enemies", "respawn enemies" )
+}
+
+void function SetupHeirloomsDevMenu()
+{
+	SetupDevCommand( "Bolo Sword", "giveheirloom 0" )
+	SetupDevCommand( "Dragonfly Knife", "giveheirloom 1" )
 }
 
 void function SetupTDMPrimaryWeapons()
