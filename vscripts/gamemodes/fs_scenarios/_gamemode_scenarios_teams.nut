@@ -45,7 +45,7 @@ struct
 void function FS_Scenarios_CustomTeamInit() //✓
 {
 	#if DEVELOPER
-		printl( "Scenarios CustomTeam Init" )
+		printl( "[Scenarios] CustomTeam Init" )
 	#endif
 
 	settings.scenarios_allow_team_settings = GetCurrentPlaylistVarBool( "scenarios_allow_team_settings", true )
@@ -256,14 +256,14 @@ bool function FS_Scenarios_IsPlayerWaitingForTeamates( entity player ) //✓
 		
 		if( !allowFill && playerTeam.len() < FS_Scenarios_PlayersPerTeam() )
 		{
-			//printf( "Team fill is OFF(0) and player \"%s\" is waiting for teamates", string( player ) )
+			//printf( "[Scenarios] Team fill is OFF(0) and player \"%s\" is waiting for teamates", string( player ) )
 			return true
 		}
 			
 		int mmTimeOut = GetCustomTeamSetting( team, "matchmaking_timeout" )
 		if( Time() - team.lastRoundEndTime < mmTimeOut )
 		{
-			//printf( "player \"%s\" is waiting for timeout of \"%d\"  remaining: %f", string( player ), mmTimeOut, mmTimeOut - ( Time() - team.lastRoundEndTime ) )
+			//printf( "[Scenarios] player \"%s\" is waiting for timeout of \"%d\"  remaining: %f", string( player ), mmTimeOut, mmTimeOut - ( Time() - team.lastRoundEndTime ) )
 			return true
 		}
 		
@@ -275,7 +275,7 @@ bool function FS_Scenarios_IsPlayerWaitingForTeamates( entity player ) //✓
 	{
 		if( !IsCurrentState( tPlayer, e1v1State.WAITING ) )
 		{
-			//printf( "Not all players of team are in queue: %s", string( tPlayer ) )
+			//printf( "[Scenarios] Not all players of team are in queue: %s", string( tPlayer ) )
 			return true
 		}
 	}
@@ -500,7 +500,7 @@ bool function RemovePlayerFromPlayersTeam( entity player ) //✓
 	if( team == null )
 	{
 		player.p.hasTeam = false
-		printf( "Player: \"%s\" had team, but could not find it. Returning.", string( player ) )
+		printf( "[Scenarios] Player: \"%s\" had team, but could not find it. Returning.", string( player ) )
 		//mAssert( 0, format( "Player: \"%s\" had team, but could not find it.", string( player ) ) )
 		return false
 	}
@@ -1033,14 +1033,14 @@ void function FS_Scenarios_CustomTeamCmd( entity player, array<string> args ) //
 		entity candidate = GetPlayer( query )
 		if( !IsValid( candidate ) )
 		{
-			printl( "Invalid player" )
+			printl( "[Scenarios] Invalid player" )
 			return team
 		}
 		
 		CustomTeam ornull candidateTeam = GetCustomTeamOfPlayer( candidate )
 		if( candidateTeam == null )
 		{
-			printl( "Player has no team" )
+			printl( "[Scenarios] Player has no team" )
 			return team
 		}
 		
