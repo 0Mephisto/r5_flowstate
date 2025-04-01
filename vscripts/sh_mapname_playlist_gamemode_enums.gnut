@@ -489,7 +489,7 @@ void function TrackerSupportedMode_Init()
 		ePlaylists.fs_dm,
 		ePlaylists.fs_tdm,
 		ePlaylists.fs_vamp_1v1,
-		ePlaylists.fs_lgduels_1v1,
+		//ePlaylists.fs_lgduels_1v1,
 		ePlaylists.fs_scenarios,
 		ePlaylists.fs_survival,
 		ePlaylists.SURVIVAL,

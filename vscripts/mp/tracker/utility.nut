@@ -63,9 +63,7 @@ global function ArrayUniqueInt
 	global function PrintMatchIDtoAll
 #endif
 
- //move to file
-
-struct 
+struct
 {
 	table< string,int > WeaponIdentifiers
 	array< string > ADMINS

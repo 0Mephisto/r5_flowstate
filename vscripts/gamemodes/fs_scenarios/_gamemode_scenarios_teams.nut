@@ -500,7 +500,7 @@ bool function RemovePlayerFromPlayersTeam( entity player ) //✓
 	if( team == null )
 	{
 		player.p.hasTeam = false
-		printf( "Player: \"%s\" had team, but could not find it. Returning." )
+		printf( "Player: \"%s\" had team, but could not find it. Returning.", string( player ) )
 		//mAssert( 0, format( "Player: \"%s\" had team, but could not find it.", string( player ) ) )
 		return false
 	}
