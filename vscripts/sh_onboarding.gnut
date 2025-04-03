@@ -1146,7 +1146,7 @@ void function OnCharacterClassChanged( EHI playerEHI, ItemFlavor flavor )
 	if ( IsAlive( player ) ) 
 	{	
 		CharacterSelect_AssignCharacter( player, flavor, false )
-		DecideRespawnPlayer( player, false ) //(mk): Giving loadout related weapons here interferes with every custom gamemode in the codebase. Set to false. If your mode needs loadoutrelated weapons apply them.
+		DecideRespawnPlayer( player, true )
 	}
 }
 

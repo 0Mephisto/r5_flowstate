@@ -17,7 +17,7 @@ global function SpawnSystem_CreateLocPairObject
 	Returns a LocPairData object. Used as the final return in AddCallback_SpawnsPostInit
 */
 
-global function SpawnSystem_SetOffset						// void function SpawnSystem_SetOffset( LocPair offset ) 																// Used to shift all spawns by origin/angles. Usful for custom made maps.
+global function SpawnSystem_SetOffset						// void function SpawnSystem_SetOffset( LocPair offset ) 																// Ideally placed in AddCallback_SpawnsSettings (or before generating spawns). Used to shift all spawns by origin/angles. Usful for custom made maps.
 global function SpawnSystem_SetCustomPak					// bool function SpawnSystem_SetCustomPak( string custom_rpak ) 														// Used in SpawnSystem_InitGamemodeOptions, else place in a AddCallback_SpawnsSettings callback
 global function SpawnSystem_SetCustomPlaylist				// void function SpawnSystem_SetCustomPlaylist( string playlistref )													// Used in SpawnSystem_InitGamemodeOptions, else place in a AddCallback_SpawnsSettings callback
 global function SpawnSystem_SetPreferredPak					// void function SpawnSystem_SetPreferredPak( int preference )															// Used in SpawnSystem_InitGamemodeOptions, else place in a AddCallback_SpawnsSettings callback
