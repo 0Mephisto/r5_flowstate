@@ -1236,8 +1236,11 @@ ItemFlavor ornull function RegisterItemFlavorFromSettingsAsset( asset settingsAs
 	if ( flavor._____INTERNAL_playlistOpinion == eItemFlavorPlaylistOpinion.DISABLED )
 	{
 		fileLevel.DEV_areAnyItemflavorsDisabledByPlaylist = true
-		Warning( "Item flavor disabled by dev-only playlist vars: " + humanReadableRef )
-		Warning( "!!WARNING!! Item flavor disabled by playlist, this is dev-only and should not remain: " + humanReadableRef )
+		
+		#if DEVELOPER //will fill logs for normal players
+			Warning( "Item flavor disabled by dev-only playlist vars: " + humanReadableRef )
+			Warning( "!!WARNING!! Item flavor disabled by playlist, this is dev-only and should not remain: " + humanReadableRef )
+		#endif
 
 		#if DEBUG_ITEM_FLAVOR_REGISTRATION
 			printt( "DEBUG_ITEM_FLAVOR_REGISTRATION", FUNC_NAME(), settingsAsset, "Disabled by playlist!" )

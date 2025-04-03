@@ -396,7 +396,7 @@ void function Server_Init()
     if ( IsDevGamemode() )
         ReMapLive_Init()
 		
-	Flowstate_SpawnSystem_Init()
+	SpawnSystem_Init()
 	NotificationSystem_Init()
 	Flowstate_Afk_Init()
 

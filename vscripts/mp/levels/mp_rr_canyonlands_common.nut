@@ -988,7 +988,10 @@ array<entity> function GetHoverTankEndNodes( int count, int endNodeType, array<e
 	int deathFieldStageIndexSmall = GetCurrentPlaylistVarInt( "canyonlands_hovertanks_circle_index", HOVER_TANKS_DEFAULT_CIRCLE_INDEX ) + 1
 	if ( deathFieldStageIndexSmall >= SURVIVAL_GetDeathFieldStages().len() )
 	{
-		Warning( "Hovertank playlist var 'canyonlands_hovertanks_circle_index' has bad death field stage: %d", deathFieldStageIndexSmall )
+		#if DEVELOPER
+			Warning( "Hovertank playlist var 'canyonlands_hovertanks_circle_index' has bad death field stage: %d", deathFieldStageIndexSmall )
+		#endif 
+		
 		deathFieldStageIndexSmall = SURVIVAL_GetDeathFieldStages().len() - 1
 	}
 	DeathFieldStageData deathFieldStageDataSmall = GetDeathFieldStage(  deathFieldStageIndexSmall )
@@ -1005,7 +1008,10 @@ array<entity> function GetHoverTankEndNodes( int count, int endNodeType, array<e
 		int deathFieldStageIndexLarge = GetCurrentPlaylistVarInt( "canyonlands_hovertanks_circle_index", HOVER_TANKS_DEFAULT_CIRCLE_INDEX )
 		if ( deathFieldStageIndexLarge >= SURVIVAL_GetDeathFieldStages().len() )
 		{
-			Warning( "Hovertank playlist var 'canyonlands_hovertanks_circle_index' has bad death field stage: %d", deathFieldStageIndexLarge )
+			#if DEVELOPER
+				Warning( "Hovertank playlist var 'canyonlands_hovertanks_circle_index' has bad death field stage: %d", deathFieldStageIndexLarge )
+			#endif
+			
 			deathFieldStageIndexLarge = SURVIVAL_GetDeathFieldStages().len() - 1
 		}
 		DeathFieldStageData deathFieldStageDataLarge = GetDeathFieldStage(  deathFieldStageIndexLarge )

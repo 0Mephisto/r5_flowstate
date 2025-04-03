@@ -445,8 +445,8 @@ playlists
 				enable_chat_commands							1 		// allows players to type commands for mode into chat. Example: /rest
 				
 				// ADMINS for cc command (recommended to list in r5r.dev_config file if server has tracker dll)
-				// usage: "adminname-oid,anotheradmin-oid"
-				// example: "R5mkos-15423978654235"
+				// usage: Comma Separated list of server admin uids
+				// example: "15423978654235,620652652562,72462626522253"
 				admins_list										""
 				
 				enable_motd 									1		// Enables message of the day for server
@@ -2195,11 +2195,8 @@ playlists
 				
 				spawnsets_mp_rr_desertlands_64k_x_64k			"1"
 				
-				spawnpaks_use_sets 								0	// bool, enables using other than stock spawn paks
 				spawnpaks_use_random							0	// bool, loads random configured pak on mapstart
-				
-				spawnpaks_prefer								0	// bool, enables the below setting 
-				spawnpaks_preferred_pak							0 	//integer, pak number 
+				spawnpaks_preferred_pak							0 	// integer, pak number, 0 to disable
 			}
 			gamemodes { fs_dm { maps {
 				mp_rr_desertlands_64k_x_64k 					1
@@ -2363,12 +2360,8 @@ playlists
 				spawnsets_mp_rr_canyonlands_64k_x_64k			"1"
 				spawnsets_mp_rr_arena_phase_runner				"1"
 				
-				spawnpaks_use_sets 								0	// bool, enables using other than stock spawn paks
 				spawnpaks_use_random							0	// bool, loads random configured pak on mapstart
-				spawnpaks_prefer								0	// bool, enables the below setting 
-				spawnpaks_preferred_pak							0 	// integer, pak number 
-				spawnpaks_playlist_override						0 	// bool, enables using below defined playlist for spawnpaks_playlist_override
-								
+				spawnpaks_preferred_pak							0 	// integer, pak number, 0 to disable						
 				custom_spawnpak									""	// string, custom spawn.rpak override
 				custom_playlist_spawnpak						""  // string, custom playlist override (fs_1v1, fs_scenarios, etc. )  loads spawns for this gametype instead of game loaded gametype
 			}
@@ -2483,7 +2476,6 @@ playlists
 				flowstate_seconds_to_wait_without_players_before_restarting		3600 // 3600 : 1 hour
 				
 				//required to get 1v1 spawns
-				spawnpaks_playlist_override						1
 				custom_playlist_spawnpak						"fs_1v1"
 			}
 			gamemodes { fs_dm { maps {
@@ -2639,10 +2631,8 @@ playlists
 				mp_rr_arena_phase_runner						"1,2,3"
 				mp_rr_olympus_mu1								"1,2,3,4,5"
 				
-				spawnpaks_use_sets 								1	// bool, enables using other than stock spawn paks
 				spawnpaks_use_random							0	// bool, loads random configured pak on mapstart
-				spawnpaks_prefer								0	// bool, enables the below setting 
-				spawnpaks_preferred_pak							2 	//integer, pak number 
+				spawnpaks_preferred_pak							2 	// integer, pak number, 0 to disable
 			}
 			gamemodes { fs_dm { maps {
 				mp_rr_canyonlands_64k_x_64k						1
@@ -2797,6 +2787,7 @@ playlists
 				mp_rr_arena_phase_runner			  			1
 				mp_rr_party_crasher					  			1
 				mp_rr_aqueduct									1
+				mp_rr_canyonlands_staging						1
 			} } }
 		}
 

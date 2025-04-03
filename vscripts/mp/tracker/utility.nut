@@ -1,3 +1,5 @@
+untyped //needed for sqwarning
+
 																//~mkos
 //player util
 global function CheckRate
@@ -2594,18 +2596,22 @@ void function sqerror( ... )
 	#endif
 }
 
-void function sqwarning( ... )
+void function sqwarning( ... ) //changed to work like Warning() with format for consistency.
 {
 	if ( vargc <= 0 )
 		return
 
-	string msg
-	for ( int i = 0; i < vargc; i++ )
-		msg += format( " %s", string( vargv[ i ] ) )
+	string errorMsg = expect string ( vargv[0] )
+	
+	array vars = [ this, errorMsg ] 
+	for( int i = 1; i < vargc; i++ )
+		vars.append( vargv[ i ] )
+	
+	errorMsg = expect string ( format.acall( vars ) )	
 
 	#if HAS_TRACKER_DLL
-		sqwarning__internal( msg )
+		sqwarning__internal( errorMsg )
 	#else
-		Warning( msg )
+		Warning( errorMsg )
 	#endif
 }

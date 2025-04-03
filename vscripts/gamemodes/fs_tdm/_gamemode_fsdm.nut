@@ -495,10 +495,8 @@ void function _CustomTDM_Init()
 		FsOddballInit()
 	}
 	
-	if( is1v1EnabledAndAllowed() ) //just call Gamemode1v1_Init, and move logic into gamemode1v1_init
-	{		
+	if( is1v1EnabledAndAllowed() )
 		thread Gamemode1v1_Init( MapName() )
-	}
 	
 	if( !isScenariosMode() )
 		AddSpawnCallback( "prop_survival", Common_DissolveDropable )
@@ -1557,7 +1555,10 @@ void function _HandleRespawn( entity player, bool isDroppodSpawn = false )
         else
         {
             if( !player.p.storedWeapons.len() )
-				DecideRespawnPlayer( player, true )
+			{
+				bool loadoutRelated = !g_bIs1v1GameType()
+				DecideRespawnPlayer( player, loadoutRelated )
+			}
             else
             {
 				DecideRespawnPlayer( player, false )

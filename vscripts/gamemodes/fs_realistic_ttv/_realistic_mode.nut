@@ -65,7 +65,7 @@ void function RealisticMode_Init()
 	AddCallback_OnPlayerWeaponAttachmentChanged( Realistic_OnWeaponAttachmentChanged )
 	AddCallback_OnPlayerRespawned( RealisticMode_OnSpawned )
 
-	Flowstate_SpawnSystem_InitGamemodeOptions()
+	SpawnSystem_InitGamemodeOptions()
 	
 	int eMap = SpawnSystem_FindBaseMapForPak( MapName() )
 	file.gamemodeSpawns = SpawnSystem_ReturnAllSpawnLocations( eMap )

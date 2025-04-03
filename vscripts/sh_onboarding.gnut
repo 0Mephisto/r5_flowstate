@@ -999,7 +999,8 @@ void function OnClientConnected( entity player )
 		player.p.respawnPodLanded = true
 		
 		DecideRespawnPlayer( player )
-	} else if( Gamemode() == eGamemodes.SURVIVAL && ( !IsDevGamemode() && !GetCurrentPlaylistVarBool( "is_practice_map", false ) && Playlist() != ePlaylists.fs_movementrecorder ) )
+	} 
+	else if( Gamemode() == eGamemodes.SURVIVAL && ( !IsDevGamemode() && !GetCurrentPlaylistVarBool( "is_practice_map", false ) && Playlist() != ePlaylists.fs_movementrecorder ) )
 	{
 		replaceOrigin = true
 		
@@ -1051,12 +1052,14 @@ void function OnClientConnected( entity player )
 
 				thread ObserverThread( player )
 				Remote_CallFunction_ByRef( player, "ServerCallback_ShowDeathScreen" )
-			} else
+			} 
+			else
 			{
 				DecideRespawnPlayer_Retail( player )
 				GiveBasicSurvivalItems( player ) //If player is put in skydive mode and attached to its team mid-flight, we need to give them basic survival items here otherwise it will spawn without melee and basic items. Cafe
 			}
-		} else
+		} 
+		else
 		{
 			DecideRespawnPlayer_Retail( player )
 		}
@@ -1109,8 +1112,8 @@ void function FS_GiveInitialTeamToPlayer( entity player )
 		EliminatedPlayerData data = GetPlayerEliminatedData( player )
 		SetTeam( player, data.team ) //Give saved team. Cafe
 		
-		#if DEVELOPER
-		printw( "TEAMING - Player was eliminated, assigning old team", data.team )
+		#if DEVELOPER && !MKOS
+			printw( "TEAMING - Player was eliminated, assigning old team", data.team )
 		#endif
 		return
 	}
@@ -1118,8 +1121,8 @@ void function FS_GiveInitialTeamToPlayer( entity player )
 	int maxTeamSize = GetCurrentPlaylistVarInt( "max_team_size", 1 )
 	int numTeams = GetCurrentPlaylistVarInt( "max_players", 0 ) / GetCurrentPlaylistVarInt( "max_team_size", 1 )
 	
-	#if DEVELOPER
-	printw( "TEAMING - Team Size:", maxTeamSize, " - Num Teams: ", numTeams )
+	#if DEVELOPER && !MKOS
+		printw( "TEAMING - Team Size:", maxTeamSize, " - Num Teams: ", numTeams )
 	#endif
 	
 	for( int i = TEAM_IMC; i <= TEAM_IMC + numTeams; i++ )
@@ -1140,9 +1143,10 @@ void function OnCharacterClassChanged( EHI playerEHI, ItemFlavor flavor )
 		return
 
 	entity player = FromEHI( playerEHI )
-	if ( IsAlive( player ) ) {	
+	if ( IsAlive( player ) ) 
+	{	
 		CharacterSelect_AssignCharacter( player, flavor, false )
-		DecideRespawnPlayer( player )
+		DecideRespawnPlayer( player, false ) //(mk): Giving loadout related weapons here interferes with every custom gamemode in the codebase. Set to false. If your mode needs loadoutrelated weapons apply them.
 	}
 }
 

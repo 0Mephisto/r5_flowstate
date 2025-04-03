@@ -229,7 +229,7 @@ void function Init_FS_Scenarios()
 	Survival_AddCallback_OnAttackerSoloRatEliminated( FS_Scenarios_OnRatEliminated )
 
 	AddCallback_EntitiesDidLoad( EntitiesDidLoad )
-	//AddCallback_FlowstateSpawnsPostInit( CustomSpawns )
+	//AddCallback_SpawnsPostInit( CustomSpawns )
 	
 	vector mapCenter = SURVIVAL_GetMapCenter()
 	SpawnSystem_SetPanelLocation( mapCenter + <0,0,50000>, ZERO_VECTOR )

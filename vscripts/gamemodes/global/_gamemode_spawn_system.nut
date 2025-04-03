@@ -1,36 +1,272 @@
-// flowstate spawn system														//mkos
+// flowstate spawn system									//mkos
 
-global function Flowstate_SpawnSystem_Init
-global function Flowstate_SpawnSystem_InitGamemodeOptions //gamemode must call
+global function SpawnSystem_Init 							// called automatically
 
-global function SpawnSystem_ReturnAllSpawnLocations
-global function SpawnSystem_SortSpawnsByMetaData
-global LocPair &g_waitingRoomPanelLocation
+global function SpawnSystem_InitGamemodeOptions 			// FIRST:  gamemode must call first -- This inits host settings from playlist.
+global function SpawnSystem_ReturnAllSpawnLocations 		// SECOND: array<SpawnData> function SpawnSystem_ReturnAllSpawnLocations( int eMap = -1, table<string,bool> options = {} )	// main function for returning spawns by spawn system
 
-global function SetCallback_FlowstateSpawnsOffset
-global function AddCallback_FlowstateSpawnsSettings
-global function AddCallback_FlowstateSpawnsPostInit
+global function SpawnSystem_SortSpawnsByMetaData			// table< string, array< SpawnData > > function SpawnSystem_SortSpawnsByMetaData( array<SpawnData> spawns )					// returns a table of spawns with the info field as the index
+global LocPair &g_waitingRoomPanelLocation 					//																															// Don't set this manually, use a callback parameter within AddCallback_SpawnsPostInit. This is because calculations are done which effect other entities based on this location.
 
-global function SpawnSystem_SetCustomPak
-global function SpawnSystem_SetCustomPlaylist
-global function SpawnSystem_SetPreferredPak
-global function SpawnSystem_SetRunCallbacks
-global function SpawnSystem_SetPanelLocation
-global function SpawnSystem_SetMetaDataHandler
+global function AddCallback_SpawnsSettings					// void function AddCallback_SpawnsSettings( void functionref() callbackFunc )												// This allows scripters to hardset spawn settings, which will override user playlist settings.
+global function AddCallback_SpawnsPostInit					// void function AddCallback_SpawnsPostInit( LocPairData functionref() callbackFunc )										// This allows scripters to programtically modify or extend spawns, waiting room, panels, or apply metadata. Executes after rpak extraction of spawns and validation.  **Does not currently support navmesh correction**
 
-global function SpawnSystem_GetCurrentSpawnSet
-global function SpawnSystem_GetCurrentSpawnAsset
-global function SpawnSystem_CreateSpawnObject
-global function SpawnSystem_CreateSpawnObjectArray
-global function SpawnSystem_FindBaseMapForPak
-global function SpawnSystem_GenerateRandomSpawns
+global function SpawnSystem_CreateLocPairObject 			
+/*
+	LocPairData function SpawnSystem_CreateLocPairObject( array<LocPair> spawns, bool bOverrideSpawns = false, LocPair ornull waitingRoom = null, LocPair ornull panels = null, array<table> ornull propertiesOrNull = null )
+	Returns a LocPairData object. Used as the final return in AddCallback_SpawnsPostInit
+*/
 
-global function SpawnSystem_SetValidateSpawnsOnLoad
-global function SpawnSystem_CreateLocPairObject
-global function SpawnSystem_GetPakInfoForKey
-global function SpawnSystem_CheckSpawn
+global function SpawnSystem_SetOffset						// void function SpawnSystem_SetOffset( LocPair offset ) 																// Used to shift all spawns by origin/angles. Usful for custom made maps.
+global function SpawnSystem_SetCustomPak					// bool function SpawnSystem_SetCustomPak( string custom_rpak ) 														// Used in SpawnSystem_InitGamemodeOptions, else place in a AddCallback_SpawnsSettings callback
+global function SpawnSystem_SetCustomPlaylist				// void function SpawnSystem_SetCustomPlaylist( string playlistref )													// Used in SpawnSystem_InitGamemodeOptions, else place in a AddCallback_SpawnsSettings callback
+global function SpawnSystem_SetPreferredPak					// void function SpawnSystem_SetPreferredPak( int preference )															// Used in SpawnSystem_InitGamemodeOptions, else place in a AddCallback_SpawnsSettings callback
+global function SpawnSystem_SetRunCallbacks					// void function SpawnSystem_SetRunCallbacks( bool setting )															// Enable or disable running callbacks added with AddCallback_SpawnsPostInit. Usful for timing flexibility.
+global function SpawnSystem_SetPanelLocation				// void function SpawnSystem_SetPanelLocation( vector origin, vector angles )											// Wrapper to register a AddCallback_SpawnsPostInit callback which sets panel locations at proper time. Attempting to do so manually could result in calculations overwriting this preference.
+global function SpawnSystem_SetMetaDataHandler				// void function SpawnSystem_SetMetaDataHandler( void functionref( SpawnData ) processFunc )							// Callback that receives SpawnData object for every spawn added. See Struct SpawnData. ( Otherwise, SpawnData can be accessed during iteration after all spawns have been returned from SpawnSystem_ReturnAllSpawnLocations )
+
+global function SpawnSystem_GetCurrentSpawnSet				// string function SpawnSystem_GetCurrentSpawnSet()																		// Returns current spawnpak asset string(location) - i.e.    datatable/fs_spawns_fs_1v1_mp_rr_canyonlands_64k_x_64k_set_1.rpak
+global function SpawnSystem_GetCurrentSpawnAsset			// asset function SpawnSystem_GetCurrentSpawnAsset()																	// Returns current spawnpak asset
+global function SpawnSystem_CreateSpawnObject				// SpawnData function SpawnSystem_CreateSpawnObject( LocPair spawn, string info, int id = -1 )							// Returns SpawnData object ( expandable in future )
+
+global function SpawnSystem_CreateSpawnObjectArray			// array<SpawnData> function SpawnSystem_CreateSpawnObjectArray( array<LocPair> spawns, array<table> ornull propertiesOrNull = null, int coreSpawnsLen = -1 ) 		
+/*
+	Creates an array of spawndata objects with meta data defined in propertiesOrNull ( expandable in future )  
+	object & properties table should contain the same number of elements respectively. 
+*/
+
+global function SpawnSystem_GenerateRandomSpawns			// array<LocPair> function SpawnSystem_GenerateRandomSpawns( vector origin, vector angles, float radius, float radiusScalar = 1.0, int amount = 10 ) 				
+//Legacy random spawn generation. Returns valid spawns within player hull min/max
+
+
+global function SpawnSystem_FindBaseMapForPak				// int function SpawnSystem_FindBaseMapForPak( int eMap )																	// Returns a map enum for same-geo similar maps to reduce duplicate paks containing the same spawns.
+global function SpawnSystem_UseNavMeshCorrection			// void function SpawnSystem_UseNavMeshCorrection( bool setting )															// Enables/Disables NavMesh aided spawn correction. Run before generating spawns.
+global function SpawnSystem_SetValidateSpawnsOnLoad			// void function SpawnSystem_SetValidateSpawnsOnLoad( bool setting )														// Enables/Disables validating spawns on load. Run before generating spawns.
+global function SpawnSystem_CheckSpawn						// bool function SpawnSystem_CheckSpawn( vector origin, vector mins = ZERO_VECTOR, vector maxs = ZERO_VECTOR )				// Validate a spawn with mins/maxes. Defaults to HULL_HUMAN if ZERO_VECTOR is provided.
+
+
+global function SpawnSystem_GetPakInfoForKey				// string function SpawnSystem_GetPakInfoForKey( string key )																
+/*
+	Returns pak-level meta data for the spawn pak. ( expandable in future )
+	::current fields::
+	
+	playlist				//Intended playlist of spawn set
+	map						//Intended map of spawn set
+	spawnsCount				//Total spawns in spawn set 
+	teamCount				//Total divisable groupings of spawns. ( 1v1 would be 2,  1 spawn per opponent )
+	devAutoSave				//bool 
+*/
+
+
+
+/*
+	//////////////////////////////////////////////////////////////////////////////
+	//								DOCUMENTATION								//
+	//////////////////////////////////////////////////////////////////////////////
+
+	Introduction:
+	
+		The spawn system was designed to bridge the gap between scripters and hosts.
+		It offers an almost fully featured system for maintaining multiple spawn
+		configurations.
+		
+		Primarily, spawns are generated using the commandline spawn maker tool 
+		( see: table DEV_POS_COMMANDS, or run script DEV_SpawnHelp() in-game )
+		
+		When generating the spawns, you will get visual feedback, as well as 
+		the ability to provide spawn meta data during generation. 
+		In the future, this will be expanded to include more than just 
+		origin,angles,info 
+		
+		You can generate spawns as csv (for paking into rpak ), or into 
+		squirrel code, for usage of manual scripting spawns. 
+		
+		The spawn system is not limited to just one usage. It offers a way to 
+		load up spawns, edit, and resave at will. 
+		
+		Additionally, spawn pak data is saved into the pak which allows 
+		scripters to perform other checks and validations to maintain 
+		robust and error-free usage.
+	
+	
+	//////////////////////////////////////////////////////////////////////mkos////
+	//																			//
+	//	All spawn locations are contained in their 								//
+	//	appropriate paks designated by playlist, mapname, and set.				//
+	//																			//
+	// set = a string that differentiates between sets of spawns. _set_#		//
+	// ( host can cycle spawnsets or choose a static set to always use )		//
+	//																			//
+	// The string for a pak should look like:									//
+	//__________________________________________________________				//
+	// prefix   | playlist     | map name            |set number|				//
+	//			|			   |					 |			|				//
+	// fs_spawns_fs_lgduels_1v1_mp_rr_arena_composite_set_1.rpak|				//
+	//```````````````````````````````````````````````````````````				//
+	// 																			//
+	//////////////////////////////////////////////////////////////////////////////
+
+
+	Generating spawns: (Todo: UI)
+	
+	
+		- Load any map, preferably in dev mode. 
+		- Set playlist using DEV_SpawnsPlaylist
+		- Optionally set teamsize with DEV_SetTeamCount or any other settings
+		- Use DEV_AddSpawn to add spawns at a player's current location by name|uid 
+		- Finally: Use DEV_WriteSpawnFile to generate the csv/sq file saved to    platform/scripts/spawns/
+		- The squirrel code can be used by scripting in spawns 
+		- The csv can be paked into datatables using repak and dropped into    paks/win64/
+
+		It's generally a good idea to bind buttons to add a spawn. 		
+			
+			bind o "script DEV_AddSpawn( \"YOURNAME\" )"
+		
+		This will add a spawn to keypress "o" (or whatever you choose) where your player is standing and looking by placing either 
+		your ea account id or UID where YOURNAME is. The quotes around this parameter are escaped with backslashes \"
+		This is required to make sure the bind is saved correctly, as the entire bind must be wrapped in quotes.
+		
+		DEV_AddSpawn accepts 3 parameters however, with the spawn class info field being second.
+		
+		In console, doing: 
+		
+			script DEV_AddSpawn( "R5mkos", "longrange" ) 
+			
+		This will set "longrange" as metadata for the spawn.  Any string can be provided. 
+		Scripters can then program around specific conditions by utilizing these metadata fields. 
+		
+		For instance in multiplayer, in 1v1, entering "longrange" for a spawn will then give the player weapons from the 
+		longrange weapon pool when they spawn into that spawn. 
+		
+		After the UI is done, this system will be expanded to contain many fields, such as "class", "info", "name", "events", "sound" -- etc.
+		This will allow elaborate logic to be based around the spawn.
+		
+		For a singleplayer example, adding "npcspawn" to class, where "info" can contain a list of npcs that might spawn to fight you.
+		
+		
+	//////////////////////////////////////////////////////////////////////////////
+	
+	
+	Loading Spawns:
+	
+	
+		It is possible to load spawns in two(2) ways.
+		
+		- 1. Via the DEV_LoadPak function
+		
+			- use parameter 1 for the pak or leave blank.     			//example:		"datatable/fs_spawns_fs_1v1_mp_rr_aqueduct_set_1.rpak"
+			- use parameter 2 for the playlist or leave blank			//example:		"fs_1v1"
+			- use parameter 3 for the preffered Set						//example:		2
+			
+			Examples:
+		
+			script DEV_LoadPak()																	//loads current
+			script DEV_LoadPak( "datatable/fs_spawns_fs_1v1_mp_rr_aqueduct_set_1.rpak" )			//loads specific pak
+			script DEV_LoadPak( "", "fs_1v1", 2 )													//loads   fs_1v1, set 2
+			
+			Optionally use paramater 1 as "reset" to clear loaded pak and load current playlist/map
+			( as would happen when running the server in release )
+			
+				- Example: script DEV_LoadPak( "reset" )
+		
+			
+		- 2. Via the function in this script customDevSpawnsList()
+			
+			- You can paste in squirrel code generated spawns there. 
+				Due to limitations with file read, it is not currently possible to read spawns from a file,
+				and therefore they would have to be hardcoded in this script temporarily to load this way.
+			
+			
+	//////////////////////////////////////////////////////////////////////////////
+
+
+	Editing Spawns:
+	
+		Once spawns are loaded in, you can edit them just as you normally would when first creating them. 
+		
+		- script DEV_AddSpawn( "R5mkos", "", 5 ) 
+			- This would replace spawn 5 with your new position, setting the info field(param 2) to empty .
+			
+		Other editing commands exist such as:
+			- DEV_DeleteSpawn
+			- DEV_DeleteLast
+		..and more
+		
+	
+	//////////////////////////////////////////////////////////////////////////////
+	
+	
+	Saving Spawns: 
+	
+		Use DEV_WriteSpawnFile, with optional paramter "csv" or "sq"  to generate the file output to platform/scripts/spawns/ 
+		
+		- Example:
+			- script DEV_WriteSpawnFile( "csv" )
+		
+		If no paramater is provided, it will use whatever was saved last with DEV_SpawnType()
+		
+		
+	//////////////////////////////////////////////////////////////////////////////
+	
+	
+	Extra: 
+	
+		Additional features and functionality can be utilized. Try DEV_SpawnHelp() in-game to see more commands. 
+	
+	
+	//////////////////////////////////////////////////////////////////////////////
+	
+	
+	Paking spawns:
+	
+		Spawns can be paked using repak. 
+		//TODO: ( link to repak tutorial )
+		
+		Alternatively, (TODO) Using https://r5r.dev/spawns, you can drop your csv file into the form.
+		This interface will then connect to the github repo ( https://github.com/CafeFPS/ui_sdk_flowstate_rpak ), 
+		aggregating all current spawnsets, and then include yours with it. You will then get a zip file which 
+		includes the new fs_spawns.rpak as well as a .txt file with details about the procedure and your new set numbers.
+		
+		Finally, you drop the new fs_spawns.rpak into   paks/win64 
+		
+		
+	//////////////////////////////////////////////////////////////////////////////
+
+
+	Configuring playlist file:
+	
+				If wanting to add additional sets to a playlist, you must list the paks for each map in the playlist vars section of a playlist.
+				
+					- Example of enabled pak sets:	
+					
+						spawnsets_mp_rr_arena_phase_runner				"1,2"
+						spawnsets_mp_rr_desertlands_64k_x_64k			"1,2,5,7"
+					
+				Additionally, you can specify more specific settings with the following:
+				
+					spawnpaks_use_random							0	// bool (0|1), loads a random enabled pak each mapstart
+					spawnpaks_preferred_pak							0 	// integer, pak set number to always load ( must be greater than 1 ), or, 0 to disable			
+					custom_spawnpak									""	// string, custom spawn.rpak override
+					custom_playlist_spawnpak						""  // string, custom playlist override ( fs_1v1, fs_scenarios, etc. )  loads spawns for this gametype instead of game loaded gametype
+
+
+
+	//////////////////////////////////////////////////////////////////////////////
+	//							SCRIPTING DOCUMENTATION							//
+	//////////////////////////////////////////////////////////////////////////////
+	
+	
+	After all your custom AddCallback_SpawnsSettings/AddCallback_SpawnsPostInit are registered, call:
+		- SpawnSystem_InitGamemodeOptions()
+		
+	Get an array of SpawnData using:
+		- SpawnSystem_ReturnAllSpawnLocations()
+		
+	See documentation for other function calls at top of the script.
+*/
 
 #if DEVELOPER
+	//Functions that need hooked up to ui buttons. See table DEV_POS_COMMANDS
 	global function DEV_SpawnType
 	global function DEV_AddSpawn
 	global function DEV_PrintSpawns
@@ -67,6 +303,8 @@ global function SpawnSystem_CheckSpawn
 	global function DEV_SpawnsPlaylist
 	global function DEV_SpawnsBaseMap
 	global function DEV_TraceSpawnLine
+	global function DEV_CheckSpawns
+	global function DEV_CycleAll
 	
 	const float HIGHLIGHT_SPAWN_DELAY 	= 7.0
 	const int SPAWN_POSITIONS_BUDGET 	= 210
@@ -75,6 +313,7 @@ global function SpawnSystem_CheckSpawn
 	const int MAX_SPAWN_INFO_LENGTH	= 255
 	const string FILE_NAME_REGEX		= "^[A-Za-z0-9._\\-]+$"
 	
+	//These are alias defines, not toggles.
 	const bool REMOVE 	= true 
 	const bool LOAD 		= false
 #endif 
@@ -100,21 +339,22 @@ global function SpawnSystem_CheckSpawn
 	
 	const vector MAX_ALLOWED_EXTENTS	= < 1730, 1730, 1730 > //for debug
 	const vector MAX_SPAWN_EXTENTS 		= < 300, 300, 300 >
-	const bool OVERIDE_VERIFY_SPAWNS 	= true //set this to always skip hullcheck fails for all spawns not just ones marked as "OOB"
+	const bool OVERIDE_VERIFY_SPAWNS 	= false //set this to true to always check all spawns not just ones marked as "OOB"
 	const int MAX_SPAWN_CORRECTION_ITER = 500
 	const float CORRECTION_STEP_LARGE 	= 5.0
 	const float CORRECTION_STEP_SMALL 	= 1.0
 	const int CORRECTION_STEP_SWITCH 	= 10
-	const bool PRINT_SPAWN_CORRECTIONS	= false
+	const bool PRINT_SPAWN_CORRECTIONS	= true
 	
 	struct
 	{
 		array<LocPairData functionref()> onSpawnInitCallbacks
 		array<void functionref()> spawnSettingsCallbacks
-		LocPair functionref() mapGamemodeBasedOffsetFunc = null
+		LocPair ornull mapGamemodeBasedOffset = null
 		void functionref( SpawnData ) PakMetaDataHandler = null
 		
 		table<string,string> pakData = {}
+
 		int preferredSpawnPak 	= 1
 		string currentSpawnPak 	= ""
 		string customSpawnpak 	= ""
@@ -124,6 +364,8 @@ global function SpawnSystem_CheckSpawn
 		bool bSpawnsInitialized = false
 		bool bRunCallbacks 		= true
 		bool bValidateSpawns	= true
+		bool offsetGenerated	= false
+		bool useNavMesh			= true
 		
 		#if DEVELOPER
 			LocPair &panelsloc
@@ -179,7 +421,7 @@ global function SpawnSystem_CheckSpawn
 					["........"] = "",
 					[" script DEV_AddSpawn( string pid, string info = \"\", int replace = -1 )"] = "Pass a player name/uid to have the current origin/angles of player appended to spawns array. Give spawn meta data, uses provided DEV_AutoSetInfo() if none specified. If replace is specified, replaces the given index with new spawn, otherwise, the operation is append.",
 					[" script DEV_SetSpawnInfo( int index, string info = \"\" )"] = "Set spawn info on an already present spawn by index.",
-					[" script DEV_DeleteSpawn( int index )"] = "Deletes a spawn from array by index",
+					[" script DEV_DeleteSpawn( int index, bool queue = false )"] = "Deletes a spawn from array by index. Set queue to true to stack delete requests. Moves all spawn indexes if higher indexes exist.",
 					[" script DEV_DeleteLast()"] = "Deletes last placed spawn",
 					[" script DEV_ClearSpawns( bool clearHighlights = true )"] = "Deletes all saved spawns. If passed false, does not remove highlights on map",
 					["........"] = "",
@@ -193,8 +435,10 @@ global function SpawnSystem_CheckSpawn
 					[" script DEV_ReloadInfo()"] = "Manually reload all info panels.",
 					[" script DEV_HighlightAll()"] = "Shows/Removes beams of light on all spawns in the PosArray",
 					[" script DEV_Highlight( int index, bool persistent = false )"] = "Highlight a single spawn by spawn index. Called automatically on spawn add. If persistent is not provided beam destroys after " + HIGHLIGHT_SPAWN_DELAY + " seconds. Set with DEV_KeepHighlight()",
-					[" script DEV_GetSpawn( int index )"] = "Returns lockpair object for given spawn. Indexed into with .origin and .angles such as script printt( DEV_GetSpawn(0).origin )",
-					[" script DEV_ShowCenter( int set )"] = "Shows the calculated center of a set that would be calculated automatically in a game mode based on teams per spawn set.",
+					[" script DEV_GetSpawn( int index )"] = "Returns LocPair object for given spawn. Indexed into with .origin and .angles such as script printt( DEV_GetSpawn(0).origin )",
+					[" script DEV_ShowCenter( int set )"] = "Shows the calculated center of a set that would be calculated automatically in a game mode based on teams per spawns grouping (teamsCount).",
+					[" script DEV_CheckSpawns( vector mins = ZERO_VECTOR, vector maxs = ZERO_VECTOR )"] = "Manually check all current configured spawns for player specified hull collision. Defaults to HULL_HUMAN if not provided.",
+					[" script DEV_CycleAll( float delay = 2.0 )"] = "Teleport's all players in server through each spawn one at a time until complete or called with <= 0  -- DEV_CycleAll( 0 ) to stop",
 					["..........."] = "",
 					["............"] = "",
 					[" ==== GENERATE FILE ===="] = "",
@@ -223,37 +467,48 @@ global function SpawnSystem_CheckSpawn
 		
 	} settings
 	
-	#if DEVELOPER 
-	struct RingInfo
+	struct InvalidSpawnInfo 
 	{
-		string identifier	= "_invalid"
-		entity ringEnt		= null
-		int spawnSet 		= -1
-		bool loopSetting 		= false
-		vector center 		= ZERO_VECTOR
-		float radius
-		float closeMaxTime
+		vector origin
+		vector angles 
+		string info 
+		int index
+		string error
+		string errorText
 	}
+	
+	#if DEVELOPER 
+		struct RingInfo
+		{
+			string identifier	= "_invalid"
+			entity ringEnt		= null
+			int spawnSet 		= -1
+			bool loopSetting 		= false
+			vector center 		= ZERO_VECTOR
+			float radius
+			float closeMaxTime
+		}
 	#endif 
 
-void function Flowstate_SpawnSystem_Init()
+void function SpawnSystem_Init()
 {
 	#if DEVELOPER 
 		RegisterSignal( "DelayedHighlightActivate" )
 		RegisterSignal( "RunValidatorIfWaiting" )
 		RegisterSignal( "IsSpawnValidStatus" )
 		RegisterSignal( "EventDeleteQueued" )
+		RegisterSignal( "EndCycleAllSpawns" )
 		
 		CalculateMaxIndent()
 		InitClonedSettings()
 		AutoSetupSettings()
 		thread __DeleteThread()
 		
-		SpawnSystem_SetValidateSpawnsOnLoad( false )
+		SpawnSystem_SetValidateSpawnsOnLoad( true )
 	#endif
 }
 
-void function AddCallback_FlowstateSpawnsSettings( void functionref() callbackFunc )
+void function AddCallback_SpawnsSettings( void functionref() callbackFunc )
 {
 	mAssert( !file.spawnSettingsCallbacks.contains( callbackFunc ), "Tried to add callback Func " + string( callbackFunc ) + "() with " + FUNC_NAME() + " but was already added" )
 	mAssert( !settings.bOptionsAreSet, "Tried to add callbackFunc " + string( callbackFunc ) + "() but options were already loaded in " + FILE_NAME() )
@@ -261,32 +516,31 @@ void function AddCallback_FlowstateSpawnsSettings( void functionref() callbackFu
 	file.spawnSettingsCallbacks.append( callbackFunc )
 }
 
-void function Flowstate_SpawnSystem_InitGamemodeOptions()
+void function SpawnSystem_InitGamemodeOptions()
 {
-	mAssert( !settings.bOptionsAreSet, "Flowstate_SpawnSystem_InitGamemodeOptions() was called more than once." )
+	mAssert( !settings.bOptionsAreSet, "SpawnSystem_InitGamemodeOptions() was called more than once." )
 	
-	bool use_sets 				= GetCurrentPlaylistVarBool( "spawnpaks_use_sets", false )
 	bool use_random 			= GetCurrentPlaylistVarBool( "spawnpaks_use_random", false )
-	bool prefer 				= GetCurrentPlaylistVarBool( "spawnpaks_prefer", false )
-	bool use_custom_playlist 	= GetCurrentPlaylistVarBool( "spawnpaks_playlist_override", false )
 	int preferred 				= GetCurrentPlaylistVarInt( "spawnpaks_preferred_pak", 1 )
+	bool prefer 				= preferred > 1
 	string customRpak 			= GetCurrentPlaylistVarString( "custom_spawnpak", "" )
 	string customSpawnPlaylist	= GetCurrentPlaylistVarString( "custom_playlist_spawnpak", "" )
+	bool use_custom_playlist 	= !empty( customSpawnPlaylist )
 	
-	settings.spawnOptions[ "use_sets" ] 			<- use_sets
+	settings.spawnOptions[ "use_sets" ] 			<- use_random || prefer
 	settings.spawnOptions[ "use_random" ] 			<- use_random
 	settings.spawnOptions[ "prefer" ] 				<- prefer
 	settings.spawnOptions[ "use_custom_rpak" ] 		<- SpawnSystem_SetCustomPak( customRpak ) //returns 0 on failed rpak
 	settings.spawnOptions[ "use_custom_playlist" ] 	<- use_custom_playlist
 	
-	if( use_custom_playlist && !empty( customSpawnPlaylist ) )
+	if( use_custom_playlist )
 		SpawnSystem_SetCustomPlaylist( customSpawnPlaylist )
 	
 	if( preferred > 1 )
 	{
 		SpawnSystem_SetPreferredPak( preferred )
 		#if DEVELOPER
-			printt( "Preferred spawnpak set to:", preferred )
+			printt( "[SpawnSystem] Preferred spawnpak set to:", preferred )
 		#endif 
 	}
 	
@@ -296,9 +550,9 @@ void function Flowstate_SpawnSystem_InitGamemodeOptions()
 	settings.bOptionsAreSet = true
 }
 
-array<SpawnData> function SpawnSystem_ReturnAllSpawnLocations( int eMap, table<string,bool> options = {} )
+array<SpawnData> function SpawnSystem_ReturnAllSpawnLocations( int eMap = -1, table<string,bool> options = {} )
 {
-	mAssert( settings.bOptionsAreSet, "Tried to fetch spawns without first running Flowstate_SpawnSystem_InitGamemodeOptions()" )
+	mAssert( settings.bOptionsAreSet, "Tried to fetch spawns without first running SpawnSystem_InitGamemodeOptions()" )
 	
 	if( !ValidateOptions( options ) )
 	{
@@ -306,15 +560,16 @@ array<SpawnData> function SpawnSystem_ReturnAllSpawnLocations( int eMap, table<s
 		
 		#if DEVELOPER
 			foreach( setting, value in options )
-			{
-				printt( "Setting:", setting, " Value:", value )
-			}
+				printt( "[SpawnSystem] Spawn setting:", setting, " Value:", value )
 		#endif
 	}
 		
-	string defaultpak = "_set_1";
+	string defaultpak = "_set_1"
 	string spawnSet = defaultpak
-	string customRpak = "";
+	string customRpak = ""
+	
+	if( eMap == -1 )
+		eMap = SpawnSystem_FindBaseMapForPak( MapName() )
 	
 	if ( options.len() >= 5 && ValidateOptions( options ) )
 	{
@@ -326,15 +581,23 @@ array<SpawnData> function SpawnSystem_ReturnAllSpawnLocations( int eMap, table<s
 		{
 			if( options.use_sets )
 			{
-				string mapSpawnString = "spawnsets_" + AllMapsArray()[ MapName() ]
-				string currentMapSpawnSets = GetCurrentPlaylistVarString( mapSpawnString, "" )
+				string mapSpawnString = "spawnsets_" + AllMapsArray()[ eMap ]
+				string currentMapSpawnSets = GetPlaylistVarString( options.use_custom_playlist ? file.customPlaylist : GetCurrentPlaylistName(), mapSpawnString, "" )
 				
 				array<string> setpaks = []
 				bool success = false
 				
 				if( empty( currentMapSpawnSets ) )
-				{
-					Warning( "options.use_sets was set but no paks were specified for \"" + mapSpawnString + "\" in playlist. Using default pak instead" )
+				{			
+					string helpString 
+					{					
+						if( options.prefer )
+							helpString = format( ":  %s = \"%d\"", mapSpawnString, file.preferredSpawnPak )
+						else if ( options.use_random )
+							helpString = format( "(example of available paks):  %s = \"1,2,5\"", mapSpawnString )					
+					}
+					
+					sqwarning( "[SpawnSystem] options.use_sets was set but no paks were specified in paklist for \"%s\" in playlist. Using default pak instead for now. \nDid you forget to add in playlists file? under playlist \"%s\" as%s", mapSpawnString, options.use_custom_playlist ? file.customPlaylist : GetCurrentPlaylistName(), helpString  )
 					spawnSet = defaultpak
 					success = false
 				}
@@ -346,15 +609,18 @@ array<SpawnData> function SpawnSystem_ReturnAllSpawnLocations( int eMap, table<s
 						for( int i = 0; i < setpaks.len(); i++ )
 						{
 							if( !IsStringNumeric( setpaks[i] ) )
-								throw " error: " + setpaks[i] + " is not numeric.."
-								
+							{
+								string error = format( "[SpawnSystem] \"%s\" in \"%s\" is not a numeric spawn set number. Check playlists config", setpaks[i], currentMapSpawnSets )
+								throw error
+							}
+							
 							setpaks[i] = "_set_" + setpaks[i]
 						}
 						success = true
 					}
 					catch( e )
 					{
-						Warning( "Warning: " + e )
+						sqwarning( "[SpawnSystem] Warning: %s", string( e ) )
 						
 						spawnSet = defaultpak
 						success = false
@@ -369,7 +635,7 @@ array<SpawnData> function SpawnSystem_ReturnAllSpawnLocations( int eMap, table<s
 						int j = setpaks.find( prefferred )			
 						if( j == -1 )
 						{
-							Warning( "Preferred spawnpak: " + prefferred + " not found!" )
+							Warning( "[SpawnSystem] Preferred spawnpak: " + prefferred + " not found!" )
 							spawnSet = defaultpak
 						}
 						else
@@ -383,7 +649,7 @@ array<SpawnData> function SpawnSystem_ReturnAllSpawnLocations( int eMap, table<s
 					}
 					else 
 					{
-						printt( "spawnpaks: Use sets was enabeld with no valid options in playlists" )
+						sqwarning( "[SpawnSystem] spawnpaks: Use sets was enabeld with no valid options in playlists. Using defaults." )
 					}
 				}
 			}
@@ -413,7 +679,7 @@ LocPairData function SpawnSystem_CreateLocPairObject( array<LocPair> spawns, boo
 	if ( waitingRoom != null )
 	{
 		#if DEVELOPER
-			Warning( "LocPairData object set to override waitingroom location in " + FUNC_NAME() + "()" )
+			Warning( "[SpawnSystem] LocPairData object set to override waitingroom location in " + FUNC_NAME() + "()" )
 		#endif
 		
 		LocPair varWaitingRoom = expect LocPair ( waitingRoom )
@@ -423,7 +689,7 @@ LocPairData function SpawnSystem_CreateLocPairObject( array<LocPair> spawns, boo
 	if( panels != null )
 	{
 		#if DEVELOPER 
-			Warning( "LocPairData object set to override panel location in " + FUNC_NAME() + "()" )
+			Warning( "[SpawnSystem] LocPairData object set to override panel location in " + FUNC_NAME() + "()" )
 		#endif 
 		
 		LocPair varPanels = expect LocPair ( panels )
@@ -433,42 +699,20 @@ LocPairData function SpawnSystem_CreateLocPairObject( array<LocPair> spawns, boo
 	return data
 }
 
-void function AddCallback_FlowstateSpawnsPostInit( LocPairData functionref() callbackFunc )
+void function AddCallback_SpawnsPostInit( LocPairData functionref() callbackFunc )
 {
-	if( file.onSpawnInitCallbacks.contains( callbackFunc ) )
-	{
-		Warning("Tried to add callbackk with " + FUNC_NAME() + " but function " + string( callbackFunc ) + " already exists in [onSpawnInitCallbacks]")
-		return
-	}
-	
+	mAssert( !file.onSpawnInitCallbacks.contains( callbackFunc ), "Tried to add callbackk with " + FUNC_NAME() + " but function " + string( callbackFunc ) + " already exists in \"onSpawnInitCallbacks\"")
 	mAssert( !file.bSpawnsInitialized, "Tried to add spawns init function " + string( callbackFunc ) + " but spawns are already initialized " )
 	
 	file.onSpawnInitCallbacks.append( callbackFunc )
 }
 
-
-///////////////////////////////////////////////////////////////mkos///////
-//																		//
-//	All spawn locations are contained in their 							//
-//	appropriate paks designated by playlist, mapname, and set.			//
-//																		//
-// set = a string that differentiates between sets of spawns. _set_#	//
-// ( host can cycle spawnsets or choose a static set to always use )	//
-//																		//
-// The string for a pak should look like:								//
-//__________________________________________________________			//
-// prefix   | playlist     | map name            |set number|			//
-//			|			   |					 |			|			//
-// fs_spawns_fs_lgduels_1v1_mp_rr_arena_composite_set_1.rpak|			//
-//```````````````````````````````````````````````````````````			//
-// 																		//
-//////////////////////////////////////////////////////////////////////////
-
 array<SpawnData> function GenerateCustomSpawns( int eMap, int coreSpawnsLen = -1 )
+{
 														//waiting room + extra spawns
-{														//ideally only default waiting
+														//ideally only default waiting
 	array<SpawnData> customSpawns = []					// rooms are saved here. use :
-														// AddCallback_FlowstateSpawnsPostInit()
+														// AddCallback_SpawnsPostInit()
 														// to create custom spawns for your gamemode 
 	LocPair defaultWaitingRoom
 	
@@ -553,7 +797,7 @@ array<SpawnData> function GenerateCustomSpawns( int eMap, int coreSpawnsLen = -1
 			if( IsValid( spawnstart ) )
 			{
 				#if DEVELOPER
-					Warning( "Warning: No default spawn provided. Setting initial player spawn from map's info_player_start ent" )
+					Warning( "[SpawnSystem] Warning: No default spawn provided. Setting initial player spawn from map's info_player_start ent" )
 				#endif
 				
 				defaultWaitingRoom = NewLocPair( spawnstart.GetOrigin(), spawnstart.GetAngles() )
@@ -567,9 +811,9 @@ array<SpawnData> function GenerateCustomSpawns( int eMap, int coreSpawnsLen = -1
 	}//: Switch (eMap)
 	
 	#if DEVELOPER //for timing tests
-		printt(" --- CALLING CUSTOM SPAWN CALLBACKS --- ")
+		printt("[SpawnSystem] --- CALLING CUSTOM SPAWN CALLBACKS --- ")
 	#endif
-	//add with AddCallback_FlowstateSpawnsPostInit( functionref ) 
+	//add with AddCallback_SpawnsPostInit( functionref ) 
 	//  function ref should return a LocPairData data object
 	if( file.bRunCallbacks )
 	{
@@ -582,7 +826,7 @@ array<SpawnData> function GenerateCustomSpawns( int eMap, int coreSpawnsLen = -1
 				if( data.bOverrideSpawns )
 				{
 					#if DEVELOPER 
-						Warning("Spawns overriden with custom spawns - count: [" + string( data.spawns.len() ) + "]" )
+						Warning("[SpawnSystem] Spawns overriden with custom spawns - count: [" + string( data.spawns.len() ) + "]" )
 					#endif 
 					
 					customSpawns = SpawnSystem_CreateSpawnObjectArray( data.spawns, data.metaData )
@@ -591,7 +835,7 @@ array<SpawnData> function GenerateCustomSpawns( int eMap, int coreSpawnsLen = -1
 				else 
 				{
 					#if DEVELOPER 
-						Warning("Spawns extended with custom spawns - count: [" + string( data.spawns.len() ) + "]" )
+						Warning("[SpawnSystem] Spawns extended with custom spawns - count: [" + string( data.spawns.len() ) + "]" )
 					#endif 
 					
 					customSpawns.extend( SpawnSystem_CreateSpawnObjectArray( data.spawns, data.metaData, coreSpawnsLen ) )
@@ -637,16 +881,20 @@ LocPair function SetWaitingRoomAndGeneratePanelLocs( LocPair defaultWaitingRoom,
 	return defaultPanels
 }
 
-void function SetCallback_FlowstateSpawnsOffset( LocPair functionref() callbackFunc )
+void function SpawnSystem_SetOffset( LocPair offset )
 {
-	mAssert( file.mapGamemodeBasedOffsetFunc == null, "Tried to set " + string( callbackFunc ) + " in mapGamemodeBasedOffsetFunc but func was already set to " + string( file.mapGamemodeBasedOffsetFunc ) + " in " + FUNC_NAME(2) + "()" )
-	file.mapGamemodeBasedOffsetFunc = callbackFunc 
+	mAssert( file.mapGamemodeBasedOffset == null, "Tried to set mapGamemodeBasedOffset but SpawnSystem_SetOffset() was already set in " + FUNC_NAME(2) + "()" )
+	mAssert( !file.offsetGenerated, "Tried to set offset with %s() but offsets have already been applied to spawns. (Not early enough)", FUNC_NAME() )
+	
+	file.mapGamemodeBasedOffset = offset 
 }
 
 LocPair function GenerateMapGamemodeBasedOffset()
 {
-	if( file.mapGamemodeBasedOffsetFunc != null )
-		return file.mapGamemodeBasedOffsetFunc()
+	file.offsetGenerated = true 
+	
+	if( file.mapGamemodeBasedOffset != null )
+		return expect LocPair ( file.mapGamemodeBasedOffset )
 	
 	return NewLocPair( ZERO_VECTOR, ZERO_VECTOR )
 }
@@ -658,7 +906,7 @@ string function GenerateAssetStringForMapAndGamemode( int eMap, string set, stri
 	if ( !empty( customRpak ) )
 	{
 		#if DEVELOPER 
-			printt("Custom spawns rpak is defined and set to be used: ", customRpak )
+			printt("[SpawnSystem] Custom spawns rpak is defined and set to be used: ", customRpak )
 		#endif 
 		spawnset = customRpak
 	}
@@ -671,7 +919,7 @@ string function GenerateAssetStringForMapAndGamemode( int eMap, string set, stri
 		if ( !empty( playlistOverride ) )
 		{
 			#if DEVELOPER 
-				printt( "Using playlist override ref", playlistOverride, "to load spawn set." )
+				printt( "[SpawnSystem] Using playlist override ref", playlistOverride, "to load spawn set." )
 			#endif 
 			dtbl_PlaylistRef = playlistOverride
 		}
@@ -686,7 +934,7 @@ string function GenerateAssetStringForMapAndGamemode( int eMap, string set, stri
 
 array<SpawnData> function FetchReturnAllLocations( int eMap, string set = "_set_1", string customRpak = "", string customPlaylist = "" )
 {
-	array<SpawnData> allSoloLocations
+	array<SpawnData> allLocations
 	
 	string spawnset 	= GenerateAssetStringForMapAndGamemode( eMap, set, customRpak, customPlaylist )
 	
@@ -695,7 +943,17 @@ array<SpawnData> function FetchReturnAllLocations( int eMap, string set = "_set_
 	vector anglesOffset = offsets.angles
 	
 	asset fetchasset 	= CastStringToAsset( spawnset )
-	var datatable 		= GetDataTable( fetchasset )	
+	var datatable
+	
+	try
+	{
+		datatable 		= GetDataTable( fetchasset )	
+	}
+	catch( e )
+	{
+		sqwarning( "[SpawnSystem] Failed to get spawns data table for set \"%s\", Error: %s", set, string( e ) )
+		return allLocations
+	}
 	
 	int spawnsCount 	= GetDatatableRowCount( datatable )
 	int originCol 		= GetDataTableColumnByName( datatable, "origin" )
@@ -717,6 +975,9 @@ array<SpawnData> function FetchReturnAllLocations( int eMap, string set = "_set_
 	#endif
 	
 	int classCol = infoCol != -1 ? infoCol : nameCol	
+	int trackedSpawns = -1
+	array< InvalidSpawnInfo > invalidSpawns
+	
 	for ( int i = 0; i < spawnsCount; i++ )
 	{		
 		string info   = GetDataTableString( datatable, i, classCol )
@@ -734,125 +995,143 @@ array<SpawnData> function FetchReturnAllLocations( int eMap, string set = "_set_
 		vector angles = GetDataTableVector( datatable, i, anglesCol ) + anglesOffset
 		
 		#if DEVELOPER
-			print_data += "Found origin: " + VectorToString( origin ) + " angles: " + VectorToString( angles ) + " SpawnInfo: " + info + "\n"	
+			print_data += "[SpawnSystem] Found origin: " + VectorToString( origin ) + " angles: " + VectorToString( angles ) + " SpawnInfo: " + info + "\n"	
 		#endif
 		
-		if( ( OVERIDE_VERIFY_SPAWNS || ( file.bValidateSpawns && info.toupper() != "OOB" ) ) && !SpawnSystem_CheckSpawn( origin ) )
+		trackedSpawns++
+		if( ( OVERIDE_VERIFY_SPAWNS || file.bValidateSpawns && info.toupper() != "OOB" ) && !SpawnSystem_CheckSpawn( origin ) ) 
 		{
-			string oobSpawnInfo = format( "%s index: %d", VectorToString( origin ), ( allSoloLocations.len() ) )//appended after		
+			string oobSpawnInfo = format( "%s index: %d", VectorToString( origin ), trackedSpawns )	
 			
-			mAssert( NavMesh_IsUpToDate(), "Navmesh is not loaded or not the correct version. \n Cannot correct OOB spawn at origin %s", oobSpawnInfo )
-			mAssert( Flag( "EntitiesDidLoad" ), "Spawn system tried to run spawns correction, but EntitiesDidLoad flag is false. (navmesh not loaded)" )
-			
-			vector ornull newOrigin	
-			float fallbackAngle = 0.0				
-			float fraction
-			int iter = 0
-			
-			for( ; ; )
+			if( !file.useNavMesh )
 			{
-				++iter
+				InvalidSpawnInfo invalidSpawn
 				
-				newOrigin = NavMesh_GetNearestPosInBounds( origin, MAX_SPAWN_EXTENTS, HULL_HUMAN )
-				if( newOrigin == null || iter > MAX_SPAWN_CORRECTION_ITER )
-					mAssert( 0, "Could not find safe spot via navmesh for OOB spawn at origin %s", oobSpawnInfo )
+				invalidSpawn.origin 	= origin 
+				invalidSpawn.angles 	= angles 
+				invalidSpawn.info		= info 
+				invalidSpawn.index		= trackedSpawns 
+				invalidSpawn.error		= "OOB"
+				invalidSpawn.errorText 	= oobSpawnInfo
 				
-				expect vector ( newOrigin )
-				TraceResults result = TraceLine( newOrigin, newOrigin + < 0, 0, 72 >, null, TRACE_MASK_PLAYERSOLID_BRUSHONLY, TRACE_COLLISION_GROUP_PLAYER )
-				float stepSize = iter < CORRECTION_STEP_SWITCH ? CORRECTION_STEP_SMALL : CORRECTION_STEP_LARGE
+				invalidSpawns.append( invalidSpawn )
+			}
+			else 
+			{
+			
+				mAssert( NavMesh_IsUpToDate(), "Navmesh is not loaded or not the correct version. \n Cannot correct OOB spawn at origin %s", oobSpawnInfo )
+				mAssert( Flag( "EntitiesDidLoad" ), "Spawn system tried to run spawns correction, but EntitiesDidLoad flag is false. (navmesh not loaded)" )
 				
-				if( newOrigin == origin ) //for when navmesh returns a spawn within collision boundary
+				vector ornull newOrigin	
+				float fallbackAngle = 0.0				
+				float fraction
+				int iter = 0
+				
+				for( ; ; )
 				{
-					fallbackAngle = WrapAngle360( fallbackAngle + 15.0 )
-					vector offsetDir = AnglesToForward( <0, fallbackAngle, 0> ) * stepSize
-
-					float distBefore = Distance( origin, newOrigin )
-					float distAfter  = Distance( origin + offsetDir, newOrigin )
-					if( distAfter > distBefore )
-						offsetDir = -offsetDir
-
-					origin += offsetDir
-
-					#if PRINT_SPAWN_CORRECTIONS
-						printt( "Navmesh result was in collision. Moving away from collision to:", VectorToString( origin ) )
-					#endif
-				}
-				else if( result.fraction < 1.0 ) //traceline cheap checks for collision
-				{
-					#if PRINT_SPAWN_CORRECTIONS
-						Warning( "collision detected" )
-						printt( "Start pos:", newOrigin )
-						PrintTraceResults( result )
-					#endif
-
-					float horizontal = sqrt
-					(
-						( result.surfaceNormal.x * result.surfaceNormal.x ) +
-						( result.surfaceNormal.y * result.surfaceNormal.y )
-					)
-
-					if( horizontal > 0.7 ) //probably a wall
+					++iter
+					
+					newOrigin = NavMesh_GetNearestPosInBounds( origin, MAX_SPAWN_EXTENTS, HULL_HUMAN )
+					if( newOrigin == null || iter > MAX_SPAWN_CORRECTION_ITER )
+						mAssert( 0, "Could not find safe spot via navmesh for OOB spawn at origin %s", oobSpawnInfo )
+					
+					expect vector ( newOrigin )
+					TraceResults result = TraceLine( newOrigin, newOrigin + < 0, 0, 72 >, null, TRACE_MASK_PLAYERSOLID_BRUSHONLY, TRACE_COLLISION_GROUP_PLAYER )
+					float stepSize = iter < CORRECTION_STEP_SWITCH ? CORRECTION_STEP_SMALL : CORRECTION_STEP_LARGE
+					
+					if( newOrigin == origin ) //for when navmesh returns a spawn within collision boundary
 					{
-						vector moveDir = < result.surfaceNormal.x, result.surfaceNormal.y, 0 >
-						moveDir = Normalize( moveDir )
-						origin += moveDir * stepSize
+						fallbackAngle = WrapAngle360( fallbackAngle + 15.0 )
+						vector offsetDir = AnglesToForward( <0, fallbackAngle, 0> ) * stepSize
+
+						float distBefore = Distance( origin, newOrigin )
+						float distAfter  = Distance( origin + offsetDir, newOrigin )
+						if( distAfter > distBefore )
+							offsetDir = -offsetDir
+
+						origin += offsetDir
 
 						#if PRINT_SPAWN_CORRECTIONS
-							printt( "Traceline in collision, moving x,y to:", VectorToString( origin ) )
+							printt( "[SpawnSystem] Navmesh result was in collision. Moving away from collision to:", VectorToString( origin ) )
 						#endif
 					}
-					else if( fabs( result.surfaceNormal.z ) > 0.7 ) //ceiling/floor
+					else if( result.fraction < 1.0 ) //traceline cheap checks for collision
 					{
-						if( result.surfaceNormal.z < 0 ) //feet in ground
-							origin.z += stepSize
+						#if PRINT_SPAWN_CORRECTIONS
+							Warning( "[SpawnSystem] collision detected" )
+							printt( "[SpawnSystem] Start pos:", newOrigin )
+							PrintTraceResults( result )
+						#endif
+
+						float horizontal = sqrt
+						(
+							( result.surfaceNormal.x * result.surfaceNormal.x ) +
+							( result.surfaceNormal.y * result.surfaceNormal.y )
+						)
+
+						if( horizontal > 0.7 ) //probably a wall
+						{
+							vector moveDir = < result.surfaceNormal.x, result.surfaceNormal.y, 0 >
+							moveDir = Normalize( moveDir )
+							origin += moveDir * stepSize
+
+							#if PRINT_SPAWN_CORRECTIONS
+								printt( "[SpawnSystem] Traceline in collision, moving x,y to:", VectorToString( origin ) )
+							#endif
+						}
+						else if( fabs( result.surfaceNormal.z ) > 0.7 ) //ceiling/floor
+						{
+							if( result.surfaceNormal.z < 0 ) //feet in ground
+								origin.z += stepSize
+							else
+								origin.z -= stepSize //head hit
+
+							#if PRINT_SPAWN_CORRECTIONS
+								printt( "[SpawnSystem] Traceline in collision, adjusting z to:", VectorToString( origin ) )
+							#endif
+						}
 						else
-							origin.z -= stepSize //head hit
+						{
+							vector moveDir = < result.surfaceNormal.x, result.surfaceNormal.y, 0 >
+							moveDir = Normalize( moveDir )
+							origin += moveDir * stepSize
+
+							if( result.surfaceNormal.z < 0 )
+								origin.z += stepSize * 0.5
+
+							#if PRINT_SPAWN_CORRECTIONS
+								printt( "[SpawnSystem] Traceline in collision, adjusting angled to:", VectorToString( origin ) )
+							#endif
+						}
+					}
+					else if( !SpawnSystem_CheckSpawn( origin ) ) //final expensive check
+					{
+						fallbackAngle = WrapAngle360( fallbackAngle + 15.0 )
+						vector offsetDir = AnglesToForward( <0, fallbackAngle, 0> ) * stepSize
+						origin += offsetDir
 
 						#if PRINT_SPAWN_CORRECTIONS
-							printt( "Traceline in collision, adjusting z to:", VectorToString( origin ) )
+							printt( "[SpawnSystem] Traceline cleared, hullcheck failed, spiraling to:", VectorToString( origin ) )
 						#endif
 					}
 					else
 					{
-						vector moveDir = < result.surfaceNormal.x, result.surfaceNormal.y, 0 >
-						moveDir = Normalize( moveDir )
-						origin += moveDir * stepSize
-
-						if( result.surfaceNormal.z < 0 )
-							origin.z += stepSize * 0.5
-
-						#if PRINT_SPAWN_CORRECTIONS
-							printt( "Traceline in collision, adjusting angled to:", VectorToString( origin ) )
-						#endif
+						break
 					}
 				}
-				else if( !SpawnSystem_CheckSpawn( origin ) ) //final expensive check
-				{
-					fallbackAngle = WrapAngle360( fallbackAngle + 15.0 )
-					vector offsetDir = AnglesToForward( <0, fallbackAngle, 0> ) * stepSize
-					origin += offsetDir
 
-					#if PRINT_SPAWN_CORRECTIONS
-						printt( "Traceline cleared, hullcheck failed, spiraling to:", VectorToString( origin ) )
-					#endif
-				}
-				else
-				{
-					break
-				}
+				string correct = format( "[SpawnSystem] Spawn %s was corrected via NavMesh/SpawnSystem to: %s", oobSpawnInfo, VectorToString( origin ) )
+				
+				#if TRACKER
+					sqwarning( correct )
+				#else 
+					Warning( correct )	
+				#endif
 			}
-
-			string correct = format( "Spawn %s was corrected via NavMesh/SpawnSystem to: %s", oobSpawnInfo, VectorToString( origin ) )
-			
-			#if TRACKER
-				sqwarning( correct )
-			#else 
-				Warning( correct )	
-			#endif
 		}
 		
 		SpawnData spawnInfo = SpawnSystem_CreateSpawnObject( NewLocPair( origin, angles ), info, i )
-		allSoloLocations.append( spawnInfo )
+		allLocations.append( spawnInfo )
 		
 		//gamemode sets with SpawnSystem_SetMetaDataHandler
 		if( file.PakMetaDataHandler != null )
@@ -860,36 +1139,71 @@ array<SpawnData> function FetchReturnAllLocations( int eMap, string set = "_set_
 	}
 	#if DEVELOPER 
 		printt( print_data )
-		printt("Unpacked [",allSoloLocations.len()," ] spawn locations from locations asset.")
+		printt("[SpawnSystem] Unpacked [",allLocations.len()," ] spawn locations from locations asset.")
 	#endif 
 	
-	array<SpawnData> extraSpawnLocations = GenerateCustomSpawns( eMap, allSoloLocations.len() )
+	array<SpawnData> extraSpawnLocations = GenerateCustomSpawns( eMap, allLocations.len() )
 	
 	if( extraSpawnLocations.len() > 0 )
 	{
+		if( ( OVERIDE_VERIFY_SPAWNS || file.bValidateSpawns ) )
+		{
+			trackedSpawns = file.bOverrideSpawns ? -1 : trackedSpawns
+			
+			foreach( spawnDat in extraSpawnLocations )
+			{
+				trackedSpawns++
+
+				if( SpawnSystem_CheckSpawn( spawnDat.spawn.origin ) )
+					continue
+
+				string oobSpawnInfo = format( "%s index: %d", VectorToString( spawnDat.spawn.origin  ), trackedSpawns )	
+				
+				InvalidSpawnInfo invalidSpawn
+				
+				invalidSpawn.origin 	= spawnDat.spawn.origin 
+				invalidSpawn.angles 	= spawnDat.spawn.angles 
+				invalidSpawn.info		= spawnDat.info 
+				invalidSpawn.index		= trackedSpawns 
+				invalidSpawn.error		= "OOB"
+				invalidSpawn.errorText 	= oobSpawnInfo		
+
+				invalidSpawns.append( invalidSpawn )
+			}
+		}
+	
 		if( file.bOverrideSpawns )
 		{
-			allSoloLocations = extraSpawnLocations
+			allLocations = extraSpawnLocations
 		}
 		else 
 		{
-			allSoloLocations.extend( extraSpawnLocations )
+			allLocations.extend( extraSpawnLocations )
 			#if DEVELOPER
-				printt("Added: [",extraSpawnLocations.len(),"] locations from custom spawns.")
+				printt("[SpawnSystem] Added: [",extraSpawnLocations.len(),"] locations from custom spawns.")
 			#endif 
 		}
 		
 		#if DEVELOPER
 			string print_sdata = ""
 				foreach( spawnInfo in extraSpawnLocations )
-				{
-					print_sdata += "Found origin: " + VectorToString( spawnInfo.spawn.origin ) + " angles: " + VectorToString( spawnInfo.spawn.angles ) + " Info: " + spawnInfo.info + "\n"	
-				}
+					print_sdata += "[SpawnSystem] Found origin: " + VectorToString( spawnInfo.spawn.origin ) + " angles: " + VectorToString( spawnInfo.spawn.angles ) + " Info: " + spawnInfo.info + "\n"	
 			printt( "\n\n" + print_sdata )
 		#endif
 	}
 	
-	return allSoloLocations
+	if( invalidSpawns.len() )
+	{
+		sqwarning( "[SpawnSystem] == The following spawns were invalid == " )
+		foreach( InvalidSpawnInfo invalidInfo in invalidSpawns )
+			sqwarning( "[SpawnSystem] %s", invalidInfo.errorText )
+			
+		#if !DEVELOPER
+			mAssert( 0, "Invalid spawns. See console for info." )
+		#endif
+	}
+	
+	return allLocations
 }
 
 //util
@@ -999,8 +1313,8 @@ bool function SpawnSystem_SetCustomPak( string custom_rpak )
 		}
 		catch( e )
 		{
-			Warning( "Custom Rpak Error: " + e )
-			Warning( "Skipping custom spawn rpak" )
+			Warning( "[SpawnSystem] Custom Rpak Error: %s", string( e ) )
+			Warning( "[SpawnSystem] Skipping custom spawn rpak" )
 		}
 		
 		if( success )
@@ -1022,7 +1336,8 @@ void function SpawnSystem_SetCustomPlaylist( string playlistref )
 	}
 	else 
 	{
-		Warning( "Tried to specify custom playlist for spawn pak, but playlist \"" + playlistref + "\" doesn't exist." )
+		settings.spawnOptions[ "use_custom_playlist" ] <- false
+		Warning( "[SpawnSystem] Tried to specify custom playlist for spawn pak, but playlist \"%s\" doesn't exist.", playlistref )
 	}
 }
 
@@ -1042,7 +1357,7 @@ asset function SpawnSystem_GetCurrentSpawnAsset()
 	}
 	catch( e )
 	{
-		Warning( "Warning -- cast failed: " + e )
+		Warning( "[SpawnSystem] Warning -- cast failed: " + e )
 	}
 	
 	return returnAsset
@@ -1132,16 +1447,13 @@ array<LocPair> function SpawnSystem_GenerateRandomSpawns( vector origin, vector 
 	Z: 72   => 72 units above the origin; height.
 */
 
-bool function SpawnSystem_CheckSpawn( vector origin, vector minsOffset = ZERO_VECTOR, vector maxsOffset = ZERO_VECTOR )
+bool function SpawnSystem_CheckSpawn( vector origin, vector mins = ZERO_VECTOR, vector maxs = ZERO_VECTOR )
 {
-	vector mins = <-16, -16, 0> //HULL_HUMAN
-	vector maxs = <16, 16, 72>  //HULL_HUMAN
-	
-	if( minsOffset != ZERO_VECTOR )
-		mins += minsOffset
-		
-	if( maxsOffset != ZERO_VECTOR )
-		maxs += maxsOffset
+	if( mins == ZERO_VECTOR || maxs == ZERO_VECTOR )
+	{
+		mins = <-16, -16, 0> //HULL_HUMAN
+		maxs = <16, 16, 72>  //HULL_HUMAN
+	}
 	
 	TraceResults result = TraceHull( origin, origin, mins, maxs, null, TRACE_MASK_PLAYERSOLID_BRUSHONLY, TRACE_COLLISION_GROUP_PLAYER )
 	//PrintTraceResults( result )
@@ -1159,7 +1471,7 @@ void function SpawnSystem_SetRunCallbacks( bool setting )
 
 void function SpawnSystem_SetPanelLocation( vector origin, vector angles )
 {
-	AddCallback_FlowstateSpawnsPostInit
+	AddCallback_SpawnsPostInit
 	(
 		LocPairData function() : ( origin, angles )
 		{
@@ -1186,11 +1498,22 @@ string function SpawnSystem_GetPakInfoForKey( string key )
 
 void function SpawnSystem_SetMetaDataHandler( void functionref( SpawnData ) processFunc )
 {
+	mAssert( !file.bSpawnsInitialized, "Tried to set MetaDataHandler with %s() but spawns are already initialized.", FUNC_NAME() )
 	file.PakMetaDataHandler = processFunc
+}
+
+void function SpawnSystem_UseNavMeshCorrection( bool setting )
+{
+	mAssert( !file.bSpawnsInitialized, "Tried to set NavMeshCorrection with %s() but spawns are already initialized.", FUNC_NAME() )
+	file.useNavMesh = setting
+	
+	if( !setting )
+		printl( "[SpawnSystem] Navmesh correction disabled" )
 }
 
 void function SpawnSystem_SetValidateSpawnsOnLoad( bool setting )
 {
+	mAssert( !file.bSpawnsInitialized, "Tried to set set validate spawns option with %s() but spawns are already initialized.", FUNC_NAME() )
 	file.bValidateSpawns = setting
 }
 
@@ -1286,51 +1609,51 @@ void function DEV_InfoPanelOffset( vector offset = <0, 0, 600>, vector angles = 
 	DEV_ReloadInfo()	
 }
 
-bool function __bCheckReload()
+bool function __bCheckReload( bool showMsg = true )
 {
-	if( file.bInfoPanelsAreReloading )
-	{
+	if( file.bInfoPanelsAreReloading && showMsg )
 		__ReloadWaitMsg()
-	}
-	else 
-	{
+	else if( showMsg )
 		__ReloadingMsg()
-	}
 	
 	return !file.bInfoPanelsAreReloading
 }
 
 void function __ReloadWaitMsg()
 {
-	string reloadMsg = " PANELS ARE STILL RELOADING \n\n please wait and try again... "
+	string reloadMsg = " INFO PANELS ARE STILL RELOADING \n\n please wait and try again... "
 	
 	printt( reloadMsg )
 	printm( reloadMsg )
 	
 	foreach( player in GetPlayerArray() )
-		LocalEventMsg( player, "", reloadMsg )
+		LocalEventMsg( player, "#FS_SPACE", reloadMsg )
 }
 
 void function __ReloadingMsg()
 {
-	string reloading = " RELOADING PANELS "
+	string reloading = " RELOADING INFO PANELS "
 	
 	printt( reloading )
 	printm( reloading )
 	
+	string deleteQueue
+	if( file.deleteEventsQueue.len() )
+		deleteQueue = format( "\n\n%s", __DeleteQueueMsg() )
+		
 	foreach( player in GetPlayerArray() )
-	{
-		LocalEventMsg( player, "", reloading )
-	}
+		LocalEventMsg( player, "#FS_SPACE", reloading + deleteQueue, 30.0 )
 }
 
-void function DEV_DeleteSpawn( int index )
+void function DEV_DeleteSpawn( int index, bool queue = false )
 {	
 	if( IsValidSpawnIndex( index ) )
 	{
-		if( !__bCheckReload() )
+		if( !__bCheckReload( !queue ) )
 		{
-			__DispatchDeleteEvent( index )
+			if( queue )
+				__DispatchDeleteEvent( index )
+				
 			return
 		}
 		
@@ -1364,7 +1687,7 @@ void function __DeleteThread()
 		{
 			while( file.deleteEventsQueue.len() > 0 )
 			{
-				while( !__bCheckReload() )
+				while( !__bCheckReload( false ) )
 					WaitFrame()
 					
 				int removeSpawnIndex = file.deleteEventsQueue.remove( 0 )
@@ -1374,9 +1697,22 @@ void function __DeleteThread()
 	}
 }
 
+string function __DeleteQueueMsg()
+{
+	string eventQueue
+	foreach( eventIdx in file.deleteEventsQueue )
+		eventQueue += format( " idx[%d] \n", eventIdx )
+		
+	return format( "Total deletions remaining: [%d]\n\n %s", file.deleteEventsQueue.len(), eventQueue )
+}
+
 void function __DispatchDeleteEvent( int index )
 {
 	file.deleteEventsQueue.append( index )
+		
+	foreach( player in GetPlayerArray() )
+		LocalEventMsg( player, "#FS_SPACE", format( " DELETION EVENT QUEUED \n FOR SPAWN IDX: %d\n\n%s", index, __DeleteQueueMsg() ) )
+		
 	file.dummyEnt.Signal( "EventDeleteQueued" )
 }
 
@@ -1445,59 +1781,61 @@ void function __LoopPanelDeletion( array< table<vector, string> > spawnInfosList
 {
 	file.bInfoPanelsAreReloading = true
 	
-	thread( void function() : ( spawnInfosListRef, bSyncInfoPanels )
-	{		
-		array< table<vector, string> > spawnInfosList = []
-		
-		if( file.savedSpawnInfosExtendedArray.len() > 0 )
-		{
-			spawnInfosList = clone file.savedSpawnInfosExtendedArray
-		}
-		else 
-		{
-			spawnInfosList = clone spawnInfosListRef
-		}
-		
-		array< table<vector, string> > spawnInfosArray
-		array< table<vector, string> > spawnInfosExtendedArray
-		
-		bool bEnd = false
-		int last = spawnInfosList.len() - 1
-		
-		if( spawnInfosList.len() > 10 )
-		{
-			spawnInfosArray = spawnInfosList.slice( 0, 9 ) //10 items
-			file.savedSpawnInfosExtendedArray = spawnInfosList.slice( 9 )
-			last = -1
-		}
-		else 
-		{
-			spawnInfosArray = spawnInfosList
-			bEnd = true
-		}
-		
-		foreach( int index, spawnInfos in spawnInfosArray )
-		{	
-			if( ( !bSyncInfoPanels && last != -1 && index == last ) || bSyncInfoPanels )
+	thread
+	( 
+		void function() : ( spawnInfosListRef, bSyncInfoPanels )
+		{		
+			array< table<vector, string> > spawnInfosList = []
+			
+			if( file.savedSpawnInfosExtendedArray.len() > 0 )
+				spawnInfosList = clone file.savedSpawnInfosExtendedArray
+			else 
+				spawnInfosList = clone spawnInfosListRef
+			
+			array< table<vector, string> > spawnInfosArray
+			array< table<vector, string> > spawnInfosExtendedArray
+			
+			bool bEnd = false
+			int last = spawnInfosList.len() - 1
+			
+			if( spawnInfosList.len() > 10 )
 			{
-				foreach( vector info, string identifier in spawnInfos )
+				spawnInfosArray = spawnInfosList.slice( 0, 9 ) //10 items
+				file.savedSpawnInfosExtendedArray = spawnInfosList.slice( 9 )
+				last = -1
+			}
+			else 
+			{
+				spawnInfosArray = spawnInfosList
+				bEnd = true
+			}
+			
+			foreach( int index, spawnInfos in spawnInfosArray )
+			{	
+				if( ( !bSyncInfoPanels && last != -1 && index == last ) || bSyncInfoPanels )
 				{
-					//info.x = setcount, info.y = index
-					waitthread __CreateInfoPanelForSpawn( int( info.x ), int( info.y ), identifier )
+					foreach( vector info, string identifier in spawnInfos )
+					{
+						//info.x = setcount, info.y = index
+						waitthread __CreateInfoPanelForSpawn( int( info.x ), int( info.y ), identifier )
+					}
 				}
 			}
+			
+			if( !bEnd )
+			{
+				__LoopPanelDeletionRecursive( bSyncInfoPanels )
+			}
+			else 
+			{
+				file.savedSpawnInfosExtendedArray.clear()
+				file.bInfoPanelsAreReloading = false
+				
+				foreach( player in GetPlayerArray() )
+					LocalEventMsg( player, "#FS_SPACE", " INFO PANELS DONE RELOADING ", 2.0 )
+			}
 		}
-		
-		if( !bEnd )
-		{
-			__LoopPanelDeletionRecursive( bSyncInfoPanels )
-		}
-		else 
-		{
-			file.savedSpawnInfosExtendedArray.clear()
-			file.bInfoPanelsAreReloading = false
-		}
-	})()
+	)()
 }
 
 void function __LoopPanelDeletionRecursive( bool bSyncInfoPanels = false )
@@ -1640,7 +1978,7 @@ void function DEV_AddSpawn( string ornull checkpid, string info = "", int replac
 		msg = " SPAWN BUDGET REACHED \n\n Cannot add more spawns "
 		
 		if( bUsePlayer )
-			LocalEventMsg( player, "", msg )
+			LocalEventMsg( player, "#FS_SPACE", msg )
 			
 		printt( msg )
 		printm( msg )
@@ -1739,14 +2077,14 @@ void function DEV_AddSpawn( string ornull checkpid, string info = "", int replac
 	}
 	
 	if( bUsePlayer )
-		LocalEventMsg( player, "", " SPAWN ADDED \n\n " + " " + str + contextInfo + " " )
+		LocalEventMsg( player, "#FS_SPACE", " SPAWN ADDED \n\n " + " " + str + contextInfo + " " )
 	
 	#if TRACKER && HAS_TRACKER_DLL
 		SendServerMessage( "Spawn added: " + str )
 	#endif
 	
-	printt( format( "\n\n Newly Added Spawn Pos: %s", str ) )
-	printm( format( "\n\n Newly Added spawn Pos: %s", str ) )
+	printt( format( "\n\n***Last Added Spawn Pos: %s***\n", str ) )
+	printm( format( "\n\n***Last Added spawn Pos: %s***\n", str ) )
 	
 	if( file.bAutoDelInvalid )
 		DEV_ValidateSpawn( SpawnCount() - 1, true, player )
@@ -1861,7 +2199,7 @@ void function DEV_SpawnHelp()
 	if( !empty( context ) )
 	{
 		foreach( player in GetPlayerArray() )
-			LocalEventMsg( player, context )
+			LocalEventMsg( player, "#FS_SPACE", context )
 			
 		file.bFirstTimeUse = false
 	}
@@ -2344,18 +2682,19 @@ void function __HighlightSpawn_DelayedEnd( entity beam )
 	Signal( svGlobal.levelEnt, "DelayedHighlightActivate" )
 	EndSignal( svGlobal.levelEnt, "DelayedHighlightActivate" )
 	
-	OnThreadEnd( void function() : ( beam )
-	{
-		if( IsValid( beam ) )
+	OnThreadEnd
+	( 
+		void function() : ( beam )
 		{
-			beam.Destroy()
+			if( IsValid( beam ) )
+				beam.Destroy()
 		}
-	})
+	)
 	
 	wait HIGHLIGHT_SPAWN_DELAY	
 }
 
-void function DEV_LoadPak( string pak = "", string playlist = "" )
+void function DEV_LoadPak( string pak = "", string playlist = "", int preferred = -1 )
 {
 	if( !__bCheckReload() )
 		return
@@ -2367,7 +2706,13 @@ void function DEV_LoadPak( string pak = "", string playlist = "" )
 		Warning( "Set type with DEV_SpawnType(\"csv\") or \"sq\" for squirrel code" )
 		DEV_SpawnType("sq")
 	}
-
+	
+	if( pak == "reset" )
+	{
+		AutoSetupSettings()
+		file.currentSpawnPak = ""
+	}
+	
 	bool usePlaylist = false
 	bool bUsePak = false
 	
@@ -2402,17 +2747,21 @@ void function DEV_LoadPak( string pak = "", string playlist = "" )
 	}
 
 	if( !settings.bOptionsAreSet )
-		Flowstate_SpawnSystem_InitGamemodeOptions()
+		SpawnSystem_InitGamemodeOptions()
 		
 	table<string,bool> spawnOptions = {}
+	bool prefer = preferred > 1
 	
-	spawnOptions["use_sets"] <- true
+	spawnOptions["use_sets"] <- prefer
 	spawnOptions["use_random"] <- false
-	spawnOptions["prefer"] <- false
+	spawnOptions["prefer"] <- prefer
+	if( prefer )
+		SpawnSystem_SetPreferredPak( preferred )
+		
 	spawnOptions["use_custom_rpak"] <- SpawnSystem_SetCustomPak( pak )
 	spawnOptions["use_custom_playlist"] <- usePlaylist
 	
-	array<SpawnData> devLocations = customDevSpawnsList().len() > 0 && !bUsePak ? SpawnSystem_CreateSpawnObjectArray( customDevSpawnsList() ) : SpawnSystem_ReturnAllSpawnLocations( MapName(), spawnOptions )
+	array<SpawnData> devLocations = customDevSpawnsList().len() > 0 && !bUsePak ? SpawnSystem_CreateSpawnObjectArray( customDevSpawnsList() ) : SpawnSystem_ReturnAllSpawnLocations( SpawnSystem_FindBaseMapForPak( MapName() ), spawnOptions )
 	
 	if( devLocations.len() > 0 )
 	{
@@ -3077,7 +3426,7 @@ string function CheckFirstUse()
 	
 	file.bFirstTimeUse = false
 	
-	string info = "\n\n This is the first time running the spawn tool. Check console for more info. "
+	string info = "#\n\n This is the first time running the spawn tool. Check console for more info. "
 	
 	return info
 }
@@ -3953,4 +4302,104 @@ void function DEV_TraceSpawnLine( vector newOrigin )
 	TraceResults result = TraceLine( newOrigin, newOrigin + < 0, 0, 72 >, null, TRACE_MASK_PLAYERSOLID_BRUSHONLY, TRACE_COLLISION_GROUP_PLAYER )
 	PrintTraceResults( result )
 }
+
+void function DEV_CheckSpawns( vector mins = ZERO_VECTOR, vector maxs = ZERO_VECTOR )
+{
+	array<LocPair> spawnsArray = GetSpawns()
+	
+	int totalSpawns = spawnsArray.len()
+	if( !totalSpawns )
+	{
+		printl( "No spawns to check" )
+		printm( "No Spawns to check" )
+		return
+	}
+		
+	array<string> prints
+	array<string> invalidPrints
+	array<string> mpInvalidPrints
+	
+	int invalidCount
+	foreach( int idx, LocPair loc in spawnsArray )
+	{
+		vector origin = loc.origin	
+		if( !SpawnSystem_CheckSpawn( origin, mins, maxs ) )
+		{
+			invalidCount++
+			
+			string msg = format( "[SpawnSystem] Invalid spawn at index [%d]: %s", idx, VectorToString( origin ) )
+			
+			invalidPrints.append( msg )
+			mpInvalidPrints.append( msg )
+		}
+		else 
+			prints.append( format( "[SpawnSystem] Spawn okay: idx[%d]:", idx, VectorToString( origin ) ) )
+	}
+	
+	
+	string invalidInfo = format
+	( 
+		"[SpawnSystem] Found %d invalid spawns. Okay spawns count: %d. Total spawns counts: %d", 
+		invalidCount,
+		totalSpawns - invalidCount,
+		totalSpawns
+	)
+	
+	foreach( prnt in prints )
+		printl( prnt )
+	foreach( prnt in invalidPrints )
+		Warning( prnt )
+	printl( invalidInfo )
+	
+	
+	foreach( prnt in prints )
+		printm( prnt )
+	foreach( prnt in mpInvalidPrints )
+		printm( prnt )
+	printm( invalidInfo )
+}
+
+void function DEV_CycleAll( float delay = 2.0 )
+{
+	if( !GetSpawns().len() )
+	{
+		string none = "No spawns to cycle."
+		printl( none ); printm( none )
+	}
+
+	if( delay <= 0 )
+	{
+		file.dummyEnt.Signal( "EndCycleAllSpawns" )
+		return
+	}
+	
+	thread __CycleSpawns( delay )
+}
+
+void function __CycleSpawns( float delay = 2.0 )
+{
+	file.dummyEnt.Signal( "EndCycleAllSpawns" )
+	file.dummyEnt.EndSignal( "EndCycleAllSpawns" )
+	
+	if( delay < 0.1 )
+	{
+		string msg = "Set delay to 0.1"
+		printl( msg ); printm( msg )
+		delay = 0.1
+	}
+	
+	array<LocPair> spawns = GetSpawns()
+	int spawnsLen = spawns.len() - 1
+	for( int i = 0; i < spawnsLen; i++ )
+	{
+		foreach( player in GetPlayerArray() )
+		{
+			TP( player, spawns[i] )
+			LocalEventMsg( player, "#FS_SPACE", format( "Teporting to index:[%d] \n %s", i, file.dev_positions[i] ) )
+		}
+		
+		wait delay
+	}
+}
+
 #endif //DEVELOPER

@@ -2804,7 +2804,7 @@ void function PlayerRestoreHP_1v1( entity player, float health, float shields )
 		Inventory_SetPlayerEquipment(player, "helmet_pickup_lv3", "helmet")
 		
 		if( shields == 0 )
-			return
+			Inventory_SetPlayerEquipment(player, "", "armor")
 		else if(shields <= 50)
 			Inventory_SetPlayerEquipment( player, "armor_pickup_lv1", "armor" )
 		else if(shields <= 75)
@@ -2861,7 +2861,7 @@ void function respawnInSoloMode( entity player, int respawnSlotIndex = -1 ) //å¤
 		try
 		{
 			Gamemode1v1_SetPlayerGamestate( player, e1v1State.SEQUENCE )
-			DecideRespawnPlayer( player, true )
+			DecideRespawnPlayer( player, false )
 		}
 		catch( erroree )
 		{	
@@ -2892,7 +2892,7 @@ void function respawnInSoloMode( entity player, int respawnSlotIndex = -1 ) //å¤
 	try
 	{
 		Gamemode1v1_SetPlayerGamestate( player, e1v1State.SEQUENCE )
-		DecideRespawnPlayer( player, true )
+		DecideRespawnPlayer( player, false )
 	}
 	catch (error)
 	{
@@ -3106,12 +3106,12 @@ void function INIT_PregameCallbacks()
 	if( MapName() == eMaps.mp_rr_arena_composite && GetCurrentPlaylistVarBool( "patch_for_dropoff", false ) )
 	{
 		DropoffPatch_Init()
-		AddCallback_FlowstateSpawnsPostInit( Init_DropoffPatchSpawns )
+		AddCallback_SpawnsPostInit( Init_DropoffPatchSpawns )
 	}
 
 	if( Playlist() == ePlaylists.fs_1v1_headshots_only )
 	{
-		AddCallback_FlowstateSpawnsSettings
+		AddCallback_SpawnsSettings
 		( 
 			void function()
 			{
@@ -3155,7 +3155,7 @@ void function Gamemode1v1_Init( int eMap )
 	if( Playlist() == ePlaylists.fs_lgduels_1v1 )
 		Flowstate_LgDuels1v1_Init()
 		
-	Flowstate_SpawnSystem_InitGamemodeOptions()
+	SpawnSystem_InitGamemodeOptions()
 		
 	SetHostInvetoryAttachments()
 	
@@ -3230,13 +3230,11 @@ void function Gamemode1v1_Init( int eMap )
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	
-	if( Playlist() == ePlaylists.fs_vamp_1v1 ) //Todo(mk): This should be handled by the mode's script file using AddCallback_FlowstateSpawnsSettings
+	if( Playlist() == ePlaylists.fs_vamp_1v1 ) //Todo(mk): This should be handled by the mode's script file using AddCallback_SpawnsSettings
 		SpawnSystem_SetCustomPlaylist( "fs_1v1" )
 
-	eMap = SpawnSystem_FindBaseMapForPak( eMap )
-	
 	FlagWait( "EntitiesDidLoad" )
-	array<SpawnData> allSoloLocations = SpawnSystem_ReturnAllSpawnLocations( eMap )
+	array<SpawnData> allSoloLocations = SpawnSystem_ReturnAllSpawnLocations()
 	
 	file.notificationPanel_Coordinates = Gamemode1v1_GetNotificationPanel_Coordinates()
 	file.notificationPanel_Angles = Gamemode1v1_GetNotificationPanel_Angles()	
@@ -3245,7 +3243,7 @@ void function Gamemode1v1_Init( int eMap )
 	{
 		SpawnSystem_SetPreferredPak( 1 )
 		//SpawnSystem_SetRunCallbacks( false ) //(mk): for this mode, we wont disable re-running callbacks, as they may be needed to customize spawns again. If the gamemode dev has prop spawning or things that should only be done once, they should make sure it's only init once in their logic.
-		allSoloLocations = SpawnSystem_ReturnAllSpawnLocations( eMap )
+		allSoloLocations = SpawnSystem_ReturnAllSpawnLocations()
 		
 		//mAssert( ValidateSpawns( allSoloLocations ), "No valid spawns were defined" )
 		if( !ValidateSpawns( allSoloLocations ) )
