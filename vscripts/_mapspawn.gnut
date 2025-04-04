@@ -392,6 +392,22 @@ void function PrecacheFSEntities()
 		PrecacheModel( $"mdl/flowstate_custom/w_haloelite.rmdl" )
 		PrecacheModel( $"mdl/flowstate_custom/ptpov_haloelite.rmdl" )
 	}
+
+	PrecacheModel( $"mdl/Humans/pilots/w_phantom.rmdl" )
+	PrecacheModel( $"mdl/Humans/pilots/ptpov_phantom.rmdl" )
+
+	PrecacheModel( $"mdl/Humans/pilots/w_amogino.rmdl" )
+
+	PrecacheModel( $"mdl/Humans/pilots/w_rhapsody.rmdl" )
+	PrecacheModel( $"mdl/Humans/pilots/ptpov_rhapsody.rmdl" )
+
+	PrecacheModel( $"mdl/Humans/pilots/ballistic_base_w.rmdl" )
+	PrecacheModel( $"mdl/Humans/pilots/ballistic_base_v.rmdl" )
+
+	PrecacheModel( $"mdl/flowstate_custom/w_marvin.rmdl" )
+
+	PrecacheModel( $"mdl/flowstate_custom/w_pete_mri.rmdl" )
+	PrecacheModel( $"mdl/flowstate_custom/ptpov_pete_mri.rmdl" )
 }
 
 void function PrecacheSDKWeapons()

@@ -1828,45 +1828,35 @@ void function SetPlayerCustomModel( entity player, int index )
 {
 	switch( index )
 	{
-		case 11:
+		/*case 11:
 		player.SetBodyModelOverride( $"mdl/Humans/pilots/w_blisk.rmdl" )
 		player.SetArmsModelOverride( $"mdl/Humans/pilots/pov_blisk.rmdl" )
-		break
+		break*/
 		
 		case 12:
 		player.SetBodyModelOverride( $"mdl/Humans/pilots/w_phantom.rmdl" )
 		player.SetArmsModelOverride( $"mdl/Humans/pilots/ptpov_phantom.rmdl" )
 		break
 		
-		case 13:
+		/*case 13:
 		player.SetBodyModelOverride( $"mdl/Humans/pilots/w_amogino.rmdl" )
 		player.SetArmsModelOverride( $"mdl/Humans/pilots/ptpov_amogino.rmdl" )
-		break
+		break*/
 
 		case 14:
 		player.SetBodyModelOverride( $"mdl/Humans/pilots/w_rhapsody.rmdl" )
 		player.SetArmsModelOverride( $"mdl/Humans/pilots/ptpov_rhapsody.rmdl" )
 		break
 		
-		case 15:
+		/*case 15:
 		player.SetBodyModelOverride( $"mdl/Humans/pilots/w_ash_legacy.rmdl" )
 		player.SetArmsModelOverride( $"mdl/Humans/pilots/pov_ash_legacy.rmdl" )
-		break
+		break*/
 
-		case 16:
+		/*case 16:
 		player.SetBodyModelOverride( $"mdl/Humans/pilots/w_jackcooper.rmdl" )
 		player.SetArmsModelOverride( $"mdl/Humans/pilots/ptpov_jackcooper.rmdl" )
-		break
-
-		case 17:
-		player.SetBodyModelOverride( $"mdl/Humans/pilots/pilot_medium_loba.rmdl" )
-		player.SetArmsModelOverride( $"mdl/Humans/pilots/pov_pilot_medium_loba.rmdl" )
-		break
-		
-		case 18:
-		player.SetBodyModelOverride( $"mdl/Humans/pilots/pilot_heavy_revenant.rmdl" )
-		player.SetArmsModelOverride( $"mdl/Humans/pilots/pov_pilot_heavy_revenant.rmdl" )
-		break
+		break*/
 
 		case 19: // ballistic
 		player.SetBodyModelOverride( $"mdl/Humans/pilots/ballistic_base_w.rmdl" )

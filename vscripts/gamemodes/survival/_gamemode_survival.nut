@@ -893,10 +893,10 @@ bool function ClientCommand_Flowstate_AssignCustomCharacterFromMenu(entity playe
 		player.SetArmsModelOverride( $"mdl/Humans/pilots/ptpov_master_chief.rmdl" )
 		break
 		
-		case "1":
+		/*case "1":
 		player.SetBodyModelOverride( $"mdl/Humans/pilots/w_blisk.rmdl" )
 		player.SetArmsModelOverride( $"mdl/Humans/pilots/pov_blisk.rmdl" )
-		break
+		break*/
 		
 		case "2":
 		player.SetBodyModelOverride( $"mdl/Humans/pilots/w_phantom.rmdl" )
@@ -918,17 +918,17 @@ bool function ClientCommand_Flowstate_AssignCustomCharacterFromMenu(entity playe
 		player.SetArmsModelOverride( $"mdl/Humans/pilots/ptpov_rhapsody.rmdl" )
 		break
 		
-		case "6":
+		/*case "6":
 		player.SetBodyModelOverride( $"mdl/Humans/pilots/w_ash_legacy.rmdl" )
 		player.SetArmsModelOverride( $"mdl/Humans/pilots/pov_ash_legacy.rmdl" )
-		break
+		break*/
 		
 		// case "7":
 		// player.SetBodyModelOverride( $"mdl/Humans/pilots/w_cj.rmdl" )
 		// player.SetArmsModelOverride( $"mdl/Humans/pilots/ptpov_amogino.rmdl" )
 		// break
 		
-		case "8":
+		/*case "8":
 		player.SetBodyModelOverride( $"mdl/Humans/pilots/w_jackcooper.rmdl" )
 		player.SetArmsModelOverride( $"mdl/Humans/pilots/ptpov_jackcooper.rmdl" )
 		break
@@ -936,7 +936,7 @@ bool function ClientCommand_Flowstate_AssignCustomCharacterFromMenu(entity playe
 		case "9":
 		player.SetBodyModelOverride( $"mdl/Humans/pilots/pilot_medium_loba.rmdl" )
 		player.SetArmsModelOverride( $"mdl/Humans/pilots/pov_pilot_medium_loba.rmdl" )
-		break
+		break*/
 		
 		// case "10":
 		// player.SetBodyModelOverride( $"mdl/Humans/pilots/pilot_heavy_revenant.rmdl" )
@@ -953,10 +953,10 @@ bool function ClientCommand_Flowstate_AssignCustomCharacterFromMenu(entity playe
 		player.SetArmsModelOverride( $"mdl/Humans/pilots/ballistic_base_v.rmdl" )
 		break
 		
-		case "13": // mrvn
+		/*case "13": // mrvn
 		player.SetBodyModelOverride( $"mdl/flowstate_custom/w_marvin.rmdl" )
 		player.SetArmsModelOverride( $"mdl/Humans/pilots/ptpov_amogino.rmdl" )
-		break
+		break*/
 
 		// case "14": // gojo
 		// player.SetBodyModelOverride( $"mdl/flowstate_custom/w_gojo.rmdl" )
