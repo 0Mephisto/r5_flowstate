@@ -244,6 +244,7 @@ void function InitWaterLeviathans()
 
 void function EntitiesDidLoad()
 {
+	PrecacheModel( $"mdl/props/tree_green_forest_01_kingscanyon/tree_green_forest_01_kingscanyon.rmdl" )
 	thread __EntitiesDidLoad()
 }
 
