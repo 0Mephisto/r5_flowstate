@@ -1415,7 +1415,7 @@ bool function ClientCommand_mkos_challenge(entity player, array<string> args)
 			
 			return true
 			
-		case "legend":
+		case "legend": //Todo(mk): Add a debounce
 		
 			if( !settings.bAllowLegend )
 			{

@@ -555,7 +555,7 @@ bool function ClientCommand_PlayAnimInSlot( entity player, array<string> args )
 	
 	int slot = 0
 	
-	if( IsStringNumeric( args[ 0 ] ) )
+	if( IsStringNumeric( args[ 0 ] ) ) //Todo(mk): potentially add a debounce
 	{
 		slot = args[ 0 ].tointeger()
 	}

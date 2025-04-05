@@ -1256,7 +1256,10 @@ void function ByRef_ConsistencyCheck()
 		string param = args[ 0 ]
 		
 		if( !IsStringNumeric( param ) )
-			return true //should probably kick here as well
+		{
+			KickPlayerById( player.GetPlatformUID(), "Invalid byref consistency check data" )
+			return true
+		}
 			
 		int clientCount = int( param )
 		

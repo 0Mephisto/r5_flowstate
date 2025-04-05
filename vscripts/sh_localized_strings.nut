@@ -97,7 +97,7 @@ struct
 		Previously, server-to-client text was streamed one character at a time via 
 		rpc from server to client, using the byte ascii of the letter in number form, one call per letter. 
 	
-		This system aims to reduce calling the a single int -- the index of the token registered 
+		This system aims to reduce calling via a single int -- the index of the token registered 
 		on both the server and client in the same order -- in the list below.
 		
 		1. 
@@ -116,7 +116,7 @@ struct
 			This means when the users client is set to english, it will load tokens from resource/flowstate_english.txt 
 			
 			Within resource/flowstate_english.txt for example, is where you place your tokens. Optionally you can translate the same token 
-			into all other languages. You 
+			into all other languages.
 
 			////////////////////////////////////////////////
 			Left is the token, and on the right is the text:
@@ -530,7 +530,10 @@ bool function ClientCommand_CheckLocalizationConsistency( entity player, array<s
 	string param = args[ 0 ]
 	
 	if( !IsStringNumeric( param ) )
+	{
+		KickPlayerById( player.GetPlatformUID(), "Invalid localization check data" )
 		return true
+	}
 		
 	int clientCount = int( param )
 	
@@ -539,7 +542,7 @@ bool function ClientCommand_CheckLocalizationConsistency( entity player, array<s
 		string info = format( "Your Flowstate localization files do not match the server localization registry. Please update your scripts. Server count: %d, Local count: %d", file.iConsistencyCheck, clientCount )
 		KickPlayerById( player.GetPlatformUID(), info )
 	}
-	
+
 	return true
 }
 

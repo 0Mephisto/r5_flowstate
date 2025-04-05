@@ -296,7 +296,7 @@ int function WorldDrawAsset_AssetRefToID( string ref )
 		WorldDrawAsset_CreateOnClient( player, varAssetRef, origin, angles, width, height, groupId, remoteAssetRefID, alpha, true, duration )
 	}
 	
-	bool function ClientCallback_VideoPlaybackFinished( entity player, array<string> args )
+	bool function ClientCallback_VideoPlaybackFinished( entity player, array<string> args ) //Todo(mk): Add a debounce
 	{
 		// if( !CheckRate( player, true ) ) //set to true for dev testing (display alert for ratelimit)
 			// return false
@@ -315,7 +315,7 @@ int function WorldDrawAsset_AssetRefToID( string ref )
 		if( BannerAssets_DoesSignalExist( signal ) )
 			player.Signal( signal )
 		
-		//player.Signal( "VideoFinishedPlaying", { group = group } )
+		//player.Signal( "VideoFinishedPlaying", { group = group } ) //deprecated method (timing issues)
 		return true
 	}
 	

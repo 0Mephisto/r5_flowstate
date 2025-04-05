@@ -944,7 +944,7 @@ string function GetQueryDataString()
 	return query_data_string
 }
 
-void function INIT_Global_R5RDEV_VarTable()
+void function INIT_Global_R5RDEV_VarTable()//Todo(mk): send down table from native
 {	
 	Script_RegisterAllQueries()
 	
