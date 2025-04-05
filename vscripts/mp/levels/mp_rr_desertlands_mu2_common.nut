@@ -834,7 +834,7 @@ void function BurnPlayerOverTime( entity trigger, entity player )
 	Assert( IsValid( player ) )
 	player.EndSignal( "OnDestroy" )
 	player.EndSignal( "OnDeath" )
-	
+	player.EndSignal( "DeathTotem_PreRecallPlayer" )
 	for ( int i = 0; i < 8; ++i )
 	{
 		if( !player.p.isPlayerUpdrafting )
@@ -862,7 +862,6 @@ void function PlayerEnterUpdraftTrigger( entity trigger, entity player )
 	thread Player_EnterUpdraft( trigger, player, file.updraftSettings.minShakeActivationHeight + entZ, entZ - file.updraftSettings.maxShakeActivationHeight, max( -5750.0, entZ - file.updraftSettings.maxShakeActivationHeight ), file.updraftSettings.liftSpeed, file.updraftSettings.liftAcceleration, file.updraftSettings.liftExitDuration )
 }
 
-//Made by @CafeFPS
 void function Player_EnterUpdraft( entity trigger, entity player, float minHeight, float maxHeight, float activationHeight, float liftSpeed, float liftAcceleration, float liftExitDuration )
 {
 	EndSignal( player, "OnDestroy" )

@@ -5754,16 +5754,16 @@ void function GivePlayerSettingsMods( entity player, array<string> additionalMod
 			if( isModAvailable )
 				modsToAdd.append( mod )
 		}
-
 		if( modsToAdd.len() > 0 )
 		{
-			if ( additionalMods.len() == 1 )
+			//if ( additionalMods.len() == 1 )
 			{
-				player.AddPlayerClassMod( additionalMods[ 0 ] )
+				//player.AddPlayerClassMod( additionalMods[ 0 ] )
 			}
-			else
+			//else
 			{
 				#if SERVER
+
 					array<string> mods = player.GetPlayerSettingsMods()
 					mods.extend( modsToAdd ) // duplicates are OK
 					player.SetPlayerSettingsWithMods( player.GetPlayerSettings(), mods )
@@ -5795,11 +5795,11 @@ void function TakePlayerSettingsMods( entity player, array<string> modsToTake, b
 		#if CLIENT
 			Assert( modsToTake.len() == 1 )
 		#endif
-		if ( modsToTake.len() == 1 && mods.contains( modsToTake[ 0 ] ) )
+		/*if ( modsToTake.len() == 1 && mods.contains( modsToTake[ 0 ] ) )
 		{
 			player.RemovePlayerClassMod( modsToTake[ 0 ] )
 		}
-		else
+		else*/
 		{
 			foreach ( string modToTake in modsToTake )
 				mods.fastremovebyvalue( modToTake )
