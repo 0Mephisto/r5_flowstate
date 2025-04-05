@@ -1146,7 +1146,10 @@ void function OnCharacterClassChanged( EHI playerEHI, ItemFlavor flavor )
 	if ( IsAlive( player ) ) 
 	{	
 		CharacterSelect_AssignCharacter( player, flavor, false )
-		DecideRespawnPlayer( player, true )
+		if( Gamemode() == eGamemodes.SURVIVAL )
+			DecideRespawnPlayer( player, true )
+		else
+			DecideRespawnPlayer( player, false ) //(mk): Giving loadout related weapons here interferes with every custom gamemode in the codebase. Set to false. If your mode needs loadoutrelated weapons apply them.
 	}
 }
 
