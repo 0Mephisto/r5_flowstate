@@ -503,6 +503,7 @@ void function OnDoorSpawned( entity door )
 			door.AddUsableValue( USABLE_USE_DISTANCE_OVERRIDE )
 			door.SetUsableDistanceOverride( 150 ) // no point going higher without increasing context_use_entity_search_range
 			doorType = eDoorType.PLAIN
+			ToggleNPCPathsForEntity( door, false )
 			break
 
 		case "survival_door_sliding":
@@ -913,7 +914,7 @@ void function SurvivalDoorThink( entity door, int doorType )
 				door.Anim_SetSafePushMode( true )
 				waitthread PlayAnimWithTimeout( door, "close", 1.3 )
 
-				ToggleNPCPathsForEntity( door, false );
+				ToggleNPCPathsForEntity( door, false )
 			}
 
 			if ( doorType == eDoorType.MODEL )
@@ -959,7 +960,7 @@ void function SurvivalDoorThink( entity door, int doorType )
 
 				WaittillAnimDone( door )
 
-				ToggleNPCPathsForEntity( door, true );
+				ToggleNPCPathsForEntity( door, true )
 			}
 			else if ( doorType == eDoorType.MODEL )
 			{
