@@ -12,7 +12,7 @@ global const SCRIPT_GAME_VERSION__RELEASE = true  //not used currently
 
 //r5r.dev
 global const bool TRACKER 					= false
-global const bool HAS_TRACKER_DLL 			= true
+global const bool HAS_TRACKER_DLL 			= false
 
 //
 global const bool MULTIPLAYER_DEBUG_PRINTS 	= false // Toggles print console message to all players where used (printm).
