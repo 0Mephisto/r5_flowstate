@@ -58,8 +58,8 @@ WeaponData
 	"fx_muzzle_flash_attach"						"muzzle_flash"
 
 	// NOTE: specifies muzzle flash for the second barrel
-	"fx_muzzle_flash2_view"							""
-	"fx_muzzle_flash2_world"						""
+	"fx_muzzle_flash2_view"							"P_wpn_muzzleflash_alternator_FP"
+	"fx_muzzle_flash2_world"						"P_wpn_muzzleflash_alternator"
 	"fx_muzzle_flash2_attach"						"muzzle_flash_1"
 
 
@@ -98,7 +98,7 @@ WeaponData
 	"fire_rate"   									"10"
 
 	// Ammo
-	"ammo_clip_size"   								"19"
+	"ammo_clip_size"   								"20"
     "ammo_default_total"							"0"
     "ammo_stockpile_max"							"24"
     "ammo_no_remove_from_stockpile"					"0"
@@ -241,6 +241,17 @@ WeaponData
 	"viewmodel_ads_rui_bottomleft_attachment"	"RUI_BL_CROSSHAIR_ALTERNATOR"
 	"viewmodel_ads_centerpoint_attachment"      "ADS_CENTER_SIGHT_ALTERNATOR"
 
+
+	"damage_shield_scale"	"1"
+	"damage_headshot_scale"	"1.200000"
+	"damage_leg_scale"	"0.800000"
+	"critical_hit"	"1"
+	"critical_hit_damage_scale"	"2"
+	"titanarmor_critical_hit_required"	"1"
+	"damage_near_distance"	"900"
+	"damage_far_distance"	"1500"
+	"damage_very_far_distance"	"3500"
+	"headshot_distance"	"1500"
 	Mods
 	{
 		barrel_synchronizer

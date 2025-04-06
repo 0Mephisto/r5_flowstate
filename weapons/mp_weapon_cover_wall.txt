@@ -96,11 +96,11 @@ WeaponData
 	// Behavior
 	"fire_rate"   									"10.0"
 	"fire_duration"									"0.4"
-	"deploy_time" 									"1.3"
+	"deploy_time" 									"1.000000"
 	"holster_time"                                  "0.4"
-	"raise_time"                                	"1.3"
+	"raise_time"                                	"1.000000"
 	"allow_empty_fire"								"0"
-	"offhand_hybrid_switch_on_attack"				"1"
+	"offhand_hybrid_switch_on_attack"				"0"
 	"offhand_hybrid_switch_on_lower"				"1"
 	"no_ammo_used_on_primary_attack"				"0"
 	"reload_enabled"  								"0"
@@ -129,7 +129,7 @@ WeaponData
     "ammo_min_to_fire"								"100"
     "ammo_per_shot"									"100"
     "ammo_stockpile_max"							"100"
-    "regen_ammo_refill_rate"						"3.33"
+    "regen_ammo_refill_rate"						"5"
     "regen_ammo_refill_start_delay"					"0.0"
 
 

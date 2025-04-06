@@ -11,10 +11,10 @@ WeaponData
 	"weapon_type_flags"								"WPT_GRENADE"
 	"weaponClass" 									"human"
 	"weaponType"									"anti_titan"
-	"attack_button_presses_melee"					"1"
+	"attack_button_presses_melee"					"0"
 
 	"fire_mode"   									"automatic"
-	"is_semi_auto"									"1"
+	"is_semi_auto"									"0"
 
 	"primary_fire_does_not_block_sprint"			"1"
 
@@ -96,7 +96,7 @@ WeaponData
 	"fuel_cooldown_sec"                             "15.0"
 
 	"super_max"                                     "1200.0"
-	"super_cooldown_sec"                            "10.0" //200
+	"super_cooldown_sec"                            "200.000000"
 	"super_active_sec"                              "20.0"
 
 	"melee_block_min_damage"                        "1"

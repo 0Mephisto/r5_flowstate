@@ -1,106 +1,110 @@
 global function ShGladiatorCards_LevelInit
 
 #if UI
-global function ShGladiatorCards_Init
-global function ShGladiatorCards_LevelShutdown
+	global function ShGladiatorCards_Init
+	global function ShGladiatorCards_LevelShutdown
 #endif
 
 #if SERVER || CLIENT || UI
-global function AreGladiatorCardsEnabled
+	global function AreGladiatorCardsEnabled
 #endif
 
 #if CLIENT
-global function CreateNestedGladiatorCard
-global function CleanupNestedGladiatorCard
-global function ChangeNestedGladiatorCardPresentation
-global function ChangeNestedGladiatorCardOwner
-global function SetNestedGladiatorCardOverrideName
-global function SetNestedGladiatorCardOverrideCharacter
-global function SetNestedGladiatorCardOverrideSkin
-global function SetNestedGladiatorCardOverrideFrame
-global function SetNestedGladiatorCardOverrideStance
-global function SetNestedGladiatorCardOverrideBadge
-global function SetNestedGladiatorCardOverrideTracker
+	global function CreateNestedGladiatorCard
+	global function CleanupNestedGladiatorCard
+	global function ChangeNestedGladiatorCardPresentation
+	global function ChangeNestedGladiatorCardOwner
+	global function SetNestedGladiatorCardOverrideName
+	global function SetNestedGladiatorCardOverrideCharacter
+	global function SetNestedGladiatorCardOverrideSkin
+	global function SetNestedGladiatorCardOverrideFrame
+	global function SetNestedGladiatorCardOverrideStance
+	global function SetNestedGladiatorCardOverrideBadge
+	global function SetNestedGladiatorCardOverrideTracker
 
-global function SetNestedGladiatorCardIsKiller
-global function SetNestedGladiatorCardDisableBlur
+	global function SetNestedGladiatorCardIsKiller
+	global function SetNestedGladiatorCardDisableBlur
 
-global function SetNestedGladiatorCardOverrideRankedDetails
+	global function SetNestedGladiatorCardOverrideRankedDetails
 #endif
 
 #if CLIENT || UI
-global function CreateNestedGladiatorCardBadge
+	global function CreateNestedGladiatorCardBadge
 #endif
 
 #if UI
-global function SetupMenuGladCard
-global function SendMenuGladCardPreviewCommand
-global function SendMenuGladCardPreviewString
+	global function SetupMenuGladCard
+	global function SendMenuGladCardPreviewCommand
+	global function SendMenuGladCardPreviewString
 #endif
 
 #if CLIENT
-global function DisplayGladiatorCardSidePane
-global function HideGladiatorCardSidePane
-global function HideGladiatorCardSidePaneThreaded
-global function UpdateRuiWithStatTrackerData
-global function UIToClient_SetupMenuGladCard
-global function UIToClient_HandleMenuGladCardPreviewCommand
-global function UIToClient_HandleMenuGladCardPreviewString
-global function OnWinnerDetermined
-global function GetSituationPlayer
-#if true
-global function GladCardDebug
-#endif
+	global function DisplayGladiatorCardSidePane
+	global function HideGladiatorCardSidePane
+	global function HideGladiatorCardSidePaneThreaded
+	global function UpdateRuiWithStatTrackerData
+	global function UIToClient_SetupMenuGladCard
+	global function UIToClient_HandleMenuGladCardPreviewCommand
+	global function UIToClient_HandleMenuGladCardPreviewString
+	global function OnWinnerDetermined
+	global function GetSituationPlayer
+	
+	#if true
+		global function GladCardDebug
+	#endif
 #endif
 
 #if CLIENT && DEVELOPER
-global function DEV_DumpCharacterCaptures
-global function DEV_GladiatorCards_ToggleForceMoving
-global function DEV_GladiatorCards_ToggleShowSafeAreaOverlay
-global function DEV_GladiatorCards_ToggleCameraAlpha
-global function DEV_ForceEnableGladiatorCards
+	global function DEV_DumpCharacterCaptures
+	global function DEV_GladiatorCards_ToggleForceMoving
+	global function DEV_GladiatorCards_ToggleShowSafeAreaOverlay
+	global function DEV_GladiatorCards_ToggleCameraAlpha
+	global function DEV_ForceEnableGladiatorCards
 #endif
 
 #if SERVER || CLIENT || UI
-global function Loadout_GladiatorCardFrame
-global function Loadout_GladiatorCardStance
-global function Loadout_GladiatorCardBadge
-global function Loadout_GladiatorCardBadgeTier
-global function Loadout_GladiatorCardStatTracker
-global function GladiatorCardFrame_GetSortOrdinal
-global function GladiatorCardFrame_GetCharacterFlavor
-global function GladiatorCardFrame_ShouldHideIfLocked
-global function GladiatorCardStance_GetSortOrdinal
-global function GladiatorCardStance_GetCharacterFlavor
-global function GladiatorCardBadge_GetSortOrdinal
-global function GladiatorCardBadge_GetCharacterFlavor
-global function GladiatorCardBadge_GetUnlockStatRef
-global function GladiatorCardStatTracker_GetSortOrdinal
-global function GladiatorCardStatTracker_GetCharacterFlavor
-global function GladiatorCardStatTracker_GetFormattedValueText
-global function GladiatorCardBadge_ShouldHideIfLocked
-global function GladiatorCardBadge_IsTheEmpty
-global function GladiatorCardTracker_IsTheEmpty
-global function GladiatorCardBadge_IsCharacterBadge
-global function GladiatorCardBadge_GetTierCount
-global function GladiatorCardBadge_GetTierData
-global function GladiatorCardBadge_GetTierDataList
-global function GetPlayerBadgeDataInteger
-global function GladiatorCardCharacterSkin_ShouldHideIfLocked
-global function GladiatorCardWeaponSkin_ShouldHideIfLocked
+	global function Loadout_GladiatorCardFrame
+	global function Loadout_GladiatorCardStance
+	global function Loadout_GladiatorCardBadge
+	global function Loadout_GladiatorCardBadgeTier
+	global function Loadout_GladiatorCardStatTracker
+	global function GladiatorCardFrame_GetSortOrdinal
+	global function GladiatorCardFrame_GetCharacterFlavor
+	global function GladiatorCardFrame_ShouldHideIfLocked
+	global function GladiatorCardStance_GetSortOrdinal
+	global function GladiatorCardStance_GetCharacterFlavor
+	global function GladiatorCardBadge_GetSortOrdinal
+	global function GladiatorCardBadge_GetCharacterFlavor
+	global function GladiatorCardBadge_GetUnlockStatRef
+	global function GladiatorCardStatTracker_GetSortOrdinal
+	global function GladiatorCardStatTracker_GetCharacterFlavor
+	global function GladiatorCardStatTracker_GetFormattedValueText
+	global function GladiatorCardBadge_ShouldHideIfLocked
+	global function GladiatorCardBadge_IsTheEmpty
+	global function GladiatorCardTracker_IsTheEmpty
+	global function GladiatorCardBadge_IsCharacterBadge
+	global function GladiatorCardBadge_GetTierCount
+	global function GladiatorCardBadge_GetTierData
+	global function GladiatorCardBadge_GetTierDataList
+	global function GetPlayerBadgeDataInteger
+	global function GladiatorCardCharacterSkin_ShouldHideIfLocked
+	global function GladiatorCardWeaponSkin_ShouldHideIfLocked
 #endif
 
 #if CLIENT || UI
-global function GladiatorCardStatTracker_GetColor0
-global function GladiatorCardBadge_DoesStatSatisfyValue
+	global function GladiatorCardStatTracker_GetColor0
+	global function GladiatorCardBadge_DoesStatSatisfyValue
 #endif
 
 #if CLIENT // todo(dw): temp
-global function GladiatorCardBadge_HasOwnRUI
-global function GladiatorCardBadge_IsOversizedImage
-global function ShGladiatorCards_OnDevnetBugScreenshot
+	global function GladiatorCardBadge_HasOwnRUI
+	global function GladiatorCardBadge_IsOversizedImage
+	global function ShGladiatorCards_OnDevnetBugScreenshot
 #endif
 
+#if SERVER 
+	global function Tracker_IsValidBadge
+#endif 
 
 global const int GLADIATOR_CARDS_NUM_BADGES = 3
 global const int GLADIATOR_CARDS_NUM_TRACKERS = 3
@@ -163,6 +167,14 @@ global enum eGladCardDisplaySituation
 	DEV_ANIMATED,
 
 	_COUNT, // highest prioity
+}
+
+global struct BadgeData
+{
+	int GUID
+	string SAID
+	bool devOnly
+	bool unlockable
 }
 
 table<int, bool> eGladCardDisplaySituation_IS_MOVING = {
@@ -357,6 +369,7 @@ struct FileStruct_LifetimeLevel
 	table<ItemFlavor, ItemFlavor> trackerCharacterMap
 
 	table<ItemFlavor, int> cosmeticFlavorSortOrdinalMap
+	table< int, BadgeData > registeredTrackerBadges
 
 	var currentMenuGladCardPanel
 	#if CLIENT
@@ -386,6 +399,8 @@ struct FileStruct_LifetimeLevel
 
 		array<MenuGladCardPreviewCommand> menuGladCardPreviewCommandQueue
 	#endif
+	
+	bool bAllUnlocked
 
 	#if DEVELOPER
 		bool DEV_forceEnabled = false
@@ -421,6 +436,7 @@ void function ShGladiatorCards_LevelInit()
 		AddCallback_OnYouRespawned( OnYouRespawned ) // for dev
 		AddCallback_OnPlayerLifeStateChanged( OnPlayerLifestateChanged )
 		AddCallback_PlayerClassChanged( OnPlayerClassChanged )
+		AddCreateCallback( "player", OnPlayerCreated )
 
 		AddCallback_GameStateEnter( eGameState.WinnerDetermined, OnWinnerDetermined )
 
@@ -434,6 +450,8 @@ void function ShGladiatorCards_LevelInit()
 	#endif
 
 	AddCallback_OnItemFlavorRegistered( eItemType.character, OnItemFlavorRegistered_Character )
+
+	RegisterAllTrackerBadges()
 
 	#if SERVER
 		for ( int trackerIndex = 0; trackerIndex < GLADIATOR_CARDS_NUM_TRACKERS; trackerIndex++ )
@@ -449,9 +467,87 @@ void function ShGladiatorCards_LevelInit()
 				continue
 			frameAsset.append( expect ItemFlavor(frameOrNull) )
 		}
+		
+		AddClientCommandCallbackNew( "save_badge", ClientCommand_SaveBadgeSlot )
 	#endif
+	
+	fileLevel.bAllUnlocked = GetCurrentPlaylistVarBool( "unlock_all_badges", false )
 }
 
+const array<string> BADGE_STAT_KEYS =
+[
+	"badge_1",
+	"badge_2",
+	"badge_3"
+]
+
+const array< string > statsToPreload = 
+[
+	"badge_1",
+	"badge_2",
+	"badge_3",
+	"isDev",
+	"should_show_dev_badge"
+]
+
+const array< string > FREE_BADGES =
+[
+	"SAID01673450061",
+	"SAID01774065557"
+]
+
+const array< string > EARNABLE_BADGES = 
+[
+	"SAID00097219464" //temp, const array must contain an item
+]
+
+const string DEV_BADGE = "SAID00097219464"
+
+void function RegisterAllTrackerBadges()
+{
+	RegisterTrackerBadge( DEV_BADGE, false, true )
+	
+	foreach( int idx, string badge in FREE_BADGES )
+		RegisterTrackerBadge( badge )
+		
+	foreach( int idx, string earnedBadge in EARNABLE_BADGES )
+		RegisterTrackerBadge( earnedBadge, true )
+}
+
+void function RegisterTrackerBadge( string SAID, bool unlockable = false, bool devOnly = false )
+{
+	int GUID = ConvertItemFlavorGUIDStringToGUID( SAID )
+	mAssert( GUID != 0, "Tried to register invalid badge id \"%d\"", GUID )
+
+	BadgeData badge
+	
+	badge.GUID 			= GUID 
+	badge.SAID			= SAID
+	badge.unlockable 	= unlockable
+	badge.devOnly		= devOnly
+	
+	fileLevel.registeredTrackerBadges[ GUID ] <- badge
+}
+
+BadgeData ornull function GetBadge( int GUID )
+{
+	if( GUID in fileLevel.registeredTrackerBadges )
+		return fileLevel.registeredTrackerBadges[ GUID ]
+		
+	return null
+}
+
+#if CLIENT
+
+	void function OnPlayerCreated( entity newPlayer )
+	{	
+		entity localPlayer = GetLocalClientPlayer()
+		if( newPlayer == localPlayer )
+			Tracker_PreloadStatArray( GetPlayerArray(), statsToPreload )
+		else
+			Tracker_PreloadStatArray( [ newPlayer ], statsToPreload )
+	}
+#endif
 
 #if UI
 void function ShGladiatorCards_LevelShutdown()
@@ -1510,6 +1606,110 @@ void function TriggerNestedGladiatorCardUpdate( NestedGladiatorCardHandle handle
 }
 #endif
 
+#if SERVER 
+	void function ClientCommand_SaveBadgeSlot( entity player, array<string> args )
+	{		
+		if( !CheckRate( player, "save_badge", 2, true ) )
+			return
+			
+		if( args.len() < 2 )
+			return 
+			
+		if( !BADGE_STAT_KEYS.contains( args[ 0 ] ) || !IsStringNumber( args[ 1 ] ) )
+		{
+			printl( "01" )
+			LocalMsg( player, "#INVALID_BADGE" )
+			return
+		}
+			
+		string playerUID 	= player.GetPlatformUID()
+		string param1 		= args[ 0 ]
+		int param2 			= args[ 1 ].tointeger()
+		
+		BadgeData ornull badge = GetBadge( param2 )
+		if( badge == null )
+		{
+					printl( "02" )
+			LocalMsg( player, "#INVALID_BADGE" )
+			return
+		}
+		
+		expect BadgeData ( badge )
+		
+		if( !IsValidItemFlavorGUID( badge.GUID ) )
+		{
+					printl( "03" )
+			LocalMsg( player, "#INVALID_BADGE" )
+			return
+		}
+		
+		if( badge.unlockable && !fileLevel.bAllUnlocked )
+		{
+			if( !GetPlayerStatArrayInt( playerUID, "unlocked_badges" ).contains( param2 ) )
+			{
+				LocalMsg( player, "#INVALID_BADGE_REQ", GetBadgeRequirementsToken( param2 ) )
+				return
+			}
+		}
+		
+		if( badge.devOnly && !GetPlayerStatBool( playerUID, "isDev" ) && !fileLevel.bAllUnlocked )
+		{
+			LocalMsg( player, "#DEV_ONLY" )
+			return
+		}
+		
+		switch( param1 )
+		{
+			case "badge_1":
+				SetPlayerStatInt( playerUID, "badge_1", param2 )
+				player.p.badge_1 = param2
+			break
+				
+			case "badge_2":
+				SetPlayerStatInt( playerUID, "badge_2", param2 )
+				player.p.badge_2 = param2
+			break
+			
+			case "badge_3":
+				SetPlayerStatInt( playerUID, "badge_3", param2 )
+				player.p.badge_3 = param2
+			break
+		}
+		
+		LocalMsg( player, "#BADGE_SAVED" )
+		
+		//sync to all 			
+	}
+	
+	string function GetBadgeRequirementsToken( int GUID )
+	{
+		return format( "#SAID%d", GUID )
+	}
+	
+	bool function Tracker_IsValidBadge( int GUID, string playerUID )
+	{
+		BadgeData ornull badge = GetBadge( GUID )
+		if( badge == null )
+			return false 
+		
+		expect BadgeData ( badge )
+			
+		if( !IsValidItemFlavorGUID( badge.GUID ) )
+			return false
+		
+		if( badge.unlockable && !fileLevel.bAllUnlocked )
+		{
+			if( !GetPlayerStatArrayInt( playerUID, "unlocked_badges" ).contains( GUID ) )
+				return false
+		}
+		
+		if( badge.devOnly && !GetPlayerStatBool( playerUID, "isDev" ) && !fileLevel.bAllUnlocked )
+			return false 
+			
+		return true
+	}
+#endif 
+
 
 #if CLIENT
 void function ActualUpdateNestedGladiatorCard( NestedGladiatorCardHandle handle )
@@ -1638,7 +1838,31 @@ void function ActualUpdateNestedGladiatorCard( NestedGladiatorCardHandle handle 
 			
 			if ( wantsBadges )
 			{
-				bool dev = IsValidPlayerForR5RDevBadge( FromEHI( handle.currentOwnerEHI ) )
+				entity badgePlayer = FromEHI( handle.currentOwnerEHI )
+				bool dev = IsValidPlayerForR5RDevBadge( badgePlayer )
+				
+				var shouldShowDevBadge_stat = Tracker_FetchStat( badgePlayer, "should_show_dev_badge" )
+				var badge_1_stat 			= Tracker_FetchStat( badgePlayer, "badge_1" )
+				var badge_2_stat			= Tracker_FetchStat( badgePlayer, "badge_2" )
+				var badge_3_stat			= Tracker_FetchStat( badgePlayer, "badge_3" )
+				
+				bool shouldShowDevBadge
+				int badge_1
+				int badge_2
+				int badge_3
+				
+				if( shouldShowDevBadge_stat != null )
+					shouldShowDevBadge = expect bool ( shouldShowDevBadge_stat )
+				
+				if( badge_1_stat != null )
+					badge_1 = expect int ( badge_1_stat )
+					
+				if( badge_2_stat != null )
+					badge_2 = expect int ( badge_2_stat )
+					
+				if( badge_3_stat != null )
+					badge_3 = expect int ( badge_3_stat )
+				
 				for ( int badgeIndex = 0; badgeIndex < GLADIATOR_CARDS_NUM_BADGES; badgeIndex++ )
 				{
 					ItemFlavor ornull badgeOrNull = null
@@ -1656,23 +1880,27 @@ void function ActualUpdateNestedGladiatorCard( NestedGladiatorCardHandle handle 
 						badgeOrNull = LoadoutSlot_GetItemFlavor( handle.currentOwnerEHI, badgeSlot )
 					}
 
-					/*switch( badgeIndex ) //test itemflavors
-					{
+					switch( badgeIndex ) //test itemflavors
+					{					
 						case 0:
-							if( dev )
-								badgeOrNull = GetItemFlavorByGUID( ConvertItemFlavorGUIDStringToGUID( "SAID00097219464" ) )
+							if( dev && shouldShowDevBadge )
+								badgeOrNull = GetItemFlavorByGUID( ConvertItemFlavorGUIDStringToGUID( DEV_BADGE ) )
+							else if( IsValidItemFlavorGUID( badge_1 ) )
+								badgeOrNull = GetItemFlavorByGUID( badge_1 )
 						
 						break
 
 						case 1:
-						badgeOrNull = GetItemFlavorByGUID( ConvertItemFlavorGUIDStringToGUID( "SAID01673450061" ) )
+						badgeOrNull = IsValidItemFlavorGUID( badge_2 ) ? GetItemFlavorByGUID( badge_2 ) : null
+						//badgeOrNull = GetItemFlavorByGUID( ConvertItemFlavorGUIDStringToGUID( "SAID01673450061" ) )
 						break
 
 						case 2:
-						badgeOrNull = GetItemFlavorByGUID( ConvertItemFlavorGUIDStringToGUID( "SAID01774065557" ) )
+						badgeOrNull = IsValidItemFlavorGUID( badge_3 ) ? GetItemFlavorByGUID( badge_3 ) : null
+						//badgeOrNull = GetItemFlavorByGUID( ConvertItemFlavorGUIDStringToGUID( "SAID01774065557" ) )
 						overrideDataIntegerOrNull = 100
 						break
-					}*/
+					}
 
 					if ( badgeOrNull != null )
 					{
@@ -1875,24 +2103,24 @@ bool function IsValidPlayerForR5RDevBadge( entity player )
 		return IsValidPlayerForR5RDevBadge_NoTracker( player )
 	}
 	
-	if( !Tracker_StatExists( player, "isDev" ) )
-	{
-		Tracker_PreloadStat( player, "isDev" )
+	// if( !Tracker_StatExists( player, "isDev" ) )
+	// {
+		// Tracker_PreloadStat( player, "isDev" )
 		
-		float startTime = Time()
-		while( !Tracker_StatExists( player, "isDev" ) )
-		{
-			WaitFrame()
-			if( Time() > startTime + MAX_PRELOAD_TIMEOUT )
-			{
-				#if DEVELOPER 
-					printw( "Timeout while waiting for isDev stat from player", player )
-				#endif 
+		// float startTime = Time()
+		// while( !Tracker_StatExists( player, "isDev" ) )
+		// {
+			// WaitFrame()
+			// if( Time() > startTime + MAX_PRELOAD_TIMEOUT )
+			// {
+				// #if DEVELOPER 
+					// printw( "Timeout while waiting for isDev stat from player", player )
+				// #endif 
 				
-				break
-			}
-		}
-	}
+				// break
+			// }
+		// }
+	// }
 	
 	var isDev = Tracker_FetchStat( player, "isDev" )
 	
@@ -1915,7 +2143,7 @@ bool function IsValidPlayerForR5RDevBadge_NoTracker( entity player )
 	switch( player.GetPlayerName() )
 	{
 		case "r5r_CafeFPS":
-		case "ttvmkos":
+		case "R5mkos":
 		case "zee_x64":
 		case "amos_x64":
 		case "rexx_x64":

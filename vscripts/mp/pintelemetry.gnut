@@ -5185,6 +5185,8 @@ void function BotInvis( entity bot )
 	bot.NotSolid()
 	bot.Hide()
 	SetTeam( bot, 119 )
+	
+	bot.SetPlayerNetBool( "stats_loaded", true )
 }
 
 void function PIN_PlayerLeft( entity player, string reason )
@@ -5615,9 +5617,9 @@ bool function bAfkToRest(){ return file.afk_to_rest_enabled }
 
 void function ClientCommand_RequestStat( entity player, array<string> args )
 {
-	#if DEVELOPER
-		//PrintStringArray( args )
-	#endif
+	// #if DEVELOPER
+		// print_string_array( args )
+	// #endif
 	
 	if( args.len() < 2 )
 	{
@@ -5628,24 +5630,22 @@ void function ClientCommand_RequestStat( entity player, array<string> args )
 	string lookupEHandle = args[ 0 ]
 	if( !IsStringNumeric( lookupEHandle ) )
 	{
-		StatFailed( player )
-		
 		#if DEVELOPER
 			printw( "lookupEHandle not numeric" )
-		#endif 
+		#endif
 		
+		StatFailed( player )
 		return 
 	}
 		
 	entity lookupPlayer = GetEntityFromEncodedEHandle( lookupEHandle.tointeger() )
 	if( !IsValid( lookupPlayer ) )
-	{
-		StatFailed( player )
-		
+	{		
 		#if DEVELOPER 
 			printw( "lookup player not valid" )
 		#endif
 		
+		StatFailed( player )
 		return
 	}
 	
@@ -5662,12 +5662,11 @@ void function ClientCommand_RequestStat( entity player, array<string> args )
 	string statname = args[ 1 ]
 	if( empty( statname ) )
 	{
-		StatFailed( player )
-		
 		#if DEVELOPER 
 			print( "Statname was empty" )
 		#endif 
 		
+		StatFailed( player )			
 		return 
 	}
 		

@@ -35,8 +35,8 @@ WeaponData
 
 
 	// Ammo
-	"ammo_clip_size"   								"100"
-	"ammo_default_total"							"0"
+	"ammo_clip_size"   								"1"
+	"ammo_default_total"							"1"
 	"ammo_display"									"count"
 	"ammo_min_to_fire"								"1"
 	"ammo_per_shot"									"1"
@@ -75,7 +75,7 @@ WeaponData
                                   
                                                                                        
      
-	"allow_empty_fire"								"0" //Original MRB setting
+	"allow_empty_fire"								"1"
       
 	"reload_enabled"								"0"
 	"empty_reload_only"   							"0"

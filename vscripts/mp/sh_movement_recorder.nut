@@ -550,12 +550,15 @@ bool function ClientCommand_PlayAnimInSlot( entity player, array<string> args )
 	if( !IsValid( player ) )
 		return false
 		
+	if( !CheckRate( player, "play_anim", COMMAND_RATE_LIMIT, true ) ) //(mk)todo: verify
+		return true
+		
 	if( args.len() == 0 )
 		return false
 	
 	int slot = 0
 	
-	if( IsStringNumeric( args[ 0 ] ) ) //Todo(mk): potentially add a debounce
+	if( IsStringNumeric( args[ 0 ] ) )
 	{
 		slot = args[ 0 ].tointeger()
 	}

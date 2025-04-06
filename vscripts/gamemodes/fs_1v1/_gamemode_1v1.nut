@@ -1415,15 +1415,17 @@ bool function ClientCommand_mkos_challenge(entity player, array<string> args)
 			
 			return true
 			
-		case "legend": //Todo(mk): Add a debounce
-		
+		case "legend":
+					
 			if( !settings.bAllowLegend )
 			{
 				LocalMsg( player, "#FS_DisabledLegends")
 				return true
 			}
 			
-			//because we don't want to have to update the client always,
+			if( !CheckRate( player, "legend_select", 1, true ) )
+				return true
+			
 			//this param comes as a clientcommand with the legend guid ref
 			string param2 = ""
 			if( args.len() > 2 )

@@ -154,12 +154,12 @@
         "ammo_stockpile_max"                        "60"
         "ammo_clip_size"                            "0"
 
-        "damage_near_value"                         "25"
-        "damage_far_value"                          "25"
-        "damage_very_far_value"                     "25"
-        "damage_near_value_titanarmor"              "25"
-        "damage_far_value_titanarmor"               "25"
-        "damage_very_far_value_titanarmor"          "25"
+        "damage_near_value"                         "30"
+        "damage_far_value"                          "30"
+        "damage_very_far_value"                     "30"
+        "damage_near_value_titanarmor"              "30"
+        "damage_far_value_titanarmor"               "30"
+        "damage_very_far_value_titanarmor"          "30"
       
                                                     
                                                       
@@ -180,7 +180,7 @@
 
 
 
-    "low_ammo_fraction"                         "0.0"
+    "low_ammo_fraction"                         "0.100000"
     "ammo_per_shot"                             "1"
     "ammo_min_to_fire"                          "1"
     "ammo_no_remove_from_stockpile"             "0"
@@ -536,9 +536,11 @@
 	"golden_horse_purple_growth"            "0.05"
 	"golden_horse_purple_whiff"             "6.0"
       
-	"sway_rotate_attach_zoomed" ""
-	"sway_rotate_attach" ""
+	"sway_rotate_attach_zoomed" "SWAY_ROTATE_ZOOMED"
+	"sway_rotate_attach" "SWAY_ROTATE"
 
+
+	"headshot_distance"	"11828"
 	"Mods"
 	{
 		crate	    {}

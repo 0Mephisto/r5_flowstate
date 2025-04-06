@@ -430,7 +430,11 @@ struct
 		"#FS_SETTING_SET",
 		"#FS_TEAMCMD_ERR_01",
 		"#FS_TEAMS_DISABLED",
-		"#FS_NOT_ON_A_TEAM"
+		"#FS_NOT_ON_A_TEAM",
+		"#INVALID_BADGE",
+		"#INVALID_BADGE_REQ",
+		"#DEV_ONLY",
+		"#BADGE_SAVED"	
 	]
 	
 } file

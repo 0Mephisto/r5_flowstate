@@ -25,8 +25,8 @@ WeaponData
 
 	"cooldown_type"									"chargeFrac"
     "cooldown_time"	                                "0.16" // actually, "blowoff animation time"
-    "charge_time"                                   "2.4"  // while holding trigger, time until weapon overheats
-    "charge_cooldown_time"                          "3.63"  // controls length of overheat anim (along with delay)
+    "charge_time"                                   "2.200000"
+    "charge_cooldown_time"                          "1.190000"
     "charge_cooldown_delay"                         "0.08"
 	"charge_overheats_when_full"                    "1"
 	"charge_weapon_fires_while_charging"            "1"
@@ -148,11 +148,11 @@ WeaponData
 	"npc_lead_projectiles"							"1"
 
     // Hipfire Spread
-   "spread_stand_hip"								"1.5"
-    "spread_stand_hip_run"							"2.0"
-    "spread_stand_hip_sprint"                       "3.0"
-    "spread_crouch_hip"   							"1.25"
-    "spread_air_hip"  								"4.0"
+   "spread_stand_hip"								"2.500000"
+    "spread_stand_hip_run"							"3.000000"
+    "spread_stand_hip_sprint"                       "4.000000"
+    "spread_crouch_hip"   							"2.250000"
+    "spread_air_hip"  								"5.000000"
 
     "spread_kick_on_fire_stand_hip"   				"0.2"
     "spread_kick_on_fire_crouch_hip"  				"0.2"
@@ -254,8 +254,8 @@ WeaponData
 	"sway_rotate_attach_blend_time_zoomed"			"0.2"
 	"sway_rotate_gain_zoomed"						"5"
 
-	"sway_min_yaw_zoomed"							"-0.04"
-	"sway_max_yaw_zoomed"							"0.04"
+	"sway_min_yaw_zoomed"							"-0.030000"
+	"sway_max_yaw_zoomed"							"0.030000"
 	"sway_turn_left_rotate_yaw_zoomed"				"-0.085"
 	"sway_turn_right_rotate_yaw_zoomed"				"0.085"
 
@@ -267,8 +267,8 @@ WeaponData
 	"sway_move_right_rotate_roll_zoomed" 			"0.2"
 	"sway_move_left_rotate_roll_zoomed"  			"-0.2"
 
-	"sway_min_pitch_zoomed"  						"-0.03"
-	"sway_max_pitch_zoomed"  						"0.03"
+	"sway_min_pitch_zoomed"  						"-0.015000"
+	"sway_max_pitch_zoomed"  						"0.015000"
 	"sway_turn_up_rotate_pitch_zoomed"				"0.07"
 	"sway_turn_down_rotate_pitch_zoomed"			"-0.07"
 
@@ -276,13 +276,13 @@ WeaponData
 	"sprintcycle_time"								"0"
 
     // Viewkick
-	"viewkick_pattern"                              "lstar_2"
+	"viewkick_pattern"                              "lstar_4"
 
     "viewkick_spring" 								"lstar_vkp"
     "viewkick_spring_hot"                           "lstar_vkp_hot"
 
     "viewkick_spring_heatpershot"                   "1.0"
-    "viewkick_spring_cooldown_holdtime"             "0.09"
+    "viewkick_spring_cooldown_holdtime"             "0.110000"
     "viewkick_spring_cooldown_fadetime"             "0.05"
 
     "viewmodel_spring_jolt"                          "autofire_viewmodel_jolt"
@@ -293,13 +293,13 @@ WeaponData
 
 	"viewkick_pitch_base" 							"1.0"
 	"viewkick_pitch_random"   						"1.0"
-	"viewkick_pitch_softScale"						"2.0"
+	"viewkick_pitch_softScale"						"2.600000"
 	"viewkick_pitch_hardScale"						"0.4"
 
 	"viewkick_yaw_base"   							"1.0"
 	"viewkick_yaw_random" 							"1.0"
 	"viewkick_yaw_random_innerexclude"				"0.05"
-	"viewkick_yaw_softScale"  						"2.2"
+	"viewkick_yaw_softScale"  						"2.100000"
 	"viewkick_yaw_hardScale"  						"0.3"
 
 	"viewkick_roll_base"  							"-1.6"
@@ -324,8 +324,8 @@ WeaponData
 	"viewkick_scale_yaw_valueLerpStart"   			"5"
 	"viewkick_scale_pitch_valueLerpEnd" 			"0"
 	"viewkick_scale_yaw_valueLerpEnd" 				"5"
-	"viewkick_scale_valueDecayDelay"  				"0.1"
-    "viewkick_scale_valueDecayRate"   				"60"
+	"viewkick_scale_valueDecayDelay"  				"0.550000"
+    "viewkick_scale_valueDecayRate"   				"160"
 
 	"viewkick_perm_pitch_base" 						"0"
 	"viewkick_perm_pitch_random"   					"0"
@@ -364,12 +364,12 @@ WeaponData
     "chance_for_bonus_last_shot_in_clip"			"0"
     "critical_hit"									"1"
 
-	"ammo_clip_size" "24"
+	"ammo_clip_size" "0"
 	"ammo_no_remove_from_stockpile" "1"
 	"uses_ammo_pool" "1"
 	"low_ammo_fraction" "0.005000"
-	"ammo_stockpile_max" "80"
-	"ammo_default_total" "120"
+	"ammo_stockpile_max" "0"
+	"ammo_default_total" "0"
 	
 	"ammo_min_to_fire"								"1"
 	"ammo_per_shot"		    						"1"
@@ -378,19 +378,19 @@ WeaponData
 
     "aimassist_adspull_weaponclass"					"none"
 
-    "damage_near_value"   							"18"
-    "damage_far_value"								"18"
-    "damage_very_far_value"							"18"
-    "damage_near_value_titanarmor"					"18"
-    "damage_far_value_titanarmor" 					"18"
-    "damage_very_far_value_titanarmor" 				"18"
+    "damage_near_value"   							"19"
+    "damage_far_value"								"19"
+    "damage_very_far_value"							"19"
+    "damage_near_value_titanarmor"					"19"
+    "damage_far_value_titanarmor" 					"19"
+    "damage_very_far_value_titanarmor" 				"19"
 
     "damage_rodeo" 									"100"
     "explosion_damage"								"30"
     "damage_near_distance"							"1500"
     "damage_far_distance" 							"2500"
     "damage_very_far_distance"						"5000"
-    "damage_headshot_scale"							"1.50"
+    "damage_headshot_scale"							"1.250000"
     "damage_leg_scale"	    						"0.85"
     "critical_hit_damage_scale"						"1.5"
 
@@ -436,8 +436,8 @@ WeaponData
 	"zoom_time_in"                                  "0.34"
 	"zoom_time_out"                                 "0.3"
 	"zoom_fov"										"55"
-	"reload_time" 									"0.00001"
-	"reloadempty_time"								"0.00001"
+	"reload_time" 									"3.260000"
+	"reloadempty_time"								"3.260000"
 	//"reloadempty_time_late1"						"4.7"
 	//"reloadempty_time_late2"						"3.5"
 	//"reloadempty_time_late3"						"2.5"

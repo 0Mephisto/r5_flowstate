@@ -73,12 +73,12 @@ WeaponData
 	"low_ammo_sound_name_1"							"car_LowAmmo_Shot1"
 
 	"damage_type" 									"bullet"
-	"damage_near_value"   							"15"
-    "damage_far_value"								"15"
-    "damage_very_far_value"							"15"
-    "damage_near_value_titanarmor"					"15"
-    "damage_far_value_titanarmor" 					"15"
-    "damage_very_far_value_titanarmor" 				"15"
+	"damage_near_value"   							"16"
+    "damage_far_value"								"16"
+    "damage_very_far_value"							"16"
+    "damage_near_value_titanarmor"					"16"
+    "damage_far_value_titanarmor" 					"16"
+    "damage_very_far_value_titanarmor" 				"16"
     "damage_rodeo" 									"110"
 
    	"ammo_clip_size"   								"20"
@@ -240,6 +240,17 @@ WeaponData
 	"viewmodel_ads_rui_bottomleft_attachment"	"RUI_BL_CROSSHAIR_PDW"
 	"viewmodel_ads_centerpoint_attachment"      "ADS_CENTER_SIGHT_PDW"
 
+
+	"damage_shield_scale"	"1"
+	"damage_headshot_scale"	"1.200000"
+	"damage_leg_scale"	"0.800000"
+	"critical_hit"	"1"
+	"critical_hit_damage_scale"	"2"
+	"titanarmor_critical_hit_required"	"1"
+	"damage_near_distance"	"900"
+	"damage_far_distance"	"1500"
+	"damage_very_far_distance"	"3500"
+	"headshot_distance"	"1500"
 	Mods
 	{
 		barrel_synchronizer
