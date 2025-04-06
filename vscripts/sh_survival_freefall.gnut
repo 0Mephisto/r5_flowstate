@@ -620,7 +620,7 @@ void function PlayerSkyDive( entity player, vector driverViewVector, array<entit
 	PlayerSkydiveThirdPersonEnable( player )
 
 	//player.NotSolid()
-	//player.ForceStand()
+	player.ForceStand()
 
 	// Jump Jet FX (Last entire jump duration)
 	vector smokeColor = GetSkydiveSmokeColorForTeam( player.GetTeam() )
@@ -1383,7 +1383,7 @@ void function DisableSkydiveThirdPerson( entity player )
 
 	player.ClearTrackEntitySettings()
 	player.Solid()
-	// player.UnforceStand()
+	player.UnforceStand()
 
 	vector velocity = player.GetVelocity()
 
