@@ -309,9 +309,10 @@ global function SpawnSystem_GetPakInfoForKey				// string function SpawnSystem_G
 	const float HIGHLIGHT_SPAWN_DELAY 	= 7.0
 	const int SPAWN_POSITIONS_BUDGET 	= 210
 	const float DOOR_SCAN_RADIUS		= 100
-	const bool DEBUG_SPAWN_TRACE		= true
 	const int MAX_SPAWN_INFO_LENGTH	= 255
 	const string FILE_NAME_REGEX		= "^[A-Za-z0-9._\\-]+$"
+	
+	const bool DEBUG_SPAWN_TRACE		= false
 	
 	//These are alias defines, not toggles.
 	const bool REMOVE 	= true 

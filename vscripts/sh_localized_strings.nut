@@ -42,7 +42,7 @@ global function GetLocalizedStringsCount
 	#endif 
 #endif
 
-	const ASSERT_LOCALIZATION = true
+	const ASSERT_LOCALIZATION = false
 	const DEBUG_VARMSG = false
 
 global enum eMsgUI
@@ -383,7 +383,54 @@ struct
 		"#HUB_CANT_USE_TIMER_RUNNING",
 		"#FS_KIDNAPPED",
 		"#FS_REMOVED_PORTAL",
-		"#FS_REMOVED_PORTAL_DESC"
+		"#FS_REMOVED_PORTAL_DESC",
+		
+		/* (mk): Added 4/5/2025 */
+		
+		"#FS_TEAMHELP",
+		"#FS_IN_TEAM",
+		"#FS_ERR_CMD_PARAM_LEN",
+		"#FS_INVALID_TEAM",
+		"#FS_PLAYER_NOT_OWNER",
+		"#FS_TEAM_FULL",
+		"#FS_JOIN_REQUEST_COOLDOWN",
+		"#FS_NOT_IN_TEAM",
+		"#FS_PLAYER_LEFT_TEAM",
+		"#FS_PLAYER_JOINED_TEAM",
+		"#FS_YOU_JOINED_TEAM",
+		"#FS_FAILED_JOIN_TEAM",
+		"#FS_NEW_JOIN_REQUEST",
+		"#FS_JOIN_REQUEST_SENT",
+		"#FS_LEFT_TEAM",
+		"#FS_FAILED_LEAVE_TEAM",
+		"#FS_JOIN_REQ_FAILED",
+		"#FS_TEAMNAME_MAXLEN",
+		"#FS_TEAM_CREATED",
+		"#FS_FAILED_CREATETEAM",
+		"#FS_TEAMINFO_ERR",
+		"#FS_ALL_TEAMS",
+		"#FS_TEAM_INFO",
+		"#FS_HELP_INFO",
+		"#FS_TEAM_DISMANTLED",
+		"#FS_JOIN_REQ",
+		"#FS_TEAMS_CMDHLP_01",
+		"#FS_TEAMS_FAIL_REQ",
+		"#FS_INV_REQ_PLAYER",
+		"#FS_REQ_REVOKED",
+		"#FS_INV_TEAM_PLAYER",
+		"#FS_TEAMKICK_FAIL",
+		"#FS_PLAYER_NOT_ON_TEAM",
+		"#FS_PLAYER_CAPTAIN_ERR",
+		"#FS_ADDED_CAPTAIN",
+		"#FS_TEAM_SETTINGS",
+		"#FS_NOT_CAPTAIN",
+		"#FS_INV_TEAM_SETTING",
+		"#FS_SAME_SETT_VALUE",
+		"#FS_INV_SETT_VALUE",
+		"#FS_SETTING_SET",
+		"#FS_TEAMCMD_ERR_01",
+		"#FS_TEAMS_DISABLED",
+		"#FS_NOT_ON_A_TEAM"
 	]
 	
 } file
@@ -450,7 +497,7 @@ string function StringReplaceLimited( string baseString, string searchString, st
 {
 	#if ASSERT_LOCALIZATION
 		mAssert( searchString.len() > 0, "cannot use StringReplaceLimited with an empty searchString" )
-	#endif 
+	#endif
 	
 	string newString = ""
 

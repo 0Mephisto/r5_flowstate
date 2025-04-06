@@ -283,7 +283,7 @@ void function RealisticMode_GivePlayerBonusHeals( entity player, bool spawn = fa
 
 void function Realistic_OnWeaponAttachmentChanged( entity player, entity weapon, string modToAdd, string modToRemove )
 {
-	if( !CheckRate( player, false, 0.05 ) )
+	if( !CheckRate( player, "attachment_change", 0.05, false ) )
 		return
 		
 	//(mk):only intended for realistic ttv mode 		

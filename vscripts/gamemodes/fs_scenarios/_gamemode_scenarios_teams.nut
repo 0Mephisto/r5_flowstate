@@ -641,7 +641,7 @@ void function FS_Scenarios_CustomTeamCmd( entity player, array<string> args ) //
 			return
 		
 		case "list":
-			if( !CheckRate( player, true, 1.5 ) )
+			if( !CheckRate( player, "verbose_stream", 2.0, true ) )
 				return
 				
 			string listInfo = GetAllTeamsListString()
@@ -654,7 +654,7 @@ void function FS_Scenarios_CustomTeamCmd( entity player, array<string> args ) //
 			return
 		
 		case "info":
-			if( !CheckRate( player, true, 1.5 ) )
+			if( !CheckRate( player, "verbose_stream", 2.0, true ) )
 				return
 			
 			CustomTeam ornull potentialTeam
@@ -711,7 +711,7 @@ void function FS_Scenarios_CustomTeamCmd( entity player, array<string> args ) //
 		
 		case "join":
 		
-			if( !CheckRate( player, false, 5.0 ) )
+			if( !CheckRate( player, "join_team", 5.0, true ) )
 			{
 				LocalMsg_TEMP( player, "#TMP_7" )
 				return 

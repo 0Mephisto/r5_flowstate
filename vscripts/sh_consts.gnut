@@ -8,18 +8,21 @@ global string FLOWSTATE_VERSION = "v4.5"
 global const FLOWSTATE_HWLTM_SHIELD_AMOUNT = 25
 global const int BOOSTZONE_ALIVE_TIME = 15
 
-global const SCRIPT_GAME_VERSION__RELEASE = true
+global const SCRIPT_GAME_VERSION__RELEASE = true  //not used currently
 
 //r5r.dev
 global const bool TRACKER 					= false
 global const bool HAS_TRACKER_DLL 			= false
 
 //
-global const bool MULTIPLAYER_DEBUG_PRINTS 	= false
-global const bool NOTIFY_RATELIMIT_FAILED	= false
-global const bool MKOS						= false
+global const bool MULTIPLAYER_DEBUG_PRINTS 	= false // Toggles print console message to all players where used (printm).
+global const bool MKOS						= false 
 global const bool ENTITYVAR_DEPRECATED		= false //Todo(mk): fully remove this deprecated system
 
+global const string DEFAULT_RATE_KEY 		= "default"
+global const bool NOTIFY_RATELIMIT_FAILED	= false
+global const float COMMAND_RATE_LIMIT 		= 0.200 //default value unless manually specified with CheckRate()
+global const bool DISABLE_NETINFO 			= true //net_showpeaks  (when in dev mode)
 
 //////////////////////////////////////////////////////////////
 // (mk): This enables network registration debug system. 
@@ -30,7 +33,7 @@ global const bool ENTITYVAR_DEPRECATED		= false //Todo(mk): fully remove this de
 // There is also a 'VERBOSE_NET_PRINTS' toggle in 
 //  sh_net_wrapper.gnut for more prints
 //////////////////////////////////////////////////////////////
-global const bool DEBUG_REMOTE_FUNCS 		= true
+global const bool DEBUG_REMOTE_FUNCS 		= false
 //////////////////////////////////////////////////////////////
 
 

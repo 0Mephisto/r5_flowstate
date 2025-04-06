@@ -6,13 +6,16 @@ global function ScriptRemote_RegisterClientFunction 				//wrapper for Remote_Reg
 global function ScriptRemote_RegisterUIFunction 					//wrapper for Remote_RegisterUIFunction
 global function ScriptRemote_RegisterUntypedFunction_deprecated 	//wrapper for Remote_RegisterUntypedFunction_deprecated
 
-global function PrintNetworkFunctions
-global function TestNetworkedVarLimit
 global function DebugRemoteFunctionsInit
 
+#if DEBUG_REMOTE_FUNCS
+	global function PrintNetworkFunctions
+	global function TestNetworkedVarLimit
+#endif
+
+const bool VERBOSE_NET_PRINTS		= false //this will print functions/vars in the order they are called.
 
 #if DEBUG_REMOTE_FUNCS
-	const bool VERBOSE_NET_PRINTS	= false //this will print functions/vars in the order they are called.
 	const int MAX_ENTRIES			= 256  //must stay in sync with native
 	const int MAX_BUFFER			= 2048 //must stay in sync with native
 	
@@ -328,24 +331,24 @@ void function DebugRemoteFunctionsInit()
 const int REQUIRED_VARS_OFFSET = 3
 void function ScriptRegisterNetworkedVariable( ... )
 {
+	int iterOffset = 0	
+	if( typeof vargv[ 0 ] == "array" )
+	{
+		if( !IsValidToRun( vargv[ 0 ] ) )
+		{
+			#if VERBOSE_NET_PRINTS
+				printf( "var \"%s\" is not valid to register for current playlist", expect string( vargv[ 1 ] ) )
+			#endif
+			
+			return
+		}
+		else
+			iterOffset = 1
+	}
+
 	#if DEBUG_REMOTE_FUNCS
 		if( file.haltRegistration )
 			return 
-			
-		int iterOffset = 0	
-		if( typeof vargv[ 0 ] == "array" )
-		{
-			if( !IsValidToRun( vargv[ 0 ] ) )
-			{
-				#if VERBOSE_NET_PRINTS
-					printf( "var \"%s\" is not valid to register for current playlist", expect string( vargv[ 1 ] ) )
-				#endif
-				
-				return
-			}
-			else
-				iterOffset = 1
-		}
 			
 		string varName 	= expect string( vargv[ iterOffset ] )
 		string category = IntToNetVarCat( expect int( vargv[ iterOffset + 1 ] ) )

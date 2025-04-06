@@ -790,8 +790,8 @@ void function FS_LG_PlayerStartShooting( entity player, entity weapon, string we
 	if ( !IsValid( player ) || !IsValid( weapon ) || weapon.GetWeaponClassName() != "mp_weapon_lightninggun" )
 		return
 		
-	#if DEVELOPER && !MKOS
-		printw( "LGUN - LASER CREATED", player, weapon, weaponName, ammoUsed, attackOrigin, attackDir )
+	#if DEVELOPER
+		//printw( "LGUN - LASER CREATED", player, weapon, weaponName, ammoUsed, attackOrigin, attackDir )
 	#endif
 
 	thread FS_LG_PlayerStartShooting_Thread( player, weapon ) //change no auto to a remote funct to play fx, use attackDir instead. Cafe

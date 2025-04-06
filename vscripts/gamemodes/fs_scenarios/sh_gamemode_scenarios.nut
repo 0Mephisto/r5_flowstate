@@ -515,7 +515,7 @@ void function FS_Scenarios_UpdatePlayerScore( entity player, int event, entity v
 				notify = false
 		}
 		
-		if( !CheckRate( player, notify, 5 ) )
+		if( !CheckRate( player, "scenarios_standings", 5.0, notify ) )
 			return true
 			
 		ScenariosPersistence_SendStandingsToClient( player )

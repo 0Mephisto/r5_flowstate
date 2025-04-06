@@ -1115,7 +1115,7 @@ void function Gamemode1v1_ForceRest( entity player )
 
 bool function ClientCommand_mkos_challenge(entity player, array<string> args)
 {
-	if ( !CheckRate( player, true ) ) 
+	if ( !CheckRate( player, "chal", COMMAND_RATE_LIMIT, true ) ) 
 		return true
 		
 	if( GetTDMState() != eTDMState.IN_PROGRESS )

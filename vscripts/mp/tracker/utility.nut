@@ -1,8 +1,8 @@
-untyped //needed for sqwarning
+untyped //needed for sqwarning																		//mkos
 
-																//~mkos
 //player util
 global function CheckRate
+global function ResetRate
 global function GetPlayer
 global function GetPlayerEntityByUID
 global function GetPlayerEntityByName
@@ -77,7 +77,7 @@ struct
 	//client command: show
 		bool function ClientCommand_mkos_return_data( entity player, array<string> args )
 		{
-			if ( !CheckRate( player ) ) 
+			if ( !CheckRate( player, "verbose_stream", 3.0, true ) ) 
 				return false
 			
 			if ( args.len() < 1)
@@ -684,12 +684,14 @@ struct
 							
 			case "sayto": 
 		
-							if ( param4 == "" || !IsStringNumeric( param4 ) )
-							{			
+							if ( param4 == "" || !IsStringNumeric( param4 ) )		
 								param4 = "3"		
-							} 	
-								try	
-								{	
+								
+							if( param3 != "" && param2 == "" )
+								param2 = " "
+								
+								try
+								{
 									entity to_player = GetPlayer(param)	
 									
 									if( IsValid( to_player ) )
@@ -713,7 +715,7 @@ struct
 							}			
 							
 							try 
-							{		
+							{
 								entity b_player
 								string b_playeroid
 								string b_reason = param2	
@@ -2339,12 +2341,15 @@ void function print_var_array( array<var> arr )
 }
 
 //Returns false on limited. 
-bool function CheckRate( entity player, bool notify = NOTIFY_RATELIMIT_FAILED, float rate = COMMAND_RATE_LIMIT )
+bool function CheckRate( entity player, string key = DEFAULT_RATE_KEY, float rate = COMMAND_RATE_LIMIT, bool notify = NOTIFY_RATELIMIT_FAILED )
 {	
 	if ( !IsValid( player ) ) 
 		return false 
 			
-	if ( Time() - player.p.ratelimit <= rate )
+	if( !( key in player.p.rateLimitTable ) )
+		player.p.rateLimitTable[ key ] <- 0
+			
+	if ( Time() - player.p.rateLimitTable[ key ] <= rate )
 	{
 		if( notify )
 			LocalEventMsg( player, "#FS_CMD", "", 2 )
@@ -2352,13 +2357,16 @@ bool function CheckRate( entity player, bool notify = NOTIFY_RATELIMIT_FAILED, f
 		return false
 	}
 	
-	player.p.ratelimit = Time()	
+	player.p.rateLimitTable[ key ] = Time()	
 	return true
 }
 
-void function ResetRate( entity player )
+void function ResetRate( entity player, string key = DEFAULT_RATE_KEY )
 {
-	player.p.ratelimit = 0
+	if( !( key in player.p.rateLimitTable ) )
+		player.p.rateLimitTable[ key ] <- 0.0
+	else		
+		player.p.rateLimitTable[ key ] = 0.0
 }
 
 #if SERVER	

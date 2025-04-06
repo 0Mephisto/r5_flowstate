@@ -71,7 +71,7 @@ const string KNOCKED_SOUND = "flesh_bulletimpact_downedshot_3p_vs_3p"
 //fix debug draws calls
 const bool DEBUG_PLANE_PATH = false
 const bool DEBUG_PLANE_PATH_LIGHTWEIGHT = false
-const bool DEBUG_PLANE_PATH_JUMP = true
+const bool DEBUG_PLANE_PATH_JUMP = false
 const bool PLANE_PATH_DEBUG = false
 
 global float g_DOOR_OPEN_TIME = 0

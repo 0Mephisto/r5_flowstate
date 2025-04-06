@@ -5337,6 +5337,7 @@ bool function ClientCommand_GiveWeapon(entity player, array<string> args)
 	}
 	
 	#if DEVELOPER 
+		printl( "==ClientCommand_GiveWeapon==" )
 		print_string_array( args )
 	#endif
 
@@ -5512,7 +5513,7 @@ bool function ClientCommand_GiveWeapon(entity player, array<string> args)
 		LocalMsg( player, "#FS_WEAPONSAVED", subToken, uiType, 5, sWepName )
 			
 		if (bRestFlag)
-			HolsterAndDisableWeapons( player )
+			HolsterAndDisableWeapons_Raw( player )
 
     return true
 }
@@ -5780,12 +5781,12 @@ bool function ClientCommand_ResetSavedWeapons( entity player, array<string> args
 	return true
 }
 
-bool function ClientCommand_NextRound(entity player, array<string> args)
+bool function ClientCommand_NextRound( entity player, array<string> args )
 {
 	if ( !CheckRate( player ) ) 
 		return false
 	
-	if( !IsAdmin( player) || args.len() == 0 ) //checkrate already checks for validity
+	if( ( !IsAdmin( player) && !IsServerAdmin( player.p.UID ) ) || args.len() == 0 ) //checkrate already checks for validity
 		return false
 	
 	if (args[0] == "now")

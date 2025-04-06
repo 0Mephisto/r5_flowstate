@@ -860,6 +860,28 @@ table<string,int> function GetMutedList()
 	return file.mutedPlayers
 }
 
+/*
+	Timestring:
+	
+		A time string consists of:
+			- 1: how much  2:of what
+
+		A time string can be any combination of, multiples of, omissions of:
+	
+			- year/years
+			- month/months
+			- day/days
+			- hour/hours
+			- minutes/mins/min/minute
+			- second/secs/sec/second
+
+
+		Valid time string example:
+			- "1 min 2 min 5 seconds"
+
+		This results in a produced time of three minutes, and five seconds. 
+*/
+
 int function ParseTimeString( array<string> args )
 {
 	int argLen = args.len()
@@ -1210,43 +1232,6 @@ void function SetupForTiers( entity player )
 	else 
 		file.offenceLevel[ player.p.UID ] = 0
 }
-
-// bool function SetRelayChallenge( entity player, array<string> args )
-// {
-	// if( !IsValid( player ) )
-		// return false
-	
-	// if( args.len() < 1 )
-		// return true
-	
-	// string challengeCode = args[0]
-	
-	// if( !IsStringNumeric( challengeCode, 10000000, 99999999 ) )
-		// return true
-	
-	// if( challengeCode.len() != 8 )
-		// return true
-	
-	// int compCode = -1
-	
-	// try
-	// {
-		// compCode = challengeCode.tointeger()
-	// }
-	// catch(e){ return true }
-	
-	// if( compCode != player.p.relayChallengeCode )
-	// {
-		// return true 
-	// }
-	// else
-	// {
-		// player.p.bRelayChallengeState = true
-		// player.Signal( "ChallengeReceived" )
-	// }
-	
-	// return true
-// }
 
 void function ChatWatchdog( entity player, array<string> args )
 {
