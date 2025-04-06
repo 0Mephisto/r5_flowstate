@@ -100,17 +100,6 @@ struct {
 
 void function Cl_GamemodeSND_Init()
 {
-	SetConVarInt("cl_quota_stringCmdsPerSecond", 200)
-	//I don't want these things in user screen even if they launch in debug
-	SetConVarBool( "cl_showpos", false )
-	SetConVarBool( "cl_showfps", false )
-	//SetConVarBool( "cl_showgpustats", false )
-	//SetConVarBool( "cl_showsimstats", false )
-	SetConVarBool( "host_speeds", false )
-	SetConVarBool( "con_drawnotify", false )
-	SetConVarBool( "enable_debug_overlays", false )
-	//SetConVarFloat( "fps_max", 190 ) 
-	
 	SetConVarInt( "cl_footstep_event_max_dist", 600 )
 	SetConVarBool( "miles_occlusion", false )
 	SetConVarFloat( "mat_autoexposure_force_value", 0.8 )

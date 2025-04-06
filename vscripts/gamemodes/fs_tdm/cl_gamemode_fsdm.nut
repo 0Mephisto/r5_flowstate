@@ -260,19 +260,6 @@ void function WaitClientConnection()
 void function FS_Scenarios_OnClientScriptInit( entity player ) 
 {
 	FS_Scenarios_InitPlayersCards()
-	
-	#if DEVELOPER 
-		return
-	#endif
-	
-	//I don't want these things in user screen even if they launch in debug
-	SetConVarBool( "cl_showpos", false )
-	SetConVarBool( "cl_showfps", false )
-	//SetConVarBool( "cl_showgpustats", false )
-	//SetConVarBool( "cl_showsimstats", false )
-	SetConVarBool( "host_speeds", false )
-	SetConVarBool( "con_drawnotify", false )
-	SetConVarBool( "enable_debug_overlays", false )
 }
 
 void function CL_FSDM_RegisterNetworkFunctions()

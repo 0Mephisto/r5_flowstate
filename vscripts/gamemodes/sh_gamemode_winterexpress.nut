@@ -410,7 +410,6 @@ void function WinterExpress_Init()
 
 		FlagInit( "WinterExpress_ObjectiveStateUpdated", false )
 		FlagInit( "WinterExpress_ObjectiveOwnerUpdated", false )
-		AddCallback_OnClientScriptInit( FS_WinterExpress_OnClientScriptInit )
 	#endif
 
 	//Init Playlist Settings
@@ -440,24 +439,6 @@ void function WinterExpress_Init()
 
 	WinterExpress_RegisterNetworking()
 }
-
-#if CLIENT
-void function FS_WinterExpress_OnClientScriptInit( entity player ) 
-{
-	#if DEVELOPER && MKOS
-		return //(mk): I need my debugs lol -.- 
-	#endif
-	
-	//I don't want these things in user screen even if they launch in debug
-	SetConVarBool( "cl_showpos", false )
-	SetConVarBool( "cl_showfps", false )
-	//SetConVarBool( "cl_showgpustats", false )
-	//SetConVarBool( "cl_showsimstats", false )
-	SetConVarBool( "host_speeds", false )
-	SetConVarBool( "con_drawnotify", false )
-	SetConVarBool( "enable_debug_overlays", false )
-}
-#endif
 
 void function WinterExpress_RegisterNetworking()
 {
