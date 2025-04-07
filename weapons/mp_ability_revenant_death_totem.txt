@@ -20,7 +20,7 @@ WeaponData
 	"play_offhand_charging_anim"  					"0"
 	"play_offhand_start_end_anim"					"1"
 
-	"fire_mode"   									"offhand"
+	"fire_mode"   									"offhandHybrid"
 
 	"OnWeaponPrimaryAttack" 						"OnWeaponPrimaryAttack_ability_revenant_death_totem"
 	"OnWeaponActivate"								"OnWeaponActivate_ability_revenant_death_totem"
@@ -56,10 +56,10 @@ WeaponData
 
 
 	// Behavior
-	"fire_rate"   									"1.42"  // = 1 divided by authored_anim_length (time)
+	"fire_rate"   									"0.570000"
 	"fire_duration"									"0.0"
 	//"fire_anim_rate"  							"1"
-	"deploy_time" 								    "1.0"
+	"deploy_time" 								    "0.030000"
 	//"raise_time" 									"0.05"
 	//"lower_time"  								"0.15"
 	"allow_empty_fire"								"0"

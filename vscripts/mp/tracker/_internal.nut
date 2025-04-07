@@ -677,6 +677,13 @@ global function SetPlayerStatString
 global function SetPlayerStatBool
 global function SetPlayerStatFloat
 
+global function GetPlayerStatArray
+global function GetPlayerStatArrayInt
+global function GetPlayerStatArrayString
+global function GetPlayerStatArrayBool
+global function GetPlayerStatArrayFloat
+global function PlayerStatArray_Append
+
 array<string> function Stats__GetStatKeys(){ return [] }
 
 int function GetPlayerStatInt( string player, string statname ){ return 0 }
@@ -688,4 +695,11 @@ void function SetPlayerStatInt( string player, string statname, int value ){}
 void function SetPlayerStatString( string player, string statname, string value ){}
 void function SetPlayerStatBool( string player, string statname, bool value ){}
 void function SetPlayerStatFloat( string player, string statname, float value ){}
+
+array<var> function GetPlayerStatArray( string player_oid, string statname ){ return [] }
+array<int> function GetPlayerStatArrayInt( string player_oid, string statname ){ return [] }
+array<string> function GetPlayerStatArrayString( string player_oid, string statname ){ return [] }
+array<float> function GetPlayerStatArrayFloat( string player_oid, string statname ){ return [] }
+array<bool> function GetPlayerStatArrayBool( string player_oid, string statname ){ return [] }
+void function PlayerStatArray_Append( string player_oid, string statname, var value ){}
 #endif // ELSE !TRACKER && !HAS_TRACKER_DLL

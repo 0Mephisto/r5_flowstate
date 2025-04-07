@@ -432,6 +432,7 @@ void function WinterExpress_Init()
 	#if SERVER
 		//(mk):Gamemode uses 1v1 features for weapons/ammo 
 		Gamemode1v1_SetWeaponAmmoStackAmount( GetCurrentPlaylistVarInt( "give_weapon_stack_count_amount", 0 ) )
+		PrimaryWeaponMetagame_Init()
 	#endif
 	
 	//Flowstate custom

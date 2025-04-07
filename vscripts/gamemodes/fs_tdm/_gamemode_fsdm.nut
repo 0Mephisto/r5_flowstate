@@ -70,6 +70,8 @@ global function Flowstate_IsRealisticMode
 global function Halo_GotoNextPlaylist
 global function HaloMod_HandlePlayerModel
 
+global function PrimaryWeaponMetagame_Init
+
 #if DEVELOPER
 	global function DEV_NextRound
 #endif

@@ -42,14 +42,14 @@ WeaponData
 	"OnWeaponChargeBegin"					        "EnergyChargeWeapon_OnWeaponChargeBegin"
 	"OnWeaponChargeEnd"					            "OnWeaponChargeEnd_weapon_energy_shotgun"
 
-	"charge_time" 									"1.25"
-	"charge_levels"									"4"
-	"charge_level_base"								"1"
+	"charge_time" 									"0.000000"
+	"charge_levels"									"0"
+	"charge_level_base"								"0"
 
-	"charge_cooldown_time"							"0.75"
-	"charge_cooldown_delay"   						"0.35"
+	"charge_cooldown_time"							"1.000000"
+	"charge_cooldown_delay"   						"0.000000"
 
-	"rui_crosshair_index"							"1"
+	"rui_crosshair_index"							"0"
 
 	"ui20_enable"									"1"
 	"ui21_enable"									"1"
@@ -66,14 +66,14 @@ WeaponData
 	"charge_effect_3p"								"P_mflash_nrg_shot_charge"
 	"charge_effect_attachment"						"muzzle_flash"
 
-	"projectiles_per_shot" 							"11"
+	"projectiles_per_shot" 							"9"
 
 	"blast_pattern"									"energy_shotgun"
 	"blast_pattern_zero_distance"        			"512.0"
                          
                                                  
      
-	"blast_pattern_default_scale"        			"1.7"
+	"blast_pattern_default_scale"        			"1.800000"
       
 	"blast_pattern_npc_scale"            			"1.8"  // scales on top of the default
 
@@ -136,21 +136,21 @@ WeaponData
     // Ammo                                    
 
     "ammo_clip_size"   								"5"
-    "ammo_default_total"							"35"
-    "ammo_no_remove_from_stockpile"					"0"
-    "uses_ammo_pool"								"0"
+    "ammo_default_total"							"20"
+    "ammo_no_remove_from_stockpile"					"1"
+    "uses_ammo_pool"								"1"
       
-    "ammo_stockpile_max"							"35"
+    "ammo_stockpile_max"							"20"
     "ammo_per_shot"                                 "1"
     "ammo_min_to_fire"								"1"
     "low_ammo_fraction" 							"0.3"
 
     // Damage - When Used by Players
-    "damage_near_value"   							"9"
-    "damage_far_value"								"9"
+    "damage_near_value"   							"12"
+    "damage_far_value"								"12"
 
-    "damage_near_value_titanarmor"					"9"
-    "damage_far_value_titanarmor" 					"9"
+    "damage_near_value_titanarmor"					"12"
+    "damage_far_value_titanarmor" 					"12"
     "damage_rodeo" 									"550"
     "damage_near_distance"							"100"
     "damage_far_distance" 							"750"
@@ -197,7 +197,7 @@ WeaponData
 	"deployfirst_time"								"1.4"
 
 	"headshot_distance" 							"3940" // 100m
-	"damage_headshot_scale"							"1.25"  // "1.5"
+	"damage_headshot_scale"							"1.000000"
 
 	"sprint_fractional_anims"						"0"
 
@@ -296,6 +296,14 @@ WeaponData
 	// Custom int for hopup rui optic selection
 	"custom_int_0"							"0"
 
+
+	"headshot_distance"	"3940"
+	"damage_headshot_scale"	"1.000000"
+	"damage_leg_scale"	"1.000000"
+	"damage_shield_scale"	"1"
+	"critical_hit"	"1"
+	"critical_hit_damage_scale"	"1"
+	"titanarmor_critical_hit_required"	"1"
 	Mods
 	{
 		crate

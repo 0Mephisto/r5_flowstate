@@ -42,8 +42,8 @@
 	"OnWeaponStartZoomOut"                   	"OnWeaponStartZoomOut_weapon_sentinel"
 
     // Energize mechanics
-    "energized_duration"                       "120.0"
-    "energized_time_consumed_per_shot"         "15.0"
+    "energized_duration"                       "150.000000"
+    "energized_time_consumed_per_shot"         "14.000000"
     "energize_activity_time"                   "5.0"        //this doesn't scale the animation! This is used for UI, make sure it is in parity with the animation timing
 	"entity_color_from_charge"				   "1"
 
@@ -108,16 +108,16 @@
       
 	"ammo_clip_size"                               "4"
 	"ammo_stockpile_max"                           "50"
-	"ammo_default_total"                           "50"
+	"ammo_default_total"                           "0"
 	"low_ammo_fraction"                            "0.26"
 	"ammo_per_shot"                                "1"
 	"ammo_min_to_fire"                             "1"
 	"ammo_clip_random_loss_on_npc_drop_chunksize"  "1"
-	"ammo_no_remove_from_stockpile"                "1"
+	"ammo_no_remove_from_stockpile"                "0"
 	"reload_enabled"                               "1"
 	"allow_empty_click"                            "1"
 	"empty_reload_only"                            "0"
-	"uses_ammo_pool"                               "0"
+	"uses_ammo_pool"                               "1"
 
 	"disable_zoomed_rechamber"					   "0"
 
@@ -127,7 +127,7 @@
 	"reloadempty_time_late1"                       "2.63"
 	"reloadempty_time_late2"                       "1.58"
 	"reloadempty_time_late3"                       "0.9"  //will update (Shawn)
-	"rechamber_time"                               "1.85" //"1.6"
+	"rechamber_time"                               "1.600000"
 
 	// Behavior - Animation
 	"deployfirst_time"                         "1.6"
@@ -259,8 +259,8 @@
     //"pre_energize_effect0_attachment"           ""
     //"pre_energize_effect0_attachment_scope"     ""
 
-    "energize_effect0_1p"                       ""
-    "energize_effect0_3p"                       ""
+    "energize_effect0_1p"                       "P_wpn_sentinel_charge_FP"
+    "energize_effect0_3p"                       "P_wpn_sentinel_charge_3P"
     "energize_effect0_attachment"               "muzzle_flash"
     "energize_effect0_attachment_scope"         ""
     "energize_effect1_3p"                       ""
@@ -279,6 +279,17 @@
 
 
 
+
+	"critical_hit"	"1"
+	"titanarmor_critical_hit_required"	"1"
+	"headshot_distance"	"29528"
+	"damage_headshot_scale"	"1.800000"
+	"damage_leg_scale"	"0.700000"
+	"damage_shield_scale"	"1"
+	"critical_hit_damage_scale"	"2"
+	"damage_near_distance"	"7500"
+	"damage_far_distance"	"10000"
+	"damage_very_far_distance"	"12000"
 	"Mods"
 	{
 	    gold

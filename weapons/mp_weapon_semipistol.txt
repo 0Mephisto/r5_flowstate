@@ -51,7 +51,7 @@ WeaponData
 
 	"damage_type" 									"bullet"
 
-	"ammo_clip_size"   								"14"
+	"ammo_clip_size"   								"10"
 
 	"projectile_launch_speed"						"18500"
 
@@ -72,12 +72,12 @@ WeaponData
                                          
                                              
       
-		"damage_near_value"   							"18"
-	    "damage_far_value"								"18"
-	    "damage_very_far_value"							"18"
-	    "damage_near_value_titanarmor"					"18"
-	    "damage_far_value_titanarmor" 					"18"
-	    "damage_very_far_value_titanarmor" 				"18"
+		"damage_near_value"   							"25"
+	    "damage_far_value"								"25"
+	    "damage_very_far_value"							"25"
+	    "damage_near_value_titanarmor"					"25"
+	    "damage_far_value_titanarmor" 					"25"
+	    "damage_very_far_value_titanarmor" 				"25"
        
 
 
@@ -85,7 +85,7 @@ WeaponData
 	
 	"fx_muzzle_flash_view"							""
 	"fx_muzzle_flash_world"							""
-	"fx_muzzle_flash_attach"						""
+	"fx_muzzle_flash_attach"						"muzzle_flash"
 	
 	// Damage - When Used by NPCs
 	"npc_damage_near_value"   						"13"
@@ -192,6 +192,17 @@ WeaponData
 	"airburst_pattern_scale"                "10.0"
 	"blast_pattern_default_scale"           "10.0"
 
+
+	"damage_shield_scale"	"1"
+	"damage_headshot_scale"	"1.250000"
+	"damage_leg_scale"	"0.900000"
+	"critical_hit"	"1"
+	"critical_hit_damage_scale"	"2"
+	"titanarmor_critical_hit_required"	"1"
+	"damage_near_distance"	"700"
+	"damage_far_distance"	"1200"
+	"damage_very_far_distance"	"1700"
+	"headshot_distance"	"1500"
 	Mods
 	{
 		blood_harvest

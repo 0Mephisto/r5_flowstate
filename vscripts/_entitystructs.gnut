@@ -913,6 +913,11 @@ global struct ServerPlayerStruct
 	
 	table< string, float > rateLimitTable = { DEFAULT_RATE_KEY = 0.0 }
 	
+	int badge_1
+	int badge_2
+	int badge_3
+	bool shouldShowDevBadge
+	
 	////////////////////////////////////////////////////////////////
 
 

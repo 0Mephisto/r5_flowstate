@@ -2910,3 +2910,13 @@ float function WrapAngle360( float angle )
 {
     return ( ( angle % 360.0 ) + 360.0 ) % 360.0
 }
+
+table< string, int > function IntStringTableFlip( table< int, string > stringTbl )
+{
+	table< string, int > flipped
+	
+	foreach( int k, string v in stringTbl )
+		flipped[ v ] <- k
+	
+	return flipped
+}

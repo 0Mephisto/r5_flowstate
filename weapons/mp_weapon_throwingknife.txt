@@ -13,7 +13,7 @@ WeaponData
 	"is_toss_weapon"								"1"
 	"menu_category"                                 "pistol"
 	"menu_anim_class"                               "small"
-	"ammo_pool_type"								""
+	"ammo_pool_type"								"bullet"
 	"holster_type"									"pistol"
     "secondary_ammo_pool_type"                      ""
 
@@ -56,8 +56,8 @@ WeaponData
     "projectile_trail_effect_0" 					"P_tracer_proj_sniper_piercer"
 
 	"vortex_impact_effect"							"P_impact_exp_emp_med_default"
-	"vortex_absorb_effect"							"wpn_vortex_projectile_rifle_FP"
-	"vortex_absorb_effect_third_person"				"wpn_vortex_projectile_rifle"
+	"vortex_absorb_effect"							"wpn_vortex_projectile_frag_FP"
+	"vortex_absorb_effect_third_person"				"wpn_vortex_projectile_frag"
 	"vortex_absorb_sound"							"Vortex_Shield_AbsorbBulletSmall"
 	"vortex_absorb_sound_1P_VS_3P"					"Vortex_Shield_AbsorbBulletSmall_1P_VS_3P"
 	"projectile_adjust_to_gun_barrel"				"0"
@@ -97,7 +97,7 @@ WeaponData
 	"impulse_force"   								"0"
 	"damage_flags"									"DF_BULLET"
 
-	"projectile_killreplay_enabled"					"1"
+	"projectile_killreplay_enabled"					"0"
 
 	"fire_mode"   									"automatic"
 	"is_semi_auto"									"1"
@@ -229,12 +229,12 @@ WeaponData
 	"sway_turn_down_rotate_pitch" 					"-2"
 	"sway_turn_angle_factor"  						"-0.5"
 	"sway_turn_origin_factor" 						"0"
-	"sway_turn_angle_factor_zoomed"   				"0"
-	"sway_turn_origin_factor_zoomed"  				"0.05"
+	"sway_turn_angle_factor_zoomed"   				"-0.500000"
+	"sway_turn_origin_factor_zoomed"  				"0"
 	"sway_move_angle_factor"  						"0.5"
 	"sway_move_origin_factor" 						"0.5"
-	"sway_move_angle_factor_zoomed"   				"0"
-	"sway_move_origin_factor_zoomed"  				"0.03"
+	"sway_move_angle_factor_zoomed"   				"0.500000"
+	"sway_move_origin_factor_zoomed"  				"0.500000"
 	"sway_gain"   									"15.0"
 
 	"sway_rotate_attach_zoomed"  							"jx_c_pov"
@@ -273,10 +273,10 @@ WeaponData
 	"sway_move_angle_factor_zoomed"  						"0.5"
 	"sway_move_origin_factor_zoomed" 						"0.5"
 	"sway_gain_zoomed"   									"15.0"
-	"sway_turn_angle_factor_zoomed"   				"0"
-	"sway_turn_origin_factor_zoomed"  				"0.05"
-	"sway_move_angle_factor_zoomed"   				"0"
-	"sway_move_origin_factor_zoomed"  				"0.03"
+	"sway_turn_angle_factor_zoomed"   				"-0.500000"
+	"sway_turn_origin_factor_zoomed"  				"0"
+	"sway_move_angle_factor_zoomed"   				"0.500000"
+	"sway_move_origin_factor_zoomed"  				"0.500000"
 
 	// NPC
 	"npc_min_range"   								"600"

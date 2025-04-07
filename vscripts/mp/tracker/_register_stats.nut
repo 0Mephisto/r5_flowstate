@@ -118,10 +118,17 @@ void function Script_RegisterAllStats()
 		Tracker_RegisterStat( "previous_champion", null, Tracker_ReturnChampion )
 		Tracker_RegisterStat( "previous_kills", null, Tracker_ReturnKills )
 		Tracker_RegisterStat( "previous_damage", null, Tracker_ReturnDamage )
-		//Tracker_RegisterStat( "previous_survival_time", null,  )
+		//Tracker_RegisterStat( "previous_survival_time", null,  )	
 		
 		AddCallback_PlayerDataFullyLoaded( Callback_CoreStatInit )
 	}
+	
+	Tracker_RegisterStat( "unlocked_badges" )
+	Tracker_RegisterStat( "badge_1", null, Tracker_Badge1 )
+	Tracker_RegisterStat( "badge_2", null, Tracker_Badge2 )
+	Tracker_RegisterStat( "badge_3", null, Tracker_Badge3 )
+	Tracker_RegisterStat( "should_show_dev_badge", null, Tracker_ShowDevBadge )	
+	AddCallback_PlayerDataFullyLoaded( Callback_CheckBadges )
 	
 	#if DEVELOPER 
 		//Tracker_RegisterStat( "test_array", null, TrackerStats_TestStringArray )
@@ -304,6 +311,30 @@ var function TrackerStats_CtfWins( string uid )
 	return ent.p.wonctf ? 1 : 0
 }
 
+var function Tracker_Badge1( string uid )
+{
+	entity ent = GetPlayerEntityByUID( uid )
+	return ent.p.badge_1
+}
+
+var function Tracker_Badge2( string uid )
+{
+	entity ent = GetPlayerEntityByUID( uid )
+	return ent.p.badge_2
+}
+
+var function Tracker_Badge3( string uid )
+{
+	entity ent = GetPlayerEntityByUID( uid )
+	return ent.p.badge_3
+}
+
+var function Tracker_ShowDevBadge( string uid )
+{
+	entity ent = GetPlayerEntityByUID( uid )
+	return ent.p.shouldShowDevBadge
+}
+
 // var function TrackerStats_TestStringArray( string uid )
 // {
 	// return ["test", "test2", "test3"]
@@ -346,6 +377,31 @@ var function TrackerStats_WasReportedCringe( string uid )
 {
 	entity ent = GetPlayerEntityByUID( uid )
 	return ent.p.cringedCount
+}
+
+void function Callback_CheckBadges( entity player )
+{
+	string uid = player.p.UID
+	
+	int badge_1 = GetPlayerStatInt( uid, "badge_1" )
+	if( Tracker_IsValidBadge( badge_1, uid ) )
+		player.p.badge_1 = badge_1
+	else
+		SetPlayerStatInt( uid, "badge_1", 0 )
+		
+	int badge_2 = GetPlayerStatInt( uid, "badge_2" )
+	if( Tracker_IsValidBadge( badge_2, uid ) )
+		player.p.badge_2 = badge_2
+	else 
+		SetPlayerStatInt( uid, "badge_2", 0 )
+		
+	int badge_3 = GetPlayerStatInt( uid, "badge_3" )
+	if( Tracker_IsValidBadge( badge_3, uid ) )
+		player.p.badge_3 = badge_3
+	else
+		SetPlayerStatInt( uid, "badge_3", 0 )
+	
+	player.p.shouldShowDevBadge = GetPlayerStatBool( uid, "should_show_dev_badge" )
 }
 
 

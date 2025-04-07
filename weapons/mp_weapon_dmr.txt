@@ -46,20 +46,20 @@
 
 	// Damage
 	//
-	"damage_near_value"                        "55"
-	"damage_far_value"                         "55"
-	"damage_very_far_value"                    "55"
-	"damage_near_value_titanarmor"             "55"
-	"damage_far_value_titanarmor"              "55"
-	"damage_very_far_value_titanarmor"         "55"
+	"damage_near_value"                        "60"
+	"damage_far_value"                         "60"
+	"damage_very_far_value"                    "60"
+	"damage_near_value_titanarmor"             "60"
+	"damage_far_value_titanarmor"              "60"
+	"damage_very_far_value_titanarmor"         "60"
 
 	"damage_rodeo"                             "400"
 
                      
-	"damage_headshot_scale"			           "2.25"
+	"damage_headshot_scale"			           "1.800000"
       
 
-	"damage_leg_scale"                         "0.8"
+	"damage_leg_scale"                         "0.700000"
 
 	// Viewmodel
 	"viewmodel_shake_forward"                  "0.07"
@@ -67,7 +67,7 @@
 	"viewmodel_shake_right"                    "0.01"
 
 	// Projectile
-	"projectile_launch_speed"                  "30500"
+	"projectile_launch_speed"                  "31000"
 
     "bolt_hitsize_grow1_time"				    "0.129"  //~100m
     "bolt_hitsize_grow1_size"				    "0.33"
@@ -100,13 +100,13 @@
 
 	// Viewkick - Pitch
 	"viewkick_pitch_base"                      "-0.9"
-	"viewkick_pitch_random"                    "0.5"
+	"viewkick_pitch_random"                    "0.350000"
 	"viewkick_pitch_softScale"                 "1.0"
 	"viewkick_pitch_hardScale"                 "0.9"
 
 	// Viewkick - Yaw
-	"viewkick_yaw_base"                        "-0.55"
-	"viewkick_yaw_random"                      "0.35"
+	"viewkick_yaw_base"                        "-0.467500"
+	"viewkick_yaw_random"                      "0.280000"
 	"viewkick_yaw_softScale"                   "1.0"
 	"viewkick_yaw_hardScale"                   "0.5"
 
@@ -193,6 +193,15 @@
 	//"projectile_gravity_scale_final"				"6.0"
 
 	"projectile_drag_coefficient"					"0.0"
+
+	"critical_hit"	"1"
+	"titanarmor_critical_hit_required"	"1"
+	"headshot_distance"	"29528"
+	"damage_shield_scale"	"1"
+	"critical_hit_damage_scale"	"2"
+	"damage_near_distance"	"7500"
+	"damage_far_distance"	"10000"
+	"damage_very_far_distance"	"12000"
 	"Mods"
 	{
 	    gold
