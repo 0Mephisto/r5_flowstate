@@ -123,8 +123,8 @@ void function Rift_Init( entity ent )
 	trigger.kv.triggerFilterPlayer = "all"
 	trigger.kv.triggerFilterPhaseShift = "any"
 
-	DebugDrawCylinder( trigger.GetOrigin() , < -90, 0, 0 >, file.riftParams.innerRadius, -trigger.GetAboveHeight(), 255, 90, 0, true, 9999.9 )
-	DebugDrawCylinder( trigger.GetOrigin() , < -90, 0, 0 >, file.riftParams.outerRadius, -trigger.GetBelowHeight(), 0, 255, 0, true, 9999.9 )
+	//DebugDrawCylinder( trigger.GetOrigin() , < -90, 0, 0 >, file.riftParams.innerRadius, -trigger.GetAboveHeight(), 255, 90, 0, true, 9999.9 )
+	//DebugDrawCylinder( trigger.GetOrigin() , < -90, 0, 0 >, file.riftParams.outerRadius, -trigger.GetBelowHeight(), 0, 255, 0, true, 9999.9 )
 
 	DispatchSpawn( trigger )
 
