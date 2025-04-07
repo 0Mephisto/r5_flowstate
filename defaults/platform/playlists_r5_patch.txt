@@ -188,9 +188,9 @@ playlists
 				//// Character (a.k.a. Legend) Configuration								///////
 				///////////////////////////////////////////////////////////////////////////////////
 				
-				character_dummie								DISABLED
-				character_random								DISABLED
-				character_loba									DISABLED
+				//character_dummie								DISABLED
+				character_random								hide
+				//character_loba									DISABLED
 
 				///////////////////////////////////////////////////////////////////////////////////
 				//// Character (a.k.a. Legend) Damage Balancing								///////
