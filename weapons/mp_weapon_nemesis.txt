@@ -249,7 +249,7 @@ WeaponData
 	//setting to "0" so it's tunable in Bakery
 	"sprintcycle_time"								"0"
 	
-	"clip_bodygroup"						"r101_magazine"
+	"clip_bodygroup"						"clip"
 	"clip_bodygroup_index_shown"			"0"
 	"clip_bodygroup_index_hidden"			"1"
 	"clip_bodygroup_show_for_milestone_0"	"1"

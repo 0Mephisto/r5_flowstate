@@ -17,6 +17,7 @@ global function Stats__GetRoundStatsTables
 global function Stats__ResetTableByValueType
 global function Stats__PlayerExists
 global function Stats__RawGetStat
+global function Stats__RawSetStat
 
 global function Stats__SetStatKeys
 global function Stats__GetStatKeys
@@ -135,7 +136,7 @@ var function Stats__RawGetStat( UIDString player_oid, string statname, bool onli
 	return null
 }
 
-function __RawSetStat( UIDString uid, string statKey, var value, bool online = true )
+function Stats__RawSetStat( UIDString uid, string statKey, var value, bool online = true )
 {
 	switch( online )
 	{
@@ -528,30 +529,30 @@ void function __AggregateStat_internal( entity player, string statKey )
 			
 			int addValue = expect int( data )
 			int storedValue = GetPlayerRoundStatInt( uid, statKey )
-			__RawSetStat( uid, statKey, MakeVar( addValue + storedValue ), false )		
+			Stats__RawSetStat( uid, statKey, MakeVar( addValue + storedValue ), false )		
 			break
 			
 		case "float":
 			float addValue = expect float( data )
 			float storedValue = GetPlayerRoundStatFloat( uid, statKey )
-			__RawSetStat( uid, statKey, MakeVar( addValue + storedValue ), false )
+			Stats__RawSetStat( uid, statKey, MakeVar( addValue + storedValue ), false )
 			break
 		
 		case "bool":
-			__RawSetStat( uid, statKey, data, false )
+			Stats__RawSetStat( uid, statKey, data, false )
 			break
 
 		case "string":
-			__RawSetStat( uid, statKey, data, false )
+			Stats__RawSetStat( uid, statKey, data, false )
 			break
 			
 		case "array":
-			__RawSetStat( uid, statKey, data, false )
+			Stats__RawSetStat( uid, statKey, data, false )
 			break 
 			
 		case "table":
 		default:
-			mAssert( false, format( "%s is currently unsupported.", vType ) )
+			mAssert( false, "%s is currently unsupported.", vType )
 	}
 }
 

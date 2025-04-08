@@ -904,19 +904,9 @@ global struct ServerPlayerStruct
 	
 	//For adding specific spawn behavior that fires once.
 	array<void functionref(entity)> playerSpawnedCallbacks_FireOnce
-	
-	//framework for confirm ( this is bad and experimental )
-	// bool bRelayChallengeState 	= false
-	// int relayChallengeCode 		= 0
-	
 	bool bTextmute 				= false	
 	
 	table< string, float > rateLimitTable = { DEFAULT_RATE_KEY = 0.0 }
-	
-	int badge_1
-	int badge_2
-	int badge_3
-	bool shouldShowDevBadge
 	
 	////////////////////////////////////////////////////////////////
 

@@ -49,7 +49,7 @@ WeaponData
 	"charge_cooldown_time"							"1.000000"
 	"charge_cooldown_delay"   						"0.000000"
 
-	"rui_crosshair_index"							"0"
+	"rui_crosshair_index"							"1"
 
 	"ui20_enable"									"1"
 	"ui21_enable"									"1"
@@ -68,7 +68,7 @@ WeaponData
 
 	"projectiles_per_shot" 							"9"
 
-	"blast_pattern"									"energy_shotgun"
+	"blast_pattern"									"energy_shotgun_2"
 	"blast_pattern_zero_distance"        			"512.0"
                          
                                                  

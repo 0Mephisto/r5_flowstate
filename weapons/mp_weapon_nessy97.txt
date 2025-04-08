@@ -147,7 +147,7 @@ WeaponData
     //"regen_ammo_sound_range_name_2"                  ""
     //"regen_ammo_sound_range_name_3"                  ""
 
-	"blast_pattern"									"mastiff_2"
+	"blast_pattern"									"mastiff_3"
 	"blast_pattern_zero_distance"        			"512.0"
 	"blast_pattern_default_scale"        			"1.1"
 	"blast_pattern_ads_scale"                       "0.5"  // for players, scales pattern when ADS

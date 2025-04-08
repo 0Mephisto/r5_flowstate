@@ -127,7 +127,7 @@ WeaponData
 	"npc_spread_cone_min_precision"                 "0"
 	"npc_spread_cone_max_precision"                 "0"
 
-	"blast_pattern"									"energy_shotgun"
+	"blast_pattern"									"energy_shotgun_2"
 	"blast_pattern_zero_distance"        			"512.0"
 	"blast_pattern_default_scale"        			"1.5"
 	"blast_pattern_npc_scale"            			"1.8"  // scales on top of the default

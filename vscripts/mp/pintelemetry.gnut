@@ -4204,6 +4204,8 @@ string function GetWorldSpawnRef( int uid )
 // based on the defined functions return data at the time of this function call
 SerializedData function Tracker_BuildAllPlayerMetrics( bool trigger = false ) 
 {
+	Tracker_RunStatResets()
+
     string json = "["
     foreach ( index, metrics in PlayerMetricsArray ) 
 	{

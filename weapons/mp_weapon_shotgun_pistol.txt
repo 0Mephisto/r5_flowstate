@@ -52,7 +52,7 @@ WeaponData
 
 	"projectiles_per_shot"							"3"
 
-	"blast_pattern"									"shotgun_pistol_2"
+	"blast_pattern"									"shotgun_pistol_3"
 	"blast_pattern_zero_distance"        			"512.0"
 	"blast_pattern_default_scale"        			"1.050000"
 	"blast_pattern_ads_scale"                       "0.750000"

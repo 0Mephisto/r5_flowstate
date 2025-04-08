@@ -4,8 +4,16 @@ globalize_all_functions
 
 const bool STORE_STAT = true //this constant is not a toggle.
 
+struct StatResetData
+{
+	string uid
+	string statKey
+	var savedValue
+}
+
 struct 
 {
+	array< StatResetData > shouldResetData
 	bool RegisterCoreStats 	= true
 	bool bStatsIs1v1Type 	= false
 
@@ -13,7 +21,7 @@ struct
 
 void function SetRegisterCoreStats( bool b )
 {
-	file.RegisterCoreStats = b
+	file.RegisterCoreStats = b	
 }
 
 void function Tracker_Init()
@@ -24,6 +32,35 @@ void function Tracker_Init()
 	SetRegisterCoreStats( bRegisterCoreStats )
 	
 	Stats__InternalInit()
+}
+
+void function Tracker_SetShouldResetStatOnShip( string uid, string statKey, var origValue, bool bShouldReset = true )
+{
+	if( bShouldReset )
+	{
+		StatResetData statData
+		
+		statData.uid		= uid
+		statData.statKey 	= statKey
+		statData.savedValue = origValue
+		
+		file.shouldResetData.append( statData )
+	}
+	else 
+	{
+		int maxIter = file.shouldResetData.len()
+		for( int i = maxIter; i >= 0; i-- )
+		{
+			if( file.shouldResetData[ i ].uid == uid && file.shouldResetData.statKey == statKey )
+				file.shouldResetData.remove( i )
+		}
+	}
+}
+
+void function Tracker_RunStatResets()
+{
+	foreach( int idx, StatResetData statData in file.shouldResetData )
+		Stats__RawSetStat( statData.uid, statData.statKey, statData.savedValue )
 }
 
 //////////////////////////////////////////////////
@@ -127,7 +164,6 @@ void function Script_RegisterAllStats()
 	Tracker_RegisterStat( "badge_1", null, Tracker_Badge1 )
 	Tracker_RegisterStat( "badge_2", null, Tracker_Badge2 )
 	Tracker_RegisterStat( "badge_3", null, Tracker_Badge3 )
-	Tracker_RegisterStat( "should_show_dev_badge", null, Tracker_ShowDevBadge )	
 	AddCallback_PlayerDataFullyLoaded( Callback_CheckBadges )
 	
 	#if DEVELOPER 
@@ -313,26 +349,17 @@ var function TrackerStats_CtfWins( string uid )
 
 var function Tracker_Badge1( string uid )
 {
-	entity ent = GetPlayerEntityByUID( uid )
-	return ent.p.badge_1
+	return GetPlayerStatInt( uid, "badge_1" )
 }
 
 var function Tracker_Badge2( string uid )
 {
-	entity ent = GetPlayerEntityByUID( uid )
-	return ent.p.badge_2
+	return GetPlayerStatInt( uid, "badge_2" )
 }
 
 var function Tracker_Badge3( string uid )
 {
-	entity ent = GetPlayerEntityByUID( uid )
-	return ent.p.badge_3
-}
-
-var function Tracker_ShowDevBadge( string uid )
-{
-	entity ent = GetPlayerEntityByUID( uid )
-	return ent.p.shouldShowDevBadge
+	return GetPlayerStatInt( uid, "badge_3" )
 }
 
 // var function TrackerStats_TestStringArray( string uid )
@@ -384,24 +411,34 @@ void function Callback_CheckBadges( entity player )
 	string uid = player.p.UID
 	
 	int badge_1 = GetPlayerStatInt( uid, "badge_1" )
-	if( Tracker_IsValidBadge( badge_1, uid ) )
-		player.p.badge_1 = badge_1
-	else
+	if( !Tracker_IsValidBadge( badge_1, uid ) )
+	{
+		Tracker_SetShouldResetStatOnShip( uid, "badge_1", badge_1 ) 
+		/* 
+			we do this, becase the main stat table is what is synced to clients, however 
+			Tracker_IsValidBadge can return false for dev badges or unlocked badges 
+			if the player isn't dev or doesn't own a badge, however for servers
+			that allow all badges, we must reset this invalid back to the player's 
+			chosen badge so that it reflects their choice which may be valid on those 
+			allowed servers. 		
+		*/
+		
 		SetPlayerStatInt( uid, "badge_1", 0 )
+	}
 		
 	int badge_2 = GetPlayerStatInt( uid, "badge_2" )
-	if( Tracker_IsValidBadge( badge_2, uid ) )
-		player.p.badge_2 = badge_2
-	else 
+	if( !Tracker_IsValidBadge( badge_2, uid ) )
+	{
+		Tracker_SetShouldResetStatOnShip( uid, "badge_2", badge_2 )
 		SetPlayerStatInt( uid, "badge_2", 0 )
+	}
 		
 	int badge_3 = GetPlayerStatInt( uid, "badge_3" )
-	if( Tracker_IsValidBadge( badge_3, uid ) )
-		player.p.badge_3 = badge_3
-	else
+	if( !Tracker_IsValidBadge( badge_3, uid ) )
+	{
+		Tracker_SetShouldResetStatOnShip( uid, "badge_3", badge_3 )
 		SetPlayerStatInt( uid, "badge_3", 0 )
-	
-	player.p.shouldShowDevBadge = GetPlayerStatBool( uid, "should_show_dev_badge" )
+	}
 }
 
 
@@ -524,5 +561,7 @@ void function OnStatsShipping_Cringe( string uid ) //todo deprecate
 }
 
 
-
 #endif //TRACKER && HAS_TRACKER_DLL
+
+//non tracker declarations
+void function Tracker_SetShouldResetStatOnShip( string uid, string statKey, var origValue, bool bShouldReset = true ){}

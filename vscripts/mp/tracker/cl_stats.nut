@@ -80,9 +80,21 @@ void function Tracker_SetPlayerStatFloat( entity player, float value )
 
 void function ClientStats_Think()
 {
+	FlagWait( "EntitiesDidLoad" )
+	if( !GetServerVar("tracker_enabled") )
+	{
+		#if DEVELOPER 
+			printl( "Connected server is not running tracker. ending ClientStats_Think()" )
+		#endif
+		
+		return
+	}
+
 	for( ; ; )
 	{
-		WaitSignal( file.infoSignal, "PreloadStat" )	
+		if( !StatQueueHasItems() )
+			WaitSignal( file.infoSignal, "PreloadStat" )
+			
 		while( StatQueueHasItems() )
 		{
 			StatData statData 	= __DequeueStatQueue()
@@ -284,7 +296,7 @@ void function __RequestPlayerStat( entity player, string stat )
 	)
 
 	player.EndSignal( "OnDestroy" )
-	EndSignal( file.infoSignal, "RequestStatFailed" )
+	//EndSignal( file.infoSignal, "RequestStatFailed" )
 	
 	ValidatePlayerStatTable( player )
 	
