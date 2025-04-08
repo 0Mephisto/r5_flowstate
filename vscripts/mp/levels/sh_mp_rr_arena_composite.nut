@@ -4,7 +4,7 @@ global function CodeCallback_MapInit
 
 void function CodeCallback_MapInit()
 {
-	ConveyorInit($"mdl/levels_terrain/mp_rr_arena_composite/composite_cargo_128_blue_01.rmdl", "", 10, 80)
+	ConveyorInit($"mdl/vehicles_r5/land_med/msc_freight_tortus_mod/veh_land_msc_freight_tortus_mod_cargo_holder_v2_static.rmdl", "", 10, 80)
 }
 #endif
 
