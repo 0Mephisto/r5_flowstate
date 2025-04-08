@@ -323,16 +323,16 @@ void function __RequestPlayerStat( entity player, string stat )
 	table statData = WaitSignal( file.infoSignal, "StatDataReceived", "RequestStatFailed" )
 	
 	if( expect string( statData.signal ) == "RequestStatFailed" )
-		SetStat( player, stat, null )
+		__SetStatValue( player, stat, null )
 	else
-		SetStat( player, stat, statData.value )
+		__SetStatValue( player, stat, statData.value )
 		
 	#if DEVELOPER && DEBUG_CL_STATS
-		printw( "Stat set for player: ", player, stat, "=", GetStatValue( player, stat ) )
+		printw( "Stat set for player: ", player, stat, "=", __GetStatValue( player, stat ) )
 	#endif
 }
 
-void function SetStat( entity player, string stat, var value )
+void function __SetStatValue( entity player, string stat, var value )
 {
 	if( stat in file.playerStatTables[ player ] )
 		file.playerStatTables[ player ][ stat ] = value
@@ -340,7 +340,7 @@ void function SetStat( entity player, string stat, var value )
 		file.playerStatTables[ player ][ stat ] <- value
 }
 
-var function GetStatValue( entity player, string stat )
+var function __GetStatValue( entity player, string stat )
 {
 	if( stat in file.playerStatTables[ player ] )
 		return file.playerStatTables[ player ][ stat ]
