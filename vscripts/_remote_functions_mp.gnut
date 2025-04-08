@@ -324,8 +324,8 @@ void function RemoteFunctions_Init_Begin()
 	ScriptRemote_RegisterClientFunction( "Flowstate_UpdateRainbowShieldExtraProperty", "int", EHANDLE_MIN, EHANDLE_MAX, "int", 0, 5000 )//Audit 2-22-2025
 	
 	//Dynamic client side lights spawn from server
-	if( MapName() == eMaps.mp_rr_arena_composite ) //TEMP. To free up buffer space. Currently only used in composite. Cafe
-		ScriptRemote_RegisterClientFunction( "ServerCallback_SpawnClientSideDynamicLight", "vector", -32000.0, 32000.0, 32, "vector", -32000.0, 32000.0, 32, "int", 0, 10, "float", 0.0, 32000.0, 12, "float", 0.0, 32000.0, 12 )
+	//if( MapName() == eMaps.mp_rr_arena_composite ) //TEMP. To free up buffer space. Currently only used in composite. Cafe
+		//ScriptRemote_RegisterClientFunction( "ServerCallback_SpawnClientSideDynamicLight", "vector", -32000.0, 32000.0, 32, "vector", -32000.0, 32000.0, 32, "int", 0, 10, "float", 0.0, 32000.0, 12, "float", 0.0, 32000.0, 12 )
 
 	if( MapName() == eMaps.mp_rr_olympus_tt )
 		PathTT_OnNetworkRegistration()
