@@ -4027,7 +4027,7 @@ playlists
 				visible											1
 				
 				name										   	"Firing Range"
-				description										"#PL_FIRINGRANGE_DESC"
+				description										"Firing Range"
 				
 				ui_slot											firing_range
 				image										  	firing_range
@@ -4097,7 +4097,7 @@ playlists
 				visible										1
 				
 				name										   	"Firing Range"
-				description									"#PL_FIRINGRANGE_DESC"
+				description									"Training"
 				
 				ui_slot										firing_range
 				image										firing_range
