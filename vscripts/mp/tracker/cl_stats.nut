@@ -1,8 +1,11 @@
-global function Tracker_ClientStats_Init													//mkos
+untyped																											//mkos
+global function Tracker_ClientStats_Init
 
 global function Tracker_SetPlayerStatBool
 global function Tracker_SetPlayerStatInt
 global function Tracker_SetPlayerStatFloat
+global function Tracker_ResyncAllForPlayer
+global function Tracker_ResyncStatForPlayer
 
 global function Tracker_StatRequestFailed
 global function Tracker_PreloadStatArray
@@ -16,6 +19,12 @@ typedef EntityStatStruct table < entity, table < string, var > >
 const bool DEBUG_CL_STATS = false
 const float MAX_FETCH_TIMEOUT = 5.0
 
+struct StatKeyData
+{
+	bool 	_bkeyInProcess
+	string	_currentKey
+}
+
 struct StatData
 {
 	entity player
@@ -27,8 +36,9 @@ struct
 	EntityStatStruct playerStatTables
 	array<StatData> statDataQueue
 	table< entity, table<string, bool> > lockTable
-	array< string > preloadStats
 	table infoSignal
+	
+	table< entity, StatKeyData > _currentStatKey
 	
 } file 
 
@@ -355,4 +365,68 @@ bool function Tracker_StatExists( entity player, string statname )
 		return false 
 	
 	return ( statname in file.playerStatTables[ player ] )
+}
+
+void function Tracker_ResyncAllForPlayer( entity remotePlayer ) //this is more expensive. if only updating one key, call "Tracker_ResyncStatForPlayer" on server instead
+{
+	if( PlayerStatTableExists( remotePlayer ) )
+	{
+		array<string> resyncKeys
+		
+		foreach( string statKey, var statValue in file.playerStatTables[ remotePlayer ]  )
+			resyncKeys.append( statKey )
+		
+		file.playerStatTables[ remotePlayer ] = {}
+		
+		foreach( int idx, string key in resyncKeys )
+			__AddToStatQueue( remotePlayer, key )
+			
+		Signal( file.infoSignal, "PreloadStat" )
+	}
+}
+
+void function Tracker_ResyncStatForPlayer( int remotePlayerEHandle, ... )
+{
+	entity remotePlayer = GetEntityFromEncodedEHandle( remotePlayerEHandle )
+	if( !IsValid( remotePlayer ) )
+		return
+	
+	__CheckCurrentStatKey( remotePlayer )
+	
+	if( file._currentStatKey[ remotePlayer ]._bkeyInProcess )
+		return
+	
+	file._currentStatKey[ remotePlayer ]._bkeyInProcess = true
+			
+	int charCount = expect int( vargc )
+	array chars = [ this, RepeatString( "%c", charCount ) ]
+	
+	for( int i = 0; i < vargc; i++ )
+		chars.append( vargv[ i ] )
+		
+	file._currentStatKey[ remotePlayer ]._currentKey = expect string( format.acall( chars ) )
+	
+	string currentKey = file._currentStatKey[ remotePlayer ]._currentKey
+	
+	if( currentKey in file.playerStatTables[ remotePlayer ] )
+	{
+		delete file.playerStatTables[ remotePlayer ][ currentKey ]
+		Tracker_PreloadStat( remotePlayer, currentKey )
+	}
+	
+	file._currentStatKey[ remotePlayer ]._currentKey 	 = ""
+	file._currentStatKey[ remotePlayer ]._bkeyInProcess = false
+}
+
+void function __CheckCurrentStatKey( entity remotePlayer )
+{
+	if( !( remotePlayer in file._currentStatKey ) )
+	{
+		StatKeyData data 
+		
+		data._currentKey 	= ""
+		data._bkeyInProcess = false
+		
+		file._currentStatKey[ remotePlayer ] <- data
+	}
 }

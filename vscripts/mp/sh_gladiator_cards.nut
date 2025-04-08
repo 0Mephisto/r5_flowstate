@@ -1650,7 +1650,7 @@ void function TriggerNestedGladiatorCardUpdate( NestedGladiatorCardHandle handle
 #if SERVER
 	void function ClientCommand_SaveBadgeSlot( entity player, array<string> args )
 	{
-		if( !CheckRate( player, "save_badge", 2, true ) )
+		if( !CheckRate( player, "save_badge", 2.5, true ) )
 			return
 			
 		if( args.len() < 2 )
@@ -1726,7 +1726,7 @@ void function TriggerNestedGladiatorCardUpdate( NestedGladiatorCardHandle handle
 		
 		LocalMsg( player, "#BADGE_SAVED" )
 		
-		//Todo(mk): sync to all
+		Tracker_ResyncStatForPlayer( player, badgeKey )
 	}
 	
 	string function GetBadgeRequirementsToken( string SAID )

@@ -1,4 +1,4 @@
-//untyped																			
+untyped																			
 globalize_all_functions
 #if TRACKER && HAS_TRACKER_DLL																	//~mkos
 
@@ -61,6 +61,27 @@ void function Tracker_RunStatResets()
 {
 	foreach( int idx, StatResetData statData in file.shouldResetData )
 		Stats__RawSetStat( statData.uid, statData.statKey, statData.savedValue )
+}
+
+void function Tracker_ResyncAllForPlayer( entity playerToSync )
+{
+	foreach( player in GetPlayerArray() )
+		Remote_CallFunction_NonReplay( player, "Tracker_ResyncAllForPlayer", playerToSync )
+}
+
+void function Tracker_ResyncStatForPlayer( entity playerToSync, string statKey )
+{
+	int statKeyLen = statKey.len()
+	mAssert( statKeyLen < 244, "Cannot transmit statkey len > 244 chars" )
+	
+	foreach( player in GetPlayerArray() )
+	{
+		array transmit = [ this, player, "Tracker_ResyncStatForPlayer", playerToSync.GetEncodedEHandle() ]	
+		for( int i = 0; i < statKeyLen; i++ )
+			transmit.append( statKey[ i ] )
+	
+		Remote_CallFunction_NonReplay.acall( transmit )
+	}
 }
 
 //////////////////////////////////////////////////
@@ -561,7 +582,10 @@ void function OnStatsShipping_Cringe( string uid ) //todo deprecate
 }
 
 
-#endif //TRACKER && HAS_TRACKER_DLL
+#else //!TRACKER && !HAS_TRACKER_DLL
 
-//non tracker declarations
-void function Tracker_SetShouldResetStatOnShip( string uid, string statKey, var origValue, bool bShouldReset = true ){}
+	//non tracker declarations
+	void function Tracker_SetShouldResetStatOnShip( string uid, string statKey, var origValue, bool bShouldReset = true ){}
+	void function Tracker_ResyncAllForPlayer( entity player ){}
+	void function Tracker_ResyncStatForPlayer( entity playerToSync, string statKey ){}
+#endif
