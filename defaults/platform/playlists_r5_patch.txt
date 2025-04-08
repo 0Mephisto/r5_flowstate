@@ -4096,7 +4096,7 @@ playlists
 			{
 				visible										1
 				
-				name										   	"Firing Range"
+				name										   	"Training"
 				description									"Training"
 				
 				ui_slot										firing_range
