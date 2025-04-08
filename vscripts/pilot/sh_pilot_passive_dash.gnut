@@ -1,0 +1,93 @@
+global function Dash_Init
+global function isDashEnabled
+
+#if SERVER
+	global function GivePlayerDashAbility	
+#endif 
+
+
+struct 
+{
+	bool dodge_dash_enabled
+	
+	#if SERVER
+		bool InfiniteDash
+		bool SuperDash
+		bool djumpwrun
+	#endif
+	
+} settings
+
+void function Dash_Init()
+{
+	settings.dodge_dash_enabled = GetCurrentPlaylistVarBool( "dodge_dash_enabled", false )
+	
+	#if SERVER
+		settings.InfiniteDash 		= GetCurrentPlaylistVarBool( "infinite_dash_enabled", false )
+		settings.SuperDash 			= GetCurrentPlaylistVarBool( "super_dash_enabled", false )
+		settings.djumpwrun 			= GetCurrentPlaylistVarBool( "djumpnwrun_dash_enabled", false )
+	
+		if( isDashEnabled() )
+			AddCallback_PlayerClassChanged( OnPlayerClassChanged )
+		
+	#endif
+}
+
+
+bool function isDashEnabled()
+{
+	if( settings.dodge_dash_enabled )
+		return true
+	
+	return false
+}
+
+#if SERVER
+const table< string, string > DASH =
+{
+	[ "dodge" ]     				= "true",
+	[ "dodgePowerDrain" ]         	= "50.0",
+	[ "dodgeHeight" ]               = "30.0",
+	[ "dodgeHeightMax" ]            = "30.0",
+	[ "dodgeVerticalHeight" ]       = "220.0",
+	[ "dodgeKeepSpeedFrac" ]        = "0.20"
+}
+
+const table< string, string > SUPER_DASH =
+{
+	[ "dodgeHeight" ]               = "120.0",
+	[ "dodgeHeightMax" ]            = "120.0",
+	[ "dodgeVerticalHeight" ]       = "880.0",
+	[ "dodgeKeepSpeedFrac" ]        = "0.60"
+}
+
+void function GivePlayerDashAbility( entity player, bool EnableDash = true, table< string, string > DashTable = DASH )
+{
+	if( !EnableDash )
+	{
+		player.SetClassVar( "dodge", "false" )
+		return
+	}
+
+	if( settings.SuperDash )
+		DashTable = SUPER_DASH
+
+	foreach( string setting, string dodgeValues in DashTable )
+		player.SetClassVar( setting, dodgeValues )
+	
+	if( settings.InfiniteDash )
+		player.SetClassVar( "dodgePowerDrain", "0.0" )
+
+	if( settings.djumpwrun )
+		GivePlayerSettingsMods( player, [ "enable_wallrun", "enable_doublejump" ] )
+}
+
+// Triggers when the player has respawned as a different character
+void function OnPlayerClassChanged( entity player )
+{
+	if ( !IsValid( player ) || player.IsBot() )
+		return
+	
+	thread GivePlayerDashAbility( player )
+}
+#endif

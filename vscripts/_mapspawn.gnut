@@ -392,6 +392,22 @@ void function PrecacheFSEntities()
 		PrecacheModel( $"mdl/flowstate_custom/w_haloelite.rmdl" )
 		PrecacheModel( $"mdl/flowstate_custom/ptpov_haloelite.rmdl" )
 	}
+
+	PrecacheModel( $"mdl/Humans/pilots/w_phantom.rmdl" )
+	PrecacheModel( $"mdl/Humans/pilots/ptpov_phantom.rmdl" )
+
+	PrecacheModel( $"mdl/Humans/pilots/w_amogino.rmdl" )
+
+	PrecacheModel( $"mdl/Humans/pilots/w_rhapsody.rmdl" )
+	PrecacheModel( $"mdl/Humans/pilots/ptpov_rhapsody.rmdl" )
+
+	PrecacheModel( $"mdl/Humans/pilots/ballistic_base_w.rmdl" )
+	PrecacheModel( $"mdl/Humans/pilots/ballistic_base_v.rmdl" )
+
+	PrecacheModel( $"mdl/flowstate_custom/w_marvin.rmdl" )
+
+	PrecacheModel( $"mdl/flowstate_custom/w_pete_mri.rmdl" )
+	PrecacheModel( $"mdl/flowstate_custom/ptpov_pete_mri.rmdl" )
 }
 
 void function PrecacheSDKWeapons()
@@ -437,6 +453,14 @@ void function PrecacheSDKWeapons()
 	PrecacheWeapon( $"mp_ability_haunt" )
 	PrecacheWeapon( $"mp_ability_ground_slam" )
 	PrecacheWeapon( $"mp_ability_dodge_roll" )
+
+	//Custom Heirlooms
+	PrecacheWeapon( $"melee_macks_knife" )
+	PrecacheWeapon( $"mp_weapon_macks_knife_primary" )
+	PrecacheWeapon( $"melee_bolo_sword" )
+	PrecacheWeapon( $"mp_weapon_bolo_sword_primary" )
+	PrecacheWeapon( $"melee_pathfinder_gloves" )//REMOVE LATER
+	PrecacheWeapon( $"mp_weapon_pathfinder_gloves_primary" )
 }
 
 void function PrecacheSDKEntities()

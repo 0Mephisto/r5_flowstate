@@ -301,8 +301,8 @@ DeathFieldStageData function CreateDeathFieldStageData( int index, bool allowMis
 		data.preShrinkDuration = 10.0
 	}
 
-	#if DEVELOPER
-	printw( "CreateDeathFieldStageData factor:", factor, " - ", index, allowMissingDefaults, " - preShrinkDuration: " + data.preShrinkDuration, " - shrinkDuration: " + data.shrinkDuration )
+	#if DEVELOPER && !MKOS
+		printw( "CreateDeathFieldStageData factor:", factor, " - ", index, allowMissingDefaults, " - preShrinkDuration: " + data.preShrinkDuration, " - shrinkDuration: " + data.shrinkDuration )
 	#endif
 	
 	return data

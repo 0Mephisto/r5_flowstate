@@ -1,3 +1,7 @@
+// Made and designed by @CafeFPS
+// mkos - minor refactors, spawns framework, stats & recap ui, premade teams
+// DarthElmo & Balvarine - gamemode idea, spawns, feedback, playtest
+
 global function Init_FS_Scenarios
 global function FS_Scenarios_GroupToInProgressList
 global function FS_Scenarios_ReturnGroupForPlayer
@@ -24,7 +28,8 @@ global function FS_Scenarios_ForceRest
 global function FS_Scenarios_SetupPanels
 global function FS_Scenarios_ClientCommand_Rest
 global function FS_Scenarios_PlayerCanPing
-global function FS_Scenarios_GetMatchIsEnding
+
+global function FS_Scenarios_PlayersPerTeam
 
 #if TRACKER 
 	global function Scenarios_PlayerDataCallbacks
@@ -36,12 +41,11 @@ global function FS_Scenarios_GetMatchIsEnding
 	global function Mkos_ForceCloseRecap
 #endif
 
-global const int SCENARIOS_MAX_ALLOWED_TEAMSIZE = 5
-
 global struct scenariosTeamStruct
 {
 	array<entity> players
 	int team
+	int customTeamID = -1
 }
 
 global struct scenariosGroupStruct
@@ -145,6 +149,7 @@ struct
 	float fs_scenarios_ringclosing_maxtime = 120
 	float fs_scenarios_matchmaking_delay_after_dying = 8.0
 	bool fs_scenarios_recharge_tactical_only
+	bool fs_scenarios_forcegame_enabled
 	
 	int waitingRoomRadius = 3000
 	array<LocPair> lobbyLocs
@@ -180,6 +185,7 @@ void function Init_FS_Scenarios()
 	settings.fs_scenarios_ringclosing_maxtime = GetCurrentPlaylistVarFloat( "fs_scenarios_ringclosing_maxtime", 100 )
 	settings.fs_scenarios_matchmaking_delay_after_dying = GetCurrentPlaylistVarFloat( "fs_scenarios_matchmaking_delay_after_dying", 8.0 )
 	settings.fs_scenarios_recharge_tactical_only = GetCurrentPlaylistVarBool( "fs_scenarios_recharge_tactical_only", true )
+	settings.fs_scenarios_forcegame_enabled = GetCurrentPlaylistVarBool( "fs_scenarios_forcegame_enabled", true )
 
 	settings.lobbyLocs.append( NewLobbyPair( <-495.617645, 1285.12402, 50272.0625> , <0, -42.2699738, 0>))
 	settings.lobbyLocs.append( NewLobbyPair( <-460.676514, 20.4265499, 50272.0625> , <0, 49.0330009, 0>))
@@ -223,12 +229,20 @@ void function Init_FS_Scenarios()
 	Survival_AddCallback_OnAttackerSoloRatEliminated( FS_Scenarios_OnRatEliminated )
 
 	AddCallback_EntitiesDidLoad( EntitiesDidLoad )
-	//AddCallback_FlowstateSpawnsPostInit( CustomSpawns )
+	//AddCallback_SpawnsPostInit( CustomSpawns )
 	
 	vector mapCenter = SURVIVAL_GetMapCenter()
 	SpawnSystem_SetPanelLocation( mapCenter + <0,0,50000>, ZERO_VECTOR )
 
 	FS_Scenarios_Score_System_Init()
+	
+	if( GetCurrentPlaylistVarBool( "fs_scenarios_allow_teams", true ) )
+		FS_Scenarios_CustomTeamInit()
+}
+
+int function FS_Scenarios_PlayersPerTeam()
+{
+	return settings.fs_scenarios_playersPerTeam
 }
 
 void function EntitiesDidLoad()
@@ -410,13 +424,13 @@ bool function ClientCommand_FS_Scenarios_Requeue(entity player, array<string> ar
 void function FS_Scenarios_OnPlayerKilled( entity victim, entity attacker, var damageInfo )
 {
 	#if DEVELOPER
-		printt( "[+] OnPlayerKilled Scenarios -", victim, "by", attacker )
+		printt( "[Scenarios][+] OnPlayerKilled -", victim, "by", attacker )
 	#endif
 
 	if ( !IsValid( victim ) || !IsValid( attacker ) || !victim.IsPlayer() )
 	{
 		#if DEVELOPER
-			printw( "player died but returned" )
+			printw( "[Scenarios] player died but returned" )
 		#endif
 		return
 	}
@@ -426,9 +440,12 @@ void function FS_Scenarios_OnPlayerKilled( entity victim, entity attacker, var d
 		
 	thread function () : ( victim, bDespawn ) 
 	{
-		ScenariosPersistence_SendStandingsToClient( victim )
+		if( !IsValid( victim ) )//(mk): there should be a validity check since this is spun off.
+			return
 
 		EndSignal( victim, "OnDestroy" ) //it should be before waitframe. Cafe
+		
+		ScenariosPersistence_SendStandingsToClient( victim )
 		
 		WaitFrame()
 		
@@ -448,7 +465,7 @@ void function FS_Scenarios_OnPlayerKilled( entity victim, entity attacker, var d
 			soloModePlayerToWaitingList( victim )
 			
 			#if DEVELOPER
-				printt( victim, "sent to waiting room and added to 'WaitingList" )
+				printt( "[Scenarios]", victim, "sent to waiting room and added to 'WaitingList" )
 			#endif
 		}
 	}()
@@ -458,37 +475,35 @@ void function FS_Scenarios_OnPlayerKilled( entity victim, entity attacker, var d
 	{
 		expect scenariosGroupStruct( group )
 	
-		if( IsValid( group ) && group.isValid )
+		if( group.isValid )
 		{
 			foreach( splayer in FS_Scenarios_GetAllPlayersForGroup( group ) )
-			{
-				Remote_CallFunction_Replay( splayer, "FS_Scenarios_ChangeAliveStateForPlayer", victim.GetEncodedEHandle(), false )
-			}
+				Remote_CallFunction_Replay( splayer, "FS_Scenarios_ChangeAliveStateForPlayer", victim, false )
 			
 			if( group.isReady )
 				elapsedTime = Time() - group.startTime
-		} else if ( !IsValid( group ) || !group.isValid || !group.isReady ) //Do not calculate stats for players not in a round
+		}
+		else if ( !group.isValid || !group.isReady ) //Do not calculate stats for players not in a round
 		{
 			return
 		}
 	}
 
-	FS_Scenarios_UpdatePlayerScore( victim, FS_ScoreType.PENALTY_DEATH )
-	
-	if( elapsedTime > 0 )
-		FS_Scenarios_UpdatePlayerScore( victim, FS_ScoreType.SURVIVAL_TIME, null, elapsedTime )
-	
-	if ( victim.GetTeam() != attacker.GetTeam() && attacker.IsPlayer() )
+	if( !bDespawn )
 	{
-		FS_Scenarios_UpdatePlayerScore( attacker, FS_ScoreType.KILL, victim )
+		FS_Scenarios_UpdatePlayerScore( victim, FS_ScoreType.PENALTY_DEATH )
+	
+		if( elapsedTime > 0 )
+			FS_Scenarios_UpdatePlayerScore( victim, FS_ScoreType.SURVIVAL_TIME, null, elapsedTime )
+		
+		if ( victim.GetTeam() != attacker.GetTeam() && attacker.IsPlayer() )
+			FS_Scenarios_UpdatePlayerScore( attacker, FS_ScoreType.KILL, victim )
 	}
 	
 	FS_Scenarios_HandleGroupIsFinished( victim )
 
 	if( FS_Scenarios_GetDeathboxesEnabled() )
-	{
 		thread SURVIVAL_Death_DropLoot( victim, damageInfo )
-	}
 
 	thread EnemyKilledDialogue( attacker, victim.GetTeam(), victim )
 	
@@ -505,9 +520,7 @@ void function FS_Scenarios_OnPlayerKilled( entity victim, entity attacker, var d
 		entity soloPlayer = GetPlayerArrayOfTeam_Alive( victim.GetTeam() )[0]
 		
 		if( IsValid( soloPlayer ) && !Bleedout_IsBleedingOut( soloPlayer ) )
-		{
 			FS_Scenarios_UpdatePlayerScore( soloPlayer, FS_ScoreType.BONUS_BECOMES_SOLO_PLAYER )
-		}
 	}
 }
 
@@ -524,7 +537,7 @@ bool function FS_Scenarios_IsFullTeamBleedout( entity attacker, entity victim )
 	}
 	
 	#if DEVELOPER
-		printt( "FS_Scenarios_IsFullTeamBleedout", count )
+		printt( "[Scenarios] FS_Scenarios_IsFullTeamBleedout", count )
 	#endif
 	
 	return count == 0
@@ -533,7 +546,7 @@ bool function FS_Scenarios_IsFullTeamBleedout( entity attacker, entity victim )
 void function FS_Scenarios_OnPlayerConnected( entity player )
 {
 	#if DEVELOPER
-		printt( "[+] OnPlayerConnected Scenarios -", player )
+		printt( "[Scenarios] [+] OnPlayerConnected -", player )
 	#endif
 
 	ValidateDataTable( player, "datatable/flowstate_scenarios_score_system.rpak" )
@@ -602,7 +615,7 @@ void function FS_Scenarios_OnPlayerDamaged( entity victim, var damageInfo )
 void function FS_Scenarios_OnPlayerDisconnected( entity player )
 {
 	#if DEVELOPER
-		printt( "[+] OnPlayerDisconnected Scenarios -", player )
+		printt( "[Scenarios] [+] OnPlayerDisconnected -", player )
 	#endif
 	
 	_CleanupPlayerEntities( player )
@@ -697,7 +710,7 @@ void function FS_Scenarios_SpawnBigDoorsForGroup( scenariosGroupStruct group )
         }
 	}
 	#if DEVELOPER
-		printt( "created", count, "big doors for group", group.groupHandle )
+		printt( "[Scenarios] created", count, "big doors for group", group.groupHandle )
 	#endif
 }
 
@@ -725,7 +738,7 @@ void function FS_Scenarios_SaveDoorsData()
 			if( data.linked && IsValid( data.door ) && IsValid( data2.door ) && data.door.GetLinkEnt() == data2.door )
 			{
 				file.allMapDoors.remove( j )
-				// printt( "removed double door" )
+				// printt( "[Scenarios] removed double door" )
 				data2.door.Destroy() //save edicts even more
 				j--
 			}
@@ -814,7 +827,7 @@ void function FS_Scenarios_SpawnDoorsForGroup( scenariosGroupStruct group )
 		}
 	}
 	#if DEVELOPER
-		printt( "spawned", group.doors.len(), "doors for realm", realm )
+		printt( "[Scenarios] spawned", group.doors.len(), "doors for realm", realm )
 	#endif
 }
 
@@ -833,7 +846,7 @@ void function FS_Scenarios_DestroyDoorsForGroup( scenariosGroupStruct group )
 		}
 
 	#if DEVELOPER
-		printt( "destroyed", count, "doors for group", group.groupHandle )
+		printt( "[Scenarios] destroyed", count, "doors for group", group.groupHandle )
 	#endif
 }
 
@@ -855,7 +868,7 @@ void function FS_Scenarios_StoreAliveDeathbox( entity deathbox )
 	file.aliveDeathboxes.append( deathbox )
 	
 	#if DEVELOPER
-		printt( "added deathbox to alive deathboxes array", deathbox )
+		printt( "[Scenarios] added deathbox to alive deathboxes array", deathbox )
 	#endif
 }
 
@@ -908,13 +921,15 @@ void function FS_Scenarios_DestroyAllAliveDeathboxesForRealm( int realm = -1 )
 		}
 	}
 	#if DEVELOPER
-		printt( "removed", count, "deathboxes for realm", realm )
+		printt( "[Scenarios] removed", count, "deathboxes for realm", realm )
 	#endif
 }
 
 void function FS_Scenarios_DestroyAllAliveDroppedLootForRealm( int realm = -1 )
 {
-	printw("FS_Scenarios_DestroyAllAliveDroppedLootForRealm" )
+	#if DEVELOPER
+		Warning("[Scenarios] FS_Scenarios_DestroyAllAliveDroppedLootForRealm" )
+	#endif
 	
 	int count = 0
 	foreach( drop in file.aliveItemDrops )
@@ -923,7 +938,7 @@ void function FS_Scenarios_DestroyAllAliveDroppedLootForRealm( int realm = -1 )
 		{
 			if( realm == -1 || drop.IsInRealm( realm )  )
 			{
-				// printt( "FS_Scenarios_DestroyAllAliveDroppedLootForRealm", drop, drop.GetParent() )
+				// printt( "[Scenarios] FS_Scenarios_DestroyAllAliveDroppedLootForRealm", drop, drop.GetParent() )
 				if( IsValid( drop.GetParent() ) &&  drop.GetParent().GetClassName() == "prop_physics" )
 					drop.GetParent().Destroy() // Destroy physics. This is not always the physics. [Cafe]
 				
@@ -934,7 +949,7 @@ void function FS_Scenarios_DestroyAllAliveDroppedLootForRealm( int realm = -1 )
 		}
 	}
 	#if DEVELOPER
-		printw( "[+] Removed", count, "prop_survival items for realm", realm )
+		printw( "[Scenarios] [+] Removed", count, "prop_survival items for realm", realm )
 	#endif
 }
 
@@ -946,7 +961,7 @@ void function FS_Scenarios_StoreAliveDropship( entity dropship )
 	file.aliveDropships.append( dropship )
 	
 	#if DEVELOPER
-		printt( "added dropship to alive dropships array", dropship )
+		printt( "[Scenarios] added dropship to alive dropships array", dropship )
 	#endif
 }
 
@@ -1051,7 +1066,7 @@ void function FS_Scenarios_SpawnLootbinsForGroup( scenariosGroupStruct group )
 	}
 	
 	#if DEVELOPER
-		printt("spawned", count, "lootbins for group", group.groupHandle, "in realm", group.slotIndex, "- WEAPONS: ", weapons )
+		printt("[Scenarios] spawned", count, "lootbins for group", group.groupHandle, "in realm", group.slotIndex, "- WEAPONS: ", weapons )
 	#endif
 }
 
@@ -1084,7 +1099,7 @@ void function FS_Scenarios_DestroyLootbinsForGroup( scenariosGroupStruct group )
 		}
 		
 	#if DEVELOPER
-		printt( "destroyed", count, "lootbins for group", group.groupHandle )
+		printt( "[Scenarios] destroyed", count, "lootbins for group", group.groupHandle )
 	#endif
 }
 
@@ -1182,7 +1197,7 @@ void function FS_Scenarios_SpawnLootForGroup( scenariosGroupStruct group )
 	}
 
 	#if DEVELOPER
-		printt("spawned", count, "ground loot for group", group.groupHandle, "in realm", group.slotIndex, "- WEAPONS: ", weapons )
+		printt("[Scenarios] spawned", count, "ground loot for group", group.groupHandle, "in realm", group.slotIndex, "- WEAPONS: ", weapons )
 	#endif
 }
 
@@ -1200,7 +1215,7 @@ void function FS_Scenarios_DestroyLootForGroup( scenariosGroupStruct group )
 		}
 		
 	#if DEVELOPER
-		printt( "destroyed", count, "ground loot for group", group.groupHandle )
+		printt( "[Scenarios] destroyed", count, "ground loot for group", group.groupHandle )
 	#endif
 }
 
@@ -1237,7 +1252,7 @@ void function FS_Scenarios_SetIsUsedBoolForTeamSlot( int team, bool usedState )
 	catch(e)
 	{	
 		#if DEVELOPER
-			sqprint("SetIsUsedBoolForRealmSlot crash " + e )
+			sqprint("[Scenarios] SetIsUsedBoolForRealmSlot crash " + e )
 		#endif
 	}
 }
@@ -1260,7 +1275,7 @@ bool function FS_Scenarios_IsPlayerIn3v3Mode( entity player )
 	if( !IsValid (player) )
 	{	
 		#if DEVELOPER
-			sqprint("isPlayerInSoloMode entity was invalid")
+			sqprint("[Scenarios] isPlayerInSoloMode entity was invalid")
 		#endif
 		
 		return false 
@@ -1272,7 +1287,7 @@ bool function FS_Scenarios_IsPlayerIn3v3Mode( entity player )
 bool function FS_Scenarios_GroupToInProgressList( scenariosGroupStruct newGroup, array<entity> players ) 
 {
 	#if DEVELOPER
-		printt( "FS_Scenarios_GroupToInProgressList" )
+		printt( "[Scenarios] FS_Scenarios_GroupToInProgressList" )
 	#endif
 
 	int slotIndex = getAvailableRealmSlotIndex()
@@ -1314,7 +1329,7 @@ bool function FS_Scenarios_GroupToInProgressList( scenariosGroupStruct newGroup,
 		if( !( groupHandle in file.scenariosGroupsInProgress ) )
 		{
 			#if DEVELOPER
-				sqprint(format("adding group: %d", groupHandle ))
+				sqprint(format("[Scenarios] adding group: %d", groupHandle ))
 			#endif
 
 			foreach( player in players )
@@ -1334,7 +1349,7 @@ bool function FS_Scenarios_GroupToInProgressList( scenariosGroupStruct newGroup,
 				{
 					if( !IsValid( player ) )
 						continue
-
+		
 					SetTeam( player, team.team )
 				}
 			}
@@ -1350,7 +1365,7 @@ bool function FS_Scenarios_GroupToInProgressList( scenariosGroupStruct newGroup,
 	catch(e)
 	{
 		#if DEVELOPER
-			sqprint("addGroup crash: " + e)
+			sqprint("[Scenarios] addGroup crash: " + e)
 		#endif
 		return false
 	}
@@ -1371,14 +1386,14 @@ void function FS_Scenarios_RemoveGroup( scenariosGroupStruct groupToRemove )
 	if( groupToRemove.groupHandle in file.scenariosGroupsInProgress )
 	{
 		#if DEVELOPER
-			sqprint(format("removing group: %d", groupToRemove.groupHandle) )
+			sqprint(format("[Scenarios] removing group: %d", groupToRemove.groupHandle) )
 		#endif
 		delete file.scenariosGroupsInProgress[groupToRemove.groupHandle]
 	}
 	else 
 	{
 		#if DEVELOPER
-			sqprint(format("groupToRemove.groupHandle: %d not in file.groupsInProgress", groupToRemove.groupHandle ))
+			sqprint(format("[Scenarios] groupToRemove.groupHandle: %d not in file.groupsInProgress", groupToRemove.groupHandle ))
 		#endif
 	}
 
@@ -1392,7 +1407,7 @@ scenariosGroupStruct ornull function FS_Scenarios_ReturnGroupForPlayer( entity p
 	if( !IsValid (player) )
 	{	
 		#if DEVELOPER
-			sqprint("FS_Scenarios_ReturnGroupForPlayer entity was invalid")
+			sqprint("[Scenarios] FS_Scenarios_ReturnGroupForPlayer entity was invalid")
 		#endif
 		
 		return null
@@ -1405,7 +1420,7 @@ scenariosGroupStruct ornull function FS_Scenarios_ReturnGroupForPlayer( entity p
 	}else 
 	{
 		#if DEVELOPER
-			sqprint("FS_Scenarios_ReturnGroupForPlayer player handle not in group map")
+			sqprint("[Scenarios] FS_Scenarios_ReturnGroupForPlayer player handle not in group map")
 		#endif
 	}
 
@@ -1445,7 +1460,7 @@ void function FS_Scenarios_RespawnIn3v3Mode( entity player )
 		catch (erroree)
 		{	
 			#if DEVELOPER
-				sqprint("Caught an error that would crash the server" + erroree)
+				sqprint("[Scenarios] Caught an error that would crash the server" + erroree)
 			#endif
 		}
 	
@@ -1468,13 +1483,14 @@ void function FS_Scenarios_RespawnIn3v3Mode( entity player )
 
 void function FS_Scenarios_Main_Thread()
 {
-    WaitForGameState(eGameState.Playing)
+    WaitForGameState( eGameState.Playing )
 	FS_Scenarios_SaveDoorsData()
 
-	OnThreadEnd(
+	OnThreadEnd
+	(
 		function() : (  )
 		{
-			Warning(Time() + "Solo thread is down!!!!!!!!!!!!!!!")
+			Warning( Time() + "[Scenarios] Solo thread is down!!!!!!!!!!!!!!!" )
 			GameRules_ChangeMap( GetMapName(), GameRules_GetGameMode() )
 		}
 	)
@@ -1494,7 +1510,7 @@ void function FS_Scenarios_Main_Thread()
 				continue
 			
 			entity player = playerInWaitingStruct.player
-
+			
 			if ( !IsValidPlayer( player ) ) //IsValidPlayer will check if player is disconnecting as well
 				continue
 
@@ -1575,7 +1591,7 @@ void function FS_Scenarios_Main_Thread()
 			if ( group.IsFinished )
 			{
 				#if DEVELOPER
-					printw( "[+] GROUP FINISHED MATCH", group.groupHandle )
+					printw( "[Scenarios] [+] GROUP FINISHED MATCH", group.groupHandle )
 				#endif
 
 				FS_Scenarios_SendRecapData( group )
@@ -1611,7 +1627,7 @@ void function FS_Scenarios_Main_Thread()
 					}
 				}
 				#if DEVELOPER
-					printt( "tracked ents removed", ents.len(), "for group", group.groupHandle )
+					printt( "[Scenarios] tracked ents removed", ents.len(), "for group", group.groupHandle )
 				#endif 
 				
 				DestroyScriptManagedEntArray( group.trackedEntsArrayIndex )
@@ -1621,11 +1637,12 @@ void function FS_Scenarios_Main_Thread()
 					if( !IsValid( player ) )
 						continue
 
+					FS_Scenarios_CheckAndSetRoundTimeForTeam( player )
 					soloModePlayerToWaitingList( player )
 					HolsterAndDisableWeapons( player )
 				}
 				
-				groupsToRemove.append(group)
+				groupsToRemove.append( group )
 			}
 		}//foreach
 
@@ -1669,23 +1686,26 @@ void function FS_Scenarios_Main_Thread()
 		
 		foreach ( playerHandle, eachPlayerStruct in waitingPlayersShuffledTable )
 		{	
-			if( !IsValid(eachPlayerStruct) )
-				continue				
+			// if( !IsValid( eachPlayerStruct ) ) //should always be valid due to ref counting?
+				// continue				
 			
 			entity player = eachPlayerStruct.player
 			
 			if( !IsValidPlayer( player ) ) //don't pass here if player is disconnecting Cafe
 				continue
+				
+			if( FS_Scenarios_IsPlayerWaitingForTeamates( player ) )
+				continue
 			
 			#if TRACKER
-			if( IsBotEnt( player ) ) //temporary messagebot bullcrap hack ( all of these need removed )
-				continue
+				if( IsBotEnt( player ) ) //temporary messagebot bullcrap hack ( all of these need removed )
+					continue
 			#endif
 
 			// if( player.p.InDeathRecap ) //Has player closed Death Recap? //Not reliable until we solve all the death recap. Cafe
 				// continue
 			// #if DEVELOPER
-				// Warning( "Checking for player " + (Time() - player.p.lastRequeueUsedTime) )
+				// Warning( "[Scenarios] Checking for player " + (Time() - player.p.lastRequeueUsedTime) )
 			// #endif
 			
 			// if( Time() - player.p.lastRequeueUsedTime < settings.fs_scenarios_matchmaking_delay_after_dying ) // Penalizar a los que mueren.
@@ -1708,13 +1728,13 @@ void function FS_Scenarios_Main_Thread()
 			waitingPlayers.append( player )
 		}
 		
-		bool forceGame = playersThatForceMatchmaking >= settings.fs_scenarios_min_players_forced_match && playersThatForceMatchmaking >= waitingPlayers.len() && waitingPlayers.len() > 1
+		bool forceGame = settings.fs_scenarios_forcegame_enabled && playersThatForceMatchmaking >= settings.fs_scenarios_min_players_forced_match && playersThatForceMatchmaking >= waitingPlayers.len() && waitingPlayers.len() > 1
 		//if there a 3 players and they are two seconds left to start and a player joins, this will make wait for the new player to reach the time again ( 30s )
 		//playersThatForceMatchmaking == waitingPlayers.len() is to do the force logic only when there are barely players in the server. If there are games runnings, should be fast enough for players to wait in the timeout. Cafe
 		
 		#if DEVELOPER
-		if( forceGame )
-			Warning( "Force game because players have waited a long time " + playersThatForceMatchmaking )
+			if( forceGame )
+				Warning( "[Scenarios] Force game because players have waited a long time " + playersThatForceMatchmaking )
 		#endif
 		
 		// Hay suficientes jugadores para crear un equipo?
@@ -1727,7 +1747,7 @@ void function FS_Scenarios_Main_Thread()
 		Assert( waitingPlayers.len() < ( settings.fs_scenarios_playersPerTeam * settings.fs_scenarios_teamAmount ) )
 
 		#if DEVELOPER
-			printt("------------------MATCHING GROUP------------------")
+			printt("[Scenarios] ------------------MATCHING GROUP------------------")
 		#endif
 
 		waitingPlayers.randomize()
@@ -1739,6 +1759,7 @@ void function FS_Scenarios_Main_Thread()
 		for( int i = 0; i < settings.fs_scenarios_teamAmount; i++ )
 		{
 			Assert( newGroup.teams.len() == settings.fs_scenarios_teamAmount )
+			
 			scenariosTeamStruct team
 			team.team = FS_Scenarios_GetAvailableTeamSlotIndex()
 			
@@ -1761,20 +1782,43 @@ void function FS_Scenarios_Main_Thread()
 
 	
 		//This iterates over all players in lobby to assign them a team ( a game has to be created )
-		// mkos please add proper matchmaking for teams lol	- (mk): will do.
+		// mkos please add proper matchmaking for teams lol	- (mk): will do. (still not done, need to utilize sbmm)
 		for( int i = waitingPlayers.len() - 1; i >= 0 ; i-- )
 		{
-			entity player = waitingPlayers[i]
+			entity player = waitingPlayers[ i ]
 
-			scenariosTeamStruct team = FS_GetBestTeamToFillForGroup( newGroup.teams )
-			
-			if( team.players.len() < settings.fs_scenarios_playersPerTeam )
+			CustomTeam ornull customTeamGroup = GetCustomTeamOfPlayer( player )
+			if( customTeamGroup != null )
 			{
-				team.players.append( player )
-				waitingPlayers.remove( i )
+				expect CustomTeam ( customTeamGroup )
+				scenariosTeamStruct ornull customScenariosTeam = FindOrAssignCustomScenariosTeam( newGroup, customTeamGroup.teamID )
+				
+				if( customScenariosTeam != null )
+				{
+					expect scenariosTeamStruct ( customScenariosTeam )
+					if( customScenariosTeam.players.len() < settings.fs_scenarios_playersPerTeam )
+					{
+						customScenariosTeam.players.append( player )
+						waitingPlayers.remove( i )
+					}
+				}//(mk): this team will be skipped if null is returned
 			}
-			else
-				break //Stop iteration. No more teams to fill. Break
+			else 
+			{
+				scenariosTeamStruct ornull team = FS_GetBestTeamToFillForGroup( newGroup.teams )
+				
+				if( team != null )
+				{
+					expect scenariosTeamStruct ( team )
+					if( team.players.len() < settings.fs_scenarios_playersPerTeam )
+					{
+						team.players.append( player )
+						waitingPlayers.remove( i )
+					}
+					else
+						break //Stop iteration. No more teams to fill. Break
+				}
+			}
 		}
 
 		#if DEVELOPER
@@ -1810,14 +1854,14 @@ void function FS_Scenarios_Main_Thread()
 		newGroup.calculatedRingCenter = OriginToGround_Inverse( groupLocStruct.Center )//to ensure center is above ground. Colombia
 
 		#if DEVELOPER
-			printt( "Calculated center for ring: ", newGroup.calculatedRingCenter )
+			printt( "[Scenarios] Calculated center for ring: ", newGroup.calculatedRingCenter )
 			DebugDrawSphere( newGroup.calculatedRingCenter, 30, 255,0,0, true, 300 )
 		#endif
 
 		newGroup.trackedEntsArrayIndex = CreateScriptManagedEntArray()
 		
 		#if DEVELOPER
-			printt( "tracked ents script managed array created for group", newGroup.groupHandle, newGroup.trackedEntsArrayIndex )
+			printt( "[Scenarios] tracked ents script managed array created for group", newGroup.groupHandle, newGroup.trackedEntsArrayIndex )
 		#endif
 		
 		//fix this to iterate over all group.teams teams
@@ -1838,17 +1882,17 @@ void function FS_Scenarios_Main_Thread()
 				foreach( splayer in team1 )
 				{
 					if( IsValid( player ) && IsValid( splayer ) )
-						Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddAllyHandle", splayer.GetEncodedEHandle() )
+						Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddAllyHandle", splayer )
 				}
 				foreach( splayer in team2 )
 				{
 					if( IsValid( player ) && IsValid( splayer ) )
-						Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddEnemyHandle", splayer.GetEncodedEHandle() )
+						Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddEnemyHandle", splayer )
 				}
 				foreach( splayer in team3 )
 				{
 					if( IsValid( player ) && IsValid( splayer ) )
-						Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddEnemyHandle2", splayer.GetEncodedEHandle() )
+						Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddEnemyHandle2", splayer )
 				}
 			}
 			
@@ -1857,17 +1901,17 @@ void function FS_Scenarios_Main_Thread()
 				foreach( splayer in team1 )
 				{
 					if( IsValid( player ) && IsValid( splayer ) )
-						Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddEnemyHandle", splayer.GetEncodedEHandle() )
+						Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddEnemyHandle", splayer )
 				}
 				foreach( splayer in team2 )
 				{
 					if( IsValid( player ) && IsValid( splayer ) )
-						Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddAllyHandle", splayer.GetEncodedEHandle() )
+						Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddAllyHandle", splayer )
 				}
 				foreach( splayer in team3 )
 				{
 					if( IsValid( player ) && IsValid( splayer ) )
-						Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddEnemyHandle2", splayer.GetEncodedEHandle() )
+						Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddEnemyHandle2", splayer )
 				}
 			}
 
@@ -1876,20 +1920,21 @@ void function FS_Scenarios_Main_Thread()
 				foreach( splayer in team1 )
 				{
 					if( IsValid( player ) && IsValid( splayer ) )
-						Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddEnemyHandle", splayer.GetEncodedEHandle() )
+						Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddEnemyHandle", splayer )
 				}
 				foreach( splayer in team2 )
 				{
 					if( IsValid( player ) && IsValid( splayer ) )
-						Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddEnemyHandle2", splayer.GetEncodedEHandle() )
+						Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddEnemyHandle2", splayer )
 				}
 				foreach( splayer in team3 )
 				{
 					if( IsValid( player ) && IsValid( splayer ) )
-						Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddAllyHandle", splayer.GetEncodedEHandle() )
+						Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddAllyHandle", splayer )
 				}
 			}
-		} else //Show compass if cards won't show
+		}
+		else //Show compass if cards won't show
 		{
 			foreach ( entity player in players )
 			{
@@ -1955,7 +2000,7 @@ void function FS_Scenarios_Main_Thread()
 			#if DEVELOPER
 				else
 				{
-					printt( "ground loot is disabled from playlist!" )
+					printt( "[Scenarios] ground loot is disabled from playlist!" )
 				}
 			#endif
 
@@ -1991,7 +2036,7 @@ void function FS_Scenarios_Main_Thread()
 				}
 				
 				#if DEVELOPER
-					printw("spawning player in slot", spawnSlot, player )
+					printw("[Scenarios] spawning player in slot", spawnSlot, player )
 				#endif
 
 				if ( spawnSlot == -1 ) 
@@ -2147,6 +2192,7 @@ void function FS_Scenarios_Main_Thread()
 
 					foreach ( newWeapon in player.GetMainWeapons() )
 					{
+						//Cafe was here
 						ItemFlavor ornull weaponSkinOrNull = null
 						array<string> fsCharmsToUse = [ "SAID00701640565", "SAID01451752993", "SAID01334887835", "SAID01993399691", "SAID00095078608", "SAID01439033541", "SAID00510535756", "SAID00985605729" ]
 						ItemFlavor ornull weaponCharmOrNull 
@@ -2184,7 +2230,7 @@ void function FS_Scenarios_Main_Thread()
 				if( settings.fs_scenarios_characterselect_enabled )
 				{
 					#if DEVELOPER 
-						printt( "STARTING CHARACTER SELECT FOR GROUP", newGroup.groupHandle, "IN REALM", newGroup.slotIndex )
+						printt( "[Scenarios] STARTING CHARACTER SELECT FOR GROUP", newGroup.groupHandle, "IN REALM", newGroup.slotIndex )
 					#endif 
 					
 					waitthread FS_Scenarios_StartCharacterSelectForGroup( newGroup )
@@ -2212,7 +2258,6 @@ void function FS_Scenarios_Main_Thread()
 
 					RemoveCinematicFlag( player, CE_FLAG_INTRO )
 					player.SetPlayerNetTime( "FS_Scenarios_gameStartTime", startTime )
-					
 					Remote_CallFunction_NonReplay( player, "FS_Scenarios_SetupPlayersCards", false )
 					player.SetShieldHealth( 0 )
 					player.SetShieldHealthMax( 0 )
@@ -2365,7 +2410,7 @@ void function FS_Scenarios_HandleGroupIsFinished( entity player )
 			}
 			
 			#if DEVELOPER
-				printt( "Group has finished delayed" )
+				printt( "[Scenarios] Group has finished delayed" )
 			#endif
 		}()
 
@@ -2390,7 +2435,7 @@ void function FS_Scenarios_StartCharacterSelectForGroup( scenariosGroupStruct gr
 	}
 
 	#if DEVELOPER
-	printt( "GIVING LOCKSTEP ORDER FOR PLAYERS GROUP", group.groupHandle, "IN REALM", group.slotIndex )
+	printt( "[Scenarios] GIVING LOCKSTEP ORDER FOR PLAYERS GROUP", group.groupHandle, "IN REALM", group.slotIndex )
 	#endif
 
 	float startime = Time()
@@ -2523,23 +2568,24 @@ void function FS_Scenarios_StartRingMovementForGroup( scenariosGroupStruct group
 {
 	if( !group.isValid || group.IsFinished )
 		return
-	
+
 	EndSignal( group.dummyEnt, "FS_Scenarios_GroupFinished" )
-	
+
 	array<entity> players = clone FS_Scenarios_GetAllPlayersForGroup( group )
-	
+
 	foreach( player in  players )
 	{
 		player.SetPlayerNetTime( "FS_Scenarios_currentDeathfieldRadius", group.currentRingRadius )
 		player.SetPlayerNetTime( "FS_Scenarios_currentDistanceFromCenter", -1 )
 	}
-	
+
 	WaitSignal( group.dummyEnt, "FS_Scenarios_GroupIsReady" )
-	
-	ArrayRemoveInvalid( players )
+
+		ArrayRemoveInvalid( players )
 	
 	float closingSpeed = settings.fs_scenarios_zonewars_ring_ringclosingspeed // Per frame
 	float frameDuration = 0.05 // 1 / GetConVarFloat( "script_server_fps" ) // Time per frame in seconds
+
 	float starttime = Time()
 	float startradius = group.currentRingRadius
 	
@@ -2600,7 +2646,7 @@ void function FS_Scenarios_StartRingMovementForGroup( scenariosGroupStruct group
 			wait frameDuration
 			continue
 		}
-	
+		
 		players.clear()
 		players = clone FS_Scenarios_GetAllPlayersForGroup( group )
 	
@@ -2616,7 +2662,6 @@ void function FS_Scenarios_StartRingMovementForGroup( scenariosGroupStruct group
 		wait frameDuration
 	}
 }
-
 
 void function FS_Scenarios_CreateCustomDeathfield( scenariosGroupStruct group )
 {
@@ -2636,7 +2681,7 @@ void function FS_Scenarios_CreateCustomDeathfield( scenariosGroupStruct group )
 
 	group.currentRingRadius = ringRadius + settings.fs_scenarios_default_radius_padding
 
-	printw( "RING RADIUS WAS CREATED WITH ", group.currentRingRadius, "UNITS" )
+	printw( "[Scenarios] RING RADIUS WAS CREATED WITH ", group.currentRingRadius, "UNITS" )
 	int realm = group.slotIndex
 	float radius = group.currentRingRadius
 
@@ -2658,8 +2703,8 @@ void function FS_Scenarios_CreateCustomDeathfield( scenariosGroupStruct group )
 		smallcircle.RemoveFromAllRealms()
 		smallcircle.AddToRealm( realm )
 	}
-	
-	DispatchSpawn( smallcircle )
+
+	DispatchSpawn(smallcircle)
 
 	group.ring = smallcircle
 
@@ -2824,12 +2869,26 @@ int function FS_SortTeamsByLessPlayersAmount( scenariosTeamStruct a, scenariosTe
 	return 0
 }
 
-//This allows us to fill teams one by one instead of all members of one team first by getting the team with less players
-scenariosTeamStruct function FS_GetBestTeamToFillForGroup( array<scenariosTeamStruct> teams )
+//(Cafe): This allows us to fill teams one by one instead of all members of one team first by getting the team with less players
+//(mk): It also now ensures we do not fill into a pre-made team. Returns null if no suitable team was found (to force nofill premade squads).
+scenariosTeamStruct ornull function FS_GetBestTeamToFillForGroup( array<scenariosTeamStruct> teams )
 {
 	teams.sort( FS_SortTeamsByLessPlayersAmount )
-	// printt( "selected a team with less players", teams[0].players.len() )
-	return teams[0]
+	foreach( scenariosTeamStruct team in teams )
+    {
+		if( team.customTeamID == -1 )
+			return team
+
+		CustomTeam ornull teamCustom = GetCustomTeamByID( team.customTeamID )
+		if( teamCustom != null )
+		{
+			expect CustomTeam ( teamCustom )
+			if( GetCustomTeamSetting( teamCustom, "allow_random_fill" ) == 1 )
+				return team
+		}
+    }
+	
+	return null
 }
 
 LocPair function FS_Scenarios_getWaitingRoomLocation()
@@ -2875,7 +2934,7 @@ void function __RemovePlayerFromActiveGroup( entity player )
 	array<entity> team = __GetGroupTeamArrayOfPlayer( player )
 	
 	if( team.contains( player ) )
-		team.removebyvalue( player )
+		team.removebyvalue( player ) //could be fastremovebyvalue
 	else 
 		return
 }
@@ -2959,13 +3018,48 @@ int function DetermineLowThreshold( int teamAmount, int playersPerTeam )
 	return teamAmount * playersPerTeam 
 }
 
-bool function FS_Scenarios_GetMatchIsEnding()
-{
-	return file.scenariosStopMatchmaking
-}
 #if TRACKER
 	void function Scenarios_PlayerDataCallbacks() //todo move to convar
 	{
 		AddCallback_PlayerData( "start_in_rest_setting", UpdateStartInRestSetting )
 	}
 #endif 
+
+scenariosTeamStruct ornull function FindOrAssignCustomScenariosTeam( scenariosGroupStruct group, int searchTeamID )
+{
+	foreach( scenariosTeamStruct team in group.teams )
+	{
+		if( team.customTeamID == searchTeamID )
+			return team
+	}
+
+	foreach( scenariosTeamStruct team in group.teams )
+	{
+		if( team.customTeamID == -1 && team.players.len() == 0 )
+		{
+			team.customTeamID = searchTeamID
+			return team
+		}
+	}
+
+	CustomTeam ornull potentialTeam = GetCustomTeamByID( searchTeamID )
+	
+	if( potentialTeam == null )
+		return null 
+		
+	expect CustomTeam ( potentialTeam )
+	
+	if( GetCustomTeamSetting( potentialTeam, "allow_random_fill" ) == 1 )
+	{
+		foreach( scenariosTeamStruct team in group.teams )
+		{
+			if( team.customTeamID == -1 )
+			{
+				team.customTeamID = searchTeamID
+				return team
+			}
+		}
+	}
+
+	return null
+}

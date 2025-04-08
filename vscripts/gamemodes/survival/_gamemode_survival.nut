@@ -71,7 +71,7 @@ const string KNOCKED_SOUND = "flesh_bulletimpact_downedshot_3p_vs_3p"
 //fix debug draws calls
 const bool DEBUG_PLANE_PATH = false
 const bool DEBUG_PLANE_PATH_LIGHTWEIGHT = false
-const bool DEBUG_PLANE_PATH_JUMP = true
+const bool DEBUG_PLANE_PATH_JUMP = false
 const bool PLANE_PATH_DEBUG = false
 
 global float g_DOOR_OPEN_TIME = 0
@@ -893,10 +893,10 @@ bool function ClientCommand_Flowstate_AssignCustomCharacterFromMenu(entity playe
 		player.SetArmsModelOverride( $"mdl/Humans/pilots/ptpov_master_chief.rmdl" )
 		break
 		
-		case "1":
+		/*case "1":
 		player.SetBodyModelOverride( $"mdl/Humans/pilots/w_blisk.rmdl" )
 		player.SetArmsModelOverride( $"mdl/Humans/pilots/pov_blisk.rmdl" )
-		break
+		break*/
 		
 		case "2":
 		player.SetBodyModelOverride( $"mdl/Humans/pilots/w_phantom.rmdl" )
@@ -918,17 +918,17 @@ bool function ClientCommand_Flowstate_AssignCustomCharacterFromMenu(entity playe
 		player.SetArmsModelOverride( $"mdl/Humans/pilots/ptpov_rhapsody.rmdl" )
 		break
 		
-		case "6":
+		/*case "6":
 		player.SetBodyModelOverride( $"mdl/Humans/pilots/w_ash_legacy.rmdl" )
 		player.SetArmsModelOverride( $"mdl/Humans/pilots/pov_ash_legacy.rmdl" )
-		break
+		break*/
 		
 		// case "7":
 		// player.SetBodyModelOverride( $"mdl/Humans/pilots/w_cj.rmdl" )
 		// player.SetArmsModelOverride( $"mdl/Humans/pilots/ptpov_amogino.rmdl" )
 		// break
 		
-		case "8":
+		/*case "8":
 		player.SetBodyModelOverride( $"mdl/Humans/pilots/w_jackcooper.rmdl" )
 		player.SetArmsModelOverride( $"mdl/Humans/pilots/ptpov_jackcooper.rmdl" )
 		break
@@ -936,7 +936,7 @@ bool function ClientCommand_Flowstate_AssignCustomCharacterFromMenu(entity playe
 		case "9":
 		player.SetBodyModelOverride( $"mdl/Humans/pilots/pilot_medium_loba.rmdl" )
 		player.SetArmsModelOverride( $"mdl/Humans/pilots/pov_pilot_medium_loba.rmdl" )
-		break
+		break*/
 		
 		// case "10":
 		// player.SetBodyModelOverride( $"mdl/Humans/pilots/pilot_heavy_revenant.rmdl" )
@@ -953,10 +953,10 @@ bool function ClientCommand_Flowstate_AssignCustomCharacterFromMenu(entity playe
 		player.SetArmsModelOverride( $"mdl/Humans/pilots/ballistic_base_v.rmdl" )
 		break
 		
-		case "13": // mrvn
+		/*case "13": // mrvn
 		player.SetBodyModelOverride( $"mdl/flowstate_custom/w_marvin.rmdl" )
 		player.SetArmsModelOverride( $"mdl/Humans/pilots/ptpov_amogino.rmdl" )
-		break
+		break*/
 
 		// case "14": // gojo
 		// player.SetBodyModelOverride( $"mdl/flowstate_custom/w_gojo.rmdl" )
@@ -1022,19 +1022,16 @@ void function Sequence_Playing()
 	}
 
 	// Set settings for the drop-in
-	foreach ( entity player in GetPlayerArray() )
+	bool shouldSetDropSettings = true
+	if ( Gamemode() == eGamemodes.WINTEREXPRESS || Playlist() == ePlaylists.survival_dev || Playlist() == ePlaylists.dev_default || GetCurrentPlaylistVarBool( "is_practice_map", false ) || Playlist() == ePlaylists.fs_movementrecorder )
+		shouldSetDropSettings = false
+	
+	if ( shouldSetDropSettings )
 	{
-		bool shouldSetDropSettings = true
-
-		if ( Gamemode() == eGamemodes.WINTEREXPRESS || Playlist() == ePlaylists.survival_dev || Playlist() == ePlaylists.dev_default || GetCurrentPlaylistVarBool( "is_practice_map", false ) || Playlist() == ePlaylists.fs_movementrecorder )
-			shouldSetDropSettings = false
-
-		if ( shouldSetDropSettings )
-		{
+		foreach ( entity player in GetPlayerArray() )
 			SetPlayerIntroDropSettings( player )
-		}
 	}
-
+	
 	FlagClear( "PlaneStartMoving" )
 	FlagClear( "PlaneDoorOpen" )
 	FlagClear( "PlaneAtLaunchPoint" )
@@ -1062,7 +1059,8 @@ void function Sequence_Playing()
 		{
 			WaitFrame()
 		}
-	} else if ( !GetCurrentPlaylistVarBool( "match_ending_enabled", true ) || GetConVarInt( "mp_enablematchending" ) < 1 )
+	} 
+	else if ( !GetCurrentPlaylistVarBool( "match_ending_enabled", true ) || GetConVarInt( "mp_enablematchending" ) < 1 )
 	{
 		WaitForever() // match never ending
 	}

@@ -6,7 +6,6 @@ Scripts:
       
 
 	mp/levels/mp_rr_canyonlands_common.nut
-	mp/levels/sh_crypto_tt_common.nut
 ]
 When: "SERVER"
 Scripts:

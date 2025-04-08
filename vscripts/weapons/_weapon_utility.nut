@@ -2114,9 +2114,7 @@ void function StartClusterExplosions( entity projectile, entity owner, PopcornIn
 
 	array<entity> players = GetPlayerArray()
 	foreach ( player in players )
-	{
-		Remote_CallFunction_NonReplay( player, "SCB_AddGrenadeIndicatorForEntity", owner.GetTeam(), owner.GetEncodedEHandle(), placementHelper.GetEncodedEHandle(), outerRadius )
-	}
+		Remote_CallFunction_NonReplay( player, "SCB_AddGrenadeIndicatorForEntity", owner, placementHelper, outerRadius )
 
 	int particleSystemIndex = GetParticleSystemIndex( CLUSTER_BASE_FX )
 	int attachId            = placementHelper.LookupAttachment( "REF" )

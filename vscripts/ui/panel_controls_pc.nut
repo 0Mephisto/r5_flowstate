@@ -123,14 +123,14 @@ void function OnConfirmDialogResult( int result )
 
 void function SetupTextField( string convarName, string textField )
 {
-	if( empty( convarName ) || empty( textField ) )
-		mAssert( false, "Missing entry in " + FUNC_NAME() + "() called in " + FUNC_NAME(2) + "()" )	
+	if( convarName == "" || textField == "" )
+		mAssert( false, "Missing entry in %s()", FUNC_NAME() )	
 	
 	if( !( textField in file.textEntryFields ) )
 		file.textEntryFields[ textField ] <- {}
 		
 	if( convarName in file.textEntryFields[ textField ] )
-		mAssert( false, "file.textEntryFields already contains \"" + convarName + "\"" )
+		mAssert( false, "file.textEntryFields already contains \"%s\"", convarName )
 		
 	file.textEntryFields[ textField ][ convarName ] <- Hud_GetChild( file.keyBindingPanel, textField )
 }

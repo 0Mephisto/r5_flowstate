@@ -879,7 +879,6 @@ global struct ServerPlayerStruct
 	bool lock1v1_setting 		= true
 	bool start_in_rest_setting 	= false
 	bool enable_input_banner 	= false
-	float ratelimit 			= 0.2
 	bool rest_request 			= false
 	bool waitingFor1v1			= false
 	bool ClientCommandsEnabled 	= true
@@ -898,18 +897,16 @@ global struct ServerPlayerStruct
 	int portalKidnaps = 0
 	float portalPlaceTime = 0
 	bool eaVerifyProcessing = false
+	bool hasTeam
 	
 	//for adding specific spawn behavior on a player basis.
 	array<void functionref(entity)> playerSpawnedCallbacks
 	
 	//For adding specific spawn behavior that fires once.
 	array<void functionref(entity)> playerSpawnedCallbacks_FireOnce
-	
-	//framework for confirm ( this is bad and experimental )
-	// bool bRelayChallengeState 	= false
-	// int relayChallengeCode 		= 0
-	
 	bool bTextmute 				= false	
+	
+	table< string, float > rateLimitTable = { DEFAULT_RATE_KEY = 0.0 }
 	
 	////////////////////////////////////////////////////////////////
 

@@ -791,7 +791,7 @@ void function FS_LG_PlayerStartShooting( entity player, entity weapon, string we
 		return
 		
 	#if DEVELOPER
-	printw( "LGUN - LASER CREATED", player, weapon, weaponName, ammoUsed, attackOrigin, attackDir )
+		//printw( "LGUN - LASER CREATED", player, weapon, weaponName, ammoUsed, attackOrigin, attackDir )
 	#endif
 
 	thread FS_LG_PlayerStartShooting_Thread( player, weapon ) //change no auto to a remote funct to play fx, use attackDir instead. Cafe

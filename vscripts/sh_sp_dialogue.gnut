@@ -319,7 +319,7 @@ const string FUNCNAME_AbortCurrentDialogue = "SCB_AbortCurrentDialogue"
 
 void function Dialog_RegisterNetworking()
 {
-	ScriptRemote_RegisterClientFunction( FUNCNAME_PlayDialogueOnEntity, "int", -1, INT_MAX, "int", INT_MIN, INT_MAX, "int", INT_MIN, INT_MAX )
+	ScriptRemote_RegisterClientFunction( FUNCNAME_PlayDialogueOnEntity, "int", -1, INT_MAX, "int", INT_MIN, INT_MAX, "entity" )
 	ScriptRemote_RegisterClientFunction( FUNCNAME_PlayDialogueAtPosition, "int", -1, INT_MAX, "int", INT_MIN, INT_MAX, "vector", -MAX_WORLD_COORD, MAX_WORLD_COORD, 32 )
 	ScriptRemote_RegisterClientFunction( FUNCNAME_PlayDialogueOnEnvironmentSpeakers, "int", 0, INT_MAX, "int", 0, INT_MAX, "int", 0, INT_MAX, "int", -1, INT_MAX, "entity", "int", -1, NUM_TOTAL_DIALOGUE_QUEUES )
 	ScriptRemote_RegisterClientFunction( FUNCNAME_PlayDialogueOnEnvironmentSpeakersNoResponse, "int", 0, INT_MAX, "int", 0, INT_MAX, "int", 0, INT_MAX, "int", -1, INT_MAX, "int", -1, NUM_TOTAL_DIALOGUE_QUEUES )
@@ -762,7 +762,7 @@ void function PlayDialogue_Internal( int aliasID, int dialogueFlags, entity play
 		if ( milesAlias.find( "%perspective%" ) >= 0 )
 			milesAlias = StringReplace( milesAlias, "%perspective%", "3p" )
 
-		Remote_CallFunction_NonReplay( player, FUNCNAME_PlayDialogueOnEntity, aliasID, dialogueFlags, speaker.GetEncodedEHandle() ) //EvaluateSoundSelector( milesAlias )
+		Remote_CallFunction_NonReplay( player, FUNCNAME_PlayDialogueOnEntity, aliasID, dialogueFlags, speaker ) //EvaluateSoundSelector( milesAlias )
 	}
 	else
 	{
@@ -1259,9 +1259,9 @@ void function SuspendMainDialogueQueueForDurationOfSound( entity player, var sou
 }
 
 
-void function SCB_PlayDialogueOnEntity( int aliasID, int dialogueFlags, int speakerEHandle )
+void function SCB_PlayDialogueOnEntity( int aliasID, int dialogueFlags, entity speaker )
 {
-	entity speaker = GetEntityFromEncodedEHandle( speakerEHandle )
+	//entity speaker = GetEntityFromEncodedEHandle( speakerEHandle )
 	thread PlayClientDialogueOnEntity( aliasID, dialogueFlags, speaker )
 }
 

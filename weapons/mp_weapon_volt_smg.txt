@@ -16,8 +16,8 @@ WeaponData
 	"weapon_type_flags"								"WPT_PRIMARY"
 	"ammo_pool_type"								"special"
 
-	"menu_icon"										"rui/weapon_icons/r5/weapon_volt"
-	"hud_icon"										"rui/weapon_icons/r5/weapon_volt"
+	"menu_icon"										"rui/weapon_icons/r5/weapon_volt_smg"
+	"hud_icon"										"rui/weapon_icons/r5/weapon_volt_smg"
 
 	"weaponClass" 									"human"
 	"body_type"										"medium"
@@ -127,7 +127,7 @@ WeaponData
 	// Damage - When Used by Players
 	"damage_type" 									"bullet"
 
-    "ammo_clip_size"                                "19"
+    "ammo_clip_size"                                "20"
     "ammo_stockpile_max"							"30"
     "ammo_default_total"							"0"
     "ammo_no_remove_from_stockpile"					"0"
@@ -353,6 +353,10 @@ WeaponData
 	"viewmodel_ads_rui_bottomleft_attachment"	"RUI_BL_CROSSHAIR_VOLT"
 	"viewmodel_ads_centerpoint_attachment"      "ADS_CENTER_SIGHT_VOLT"
 
+
+	"damage_shield_scale"	"1"
+	"damage_headshot_scale"	"1.200000"
+	"titanarmor_critical_hit_required"	"1"
 	Mods
 	{
         gold

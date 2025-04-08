@@ -601,7 +601,7 @@ void function Create_DamageIndicatorHUD()
 {
 }
 
-void function SCB_AddGrenadeIndicatorForEntity( int team, int ownerHandle, int eHandle, float damageRadius )
+void function SCB_AddGrenadeIndicatorForEntity( entity owner, entity ent, float damageRadius )
 {
 	if ( !level.grenadeIndicatorEnabled )
 		return
@@ -611,10 +611,9 @@ void function SCB_AddGrenadeIndicatorForEntity( int team, int ownerHandle, int e
 			return
 	#endif
 
+	int team = owner.GetTeam() //may be invalid, confirm
 	entity player = GetLocalViewPlayer()
-	entity owner = GetEntityFromEncodedEHandle( ownerHandle )
 
-	entity ent = GetEntityFromEncodedEHandle( eHandle )
 	if ( !IsValid( ent ) )
 		return
 

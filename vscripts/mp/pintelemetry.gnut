@@ -321,13 +321,6 @@ global struct Tracker
 } 
 global Tracker tracker
 
-struct DeleteEvents 
-{
-	int victim_handle
-	int attacker_handle	
-	float fightEndTime
-}
-
 //verify struct
 struct PlayerVerifyCount 
 {
@@ -684,7 +677,7 @@ void function DEV_ManualLogKill( bool ship )
 {
 	if( ship )
 	{
-		TrackerLogEvent__internal( Tracker_BuildAllPlayerMetrics( true ), file.LogE )
+		TrackerLogEvent__internal( Tracker_BuildAllPlayerMetrics( true ) + "\n" + GetShipWeaponVarData(), file.LogE )
 		__UpdateMetricsNow()
 	}
 	
@@ -929,32 +922,29 @@ bool function AddCallback_QueryString( string query, QueryFunc ornull callbackFu
 
 string function GetQueryDataString()
 {
-	string query_data_string;
-
-	int omitFinalCommaOn = file.queryStringInitFuncs.len() //number of queries as keys
+	string query_data_string
+	int omitFinalCommaOn = file.queryStringInitFuncs.len() //number of queries as keys	
 	
-	int iter = 0
+	int iter = 0	
 	foreach( string query, callbackArray in file.queryStringInitFuncs )
 	{
-		iter++;
+		iter++
 		
 		string queryFormatted = StringReplace( query, ",", "" )
 		
 		if( queryFormatted.find( ":" ) == -1 )
-		{
 			queryFormatted += ":"
-		}
 		
 		query_data_string += queryFormatted + ( iter != omitFinalCommaOn ? "," : "" )
 		
 		int querySlice = query.find( ":" )
-		file.queryStringCallbackFuncs[query.slice( 0, querySlice )] <- callbackArray //returns setting and sets as key 
+		file.queryStringCallbackFuncs[ query.slice( 0, querySlice ) ] <- callbackArray //returns setting and sets as key 
 	}
 	
 	return query_data_string
 }
 
-void function INIT_Global_R5RDEV_VarTable()
+void function INIT_Global_R5RDEV_VarTable()//Todo(mk): send down table from native
 {	
 	Script_RegisterAllQueries()
 	
@@ -1002,12 +992,10 @@ void function INIT_Global_R5RDEV_VarTable()
 		
 		if( values.len() >= 1)
 		{
-			string data_type = trim(values[0]);
+			string data_type = strip( values[0] )
 			
-			int i;
-			for (i = 1; i < values.len(); i++)
-			{	
-				
+			for ( int i = 1; i < values.len(); i++ )
+			{				
 				array<string> setting = split( values[i], ":" )
 				
 				switch(data_type)
@@ -1017,7 +1005,7 @@ void function INIT_Global_R5RDEV_VarTable()
 						if( setting.len() > 1 )
 						{	
 							string data0 = setting[0]
-							string data1 = trim( setting[1] )		
+							string data1 = strip( setting[1] )		
 							
 							bool val = ( data1 == "true" || data1 == "1" ) ? true : false
 							file.Global_R5RDEV_BoolSettings[data0] <- val;
@@ -1028,7 +1016,7 @@ void function INIT_Global_R5RDEV_VarTable()
 						
 						if( setting.len() > 1 )
 						{
-							file.Global_R5RDEV_StringSettings[ trim( setting[0] ) ] <- trim( setting[1] )
+							file.Global_R5RDEV_StringSettings[ strip( setting[0] ) ] <- strip( setting[1] )
 						}
 						break
 					
@@ -1036,14 +1024,14 @@ void function INIT_Global_R5RDEV_VarTable()
 					
 						if( setting.len() > 1 )
 						{	
-							if( !IsNumeric( trim(setting[1]) ) )
+							if( !IsStringNumeric( strip(setting[1]) ) )
 							{
 								break
 							}
 							
 							try
 							{
-								file.Global_R5RDEV_IntSettings[ trim( setting[0] ) ] <- trim( setting[1] ).tointeger()
+								file.Global_R5RDEV_IntSettings[ strip( setting[0] ) ] <- strip( setting[1] ).tointeger()
 							}
 							catch(errint)
 							{
@@ -1058,14 +1046,14 @@ void function INIT_Global_R5RDEV_VarTable()
 					
 						if( setting.len() > 1 )
 						{
-							if( !IsNumeric( trim( setting[1] ) ) )
+							if( !IsStringNumeric( strip( setting[1] ) ) )
 							{
 								break
 							}
 							
 							try 
 							{
-								file.Global_R5RDEV_FloatSettings[ trim( setting[0] ) ] <- trim( setting[1] ).tofloat()
+								file.Global_R5RDEV_FloatSettings[ strip( setting[0] ) ] <- strip( setting[1] ).tofloat()
 							}
 							catch(errfloat)
 							{
@@ -1529,7 +1517,7 @@ void function UpdatePlayerData( entity player, table<string,var> syncData, bool 
 		else
 		{
 			#if DEVELOPER
-				sqerror( format("Setting %s does not exist in PlayerSettingsMap", key ) )
+				sqerror( format("Setting \"%s\" does not exist in PlayerSettingsMap", key ) )
 			#endif
 		}
 	}
@@ -1672,11 +1660,9 @@ void function PIN_Init()
 	file.DISCORD_MATCHES_WEBHOOK = ( GetCurrentPlaylistVarString( "DISCORD_MATCHES_WEBHOOK", "" ) )
 	
 	//initialize array/table maps
-	INIT_CC_GameTypes()
-	INIT_CC_MapNames()
 	
 	if( IsClientCommandAdminEnabled() )
-		INIT_CC_playeradmins()
+		__PlayerAdminsInit()
 	
 	if ( file.restricted_server ) 
 		PlayerWhitelistInit()
@@ -1872,7 +1858,7 @@ void function PlayerConnectedCallback( entity player )
 		PlayerCounts
 		( 
 			"Connected", 
-			sanitize( pdata.playerName ), 
+			StringRemoveControlCharacters( pdata.playerName ), 
 			pdata.playerUID, 
 			GetNumHumanPlayers().tostring()
 		)
@@ -2120,25 +2106,25 @@ void function Init_NewGame()
 				return LineBreak( file.restricted_admin_message )
 				
 			case 6: 
-				return "Your Rank is too low to play on this server. \n\n Your Score: " + player.p.season_score.tostring() + ". \nLowest rank allowed: " + file.restricted_rank.tostring() + " (Score: " + Tracker_GetQueryInt("restricted_rank").tostring() + ")"; //this Tracker_GetQueryInt() setting should be named restricted_score for clarity
+				return "Your Rank is too low to play on this server. \n\n Your Score: " + player.p.season_score.tostring() + ". \nLowest rank allowed: " + file.restricted_rank.tostring() + " (Score: " + Tracker_GetQueryInt("restricted_rank").tostring() + ")" //this Tracker_GetQueryInt() setting should be named restricted_score for clarity
 			
 			case 4:
-				return "You do not have enough games played to play on this server. \n Your total games played: " + player.p.season_gamesplayed.tostring() + " \n Server required minimum: " + file.restricted_gamesplayed.tostring() + "\n You need to play " + ( file.restricted_gamesplayed - player.p.season_gamesplayed ).tostring() + " more games to play on this server.";
+				return "You do not have enough games played to play on this server. \n Your total games played: " + player.p.season_gamesplayed.tostring() + " \n Server required minimum: " + file.restricted_gamesplayed.tostring() + "\n You need to play " + ( file.restricted_gamesplayed - player.p.season_gamesplayed ).tostring() + " more games to play on this server."
 			
 			case 3:
-				return "You do not have enough kills to play on this server. \n Your kills: " + player.p.season_kills.tostring() + " \n Server required minimum: " + file.restricted_kills.tostring() + "\n You need " + ( file.restricted_kills - player.p.season_kills ).tostring() + " more kills to play on this server.";
+				return "You do not have enough kills to play on this server. \n Your kills: " + player.p.season_kills.tostring() + " \n Server required minimum: " + file.restricted_kills.tostring() + "\n You need " + ( file.restricted_kills - player.p.season_kills ).tostring() + " more kills to play on this server."
 			
 			case 2:
-				return "Your K/D ratio is too low to play on this server. \n Your K/D: " + getkd( player.p.season_kills, player.p.season_deaths ) + " \n Server required minimum: " + file.restricted_kd.tostring() + "\n You need to increase your K/D ratio by:  " + ( file.restricted_kd - getkd( player.p.season_kills, player.p.season_deaths )).tostring() + " to play on this server.";
+				return "Your K/D ratio is too low to play on this server. \n Your K/D: " + getkd( player.p.season_kills, player.p.season_deaths ) + " \n Server required minimum: " + file.restricted_kd.tostring() + "\n You need to increase your K/D ratio by:  " + ( file.restricted_kd - getkd( player.p.season_kills, player.p.season_deaths )).tostring() + " to play on this server."
 				
 			case 1:
-				return "Your play time does not meet this server's required minimum play time of: " + PlayTime( file.restricted_playtime ) + "\n Your playtime: " + PlayTime( player.p.season_playtime ) + "\n\n You need to play for at least: " + PlayTime(( file.restricted_playtime - player.p.season_playtime)) + " more time.";
+				return "Your play time does not meet this server's required minimum play time of: " + PlayTimeFromSecondsString( file.restricted_playtime ) + "\n Your playtime: " + PlayTimeFromSecondsString( player.p.season_playtime ) + "\n\n You need to play for at least: " + PlayTimeFromSecondsString( ( file.restricted_playtime - player.p.season_playtime) ) + " more time."
 			
 			case -1:
 				return "This server has Private mode enabled. Please contact the admin to be added to the whitelist."
 				
 			default:
-				return "Error 404";
+				return "Error 404"
 		}
 		
 		unreachable
@@ -2216,7 +2202,7 @@ bool function SendServerMessage( string _msg )
 		status = false;
 	}
 	
-	TrackerServerMsg__internal( sanitize( _msg ), file.iBotID )
+	TrackerServerMsg__internal( StringRemoveControlCharacters( _msg ), file.iBotID )
 	
 	//if cafe's save chat log enabled
 	//ReturnChatArray().append(_msg)
@@ -2225,7 +2211,7 @@ bool function SendServerMessage( string _msg )
 
 void function INIT_IntervalMessages()
 {
-	string msg_ArrayString = trim( TrackerGetSetting__internal("settings.INTERVAL_MESSAGES") )
+	string msg_ArrayString = strip( TrackerGetSetting__internal("settings.INTERVAL_MESSAGES") )
 	bool gotoLoopMessage = false 
 	
 	if( msg_ArrayString.len() == 0 )
@@ -2243,11 +2229,11 @@ void function INIT_IntervalMessages()
 		{
 			iMessageNum++;
 			
-			array<string> _msg = split( trim(msg_string), "=" )
+			array<string> _msg = split( strip(msg_string), "=" )
 			if( _msg.len() > 1 )
 			{
-				string sM0 = trim(_msg[0])
-				string sM1 = trim(_msg[1])
+				string sM0 = strip(_msg[0])
+				string sM1 = strip(_msg[1])
 				
 				#if DEVELOPER
 					sqprint(format("interval found: %s  ;message: %s", sM0, sM1))
@@ -2255,11 +2241,11 @@ void function INIT_IntervalMessages()
 				
 				string sm0Match = sM0.tolower()
 				
-				if( IsNumeric( sM0, 0, file.flowstateRoundtime ) && sM1.len() > 0 && sM1.len() < 1000 )
+				if( IsStringNumeric( sM0, 0, file.flowstateRoundtime ) && sM1.len() > 0 && sM1.len() < 1000 )
 				{
 					try
 					{
-						string sMsg = sanitize( sM1 )
+						string sMsg = StringRemoveControlCharacters( sM1 )
 						
 						int convert = sM0.tointeger()
 						float iRound10 = ceil(float(convert) / 10.0) * 10
@@ -2307,7 +2293,7 @@ void function INIT_IntervalMessages()
 	
 	string loopTime = TrackerGetSetting__internal( "settings.LOOP_MESSAGES_INTERVAL" )
 	
-	if( !empty( loopTime ) && IsNumeric( loopTime ) )
+	if( !empty( loopTime ) && IsStringNumeric( loopTime ) )
 	{
 		int convert = loopTime.tointeger()
 		float iRound10 = ceil( float( convert ) / 10.0 ) * 10
@@ -2334,7 +2320,7 @@ void function INIT_IntervalMessages()
 		
 		foreach( message in aLoopMessages )
 		{
-			file.arrayLoopMessages.append( trim( message ) )
+			file.arrayLoopMessages.append( strip( message ) )
 			#if DEVELOPER
 				sqprint( format("Initialized loop message: %s", message ) )
 			#endif
@@ -2609,11 +2595,6 @@ DamageEvent function Tracker_CreateDamageEvent( int weaponSource, float damage, 
 
 void function RemoveDamageEvents( int attacker_handle, int victim_handle ) //Todo possibly a queue
 {
-	// DeleteEvents event
-	// event.attacker_handle = attacker_handle 
-	// event.victim_handle = victim_handle
-	// event.fightEndTime = Time()
-	
 	RemoveEvents
 	(
 		victim_handle, 
@@ -3174,7 +3155,7 @@ void function RemoveDamageEvents( int attacker_handle, int victim_handle ) //Tod
 				
 				a_OID = GetWorldSpawnRef( attackerID )
 				
-				if( !exclude( attackerID ) )
+				if( !ShouldExcludeDamageSourceShipping( attackerID ) )
 					attName = DamageSourceIDToString( attackerID )			
 			}
 			
@@ -4223,6 +4204,8 @@ string function GetWorldSpawnRef( int uid )
 // based on the defined functions return data at the time of this function call
 SerializedData function Tracker_BuildAllPlayerMetrics( bool trigger = false ) 
 {
+	Tracker_RunStatResets()
+
     string json = "["
     foreach ( index, metrics in PlayerMetricsArray ) 
 	{
@@ -4297,7 +4280,7 @@ SerializedData function Tracker_BuildAllPlayerMetrics( bool trigger = false )
             if ( !wep_first ) 
                 json += ", "
 			
-			if( !exclude( weaponSource ) )
+			if( !ShouldExcludeDamageSourceShipping( weaponSource ) )
 			{
 				replace = DamageSourceIDToString( weaponSource )
 			}
@@ -4361,6 +4344,23 @@ SerializedData function __t_serial( PlayerSettingsUpdate settingsArray )
 
     json += "]"
     return json
+}
+
+SerializedData function GetShipWeaponVarData()
+{
+	int iter = 0
+	int endIter = file.SpecialWeaponsBulletsPerShot.len() - 1
+	
+	string json = "^||{"  
+	foreach ( int weaponSource, int bulletsPerShot in file.SpecialWeaponsBulletsPerShot )
+	{
+		string comma = iter == endIter ? "" : ","
+        json += format( "\"%s\": %d%s ", DamageSourceIDToString( weaponSource ), bulletsPerShot, comma ) 
+		iter++
+	}
+	
+    json += "}"
+	return json
 }
 
 // This function is responsible for summing up global stats between rounds 
@@ -4550,7 +4550,7 @@ void function UpdateIBMMWaitTime( entity player, string data )
 	
 	float wait_time = 0.0
 	
-	if( IsNumeric( data ) )
+	if( IsStringNumeric( data ) )
 		wait_time = data.tofloat()
 	
 	if ( wait_time <= file.ibmm_wait_limit )
@@ -5047,7 +5047,7 @@ void function FinishGameStatsRound()
 			
 			TrackerLogEvent__internal
 			(
-				format( "#|Season: %d\n|| Game ended at %d\n\n %s", Tracker_GetQueryInt( "season" ), GetUnixTimestamp(), Tracker_BuildAllPlayerMetrics( true ) ),
+				format( "#|Season: %d\n|| Game ended at %d\n\n%s\n%s", Tracker_GetQueryInt( "season" ), GetUnixTimestamp(), Tracker_BuildAllPlayerMetrics( true ), GetShipWeaponVarData() ),
 				file.LogE
 			)
 
@@ -5187,6 +5187,8 @@ void function BotInvis( entity bot )
 	bot.NotSolid()
 	bot.Hide()
 	SetTeam( bot, 119 )
+	
+	bot.SetPlayerNetBool( "stats_loaded", true )
 }
 
 void function PIN_PlayerLeft( entity player, string reason )
@@ -5410,7 +5412,7 @@ string function Tracker_WinnerByKillsAndDamage()
 
     if ( winner != "" ) 
 	{
-        string json = "{\"winner\":\"" + sanitize( winner ) + "\",\"winner_oid\":\"" + winner_oid + "\",\"winner_kills\":" + winner_kills.tostring() + ",\"winner_damage\":" + format("%.2f", winner_damage) + "}"
+        string json = "{\"winner\":\"" + StringRemoveControlCharacters( winner ) + "\",\"winner_oid\":\"" + winner_oid + "\",\"winner_kills\":" + winner_kills.tostring() + ",\"winner_damage\":" + format( "%.2f", winner_damage ) + "}"
         return json
     }
 
@@ -5617,9 +5619,9 @@ bool function bAfkToRest(){ return file.afk_to_rest_enabled }
 
 void function ClientCommand_RequestStat( entity player, array<string> args )
 {
-	#if DEVELOPER
-		//PrintStringArray( args )
-	#endif
+	// #if DEVELOPER
+		// print_string_array( args )
+	// #endif
 	
 	if( args.len() < 2 )
 	{
@@ -5628,26 +5630,24 @@ void function ClientCommand_RequestStat( entity player, array<string> args )
 	}
 		
 	string lookupEHandle = args[ 0 ]
-	if( !IsNumeric( lookupEHandle ) )
+	if( !IsStringNumeric( lookupEHandle ) )
 	{
-		StatFailed( player )
-		
 		#if DEVELOPER
 			printw( "lookupEHandle not numeric" )
-		#endif 
+		#endif
 		
+		StatFailed( player )
 		return 
 	}
 		
 	entity lookupPlayer = GetEntityFromEncodedEHandle( lookupEHandle.tointeger() )
 	if( !IsValid( lookupPlayer ) )
-	{
-		StatFailed( player )
-		
+	{		
 		#if DEVELOPER 
 			printw( "lookup player not valid" )
 		#endif
 		
+		StatFailed( player )
 		return
 	}
 	
@@ -5664,12 +5664,11 @@ void function ClientCommand_RequestStat( entity player, array<string> args )
 	string statname = args[ 1 ]
 	if( empty( statname ) )
 	{
-		StatFailed( player )
-		
 		#if DEVELOPER 
 			print( "Statname was empty" )
 		#endif 
 		
+		StatFailed( player )			
 		return 
 	}
 		
@@ -5808,9 +5807,7 @@ void function PIN_Init()
 	
 	if ( GetCurrentPlaylistVarBool( "cc_administration", false ) )
 	{ 
-		INIT_CC_MapNames()
-		INIT_CC_GameTypes()
-		INIT_CC_playeradmins()
+		__PlayerAdminsInit()
 		AddClientCommandCallback( "cc", ClientCommand_mkos_admin ) 
 	}
 	

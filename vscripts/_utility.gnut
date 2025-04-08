@@ -5052,9 +5052,11 @@ bool function IsSingleplayer()
 
 void function LockWeaponsAndMelee( entity player )
 {
-	printt( FUNC_NAME( 0 ) + " from " + FUNC_NAME( 1 ) )
-	printt( "Player = " + player.GetPlayerName() + ", current count = " + player.p.weaponsAndMeleeLockedCount )
-
+	#if DEVELOPER
+		// printt( FUNC_NAME( 0 ) + " from " + FUNC_NAME( 1 ) )
+		// printt( "Player = " + player.GetPlayerName() + ", current count = " + player.p.weaponsAndMeleeLockedCount )
+	#endif 
+	
 	if ( player.p.weaponsAndMeleeLockedCount == 0 )
 	{
 		player.LockWeaponChange()
@@ -5065,8 +5067,10 @@ void function LockWeaponsAndMelee( entity player )
 
 void function UnlockWeaponsAndMelee_Retail( entity player, string debug_source )
 {
-	printt( FUNC_NAME( 0 ) + " from " + FUNC_NAME( 1 ) )
-	printt( "Player = " + player.GetPlayerName() + ", current count = " + player.p.weaponsAndMeleeLockedCount )
+	#if DEVELOPER
+		// printt( FUNC_NAME( 0 ) + " from " + FUNC_NAME( 1 ) )
+		// printt( "Player = " + player.GetPlayerName() + ", current count = " + player.p.weaponsAndMeleeLockedCount )
+	#endif 
 	//player.p.weaponsAndMeleeLockedSources[ debug_source ] -= 1
 	//Assert( player.p.weaponsAndMeleeLockedSources[ debug_source ] >= 0, debug_source + " is calling UnlockWeaponsAndMelee too many times" )
 
@@ -5081,9 +5085,11 @@ void function UnlockWeaponsAndMelee_Retail( entity player, string debug_source )
 
 void function UnlockWeaponsAndMelee( entity player )
 {
-	printt( FUNC_NAME( 0 ) + " from " + FUNC_NAME( 1 ) )
-	printt( "Player = " + player.GetPlayerName() + ", current count = " + player.p.weaponsAndMeleeLockedCount )
-
+	#if DEVELOPER
+		// printt( FUNC_NAME( 0 ) + " from " + FUNC_NAME( 1 ) )
+		// printt( "Player = " + player.GetPlayerName() + ", current count = " + player.p.weaponsAndMeleeLockedCount )
+	#endif 
+	
 	player.p.weaponsAndMeleeLockedCount--
 	Assert( player.p.weaponsAndMeleeLockedCount >= 0, "< 0 can cause bugs" )
 	if ( player.p.weaponsAndMeleeLockedCount == 0 )

@@ -293,7 +293,14 @@ struct
 	table<string, bool functionref(entity player)> unlockFuncs
 } file
 
-global const array< string > HIDDEN_CHARACTER_REFS = [ "character_dummie", "character_random", "SAID01897196488", "SAID00996325304" ]
+//global const array< string > HIDDEN_CHARACTER_REFS = [ "character_dummie", "character_random", "SAID01897196488", "SAID00996325304" ]
+
+global const string GUID_SAMPLE_STRING = "SAID00000000123"
+const string GUID_FORMAT_STRING = "SAID%011d"
+const string GUID_PREFIX = "SAID"
+
+const string PLAYLIST_AVAILABILITY_META_DATA_KEY = "playlist_availability"
+
 /////////////////////////
 /////////////////////////
 //// Initialiszation ////
@@ -306,7 +313,7 @@ void function ShItems_LevelInit_Begin()
 
 	#if DEVELOPER
 		#if SERVER
-			AddClientCommandCallback( "itemflavors_dump", ClientCommand_itemflavors_dump )
+			AddClientCommandCallback( "itemflavors_dump", ClientCommand_itemflavors_dump ) // dev
 		#endif
 	#endif
 
@@ -1229,8 +1236,11 @@ ItemFlavor ornull function RegisterItemFlavorFromSettingsAsset( asset settingsAs
 	if ( flavor._____INTERNAL_playlistOpinion == eItemFlavorPlaylistOpinion.DISABLED )
 	{
 		fileLevel.DEV_areAnyItemflavorsDisabledByPlaylist = true
-		Warning( "Item flavor disabled by dev-only playlist vars: " + humanReadableRef )
-		Warning( "!!WARNING!! Item flavor disabled by playlist, this is dev-only and should not remain: " + humanReadableRef )
+		
+		#if DEVELOPER //will fill logs for normal players
+			Warning( "Item flavor disabled by dev-only playlist vars: " + humanReadableRef )
+			Warning( "!!WARNING!! Item flavor disabled by playlist, this is dev-only and should not remain: " + humanReadableRef )
+		#endif
 
 		#if DEBUG_ITEM_FLAVOR_REGISTRATION
 			printt( "DEBUG_ITEM_FLAVOR_REGISTRATION", FUNC_NAME(), settingsAsset, "Disabled by playlist!" )

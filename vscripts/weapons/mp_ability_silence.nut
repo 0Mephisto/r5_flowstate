@@ -241,9 +241,9 @@ void function CreateSilenceField( entity player, vector origin, entity mover, ve
 			if ( IsValid( mover ) )
 				center = mover.GetOrigin()
 
-			#if DEV
+			#if DEVELOPER
 			if ( SILENCE_DEBUG )
-				DebugDrawMark( center, 15, COLOR_GREEN, true, 0.1 )
+				DebugDrawMark( center, 15, [0, 255, 0], true, 0.1 )
 			#endif
 
 			vector offsetVector = offsetVectors[i]
@@ -255,9 +255,9 @@ void function CreateSilenceField( entity player, vector origin, entity mover, ve
 
 			trace = TraceLine( center, offsetCenter, [], TRACE_MASK_SOLID, TRACE_COLLISION_GROUP_BLOCK_WEAPONS, inflictor )
 
-			#if DEV
+			#if DEVELOPER
 			if ( SILENCE_DEBUG )
-				DebugDrawLine( center, trace.endPos, COLOR_RED, true, 0.1 )
+				DebugDrawLine( center, trace.endPos, 255,0,0, true, 0.1 )
 			#endif
 
 			if ( trace.hitEnt != null && !trace.hitSky )

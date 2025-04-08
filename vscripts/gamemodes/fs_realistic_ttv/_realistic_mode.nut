@@ -65,7 +65,7 @@ void function RealisticMode_Init()
 	AddCallback_OnPlayerWeaponAttachmentChanged( Realistic_OnWeaponAttachmentChanged )
 	AddCallback_OnPlayerRespawned( RealisticMode_OnSpawned )
 
-	Flowstate_SpawnSystem_InitGamemodeOptions()
+	SpawnSystem_InitGamemodeOptions()
 	
 	int eMap = SpawnSystem_FindBaseMapForPak( MapName() )
 	file.gamemodeSpawns = SpawnSystem_ReturnAllSpawnLocations( eMap )
@@ -283,7 +283,7 @@ void function RealisticMode_GivePlayerBonusHeals( entity player, bool spawn = fa
 
 void function Realistic_OnWeaponAttachmentChanged( entity player, entity weapon, string modToAdd, string modToRemove )
 {
-	if( !CheckRate( player, false, 0.05 ) )
+	if( !CheckRate( player, "attachment_change", 0.05, false ) )
 		return
 		
 	//(mk):only intended for realistic ttv mode 		

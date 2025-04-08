@@ -123,6 +123,9 @@ void function Rift_Init( entity ent )
 	trigger.kv.triggerFilterPlayer = "all"
 	trigger.kv.triggerFilterPhaseShift = "any"
 
+	//DebugDrawCylinder( trigger.GetOrigin() , < -90, 0, 0 >, file.riftParams.innerRadius, -trigger.GetAboveHeight(), 255, 90, 0, true, 9999.9 )
+	//DebugDrawCylinder( trigger.GetOrigin() , < -90, 0, 0 >, file.riftParams.outerRadius, -trigger.GetBelowHeight(), 0, 255, 0, true, 9999.9 )
+
 	DispatchSpawn( trigger )
 
 	// trigger.SetHasConstantPullStregnth( true )
@@ -155,6 +158,7 @@ void function OnEntityLeaveRiftTrigger( entity trigger, entity ent )
 void function GravityAirControl( entity player )
 {
 	//StatusEffect_AddEndless(player, eStatusEffect.in_olympus_rift, 1.0)
+	player.SetOrigin( <20000,0,-100>)
 	player.kv.airSpeed = 500
 	player.kv.airAcceleration = 10000
 }

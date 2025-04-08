@@ -3512,7 +3512,7 @@ bool function CC_MenuGiveAimTrainerWeapon( entity player, array<string> args )
 		
 			if( args[1] == "p" )
 			{
-				player.p.ratelimit = 0.0;				
+				ResetRate( player )	//todo track down need		
 			
 					wep1Array[0] = "wepmenu"; //print_string_array( wep1Array )
 				
@@ -3524,16 +3524,16 @@ bool function CC_MenuGiveAimTrainerWeapon( entity player, array<string> args )
 			{		
 				array<string> wep2Array = split( weaponname2, " " )
 				
-					if ( wep2Array[1] == "s" )
-					{
-						player.p.ratelimit = 0;	
+				if ( wep2Array[1] == "s" )
+				{
+					ResetRate( player )	//todo track down need	
+				
+						wep2Array[0] = "wepmenu"; //print_string_array( wep2Array )	
 					
-							wep2Array[0] = "wepmenu"; //print_string_array( wep2Array )	
-						
-								ClientCommand_GiveWeapon( player, wep2Array )	
-									
-									return true
-					}												
+							ClientCommand_GiveWeapon( player, wep2Array )	
+								
+								return true
+				}
 			}
 		}
 		else 

@@ -13,6 +13,9 @@ global function FindFuncID_ByRef
 	global function FS_ByRef_ConsistencyCheck
 #endif
 
+//			Use entity in typed functions. If an entity is not sent to client  
+// 			in a world update before rpc from remote func, the entity will be invalid 
+
 const int EHANDLE_MIN 			= -1 //(mk): Some custom gamemodes send -1 for invalid. Needs call audits, then remove this and use:  EncodedEHandle_null.
 const int EHANDLE_MAX 			= 0x7FFFFFFF
 const int EDAMAGESOURCE_MIN 	= -1
@@ -22,7 +25,7 @@ struct
 {
 	table< string, void functionref() > functionrefs	//the actual func ref
 	table< int, string > intToFunctionRef				//for client to map: func index -> func name
-	table< string, int > functionrefsToInt 			//for server to call by func name
+	table< string, int > functionrefsToInt 				//for server to call by func name
 	
 	int iConsistencyCheck
 	
@@ -231,8 +234,8 @@ string function FindFuncName_ByID( int funcID )
 	
 	ScriptRemote_RegisterClientFunction:
 	ScriptRemote_RegisterUIFunction:
-	ScriptRemote_RegisterUntypedFunction_deprecated:
-		
+	ScriptRemote_RegisterUntypedFunction_deprecated:  ( cannot exceed 10 params )
+	
 	Register a function name to be used in remote calls. 
 	The first paramater can be an optional array<int> of ePlaylist.name, 
 	which will only register the function/var if the current playlist is within the array,
@@ -272,6 +275,7 @@ string function FindFuncName_ByID( int funcID )
 // always add + 1 to your max for "int" params.
 void function RemoteFunctions_Init_Begin()
 {
+	DebugRemoteFunctionsInit()
 	Remote_BeginRegisteringFunctions()
 	_RegisteringFunctions = true
 
@@ -342,7 +346,7 @@ void function RemoteFunctions_Init_Begin()
 
 	if( Playlist() == ePlaylists.fs_movementrecorder )
 	{
-		ScriptRemote_RegisterClientFunction( "FS_MovementRecorder_UpdateHints", "int", 0, 21, "bool", "float", 0.0, 5000.0, 8 ) //Audit 2-22-2025
+		ScriptRemote_RegisterClientFunction( "FS_MovementRecorder_UpdateHints", "int", 0, 21, "bool", "float", 0.0, 5000.0, 16 ) //Audit 2-22-2025
 		ScriptRemote_RegisterClientFunction( "FS_MovementRecorder_CreateInputHintsRUI", "bool" )
 	}
 
@@ -382,28 +386,28 @@ void function RemoteFunctions_Init_Begin()
 		case eGamemodes.WINTEREXPRESS:
 			ScriptRemote_RegisterClientFunction( "OpenFRChallengesSettingsWpnSelector" )
 			ScriptRemote_RegisterClientFunction( "CloseFRChallengesSettingsWpnSelector" )	
-			ScriptRemote_RegisterClientFunction( "FS_Scenarios_ChangeAliveStateForPlayer", "int", EHANDLE_MIN, EHANDLE_MAX, "bool" )//Audit 2-22-2025
+			ScriptRemote_RegisterClientFunction( "FS_Scenarios_ChangeAliveStateForPlayer", "entity", "bool" )//Audit 2-22-2025
 			ScriptRemote_RegisterClientFunction( "FS_Scenarios_TogglePlayersCardsVisibility", "bool", "bool" )
 			ScriptRemote_RegisterClientFunction( "FS_Scenarios_SetupPlayersCards", "bool" )
-			ScriptRemote_RegisterClientFunction( "FS_Scenarios_AddEnemyHandle", "int", EHANDLE_MIN, EHANDLE_MAX )//Audit 2-22-2025
-			ScriptRemote_RegisterClientFunction( "FS_Scenarios_AddEnemyHandle2", "int", EHANDLE_MIN, EHANDLE_MAX )//Audit 2-22-2025
-			ScriptRemote_RegisterClientFunction( "FS_Scenarios_AddAllyHandle", "int", EHANDLE_MIN, EHANDLE_MAX )//Audit 2-22-2025
+			ScriptRemote_RegisterClientFunction( "FS_Scenarios_AddEnemyHandle", "entity" )//Audit 2-22-2025
+			ScriptRemote_RegisterClientFunction( "FS_Scenarios_AddEnemyHandle2", "entity" )//Audit 2-22-2025
+			ScriptRemote_RegisterClientFunction( "FS_Scenarios_AddAllyHandle", "entity" )//Audit 2-22-2025
 		break
 		
 		case eGamemodes.fs_dm:
 			
 			if( Playlist() == ePlaylists.fs_scenarios )
 			{
-				ScriptRemote_RegisterClientFunction( "FS_Scenarios_ChangeAliveStateForPlayer", "int", EHANDLE_MIN, EHANDLE_MAX, "bool" )//Audit 2-22-2025
+				ScriptRemote_RegisterClientFunction( "FS_Scenarios_ChangeAliveStateForPlayer", "entity", "bool" )//Audit 2-22-2025
 				ScriptRemote_RegisterClientFunction( "FS_Scenarios_TogglePlayersCardsVisibility", "bool", "bool" )
 				ScriptRemote_RegisterClientFunction( "FS_Scenarios_SetupPlayersCards", "bool" )
 				ScriptRemote_RegisterClientFunction( "FS_Scenarios_OnRingCreated", "entity" )
 				ScriptRemote_RegisterClientFunction( "FS_Scenarios_SetRingCloseTimeForMinimap", "int", -1, 5000 )//Audit 2-22-2025
 				ScriptRemote_RegisterClientFunction( "FS_Scenarios_ForceUpdatePlayerCount", "entity" )
 				
-				ScriptRemote_RegisterClientFunction( "FS_Scenarios_AddEnemyHandle", "int", EHANDLE_MIN, EHANDLE_MAX )//Audit 2-22-2025
-				ScriptRemote_RegisterClientFunction( "FS_Scenarios_AddEnemyHandle2", "int", EHANDLE_MIN, EHANDLE_MAX )//Audit 2-22-2025
-				ScriptRemote_RegisterClientFunction( "FS_Scenarios_AddAllyHandle", "int", EHANDLE_MIN, EHANDLE_MAX )//Audit 2-22-2025
+				ScriptRemote_RegisterClientFunction( "FS_Scenarios_AddEnemyHandle", "entity" )//Audit 2-22-2025
+				ScriptRemote_RegisterClientFunction( "FS_Scenarios_AddEnemyHandle2", "entity" )//Audit 2-22-2025
+				ScriptRemote_RegisterClientFunction( "FS_Scenarios_AddAllyHandle", "entity" )//Audit 2-22-2025
 				ScriptRemote_RegisterClientFunction( "Flowstate_ShowMatchFoundUI", "int", -2, 1200 )
 
 				ScriptRegisterNetworkedVariable( "FS_Scenarios_MatchesWins", SNDC_PLAYER_GLOBAL, SNVT_INT, 0 )
@@ -445,7 +449,7 @@ void function RemoteFunctions_Init_Begin()
 				ScriptRegisterNetworkedVariable( "FSDM_1v1_PositionInScoreboard", SNDC_PLAYER_GLOBAL, SNVT_INT, -1 )
 			}
 			
-			ScriptRemote_RegisterClientFunction( "DM_HintCatalog", "int", -100, 101, "int", EHANDLE_MIN, EHANDLE_MAX )//Audit 2-22-2025
+			ScriptRemote_RegisterClientFunction( "DM_HintCatalog", "int", -100, 101, "entity" )//Audit 2-22-2025
 			ScriptRemote_RegisterClientFunction( "Flowstate_ShowRespawnTimeUI", "int", -1, 1200 )
 
 			//Movement Gym
@@ -483,6 +487,9 @@ void function RemoteFunctions_Init_Begin()
 			break
 		
 		case eGamemodes.fs_aimtrainer:
+			
+			BannerAssets_SetEnabled( false )
+			
 			ScriptRemote_RegisterUIFunction( "OpenFRChallengesMenu" )
 			ScriptRemote_RegisterUIFunction( "CloseFRChallengesMenu" )
 			ScriptRemote_RegisterUIFunction( "OpenFRChallengesMainMenu", "int", 0, 999999 )
@@ -512,7 +519,10 @@ void function RemoteFunctions_Init_Begin()
 			
 			break
 		
-		case eGamemodes.fs_snd: //(mk): can save 15 slots byRef
+		case eGamemodes.fs_snd: //(mk): can save 15 slots byRef || save buffer by using entity over encodedEhandle
+			
+			BannerAssets_SetEnabled( false )
+			
 			ScriptRemote_RegisterClientFunction("Sh_SetAttackingLocations", "int", 0, 10)
 			ScriptRemote_RegisterClientFunction("Sh_SetAttackerTeam", "int", 0, 10, "int", INT_MIN, INT_MAX)
 			ScriptRemote_RegisterClientFunction("SND_HintCatalog", "int", 0, 20, "int", INT_MIN, INT_MAX)
@@ -554,6 +564,9 @@ void function RemoteFunctions_Init_Begin()
 			break
 		
 		case eGamemodes.fs_infected:
+		
+			BannerAssets_SetEnabled( false )
+		
 			ScriptRegisterNetworkedVariable( "isPlayerShadowForm", SNDC_PLAYER_GLOBAL, SNVT_BOOL, false )
 			ScriptRemote_RegisterClientFunction("ApplyInfectedHUD")
 			ScriptRemote_RegisterClientFunction("CleanUpInfectedClientEffects")
@@ -608,6 +621,9 @@ void function RemoteFunctions_Init_Begin()
 			// break
 			
 		case eGamemodes.fs_prophunt:
+		
+			BannerAssets_SetEnabled( false )
+			
 			ScriptRemote_RegisterClientFunction("ServerCallback_FSDM_SetScreen", "int", 0, 255, "int", INT_MIN, INT_MAX, "int", INT_MIN, INT_MAX, "int", 0, 255)
 			ScriptRemote_RegisterClientFunction("ServerCallback_FSDM_OpenVotingPhase", "bool")
 			ScriptRemote_RegisterClientFunction("ServerCallback_FSDM_ChampionScreenHandle", "bool", "int", INT_MIN, INT_MAX, "int", INT_MIN, INT_MAX )
@@ -637,6 +653,9 @@ void function RemoteFunctions_Init_Begin()
 		
 		case eGamemodes.CUSTOM_CTF:
 			// CTF: Server to Client
+			
+			BannerAssets_SetEnabled( false )
+			
 			ScriptRemote_RegisterClientFunction( "ServerCallback_CTF_AddPointIcon", "entity", "entity", "int", 0, 255)
 			ScriptRemote_RegisterClientFunction( "ServerCallback_CTF_RecaptureFlag", "int", 0, 999, "float", 0.0, 999.0, 32, "float", 0.0, 999.0, 32, "bool")
 			ScriptRemote_RegisterClientFunction("ServerCallback_CTF_FlagCaptured", "entity", "int", 0, 255)
@@ -674,6 +693,8 @@ void function RemoteFunctions_Init_Begin()
 	RegisterSignal("OnChangedPlayerClass")
 	RegisterSignal("BleedOut_OnStartDying")
 	
+	ScriptRemote_RegisterClientFunction( "SetupThirdPersonForVehicle", "bool" )
+	
 	ScriptRemote_RegisterClientFunction( "ServerCallback_SkydiveTrailStart", "entity" )
 	ScriptRemote_RegisterClientFunction( "ServerCallback_SkydiveTrailEnd", "entity" )
 	// ScriptRegisterNetworkedVariable( "skyDiveTrailOverrideIndex", SNDC_PLAYER_GLOBAL, SNVT_INT, -1 )
@@ -686,15 +707,15 @@ void function RemoteFunctions_Init_Begin()
 	//ScriptRemote_RegisterUntypedFunction_deprecated( "ServerCallback_BLEEDOUT_StopFirstAidProgressBar" ) //Audit 2-22-2025 unused
 	#if DEVELOPER
 		ScriptRemote_RegisterUntypedFunction_deprecated( "ServerCallback_ModelViewerDisableConflicts" ) //Audit 2-22-2025 dev only
-	#endif 
+	#endif
 	
 	//ScriptRemote_RegisterClientFunction( "VeryLongFunctionNameVeryLongFunctionNameVeryLongFunctionNameVeryLongVeryLong", "bool", "bool" ) //(mk): test
 	
-	ScriptRemote_RegisterClientFunction( "SCB_AddGrenadeIndicatorForEntity", "int", -1, 127, "int", EHANDLE_MIN, EHANDLE_MAX, "int", EHANDLE_MIN, EHANDLE_MAX, "float", 0.0, 99999.0, 32 )//Audit 2-22-2025
+	ScriptRemote_RegisterClientFunction( "SCB_AddGrenadeIndicatorForEntity", "entity", "entity", "float", 0.0, 99999.0, 32 )//Audit 2-22-2025
 	ScriptRemote_RegisterUIFunction( "ScriptCallback_UnlockAchievement", "int", 0, achievements.len() + 1 ) //Audit 2-22-2025
-	ScriptRemote_RegisterClientFunction( "ServerCallback_SonarPulseFromPosition", "vector", -32000.0, 32000.0, 32, "float", 0.0, 3000.0, 8, "float", 0.0, 10.0, 8, "bool" ) //Audit 2-22-2025
+	ScriptRemote_RegisterClientFunction( "ServerCallback_SonarPulseFromPosition", "vector", -32000.0, 32000.0, 32, "float", 0.0, 3000.0, 16, "float", 0.0, 10.0, 16, "bool" ) //Audit 2-22-2025
 	
-	ScriptRemote_RegisterClientFunction( "ServerCallback_SonarPulseConeFromPosition", "vector", -32000.0, 32000.0, 32, "float", 0.0, 32000.0, 8, "vector", -1.0, 1.0, 32, "float", -360.0, 360.0, 8, "int", 0, 128, "float", 0.0, 32000.0, 32, "bool", "bool" )
+	ScriptRemote_RegisterClientFunction( "ServerCallback_SonarPulseConeFromPosition", "vector", -32000.0, 32000.0, 32, "float", 0.0, 32000.0, 16, "vector", -1.0, 1.0, 32, "float", -360.0, 360.0, 16, "int", 0, 128, "float", 0.0, 32000.0, 32, "bool", "bool" )
 
 	ScriptRegisterNetworkedVariable( "playerAllowedToLeech", SNDC_PLAYER_EXCLUSIVE, SNVT_BOOL, true )
 
@@ -983,7 +1004,7 @@ void function RemoteFunctions_Init_Begin()
 	ScriptRemote_RegisterClientFunction( "ServerCallback_PlayerChangedTeams", "entity", "int", TEAM_INVALID, 127, "int", TEAM_INVALID, 127 ) 
 	ScriptRemote_RegisterClientFunction( "ServerCallback_PlayerTookDamage", "float", 0.0, 50000.0, 16, "vector", -32000.0, 32000.0, 32, "int", DAMAGE_TYPE_MIN, INT_MAX, "int", EDAMAGESOURCE_MIN, RT_EDAMAGESOURCE_MAX, "int", EHANDLE_MIN, EHANDLE_MAX ) //Audit 2-22-2025; Todo(mk): damage does not need to be allocated for 50000.0, however many mods call an arbituary number and these need audited in order to lower this value to a reasonable number. Note: Damage gets normalized, which used to be int. Therefore we can get away with using 16 bits on the float which should return n.xyz 
 	
-	//ScriptRemote_RegisterClientFunction( "ServerCallback_ScreenShake", "float", 0.0, 20.0, "float", 0.001, 255.0, 8, "vector", -32000.0, 32000, 32 )  //Audit 2-22-2025 , not currently called.
+	//ScriptRemote_RegisterClientFunction( "ServerCallback_ScreenShake", "float", 0.0, 20.0, "float", 0.001, 255.0, 16, "vector", -32000.0, 32000, 32 )  //Audit 2-22-2025 , not currently called.
 	//ScriptRemote_RegisterClientFunction( "ServerCallback_UpdateOverheadIconForNPC", "int", EHANDLE_MIN, EHANDLE_MAX )//Audit 2-22-2025 not currently used
 	
 	ScriptRemote_RegisterClientFunction( "HandleBroadcastCommsAction", "entity", "int", 0, eCommsAction._count, "entity", "vector", -32000.0, 32000.0, 32, "int", 0, (1 << eCommsFlags._flagCount) )
@@ -1075,13 +1096,13 @@ void function RemoteFunctions_Init_Begin()
 		// Localized Msg functions
 		int localizedStringsMax = GetLocalizedStringsCount() + 1
 		ScriptRemote_RegisterUntypedFunction_deprecated( "FS_BuildLocalizedMultiVarString" )
-		ScriptRemote_RegisterClientFunction( "FS_ShowLocalizedMultiVarMessage", "int", 0, localizedStringsMax, "int", 0, eMsgUI.len() + 1, "float", 0.0, 5000.0, 8 ) //Audit 2-22-2025
+		ScriptRemote_RegisterClientFunction( "FS_ShowLocalizedMultiVarMessage", "int", 0, localizedStringsMax, "int", 0, eMsgUI.len() + 1, "float", 0.0, 5000.0, 16 ) //Audit 2-22-2025
 		ScriptRemote_RegisterUntypedFunction_deprecated( "FS_BuildLocalizedTokenWithVariableString" ) //only for variable string
-		ScriptRemote_RegisterClientFunction( "FS_DisplayLocalizedToken", "int", 0, localizedStringsMax, "int", 0, localizedStringsMax, "int", 0, eMsgUI.len() + 1, "float", 0.0, 5000.0, 8 ) //Audit 2-22-2025
+		ScriptRemote_RegisterClientFunction( "FS_DisplayLocalizedToken", "int", 0, localizedStringsMax, "int", 0, localizedStringsMax, "int", 0, eMsgUI.len() + 1, "float", 0.0, 5000.0, 16 ) //Audit 2-22-2025
 
 		// Localized TextPanel
 		ScriptRemote_RegisterUntypedFunction_deprecated( "FS_BuildLocalizedVariable_InfoPanel" )
-		ScriptRemote_RegisterClientFunction( "FS_CreateTextInfoPanelWithID_Localized", "int", 0, localizedStringsMax, "int", 0, localizedStringsMax, "vector", -32000.0, 32000.0, 32, "vector", -32000.0, 32000.0, 32, "float", 0.0, 100.0, 8, "int", -1, 999 ) //Audit 2-22-2025
+		ScriptRemote_RegisterClientFunction( "FS_CreateTextInfoPanelWithID_Localized", "int", 0, localizedStringsMax, "int", 0, localizedStringsMax, "vector", -32000.0, 32000.0, 32, "vector", -32000.0, 32000.0, 32, "float", 0.0, 100.0, 16, "int", -1, 999 ) //Audit 2-22-2025
 	
 		// This will be moved to code. ( server issued muting )
 		ScriptRemote_RegisterClientFunction( "FS_Toggle_Mute", "bool" )
@@ -1095,6 +1116,8 @@ void function RemoteFunctions_Init_Begin()
 	ScriptRemote_RegisterClientFunction( "Tracker_SetPlayerStatBool", "entity", "bool" )
 	ScriptRemote_RegisterClientFunction( "Tracker_SetPlayerStatInt", "entity", "int", INT_MIN, INT_MAX )
 	ScriptRemote_RegisterClientFunction( "Tracker_SetPlayerStatFloat", "entity", "float", -999999.0, 999999.0, 32 )
+	ScriptRemote_RegisterClientFunction( "Tracker_ResyncAllForPlayer", "entity" )
+	ScriptRemote_RegisterUntypedFunction_deprecated( "Tracker_ResyncStatForPlayer" )	
 		
 	//Todo(mk): Move to client fetch( for cards ), remove networked vars
 	ScriptRegisterNetworkedVariable( "SeasonScore", SNDC_PLAYER_EXCLUSIVE, SNVT_BIG_INT, 0 )
@@ -1105,20 +1128,23 @@ void function RemoteFunctions_Init_Begin()
 	ScriptRegisterNetworkedVariable( "stats_loaded", SNDC_PLAYER_GLOBAL, SNVT_BOOL, false )
 
 	
-	ScriptRemote_RegisterUntypedFunction_deprecated( "__BuildWorldAssetString" ) //optional, else called by int ref
-	
-	//(mk): Temporarily moved some to deprecated to save room for typed buffer. 
-	//ScriptRemote_RegisterClientFunction( "ServerCallback_CreateWorldAsset", "vector", -32000.0, 32000.0, 32, "vector", -32000.0, 32000.0, 32, "float", -1.0, 9999.0, 8, "float", -1.0, 9999.0, 8, "int", -1, 999, "int", -1, 999, "int", -1, 999, "float", -1.0, 1.0, 8, "bool", "float", -1.0, 5000.0, 8 )
-	//ScriptRemote_RegisterClientFunction( "ServerCallback_DestroyWorldAsset", "int", -2, 999 )
-	//ScriptRemote_RegisterClientFunction( "ServerCallback_SetWorldAssetVisibility", "int", 0, 999, "int", 0, 999, "bool", "bool", "bool", "int", -2, 999, "int", -5, 3, "bool" )
-	ScriptRemote_RegisterClientFunction( "ServerCallback_ModifyWorldAsset", "int", -2, 999, "int", -2, 999, "vector", -32000.0, 32000.0, 32, "vector",  -32000.0, 32000.0, 32, "float", -1.0, 9999.0, 8, "float", -1.0, 9999.0, 8, "float", -1.0, 1.0, 8, "int", -1, 999 )
-	//ScriptRemote_RegisterClientFunction( "ServerCallback_CreateChannel", "int", -1, 30 )
+	if( BannerAssets_IsEnabled() )
+	{
+		ScriptRemote_RegisterUntypedFunction_deprecated( "__BuildWorldAssetString" ) //optional, else called by int ref (should be deprecated feature of server asset system)
+		
+		//(mk): Temporarily moved some to deprecated to save room for typed buffer. 
+		ScriptRemote_RegisterClientFunction( "ServerCallback_CreateWorldAsset", "vector", -32000.0, 32000.0, 32, "vector", -32000.0, 32000.0, 32, "float", -1.0, 9999.0, 16, "float", -1.0, 9999.0, 16, "int", -1, 999, "int", -1, 999, "int", -1, 999, "float", -1.0, 1.0, 16, "bool", "float", -1.0, 5000.0, 16 )
+		//ScriptRemote_RegisterClientFunction( "ServerCallback_DestroyWorldAsset", "int", -2, 999 )
+		//ScriptRemote_RegisterClientFunction( "ServerCallback_SetWorldAssetVisibility", "int", 0, 999, "int", 0, 999, "bool", "bool", "bool", "int", -2, 999, "int", -5, 3, "bool" )
+		ScriptRemote_RegisterClientFunction( "ServerCallback_ModifyWorldAsset", "int", -2, 999, "int", -2, 999, "vector", -32000.0, 32000.0, 32, "vector",  -32000.0, 32000.0, 32, "float", -1.0, 9999.0, 16, "float", -1.0, 9999.0, 16, "float", -1.0, 1.0, 16, "int", -1, 999 )
+		//ScriptRemote_RegisterClientFunction( "ServerCallback_CreateChannel", "int", -1, 30 )
 
-	ScriptRemote_RegisterUntypedFunction_deprecated( "ServerCallback_CreateWorldAsset" )
-	ScriptRemote_RegisterUntypedFunction_deprecated( "ServerCallback_DestroyWorldAsset" )
-	ScriptRemote_RegisterUntypedFunction_deprecated( "ServerCallback_SetWorldAssetVisibility" )
-	ScriptRemote_RegisterUntypedFunction_deprecated( "ServerCallback_CreateChannel" )
-	//end temp
+		//ScriptRemote_RegisterUntypedFunction_deprecated( "ServerCallback_CreateWorldAsset" )
+		ScriptRemote_RegisterUntypedFunction_deprecated( "ServerCallback_DestroyWorldAsset" )
+		ScriptRemote_RegisterUntypedFunction_deprecated( "ServerCallback_SetWorldAssetVisibility" )
+		ScriptRemote_RegisterUntypedFunction_deprecated( "ServerCallback_CreateChannel" )
+		//end temp
+	}
 	
 	//TestNetworkedVarLimit() //(mk): for testing sh_net_wrapper.gnut
 	//ScriptRemote_RegisterClientFunction( "TestFloatBits", "float", 0.0, 2000.0, 32 )
@@ -1155,7 +1181,7 @@ bool s_callbackRegistrationIsClosed = false
 array<void functionref()> s_setupCallbacks
 void function AddCallback_OnNetworkRegistration( void functionref() func )
 {
-	mAssert( !s_callbackRegistrationIsClosed, "Must be called before network registration has finished." )
+	mAssert( !s_callbackRegistrationIsClosed, "AddCallback_OnNetworkRegistration Must be called before network registration has finished. Cannot add %s()", string( func ) )
 	s_setupCallbacks.append( func )
 }
 
@@ -1168,7 +1194,7 @@ void function ExecuteSetupCallbacks()
 // purpose: finalize remote function registration and send checksum to the server
 void function RemoteFunctions_Init_Finish()
 {
-	#if DEVELOPER
+	#if DEVELOPER && DEBUG_REMOTE_FUNCS
 		Warning( "Remote_EndRegisteringFunctions \n" )
 	#endif
 	
@@ -1231,8 +1257,11 @@ void function ByRef_ConsistencyCheck()
 			
 		string param = args[ 0 ]
 		
-		if( !IsNumeric( param ) )
+		if( !IsStringNumeric( param ) )
+		{
+			KickPlayerById( player.GetPlatformUID(), "Invalid byref consistency check data" )
 			return true
+		}
 			
 		int clientCount = int( param )
 		

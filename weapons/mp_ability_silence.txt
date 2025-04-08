@@ -103,13 +103,13 @@ WeaponData
 	"explosion_shake_duration"						"0.1"
 	"damage_flags"									"DF_RAGDOLL | DF_EXPLOSION"
 
-	"ammo_clip_size"								"50"
-    "ammo_default_total"							"50"
+	"ammo_clip_size"								"1"
+    "ammo_default_total"							"0"
     "ammo_display"									"count"
-    "ammo_min_to_fire"								"25"
-    "ammo_per_shot"									"25"
+    "ammo_min_to_fire"								"100"
+    "ammo_per_shot"									"200"
     "ammo_stockpile_max"							"0"
-    "regen_ammo_refill_rate"						"1"
+    "regen_ammo_refill_rate"						"0"
     "regen_ammo_refill_start_delay"					"0.0"
     "fire_duration"									"0.1"
     "ammo_no_remove_from_stockpile"					"0"
@@ -123,7 +123,7 @@ WeaponData
 
 	// Behavior
 	"cooldown_type"									"ammo_instant"
-	"max_cook_time"									"99999.99"
+	"max_cook_time"									"99999.992188"
 	"grenade_fuse_time"								"0"
     "start_fuse_on_launch"                          "0"
 	"grenade_ignition_time"                         "5.0"

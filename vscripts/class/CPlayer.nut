@@ -297,36 +297,8 @@ function CodeCallback_RegisterClass_CPlayer()
 		if( !IsValid( player ) )
 			return
 		
-		player.p.bTextmute = expect bool ( toggle )
-		// player.p.relayChallengeCode = RandomIntRange( 10000000, 99999999 )
-		// player.p.bRelayChallengeState = false
-		
-		Remote_CallFunction_NonReplay( player, "FS_Toggle_Mute", toggle ) //player.p.relayChallengeCode, toggle )
-		
-		// #if DEVELOPER
-			// printt( "Sent challenge as", player.p.relayChallengeCode )
-		// #endif
-		
-		// thread
-		// ( 
-			// void function() : ( player )
-			// {
-				// EndSignal( player, "OnDestroy", "OnDisconnected" )
-				// waitthread WaitSignalOrTimeout( player, 3, "ChallengeReceived" )
-				
-				// if( !IsValid( player ) )
-					// return
-				
-				// if ( !player.p.bRelayChallengeState )
-				// {
-					// #if DEVELOPER 
-						// printt( "Player acknowledgment failed." )
-					// #endif 
-					
-					// KickPlayerById( player.GetPlatformUID(), "Chat State Error" )
-				// }
-			// }
-		// )()
+		player.p.bTextmute = expect bool ( toggle )		
+		Remote_CallFunction_NonReplay( player, "FS_Toggle_Mute", toggle )
 	}
 	
 	function CPlayer::CommandsEnabled( toggle )
@@ -400,7 +372,7 @@ function CodeCallback_RegisterClass_CPlayer()
 		SetPlayerStatInt( expect entity(this).p.UID, expect string( statname ), expect int( value ) )
 	}
 	
-	function CPlayer::SetCanUseZipline( setting ) //todo: move to code 
+	function CPlayer::SetCanUseZipline( setting ) //todo(mk): move to code 
 	{
 		entity player = expect entity ( this )
 		

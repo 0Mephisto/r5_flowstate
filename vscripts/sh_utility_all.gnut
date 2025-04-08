@@ -1081,7 +1081,7 @@ void function WaitFrame()
 
 string function VectorToString( vector vec )
 {
-	return "< " + vec.x + "," + vec.y + "," + vec.z + " >"
+	return "< " + vec.x + ", " + vec.y + ", " + vec.z + " >"
 }
 
 vector function FlattenNormalizeVec( vector v )
@@ -2859,7 +2859,7 @@ array<string> function StringToArray( string str, int arrayStringMaxLength = 128
     }
 	
 	if ( !valid.len() ) 
-        throw "Array empty after conversion";
+        throw "Array empty after conversion"
 
     return valid
 }
@@ -2901,7 +2901,22 @@ string function truncate( string str, int limit )
 bool function IsSpectator( entity player )
 {
 	if ( !IsValid( player ) )
-	return false
+		return false
 
 	return player.GetTeam() == TEAM_SPECTATOR
+}
+
+float function WrapAngle360( float angle )
+{
+    return ( ( angle % 360.0 ) + 360.0 ) % 360.0
+}
+
+table< string, int > function IntStringTableFlip( table< int, string > stringTbl )
+{
+	table< string, int > flipped
+	
+	foreach( int k, string v in stringTbl )
+		flipped[ v ] <- k
+	
+	return flipped
 }

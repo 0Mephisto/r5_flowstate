@@ -1,6 +1,8 @@
 //Flowstate 1v1 gamemode -- made by __makimakima__
 //Gamemode redesigned and maintained by @CafeFPS & Mkos
 
+// Todo(mk): Needs core loop rewrote
+
 global function isPlayerInRestingList
 global function Gamemode1v1_ForceRest
 global function INIT_playerChallengesStruct
@@ -69,7 +71,6 @@ global function IsCurrentState
 global function ValidateBlacklistedWeapons
 
 global typedef PanelTable table<string, entity>
-const bool TEST_WORLDDRAW	= false
 const bool DEBUG_STATE		= false
 
 //DEV 
@@ -730,12 +731,12 @@ void function ValidateWeaponList( string weaponList, string weaponListContinue, 
 			int listLen = outputArrayByRef.len() - 1
 			for ( int i = listLen; i >= 0; --i )
 			{
-				string before = trim( outputArrayByRef[ i ] )
+				string before = strip( outputArrayByRef[ i ] )
 				
-				outputArrayByRef[ i ] = ParseWeapon( trim( outputArrayByRef[ i ] ) )
+				outputArrayByRef[ i ] = ParseWeapon( strip( outputArrayByRef[ i ] ) )
 				
-				if ( trim( outputArrayByRef[ i ] ) != before )
-					sqerror( format( "Weapon %d was invalid and corrected. \n Old:\n \"%s\" \n New: \n \"%s\" \n\n", i, before, trim( outputArrayByRef[ i ] ) ) )
+				if ( strip( outputArrayByRef[ i ] ) != before )
+					sqerror( format( "Weapon %d was invalid and corrected. \n Old:\n \"%s\" \n New: \n \"%s\" \n\n", i, before, strip( outputArrayByRef[ i ] ) ) )
 					
 				if ( outputArrayByRef[ i ] == "" )
 					outputArrayByRef.remove( i )
@@ -1114,7 +1115,7 @@ void function Gamemode1v1_ForceRest( entity player )
 
 bool function ClientCommand_mkos_challenge(entity player, array<string> args)
 {
-	if ( !CheckRate( player, true ) ) 
+	if ( !CheckRate( player, "chal", COMMAND_RATE_LIMIT, true ) ) 
 		return true
 		
 	if( GetTDMState() != eTDMState.IN_PROGRESS )
@@ -1415,14 +1416,16 @@ bool function ClientCommand_mkos_challenge(entity player, array<string> args)
 			return true
 			
 		case "legend":
-		
+					
 			if( !settings.bAllowLegend )
 			{
 				LocalMsg( player, "#FS_DisabledLegends")
 				return true
 			}
 			
-			//because we don't want to have to update the client always,
+			if( !CheckRate( player, "legend_select", 1, true ) )
+				return true
+			
 			//this param comes as a clientcommand with the legend guid ref
 			string param2 = ""
 			if( args.len() > 2 )
@@ -1455,7 +1458,7 @@ bool function ClientCommand_mkos_challenge(entity player, array<string> args)
 			int index = -1;
 			int indexMapLen = LEGEND_INDEX_ARRAY.len()
 			
-			// if( IsNumeric( param, 0, indexMapLen ) )
+			// if( IsStringNumeric( param, 0, indexMapLen ) )
 			// {
 				// index = param.tointeger()
 			// }
@@ -1473,7 +1476,7 @@ bool function ClientCommand_mkos_challenge(entity player, array<string> args)
 			
 			if( param2 != "" )
 			{
-				if( IsNumeric( param2 ) )
+				if( IsStringNumeric( param2 ) )
 					index = CharacterGuidRefToIndex( param2 )
 			}
 			
@@ -1567,7 +1570,7 @@ bool function ClientCommand_mkos_challenge(entity player, array<string> args)
 void function INIT_playerChallengesStruct( entity player )
 {
 	#if DEVELOPER
-		mAssert( !isChalValid( getChallengeListForPlayer( player ) ), "Chal struct already appended for player " + string( player ) )
+		mAssert( !isChalValid( getChallengeListForPlayer( player ) ), "Chal struct already appended for player %s", string( player ) )
 	#endif
 	
 	ChallengesStruct chalStruct
@@ -2487,9 +2490,11 @@ void function soloModePlayerToWaitingList( entity player )
 	//检查resting list 是否有该玩家
 	deleteSoloPlayerResting( player )
 
-	if( isScenariosMode() && FS_Scenarios_GetMatchIsEnding() )
-		LocalMsg( player, "#FS_Scenarios_WaitingForRoundEnd", "", eMsgUI.EVENT, max( 1, g_fCurrentRoundEndTime - Time() ) )
-	else if( !bIsCoachingMode() )
+	// if( isScenariosMode() && FS_Scenarios_GetMatchIsEnding() ) (mk): why was this removed..?
+		// LocalMsg( player, "#FS_Scenarios_WaitingForRoundEnd", "", eMsgUI.EVENT, max( 1, g_fCurrentRoundEndTime - Time() ) )
+	// else 
+	
+	if( !bIsCoachingMode() )
 		LocalMsg( player, "#FS_IN_QUEUE", "", eMsgUI.EVENT, settings.roundTime )
 
 	if( bIsCoachingMode() )
@@ -2801,7 +2806,7 @@ void function PlayerRestoreHP_1v1( entity player, float health, float shields )
 		Inventory_SetPlayerEquipment(player, "helmet_pickup_lv3", "helmet")
 		
 		if( shields == 0 )
-			return
+			Inventory_SetPlayerEquipment(player, "", "armor")
 		else if(shields <= 50)
 			Inventory_SetPlayerEquipment( player, "armor_pickup_lv1", "armor" )
 		else if(shields <= 75)
@@ -2858,7 +2863,7 @@ void function respawnInSoloMode( entity player, int respawnSlotIndex = -1 ) //�
 		try
 		{
 			Gamemode1v1_SetPlayerGamestate( player, e1v1State.SEQUENCE )
-			DecideRespawnPlayer( player, true )
+			DecideRespawnPlayer( player, false )
 		}
 		catch( erroree )
 		{	
@@ -2889,7 +2894,7 @@ void function respawnInSoloMode( entity player, int respawnSlotIndex = -1 ) //�
 	try
 	{
 		Gamemode1v1_SetPlayerGamestate( player, e1v1State.SEQUENCE )
-		DecideRespawnPlayer( player, true )
+		DecideRespawnPlayer( player, false )
 	}
 	catch (error)
 	{
@@ -3103,12 +3108,12 @@ void function INIT_PregameCallbacks()
 	if( MapName() == eMaps.mp_rr_arena_composite && GetCurrentPlaylistVarBool( "patch_for_dropoff", false ) )
 	{
 		DropoffPatch_Init()
-		AddCallback_FlowstateSpawnsPostInit( Init_DropoffPatchSpawns )
+		AddCallback_SpawnsPostInit( Init_DropoffPatchSpawns )
 	}
 
 	if( Playlist() == ePlaylists.fs_1v1_headshots_only )
 	{
-		AddCallback_FlowstateSpawnsSettings
+		AddCallback_SpawnsSettings
 		( 
 			void function()
 			{
@@ -3152,7 +3157,7 @@ void function Gamemode1v1_Init( int eMap )
 	if( Playlist() == ePlaylists.fs_lgduels_1v1 )
 		Flowstate_LgDuels1v1_Init()
 		
-	Flowstate_SpawnSystem_InitGamemodeOptions()
+	SpawnSystem_InitGamemodeOptions()
 		
 	SetHostInvetoryAttachments()
 	
@@ -3170,7 +3175,7 @@ void function Gamemode1v1_Init( int eMap )
 		AddCallback_OnPlayerRespawned( DisablePlayerCollision )
 	
 	file.characters = GetAllCharacters()
-	characterslist = [0,1,2,3,4,5,6,7,8,9,10,11,12,13]
+	characterslist = [0,1,2,3,4,5,6,7,8,9,10,11,12,13] //TODO(mk): uniform legend system
 	Init_ValidLegendRange()
 	
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -3226,11 +3231,12 @@ void function Gamemode1v1_Init( int eMap )
 	
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	if( Playlist() == ePlaylists.fs_vamp_1v1 ) //Todo(mk): This should be handled by the mode's script file using AddCallback_FlowstateSpawnsSettings
+	
+	if( Playlist() == ePlaylists.fs_vamp_1v1 ) //Todo(mk): This should be handled by the mode's script file using AddCallback_SpawnsSettings
 		SpawnSystem_SetCustomPlaylist( "fs_1v1" )
 
-	eMap = SpawnSystem_FindBaseMapForPak( eMap )
-	array<SpawnData> allSoloLocations = SpawnSystem_ReturnAllSpawnLocations( eMap )
+	FlagWait( "EntitiesDidLoad" )
+	array<SpawnData> allSoloLocations = SpawnSystem_ReturnAllSpawnLocations()
 	
 	file.notificationPanel_Coordinates = Gamemode1v1_GetNotificationPanel_Coordinates()
 	file.notificationPanel_Angles = Gamemode1v1_GetNotificationPanel_Angles()	
@@ -3239,7 +3245,7 @@ void function Gamemode1v1_Init( int eMap )
 	{
 		SpawnSystem_SetPreferredPak( 1 )
 		//SpawnSystem_SetRunCallbacks( false ) //(mk): for this mode, we wont disable re-running callbacks, as they may be needed to customize spawns again. If the gamemode dev has prop spawning or things that should only be done once, they should make sure it's only init once in their logic.
-		allSoloLocations = SpawnSystem_ReturnAllSpawnLocations( eMap )
+		allSoloLocations = SpawnSystem_ReturnAllSpawnLocations()
 		
 		//mAssert( ValidateSpawns( allSoloLocations ), "No valid spawns were defined" )
 		if( !ValidateSpawns( allSoloLocations ) )
@@ -3254,7 +3260,7 @@ void function Gamemode1v1_Init( int eMap )
 				Message( player, "Map Config Error", "No valid spawns defined." )
 			
 			#if DEVELOPER 
-				mAssert( false, "No valid spawns defined; Release behavior: Tracker_GotoNextMap.  Current Map: " + GetMapName()  )
+				mAssert( false, "No valid spawns defined; Release behavior: Tracker_GotoNextMap.  Current Map: %s", GetMapName()  )
 				return
 			#endif
 			
@@ -3275,7 +3281,7 @@ void function Gamemode1v1_Init( int eMap )
 			spawnPakTeamCount = potentialTeamCount.tointeger()
  
 		if( spawnPakTeamCount > SCENARIOS_MAX_ALLOWED_TEAMSIZE )
-			mAssert( false, "Configured spawn pak teamCount of " + spawnPakTeamCount + " exceeds scenarios max allowed teamsize of " + SCENARIOS_MAX_ALLOWED_TEAMSIZE )
+			mAssert( false, "Configured spawn pak teamCount of \"%s\" exceeds scenarios max allowed teamsize of %d", spawnPakTeamCount, SCENARIOS_MAX_ALLOWED_TEAMSIZE )
 		
 		for ( int i = 0; i < allSoloLocations.len(); i = i + teamAmount )
 		{
@@ -3927,6 +3933,9 @@ void function soloModeThread( LocPair waitingRoomLocation )
 				{
 					maki_tp_player( player, g_randomWaitingSpawns.getrandom() ) //waiting player should be in waiting room,not battle area
 					HolsterAndDisableWeapons_Raw( player ) //(mk): dirty fix I wanted to avoid.
+					
+					if( !isPlayerInRestingList( player ) && !isPlayerInWaitingList( player ) )
+						soloModePlayerToWaitingList( player ) //(mk): dirty patch
 				}
 			//#endif
 		}
@@ -4246,8 +4255,7 @@ void function soloModeThread( LocPair waitingRoomLocation )
 			newGroup.player1_handle = newGroup.player1.p.handle
 			newGroup.player2_handle = newGroup.player2.p.handle
 		
-			//TODO: verify this
-			if ( ( Fetch_IBMM_Timeout_For_Player( newGroup.player1 ) == false && Fetch_IBMM_Timeout_For_Player( newGroup.player2 ) == false ) || newGroup.player1.p.input == newGroup.player2.p.input )			
+			if( GroupIsLockable( newGroup ) )
 				newGroup.GROUP_INPUT_LOCKED = true
 			else
 				newGroup.GROUP_INPUT_LOCKED = false
@@ -4358,8 +4366,8 @@ void function FS_1v1_OnPlayerDisconnected( entity player )
 	if( IsValid( opponent ) )
 		endLock1v1( opponent )
 	
-	if( playerHandle in file.acceptedChallenges )
-		delete file.acceptedChallenges[ playerHandle ]
+	// if( playerHandle in file.acceptedChallenges ) //potential B1D
+		// delete file.acceptedChallenges[ playerHandle ]
 	
 	foreach( index, zstruct in file.allChallenges )
 	{
@@ -5204,6 +5212,10 @@ void function SetInput_IN_FORWARD( entity player )
 	player.p.movevalue = 6
 }
 
+bool function GroupIsLockable( soloGroupStruct newGroup )
+{
+	return ( newGroup.player1.p.lastmoved > 2 && newGroup.player2.p.lastmoved > 2 && ( ( Fetch_IBMM_Timeout_For_Player( newGroup.player1 ) == false && Fetch_IBMM_Timeout_For_Player( newGroup.player2 ) == false ) || newGroup.player1.p.input == newGroup.player2.p.input ) )	
+}
 
 bool function ClientCommand_mkos_IBMM_wait( entity player, array<string> args )
 {
@@ -5226,7 +5238,7 @@ bool function ClientCommand_mkos_IBMM_wait( entity player, array<string> args )
 		return true
 	}
 				
-	if ( args.len() > 0 && !IsNumeric( param, 0, limit ) )
+	if ( args.len() > 0 && !IsStringNumeric( param, 0, limit ) )
 	{
 		LocalMsg( player, "#FS_FAILED", "#FS_IBMM_Time_Failed", eMsgUI.DEFAULT, 5, "", limit.tostring() )
 		return true
@@ -5434,31 +5446,30 @@ void function Gamemode1v1_OnPlayerDied( entity victim, entity attacker, var dama
 
 	if( bIsCoachingMode() )
 	{
-		//stops recording
+		//(cafe)stops recording
 		FS_Coaching_StopRecording( FS_Coaching_GetAvailableMatchIdentifier(), victim, attacker )
 	}
 	
-	// if( isPlayerInWaitingList( victim ) )
-	// {
-		// LocPair waitingRoomLocation = getWaitingRoomLocation()
-
-		// if( !IsAlive( victim ) )
-		// {
-			// Gamemode1v1_SetPlayerGamestate( victim, e1v1State.SEQUENCE )
-			// DecideRespawnPlayer( victim, false )
-		// }
+	if( isPlayerInWaitingList( victim ) )
+	{
+		if( !IsAlive( victim ) )
+		{
+			Gamemode1v1_SetPlayerGamestate( victim, e1v1State.SEQUENCE )
+			DecideRespawnPlayer( victim, false )
+		}
 		
-		// if ( !IsValid( waitingRoomLocation ) )
-		// {//(mk): this should never be hit, Maki had it checked. 
-			// mAssert( false, "Waiting room location was invalid." )
-			// return
-		// }
+		LocPair waitingRoomLocation = getWaitingRoomLocation()
+		if ( !IsValid( waitingRoomLocation ) )
+		{//(mk): this should never be hit, Maki had it checked. 
+			mAssert( false, "Waiting room location was invalid." )
+			return
+		}
+		
+		ClearInvincible( victim )
+		maki_tp_player( victim, waitingRoomLocation )
 			
-		// ClearInvincible( victim )
-		// maki_tp_player( victim, waitingRoomLocation )
-			
-		// return
-	// }
+		return
+	}
 	
 	if( !isScenariosMode() )
 		HandleGroupIsFinished( victim ) //, damageInfo )
@@ -5553,13 +5564,13 @@ void function DecideToggleCollision_Rest( entity player, bool enable )
 void function SetupPlayerReserveAmmo( entity player, entity weapon )
 {
 	int ammoType = weapon.GetWeaponAmmoPoolType()
-	player.AmmoPool_SetCount( ammoType, 0 ) //always reset
+	player.AmmoPool_SetCount( ammoType, 0 ) //(mk):always reset
 	
 	string ammoRef = AmmoType_GetRefFromIndex( ammoType )
 	LootData data = SURVIVAL_Loot_GetLootDataByRef( ammoRef )
 
 	int amount = settings.give_weapon_stack_count_amount * FS_GetWeaponsThatUseThisAmmo( player, ammoRef ).len() //Revisit this
-	//todo remove the remaining ammo if player does not have two guns of the same ammo anymore
+	//(Cafe)todo remove the remaining ammo if player does not have two guns of the same ammo anymore
 	
 	//Clean up ammo. Cafe
 	foreach ( ammo, type in eAmmoPoolType )
@@ -5614,7 +5625,7 @@ void function HandleOpponentInfo( soloGroupStruct group )
 
 void function Gamemode1v1_TakeAll( entity player )
 {
-	if( !IsValid( player ) ) //this can fire after a player has quit, delayed.
+	if( !IsValid( player ) ) //(mk):this can fire after a player has quit, delayed.
 		return
 		
 	TakeUltimate( player )

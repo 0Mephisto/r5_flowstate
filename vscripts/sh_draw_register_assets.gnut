@@ -411,6 +411,9 @@ void function WorldDrawAsset_RegisterAllAssets()
 		if( !IsValid( player ) )
 			return false
 			
+		if( player.p.bannersValidated )
+			return true
+			
 		string signal = "BannersValidated"
 		
 		if( args.len() < 1 )
@@ -423,7 +426,7 @@ void function WorldDrawAsset_RegisterAllAssets()
 		array<int> invalidAssets
 		foreach( arg in args )
 		{
-			if( !IsNumeric( arg, 0, 99999 ) )
+			if( !IsStringNumeric( arg, 0, 99999 ) )
 				continue
 			
 			invalidAssets.append( int( arg ) )

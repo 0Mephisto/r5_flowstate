@@ -872,7 +872,7 @@ void function AddEntityCallback_OnDamaged( entity ent, void functionref( entity 
 		return
 	
 	#if DEVELOPER
-		mAssert( !ent.e.entDamageCallbacks.contains( callbackFunc ), "Already added " + string( callbackFunc ) + " to entity" )
+		mAssert( !ent.e.entDamageCallbacks.contains( callbackFunc ), "Already added func \"%s\" to entity", string( callbackFunc ) )
 	#endif
 
 	ent.SetDamageNotifications( true )

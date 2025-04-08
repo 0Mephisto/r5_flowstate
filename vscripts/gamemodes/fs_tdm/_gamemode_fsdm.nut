@@ -70,6 +70,8 @@ global function Flowstate_IsRealisticMode
 global function Halo_GotoNextPlaylist
 global function HaloMod_HandlePlayerModel
 
+global function PrimaryWeaponMetagame_Init
+
 #if DEVELOPER
 	global function DEV_NextRound
 #endif
@@ -315,9 +317,6 @@ bool function bIs1v1Mode()
 	if( GetPlaylistMaps( GetCurrentPlaylistName() ).contains( GetMapName() ) )
 		return true
 
-	if( Playlist() == ePlaylists.fs_1v1 )
-		mAssert( false, format( "Map \"%s\" is not enabled for %s in platform/playlists_r5_patch.txt", GetMapName(), GetCurrentPlaylistName() ) )
-
 	return false
 }
 
@@ -498,10 +497,8 @@ void function _CustomTDM_Init()
 		FsOddballInit()
 	}
 	
-	if( is1v1EnabledAndAllowed() ) //just call Gamemode1v1_Init, and move logic into gamemode1v1_init
-	{		
+	if( is1v1EnabledAndAllowed() )
 		thread Gamemode1v1_Init( MapName() )
-	}
 	
 	if( !isScenariosMode() )
 		AddSpawnCallback( "prop_survival", Common_DissolveDropable )
@@ -1560,7 +1557,10 @@ void function _HandleRespawn( entity player, bool isDroppodSpawn = false )
         else
         {
             if( !player.p.storedWeapons.len() )
-				DecideRespawnPlayer( player, true )
+			{
+				bool loadoutRelated = !g_bIs1v1GameType()
+				DecideRespawnPlayer( player, loadoutRelated )
+			}
             else
             {
 				DecideRespawnPlayer( player, false )
@@ -1830,45 +1830,35 @@ void function SetPlayerCustomModel( entity player, int index )
 {
 	switch( index )
 	{
-		case 11:
+		/*case 11:
 		player.SetBodyModelOverride( $"mdl/Humans/pilots/w_blisk.rmdl" )
 		player.SetArmsModelOverride( $"mdl/Humans/pilots/pov_blisk.rmdl" )
-		break
+		break*/
 		
 		case 12:
 		player.SetBodyModelOverride( $"mdl/Humans/pilots/w_phantom.rmdl" )
 		player.SetArmsModelOverride( $"mdl/Humans/pilots/ptpov_phantom.rmdl" )
 		break
 		
-		case 13:
+		/*case 13:
 		player.SetBodyModelOverride( $"mdl/Humans/pilots/w_amogino.rmdl" )
 		player.SetArmsModelOverride( $"mdl/Humans/pilots/ptpov_amogino.rmdl" )
-		break
+		break*/
 
 		case 14:
 		player.SetBodyModelOverride( $"mdl/Humans/pilots/w_rhapsody.rmdl" )
 		player.SetArmsModelOverride( $"mdl/Humans/pilots/ptpov_rhapsody.rmdl" )
 		break
 		
-		case 15:
+		/*case 15:
 		player.SetBodyModelOverride( $"mdl/Humans/pilots/w_ash_legacy.rmdl" )
 		player.SetArmsModelOverride( $"mdl/Humans/pilots/pov_ash_legacy.rmdl" )
-		break
+		break*/
 
-		case 16:
+		/*case 16:
 		player.SetBodyModelOverride( $"mdl/Humans/pilots/w_jackcooper.rmdl" )
 		player.SetArmsModelOverride( $"mdl/Humans/pilots/ptpov_jackcooper.rmdl" )
-		break
-
-		case 17:
-		player.SetBodyModelOverride( $"mdl/Humans/pilots/pilot_medium_loba.rmdl" )
-		player.SetArmsModelOverride( $"mdl/Humans/pilots/pov_pilot_medium_loba.rmdl" )
-		break
-		
-		case 18:
-		player.SetBodyModelOverride( $"mdl/Humans/pilots/pilot_heavy_revenant.rmdl" )
-		player.SetArmsModelOverride( $"mdl/Humans/pilots/pov_pilot_heavy_revenant.rmdl" )
-		break
+		break*/
 
 		case 19: // ballistic
 		player.SetBodyModelOverride( $"mdl/Humans/pilots/ballistic_base_w.rmdl" )
@@ -3293,7 +3283,7 @@ void function SimpleChampionUI()
 
 						//Message( player, "Oddball", file.selectedLocation.name, 5, "" )
 						LocalMsg( player, "#FS_Oddball", "", eMsgUI.DEFAULT, 5, "", file.selectedLocation.name )
-						// Remote_CallFunction_NonReplay( player, "DM_HintCatalog", 2, 0)
+						// Remote_CallFunction_NonReplay( player, "DM_HintCatalog", 2, null )
 						thread function ( ) : ( player )
 						{
 							wait 2 // -.-
@@ -5349,6 +5339,7 @@ bool function ClientCommand_GiveWeapon(entity player, array<string> args)
 	}
 	
 	#if DEVELOPER 
+		printl( "==ClientCommand_GiveWeapon==" )
 		print_string_array( args )
 	#endif
 
@@ -5524,7 +5515,7 @@ bool function ClientCommand_GiveWeapon(entity player, array<string> args)
 		LocalMsg( player, "#FS_WEAPONSAVED", subToken, uiType, 5, sWepName )
 			
 		if (bRestFlag)
-			HolsterAndDisableWeapons( player )
+			HolsterAndDisableWeapons_Raw( player )
 
     return true
 }
@@ -5601,7 +5592,7 @@ bool function ClientCommand_SaveCurrentWeapons(entity player, array<string> args
 	
 	if ( !isPlayerInRestingList( player ) )
 	{
-		if( trim( weaponname1 ) == "" || trim( weaponname2 ) == "" )
+		if( strip( weaponname1 ) == "" || strip( weaponname2 ) == "" )
 		{	
 			#if DEVELOPER
 				if (weaponname1 == ""){ sqerror("Player: " + player.GetPlatformUID() + " weaponname1 empty") }
@@ -5620,7 +5611,7 @@ bool function ClientCommand_SaveCurrentWeapons(entity player, array<string> args
 	
 	string concatenate_weps = weaponname1 + "; " + weaponname2;
 	
-	if( !single_save && trim( weaponname1 ) == "" && trim( weaponname2 ) == "" )
+	if( !single_save && strip( weaponname1 ) == "" && strip( weaponname2 ) == "" )
 	{
 		LocalMsg( player, "#FS_FAILEDSAVE" )
 		return true
@@ -5646,7 +5637,7 @@ bool function ClientCommand_SaveCurrentWeapons(entity player, array<string> args
 string function modChecker( string weaponMods )
 {	
 	//sqprint("weaponMods: " + weaponMods)
-	if( trim(weaponMods) == "") return "";  //return empty weapon mods
+	if( strip(weaponMods) == "") return "";  //return empty weapon mods
 	
 	array<string> weaponMod = split(weaponMods , " ")
 	array<string> rifles = ["mp_weapon_energy_ar","mp_weapon_esaw","mp_weapon_rspn101","mp_weapon_vinson","mp_weapon_lmg","mp_weapon_g2","mp_weapon_hemlok"]
@@ -5723,7 +5714,7 @@ void function LoadCustomWeapon(entity player)
 		//check if weapon's mods is allowed by server
 		foreach(index,weapon in weapons)
 		{	
-			if ( trim(weapon) == "" ) continue
+			if ( strip(weapon) == "" ) continue
 			
             weapon =modChecker(weapon)
 			weapons[index]=weapon
@@ -5735,7 +5726,7 @@ void function LoadCustomWeapon(entity player)
 				sqprint(rweapon)
 			#endif
 			
-			if ( trim(rweapon) == "" ) continue
+			if ( strip(rweapon) == "" ) continue
 			
 			int slot
 			if(index == 0)
@@ -5792,12 +5783,12 @@ bool function ClientCommand_ResetSavedWeapons( entity player, array<string> args
 	return true
 }
 
-bool function ClientCommand_NextRound(entity player, array<string> args)
+bool function ClientCommand_NextRound( entity player, array<string> args )
 {
 	if ( !CheckRate( player ) ) 
 		return false
 	
-	if( !IsAdmin( player) || args.len() == 0 ) //checkrate already checks for validity
+	if( ( !IsAdmin( player) && !IsServerAdmin( player.p.UID ) ) || args.len() == 0 ) //checkrate already checks for validity
 		return false
 	
 	if (args[0] == "now")
@@ -6068,7 +6059,7 @@ void function BecomeHacker(entity player)
 	
 	// AddButtonPressedPlayerInputCallback( player, IN_USE, CheckForHoldInput_Thread )
 	
-	// Remote_CallFunction_NonReplay( player, "DM_HintCatalog", 0, 0)
+	// Remote_CallFunction_NonReplay( player, "DM_HintCatalog", 0, null )
 	
 	// entity tactical = player.GetOffhandWeapon( OFFHAND_TACTICAL )
 	
@@ -6133,7 +6124,7 @@ void function CheckForHoldInput_Thread( entity player ) //, entity weapon )
 			{
 				player.p.enableAimbot = false
 
-				Remote_CallFunction_NonReplay( player, "DM_HintCatalog", 0, 0)
+				Remote_CallFunction_NonReplay( player, "DM_HintCatalog", 0, null )
 
 			}
 		)
@@ -6141,7 +6132,7 @@ void function CheckForHoldInput_Thread( entity player ) //, entity weapon )
 		while ( player.IsInputCommandHeld( IN_USE ) )
 		{
 			if(!player.p.enableAimbot)
-				Remote_CallFunction_NonReplay( player, "DM_HintCatalog", 1, 0)
+				Remote_CallFunction_NonReplay( player, "DM_HintCatalog", 1, null )
 			
 			player.p.enableAimbot = true
 			

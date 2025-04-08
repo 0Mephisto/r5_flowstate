@@ -28,7 +28,7 @@ const WARTHOG_HOVER_HEIGHT = 5
 void function ShHoverVehicle_Init()
 {
 	#if SERVER
-		PrecacheModel($"mdl/vehicles_r5/land/msc_suv_partum/veh_land_msc_suv_partum_static.rmdl")
+		//PrecacheModel($"mdl/vehicles_r5/land/msc_suv_partum/veh_land_msc_suv_partum_static.rmdl")
 		// PrecacheModel($"mdl/flowstate_custom/warthog.rmdl")
 		// PrecacheModel($"mdl/flowstate_custom/mongoose.rmdl")
 		// PrecacheModel($"mdl/flowstate_custom/banshee.rmdl")
@@ -74,7 +74,7 @@ void function SpawnTridentTest(entity player)
 	vector angles = Vector(0,0,0)
 
 	entity physics = CreateEntity( "prop_physics" )
-	physics.SetValueForModelKey( $"mdl/vehicles_r5/land/msc_suv_partum/veh_land_msc_suv_partum_static.rmdl" )
+	physics.SetValueForModelKey( $"mdl/props/death_box/death_box_01.rmdl" )
 	physics.kv.rendercolor = "255 255 255"
 	physics.kv.CollisionGroup = TRACE_COLLISION_GROUP_BLOCK_WEAPONS_AND_PHYSICS
 	physics.kv.spawnflags = 4
@@ -91,15 +91,12 @@ void function SpawnTridentTest(entity player)
 	physics.PhysicsSetDamping(0,0)
 	physics.PhysicsSetFriction(0)
 	physics.StopPhysics()
-	
-	physics.SetModel($"mdl/vehicles_r5/land/msc_suv_partum/veh_land_msc_suv_partum_static.rmdl")
-	physics.SetValueForModelKey( $"mdl/vehicles_r5/land/msc_suv_partum/veh_land_msc_suv_partum_static.rmdl" )
 	physics.Hide()
 	
 	entity trident = CreateEntity( "prop_dynamic" )
-    trident.SetValueForModelKey( $"mdl/vehicles_r5/land/msc_suv_partum/veh_land_msc_suv_partum_static.rmdl" )
-	trident.kv.fadedist = 10000
-	trident.kv.renderamt = 255
+    trident.SetValueForModelKey( $"mdl/vehicle/olympus_hovercraft/olympus_hovercraft_v2.rmdl" )
+	//trident.kv.fadedist = 10000
+	//trident.kv.renderamt = 255
     trident.SetOrigin(physics.GetOrigin())
     trident.SetAngles(Vector(0,90,90))
 	DispatchSpawn( trident )
@@ -111,6 +108,7 @@ void function SpawnTridentTest(entity player)
 	trident.SetUsableByGroup("pilot")
 	trident.SetUsePrompts("%use% Drive Trident", "%use% Drive Trident")
 	trident.AddUsableValue( USABLE_CUSTOM_HINTS | USABLE_BY_OWNER | USABLE_BY_PILOTS | USABLE_BY_ENEMIES )
+	thread PlayAnim(trident, "hovercraft_hover_idle")
 	AddCallback_OnUseEntity(trident, OnUseCar)	
 }
 

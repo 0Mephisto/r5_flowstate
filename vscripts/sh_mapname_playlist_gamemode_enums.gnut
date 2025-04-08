@@ -1,21 +1,29 @@
+//Todo: Make custom playlists synced
+
 //script init:
 global function PlayLists_Mapnames_Gamemodes_Init
 
-//public:
 global function MapName
 global function Playlist
 global function Gamemode
 
-//utility:
 global function AllMapsArray
 global function AllGamemodesArray
 global function AllPlaylistsArray
-global function shGlobalErrorCheck
+
+global function PrintMaps
+global function PrintGamemodes
+global function PrintRegisteredPlaylists
+
+#if SERVER 
+	global function GetPlaylistMaps //client has a copy already
+#endif
 
 //mode functions:
 global function g_bIs1v1GameType
 global function g_bSinglePlayerChampion
 
+//Todo deprecate this strategy of calling functions to return bools, make SH_globals global and index directly.
 global function Flowstate_PassivesAllowedForMode
 global function Flowstate_IsTrackerSupportedMode
 global function Flowstate_PlayerDoesRespawn
@@ -150,14 +158,12 @@ struct
 	int currentMap = -1
 	int currentPlaylist = -1
 	int currentGamemode = -1
-	
-	bool errorCheck = false
-	
+
 } SH_globals
 
 //this is the global location for defining a mode that is 1v1 based
 const array<int> playlist1v1Types = 
-[	
+[
 	ePlaylists.fs_1v1,
 	ePlaylists.fs_lgduels_1v1,
 	ePlaylists.fs_vamp_1v1,
@@ -253,9 +259,16 @@ void function PlayLists_Mapnames_Gamemodes_Init()
 		SH_globals.currentGamemode = currentGamemodeEnum
 		mAssert( SH_globals.currentGamemode != -1, format( "Current gamemode \"%s\" is not registered in sh_mapname_playlist_gamemode_enums.nut", curentGamemodeName ) )
 	
-	AllModeConditionals_Init()
 	
-	SH_globals.errorCheck = true
+	#if SERVER //prevents errors of gamemodes not loading
+		if( MapName() != eMaps.mp_lobby && Playlist() != ePlaylists.dev_default && Playlist() != ePlaylists.survival_dev && !Dev_CommandLineHasParm( "-scriptdev" ) )
+		{
+			array< string > validMaps = GetPlaylistMaps( GetCurrentPlaylistName() )
+			mAssert( validMaps.contains( GetMapName() ), "Map \"%s\" is not enabled for \"%s\" in platform/playlists_r5_patch.txt. Launch with \"-scriptdev\" to ignore this assert.", GetMapName(), GetCurrentPlaylistName() )
+		}
+	#endif
+	
+	AllModeConditionals_Init()
 }
 
 int function getMapEnumFromName( string mapString ) 
@@ -299,6 +312,7 @@ int function getGamemodeEnumFromName( string gamemodeString )
 // 		global script functions			//
 //////////////////////////////////////////
 
+//Todo: Change these to eMap(), ePlaylist(), eGamemode()
 int function MapName()
 {
 	return SH_globals.currentMap
@@ -332,11 +346,54 @@ array<string> function AllPlaylistsArray()
 {
 	return SH_globals.playlists
 }
-	
-bool function shGlobalErrorCheck()
+
+void function PrintMaps()
 {
-	return SH_globals.errorCheck
+	_printstringarray( SH_globals.mapNames, "All registered maps" )
 }
+
+void function PrintGamemodes() //should hook registered modes system
+{
+	_printstringarray( SH_globals.gamemodes, "All registered gamemodes" )
+}
+
+void function PrintRegisteredPlaylists() //can iterate playlist file as well with PrintPlaylists()
+{
+	_printstringarray( SH_globals.playlists, "All registered playlists" )
+}
+
+void function _printstringarray( array<string> arr, string title = "???" )
+{
+	string prnt = format( "\n\n------ %s ------\n\n", title )
+	
+	foreach( item in arr )
+		prnt += format( "	\"%s\", \n", item )
+	
+	printl( prnt )
+}
+
+#if SERVER 
+	array<string> function GetPlaylistMaps( string playlistName )
+	{
+		array<string> mapsArray
+
+		int numModes = GetPlaylistGamemodesCount( playlistName )
+		for ( int modeIndex = 0; modeIndex < numModes; modeIndex++ )
+		{
+			int numMaps = GetPlaylistGamemodeByIndexMapsCount( playlistName, modeIndex )
+			for ( int mapIndex = 0; mapIndex < numMaps; mapIndex++ )
+			{
+				string mapName = GetPlaylistGamemodeByIndexMapByIndex( playlistName, modeIndex, mapIndex )
+				if ( mapsArray.contains( mapName ) )
+					continue
+
+				mapsArray.append( mapName )
+			}
+		}
+
+		return mapsArray
+	}
+#endif 
 
 //////////////////////////////////////////
 //	gamemode conditional INIT functions	//
@@ -432,7 +489,7 @@ void function TrackerSupportedMode_Init()
 		ePlaylists.fs_dm,
 		ePlaylists.fs_tdm,
 		ePlaylists.fs_vamp_1v1,
-		ePlaylists.fs_lgduels_1v1,
+		//ePlaylists.fs_lgduels_1v1,
 		ePlaylists.fs_scenarios,
 		ePlaylists.fs_survival,
 		ePlaylists.SURVIVAL,
@@ -492,6 +549,7 @@ void function MapHasTrain_Init()
 		eMaps.mp_rr_desertlands_64k_x_64k,
 		eMaps.mp_rr_desertlands_64k_x_64k_nx,
 		eMaps.mp_rr_desertlands_64k_x_64k_tt,
+		eMaps.mp_rr_desertlands_64k_x_64k_mv,
 		eMaps.mp_rr_desertlands_holiday,
 		eMaps.mp_rr_desertlands_mu1,
 		eMaps.mp_rr_desertlands_mu1_tt

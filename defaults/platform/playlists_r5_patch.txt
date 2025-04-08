@@ -188,9 +188,9 @@ playlists
 				//// Character (a.k.a. Legend) Configuration								///////
 				///////////////////////////////////////////////////////////////////////////////////
 				
-				character_dummie								hide
+				//character_dummie								DISABLED
 				character_random								hide
-				//character_loba									hide
+				//character_loba									DISABLED
 
 				///////////////////////////////////////////////////////////////////////////////////
 				//// Character (a.k.a. Legend) Damage Balancing								///////
@@ -445,14 +445,11 @@ playlists
 				enable_chat_commands							1 		// allows players to type commands for mode into chat. Example: /rest
 				
 				// ADMINS for cc command (recommended to list in r5r.dev_config file if server has tracker dll)
-				// usage: "adminname-oid,anotheradmin-oid"
-				// example: "R5mkos-15423978654235"
+				// usage: Comma Separated list of server admin uids
+				// example: "15423978654235,620652652562,72462626522253"
 				admins_list										""
 				
-				enable_motd 									1		// Enables message of the day for server
-				
-				// It is recommended that you leave this blank and not use it, preferably use FS_PLAYLIST_MOTD at the bottom of this file
-				//custom_MOTD										""
+				enable_motd 									1		// Enables message of the day for server (defined at bottom of file in SECTION 4:  FS_PLAYLIST_MOTD )
 				
 				// global auto mute system 
 				opt_in_global_mute								1 		// Globally muted players on tracker will auto mute.
@@ -462,13 +459,13 @@ playlists
 				// respective textmute_offence_tiers for that player's offence count based on decay time/amount
 				
 				opt_in_spam_mute								1		// Enables auto muting and unmuting with below settings.
-				chat_interval									12		// window time in seconds a threshhold for messages counts ( this decreases msg total by threshold amount each chat_interval completion ( this value ) )
+				chat_interval									12		// window time in seconds a threshhold for messages counts ( this decreases msg total by "chat_threshhold" amount for each "chat_interval" completion )
 				chat_threshhold									5 		// How many messages within this window 
 				chat_timeout									"" 		// string: time format of  "0 days 0 hours 2 mins 30 seconds" and any combination of, multiples of, or in any order. - mutes player for duration specified. Can leave blank if using offence tiers.
 				
-				textmute_offence_tiers							"10 secs, 20 secs, 30 secs" 		// comma separated list of time strings. example: "3 secs, 10 secs, 20 secs, 30 secs"	
-				textmute_offence_decay_time						45.0 	// Time that must pass before players offence tier is reduced by decay_amount -- 0 to disable
-				textmute_offence_decay_amount					1		// How many offence levels will be decreased for player each decay_time cycle
+				textmute_offence_tiers							"10 secs, 20 secs, 30 secs" 		// comma separated list of time strings. example: "3 secs, 10 secs, 20 secs, 30 secs, 5 mins"	
+				textmute_offence_decay_time						45.0 	// Time that must pass before players offence tier is reduced by "textmute_offence_decay_amount".   -- 0 to disable
+				textmute_offence_decay_amount					1		// How many offence levels will be decreased for player each "textmute_offence_decay_time" cycle
 				
 				cycle_halo_playlists							1 		// Set this to 1 to make halomodes multi-playlist
 				
@@ -489,7 +486,6 @@ playlists
 				logging_encryption								1
 				logging_shipstats 								1		// Enabling this will transfer data at end of match ( TODO: rename to tracker_shipstats )
 				use_global_stats								1		// Enabling this will use API data ( which only transfers at the start/end of a match or when a non batched player connects for stat queries )
-				use_online_motd 								0		// Still indev ( don't enable )
 				tracker_max_wait								7.0		// Max wait for batch load. Reducing means faster loading of data, at the trade off of missing some connecting players still loading, who will get individually queue tasks to fetch stats and codecallback when complete for each player respectively.
 				
 				// You should configure the following in "platform/r5rdev_config.json", but also set to 1 to enable here.
@@ -500,6 +496,9 @@ playlists
 				restricted_server								0		// Enables restricted (private) server settings
 				restricted_join_message							"Welcome to the restricted server. \n\n You meet the minimum requirements to play on this server."
 				restricted_whitelist_message					"You have been whitelisted for this restricted server"
+				restricted_whitelist_only						0
+				
+				//The following requires use_global_stats
 				restricted_kills								500		// Minimum kills required to join
 				restricted_kd									0.7		// Minimum K/D ratio required to join
 				restricted_playtime								10000	// Minimum play time in seconds required to join
@@ -1443,6 +1442,8 @@ playlists
 				flowstate_enable_bullet_slow					1
 				
 				flowstate_modified_movement						0 // 0 = Apex || 1 = Titanfall 2 || 2 = Titanfall 2 High Air Accel || 3 = Titanfall 2 Low Grav || 4 = CSGO || 5 = CSGO High Air Accel || 6 = Surf || 7 = Half-Life 1 || 8 = Halo || 9 = Superglide Boost || 10 = Instagib || 11 = Fun Mode || 12 = Halo Movement NEW		
+			
+				dodge_dash_enabled								0
 			}
 			gamemodes { fs_dm { maps {
 				mp_rr_canyonlands_64k_x_64k						1
@@ -2154,9 +2155,12 @@ playlists
 						
 				enable_challenges								0 //Disable challenges in scenarios to prevent crash
 						
-				///////////////////////////////////////
-				// The following can be used to create custom loadouts 
+				////////////////////////////////////////////////////////////////////////////////
+				// The following "custom_1v1..." vars can be used to create custom loadouts (works for scenarios)
+				
 				// "weapon_name attachment atachment, weapon_name2"
+				
+				// Invalid weapons, and invalid attachments for weapons will be removed automatically and a console warning issued.
 				// https://discord.com/channels/873158454850756638/876944169594159105
 				
 				// Each string you place here can only be 1000 characters long, 
@@ -2186,15 +2190,10 @@ playlists
 				//installing or enabling extra spawn paks
 				// to add paks, prefix a mapname with spawnsets_  and list the paks to enable "1,2,3"
 				
-				spawnsets_mp_rr_canyonlands_64k_x_64k			"1"
-				spawnsets_mp_rr_desertlands_64k_x_64k			"1,2"
-				spawnsets_mp_rr_aqueduct 						"1"
-				spawnsets_mp_rr_arena_phase_runner				"1"
+				spawnsets_mp_rr_desertlands_64k_x_64k			"1"
 				
-				spawnpaks_use_sets 								1	// bool, enables using other than stock spawn paks
 				spawnpaks_use_random							0	// bool, loads random configured pak on mapstart
-				spawnpaks_prefer								1	// bool, enables the below setting 
-				spawnpaks_preferred_pak							2 	//integer, pak number 
+				spawnpaks_preferred_pak							0 	// integer, pak number, 0 to disable
 			}
 			gamemodes { fs_dm { maps {
 				mp_rr_desertlands_64k_x_64k 					1
@@ -2296,9 +2295,12 @@ playlists
 				patch_for_dropoff								1
 				patch_waiting_area								1 //makes a barrier between waiting and fighting areas
 				
-				///////////////////////////////////////
-				// The following can be used to create custom loadouts 
+				////////////////////////////////////////////////////////////////////////////////
+				// The following "custom_1v1..." vars can be used to create custom loadouts
+				
 				// "weapon_name attachment atachment, weapon_name2"
+				
+				// Invalid weapons, and invalid attachments for weapons will be removed automatically and a console warning issued.
 				// https://discord.com/channels/873158454850756638/876944169594159105
 				
 				// Each string you place here can only be 1000 characters long, 
@@ -2355,12 +2357,8 @@ playlists
 				spawnsets_mp_rr_canyonlands_64k_x_64k			"1"
 				spawnsets_mp_rr_arena_phase_runner				"1"
 				
-				spawnpaks_use_sets 								0	// bool, enables using other than stock spawn paks
 				spawnpaks_use_random							0	// bool, loads random configured pak on mapstart
-				spawnpaks_prefer								0	// bool, enables the below setting 
-				spawnpaks_preferred_pak							0 	// integer, pak number 
-				spawnpaks_playlist_override						0 	// bool, enables using below defined playlist for spawnpaks_playlist_override
-								
+				spawnpaks_preferred_pak							0 	// integer, pak number, 0 to disable						
 				custom_spawnpak									""	// string, custom spawn.rpak override
 				custom_playlist_spawnpak						""  // string, custom playlist override (fs_1v1, fs_scenarios, etc. )  loads spawns for this gametype instead of game loaded gametype
 			}
@@ -2475,7 +2473,6 @@ playlists
 				flowstate_seconds_to_wait_without_players_before_restarting		3600 // 3600 : 1 hour
 				
 				//required to get 1v1 spawns
-				spawnpaks_playlist_override						1
 				custom_playlist_spawnpak						"fs_1v1"
 			}
 			gamemodes { fs_dm { maps {
@@ -2579,9 +2576,20 @@ playlists
 				patch_for_dropoff								0
 				patch_waiting_area								1 //makes a barrier between waiting and fighting areas
 				
-				//The following can be used to create custom loadouts 
+				////////////////////////////////////////////////////////////////////////////////
+				// The following "custom_1v1..." vars can be used to create custom loadouts
+				
+				// "weapon_name attachment atachment, weapon_name2"
+				
+				// Invalid weapons, and invalid attachments for weapons will be removed automatically and a console warning issued.
+				// https://discord.com/channels/873158454850756638/876944169594159105
+				
+				// Each string you place here can only be 1000 characters long, 
+				// use _continue respectively for large lists
+				
 				custom_1v1_weapons_primary 						""
 				custom_1v1_weapons_primary_continue 			""
+				
 				custom_1v1_weapons_secondary 					""
 				custom_1v1_weapons_secondary_continue 			""
 				
@@ -2620,10 +2628,8 @@ playlists
 				mp_rr_arena_phase_runner						"1,2,3"
 				mp_rr_olympus_mu1								"1,2,3,4,5"
 				
-				spawnpaks_use_sets 								1	// bool, enables using other than stock spawn paks
 				spawnpaks_use_random							0	// bool, loads random configured pak on mapstart
-				spawnpaks_prefer								0	// bool, enables the below setting 
-				spawnpaks_preferred_pak							2 	//integer, pak number 
+				spawnpaks_preferred_pak							2 	// integer, pak number, 0 to disable
 			}
 			gamemodes { fs_dm { maps {
 				mp_rr_canyonlands_64k_x_64k						1
@@ -2725,9 +2731,20 @@ playlists
 				patch_for_dropoff								0
 				patch_waiting_area								1 //makes a barrier between waiting and fighting areas
 				
-				//The following can be used to create custom loadouts 
+				////////////////////////////////////////////////////////////////////////////////
+				// The following "custom_1v1..." vars can be used to create custom loadouts
+				
+				// "weapon_name attachment atachment, weapon_name2"
+				
+				// Invalid weapons, and invalid attachments for weapons will be removed automatically and a console warning issued.
+				// https://discord.com/channels/873158454850756638/876944169594159105
+				
+				// Each string you place here can only be 1000 characters long, 
+				// use _continue respectively for large lists
+				
 				custom_1v1_weapons_primary 						""
 				custom_1v1_weapons_primary_continue 			""
+				
 				custom_1v1_weapons_secondary 					""
 				custom_1v1_weapons_secondary_continue 			""
 				
@@ -2767,6 +2784,7 @@ playlists
 				mp_rr_arena_phase_runner			  			1
 				mp_rr_party_crasher					  			1
 				mp_rr_aqueduct									1
+				mp_rr_canyonlands_staging						1
 			} } }
 		}
 
@@ -4009,7 +4027,7 @@ playlists
 				visible											1
 				
 				name										   	"Firing Range"
-				description										"#PL_FIRINGRANGE_DESC"
+				description										"Firing Range"
 				
 				ui_slot											firing_range
 				image										  	firing_range
@@ -4078,8 +4096,8 @@ playlists
 			{
 				visible										1
 				
-				name										   	"Firing Range"
-				description									"#PL_FIRINGRANGE_DESC"
+				name										   	"Training"
+				description									"Training"
 				
 				ui_slot										firing_range
 				image										firing_range
@@ -4189,23 +4207,30 @@ playlists
 
 				flowstate_give_character_passive				1
 
+				dodge_dash_enabled								0
+
 				custom_loot               						1
 				enable_motd										0
 				
 			}
 			gamemodes { survival { maps {
-				mp_rr_party_crasher					 			1
-				mp_rr_aqueduct								 	1
-				mp_rr_arena_phase_runner						1
+				mp_rr_desertlands_64k_x_64k						1
+				mp_rr_desertlands_64k_x_64k_nx				 	1
+				mp_rr_desertlands_64k_x_64k_tt				 	1
+				mp_rr_desertlands_64k_x_64k_mv				 	1
+				mp_rr_desertlands_mu1				 			1
+				mp_rr_desertlands_mu1_tt				 		1
+				mp_rr_desertlands_mu2					 		1
+				mp_rr_olympus						 			1
 				mp_rr_canyonlands_staging					  	1
 				mp_rr_canyonlands_64k_x_64k						1
 				mp_rr_canyonlands_mu1						  	1
 				mp_rr_canyonlands_mu1_night						1
-				mp_rr_desertlands_64k_x_64k						1
-				mp_rr_desertlands_64k_x_64k_nx				 	1
-				mp_rr_desertlands_64k_x_64k_tt				 	1
-				mp_rr_desertlands_mu1				 			1
-				mp_rr_desertlands_mu1_tt				 		1
+				mp_rr_canyonlands_mu2							1
+				mp_rr_canyonlands_mu2_tt						1
+				mp_rr_party_crasher					 			1
+				mp_rr_aqueduct								 	1
+				mp_rr_arena_phase_runner						1
 			} } }
 		}
 
@@ -4243,18 +4268,23 @@ playlists
 				set_legend									 	"character_revenant"
 			}
 			gamemodes { survival { maps {
-				mp_rr_arena_empty								1
-				mp_rr_arena_phase_runner						1
-				mp_rr_canyonlands_64k_x_64k						1
-				mp_rr_canyonlands_mu1						  	1
 				mp_rr_desertlands_64k_x_64k						1
 				mp_rr_desertlands_64k_x_64k_nx				 	1
 				mp_rr_desertlands_64k_x_64k_tt				 	1
-				mp_rr_party_crasher					 			1
-				mp_rr_canyonlands_mu1_night						1
+				mp_rr_desertlands_64k_x_64k_mv				 	1
+				mp_rr_desertlands_mu1				 			1
+				mp_rr_desertlands_mu1_tt				 		1
+				mp_rr_desertlands_mu2					 		1
+				mp_rr_olympus						 			1
 				mp_rr_canyonlands_staging					  	1
+				mp_rr_canyonlands_64k_x_64k						1
+				mp_rr_canyonlands_mu1						  	1
+				mp_rr_canyonlands_mu1_night						1
+				mp_rr_canyonlands_mu2							1
+				mp_rr_canyonlands_mu2_tt						1
+				mp_rr_party_crasher					 			1
 				mp_rr_aqueduct								 	1
-				mp_rr_construct									1
+				mp_rr_arena_phase_runner						1
 			} } }
 		}
 
@@ -4275,13 +4305,44 @@ playlists
 			"Language" "english"
 			"Tokens"
 			{
+				//////////////////////////////////////
+				//		TOKENS FOR SERVER HOSTS		//
+				//////////////////////////////////////
+				
+				"FS_PLAYLIST_MOTD" "An R5Reloaded Server" //set your servers message of the day. 1000 char max.  Use \n for newline.
+				"FS_PLAYLIST_MOTD_CONTINUE" "" // appends to first, 1000 char max.
+			
+			
+				//////////////////////////////////////////////////
+				// TEMP TOKENS (remove before release shipping )//
+				//////////////////////////////////////////////////
+				
 				"SKIN_COVID" "Viral Surge"
+				"ADVANCED_VIDEO_MENU_LOD_QUALITY_DESC" "Adjusts the rendering quality of distant objects and environments. Higher settings improve detail clarity at long distances but may impact performance. Lower settings boost performance by reducing detail in faraway objects."
+				"LOD_QUALITY" "Level of Detail (LOD) Quality"
+				"LOD_0"  "Potato"
+				"LOD_1"  "Default"
+				"LOD_2"  "Enhanced"
+				"LOD_3"  "Improved"
+				"LOD_4"  "High"
+				"LOD_5"  "Ultra"
+				"LOD_6"  "Extreme"
+				"LOD_7"  "Cinematic"
+				"LOD_8"  "Insane"
+				"LOD_9"  "Overkill"			
+				
 			}
 		}
 	}
 	
 	"KVFileOverrides"
 	{
+		///////////////////////////////////////////////////////////////////////////////////
+		///////////////////////////////////////////////////////////////////////////////////
+		///////////////////////////	SECTION 5: OVERRIDES	///////////////////////////////
+		///////////////////////////////////////////////////////////////////////////////////
+		///////////////////////////////////////////////////////////////////////////////////
+		
 		
 	}
 }

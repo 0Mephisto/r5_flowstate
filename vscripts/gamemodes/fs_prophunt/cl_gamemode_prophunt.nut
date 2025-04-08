@@ -43,16 +43,6 @@ struct {
 
 void function ClGamemodeProphunt_Init()
 {
-	SetConVarInt("cl_quota_stringCmdsPerSecond", 100)
-	//I don't want these things in user screen even if they launch in debug
-	SetConVarBool( "cl_showpos", false )
-	SetConVarBool( "cl_showfps", false )
-	SetConVarBool( "cl_showgpustats", false )
-	SetConVarBool( "cl_showsimstats", false )
-	SetConVarBool( "host_speeds", false )
-	SetConVarBool( "con_drawnotify", false )
-	SetConVarBool( "enable_debug_overlays", false )
-	
 	RegisterSignal("ChallengeStartRemoveCameras")
 	RegisterSignal("ChangeCameraToSelectedLocation")
 	RegisterSignal("PROPHUNT_ShutdownWhistleAndRoundTimer")

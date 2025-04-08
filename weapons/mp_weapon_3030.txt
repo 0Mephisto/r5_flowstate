@@ -44,7 +44,7 @@
    "charge_time" 									".35"
    "charge_levels"									"2"
    "charge_level_base"								"1"
-   "charge_additional_damage_multiplier"			"0.36" // Damage will range between near_value and (near_value + near_value*chargeFrac*charge_additional_damage_multiplier)
+   "charge_additional_damage_multiplier"			"0.500000"
 
    "charge_cooldown_time"							"0.01"
    "charge_cooldown_delay"   						"0.0"
@@ -93,12 +93,12 @@
 
 	// Damage
 	//
-     "damage_near_value"   					"42"
-     "damage_far_value"						"42"
-     "damage_very_far_value"				"42"
-     "damage_near_value_titanarmor"			"42"
-     "damage_far_value_titanarmor" 			"42"
-     "damage_very_far_value_titanarmor" 	"42"
+     "damage_near_value"   					"43"
+     "damage_far_value"						"43"
+     "damage_very_far_value"				"43"
+     "damage_near_value_titanarmor"			"43"
+     "damage_far_value_titanarmor" 			"43"
+     "damage_very_far_value_titanarmor" 	"43"
      "damage_leg_scale"                     "0.85"
 
 
@@ -134,13 +134,13 @@
 	"ammo_pool_type"                               "highcal"
 	"ammo_clip_size"                               "6"
 	"ammo_stockpile_max"                           "200"
-	"ammo_default_total"                           "200"
+	"ammo_default_total"                           "0"
 	"low_ammo_fraction"                            "0.2"
 
     "reload_enabled"                           "1"
 	"ammo_min_to_fire"                         "1"
 	"ammo_no_remove_from_stockpile"            "1"
-	"uses_ammo_pool"                           "0"
+	"uses_ammo_pool"                           "1"
 	"allow_empty_click"                        "1"
 	"empty_reload_only"                        "0"
 
@@ -150,7 +150,7 @@
 	"reload_is_segmented"                           "1"
     "ammo_size_segmented_reload"					"1"
 	"ammo_display_as_clips"							"0"
-	"reload_time" 									".63"
+	"reload_time" 									"0.330000"
     "reloadempty_time"								".75"
     "reloadsegment_time_loop"						".40"
     "reloadsegment_time_end"						".45"
@@ -168,7 +168,6 @@
 	// Viewkick Spring
 	//
 	"viewkick_pattern"                          "3030"
-
     "viewkick_spring" 						    "3030_vkp"
     "viewkick_spring_hot"                       "3030_vkp_hot"
 
@@ -220,14 +219,14 @@
 
 // Spread
 	//
-	"spread_stand_hip"							"2.15"
-    "spread_stand_hip_run"						"4.45"
-    "spread_stand_hip_sprint"                   "4.95"
-    "spread_crouch_hip"   						"1.9"
-    "spread_air_hip"  							"6"
+	"spread_stand_hip"							"3.000000"
+    "spread_stand_hip_run"						"6.250000"
+    "spread_stand_hip_sprint"                   "7.500000"
+    "spread_crouch_hip"   						"2.250000"
+    "spread_air_hip"  							"7.000000"
 
-    "spread_moving_increase_rate" 			    "20"
-    "spread_moving_decay_rate" 					"25"
+    "spread_moving_increase_rate" 			    "5.000000"
+    "spread_moving_decay_rate" 					"16.250000"
 
 	"spread_decay_rate"                        "2.55"
     "spread_decay_delay"                       "0.26"
@@ -318,8 +317,15 @@
     "blast_pattern_default_scale"           "1.95"
 
 	//"bodygroup6_name" "sight_hcog_og_ranked_s2_2019"
-	"sway_rotate_attach_zoomed" ""
-	"sway_rotate_attach" ""
+	"sway_rotate_attach_zoomed" "SWAY_ROTATE_ZOOMED"
+	"sway_rotate_attach" "SWAY_ROTATE"
+
+	"headshot_distance"	"17716"
+	"damage_headshot_scale"	"1.600000"
+	"damage_shield_scale"	"1"
+	"damage_near_distance"	"1000"
+	"damage_far_distance"	"2500"
+	"damage_very_far_distance"	"5000"
 	Mods
 	{
 		gold

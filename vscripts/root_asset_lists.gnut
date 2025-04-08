@@ -122,6 +122,12 @@ global const array<asset> ENTITLEMENT_ASSETS = [
 ]
 
 
+global const array<asset> SHARED_BANNERFRAMES_ASSET_LIST = [
+	$""
+	//$"settings/itemflav/gcard_frame_template_rare_01.rpak", //(mk): removed missing rpak until available in assets repo.
+]
+
+
 global const array<asset> WEAPON_ASSETS =
 [
 	$"settings/itemflav/loot/main_weapon/alternator.rpak",
@@ -148,5 +154,5 @@ global const array<asset> WEAPON_ASSETS =
 	$"settings/itemflav/loot/main_weapon/chargerifle.rpak",
 	$"settings/itemflav/loot/main_weapon/sentinel.rpak",
 	$"settings/itemflav/loot/main_weapon/volt_smg.rpak",
-	//$"settings/itemflav/loot/main_weapon/3030repeater.rpak",
+	$"settings/itemflav/loot/main_weapon/3030repeater.rpak",
 ]

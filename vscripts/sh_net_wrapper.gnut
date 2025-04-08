@@ -6,13 +6,16 @@ global function ScriptRemote_RegisterClientFunction 				//wrapper for Remote_Reg
 global function ScriptRemote_RegisterUIFunction 					//wrapper for Remote_RegisterUIFunction
 global function ScriptRemote_RegisterUntypedFunction_deprecated 	//wrapper for Remote_RegisterUntypedFunction_deprecated
 
-global function PrintNetworkFunctions
-global function TestNetworkedVarLimit
+global function DebugRemoteFunctionsInit
 
-const bool DEBUG_NET = true  // this enables the system. On Registration failure, you will get relevent debug info. This should be disabled in release.
+#if DEBUG_REMOTE_FUNCS
+	global function PrintNetworkFunctions
+	global function TestNetworkedVarLimit
+#endif
 
-#if DEBUG_NET
-	const bool VERBOSE_NET_PRINTS	= false //this will print functions/vars in the order they are called.
+const bool VERBOSE_NET_PRINTS		= false //this will print functions/vars in the order they are called.
+
+#if DEBUG_REMOTE_FUNCS
 	const int MAX_ENTRIES			= 256  //must stay in sync with native
 	const int MAX_BUFFER			= 2048 //must stay in sync with native
 	
@@ -53,7 +56,7 @@ const bool DEBUG_NET = true  // this enables the system. On Registration failure
 
 struct 
 {
-	#if DEBUG_NET
+	#if DEBUG_REMOTE_FUNCS
 		table< string, CategoryInfo > categoryCatalog
 		RemoteFuncInfo allFuncInfo
 		bool haltRegistration		
@@ -61,7 +64,18 @@ struct
 	
 } file 
 
-#if DEBUG_NET
+void function DebugRemoteFunctionsInit()
+{
+	#if DEBUG_REMOTE_FUNCS	
+		Warning( "DEBUG_REMOTE_FUNCS is enabled in \"sh_consts.gnut\"" )
+		
+		#if VERBOSE_NET_PRINTS
+			Warning( "VERBOSE_NET_PRINTS is enabled in \"%s\"", FILE_NAME() )
+		#endif
+	#endif
+}
+
+#if DEBUG_REMOTE_FUNCS
 	//all of the below must stay in sync with native
 	string function IntToNetVarCat( int value )
 	{
@@ -317,24 +331,24 @@ struct
 const int REQUIRED_VARS_OFFSET = 3
 void function ScriptRegisterNetworkedVariable( ... )
 {
-	#if DEBUG_NET
+	int iterOffset = 0	
+	if( typeof vargv[ 0 ] == "array" )
+	{
+		if( !IsValidToRun( vargv[ 0 ] ) )
+		{
+			#if VERBOSE_NET_PRINTS
+				printf( "var \"%s\" is not valid to register for current playlist", expect string( vargv[ 1 ] ) )
+			#endif
+			
+			return
+		}
+		else
+			iterOffset = 1
+	}
+
+	#if DEBUG_REMOTE_FUNCS
 		if( file.haltRegistration )
 			return 
-			
-		int iterOffset = 0	
-		if( typeof vargv[ 0 ] == "array" )
-		{
-			if( !IsValidToRun( vargv[ 0 ] ) )
-			{
-				#if VERBOSE_NET_PRINTS
-					printf( "var \"%s\" is not valid to register for current playlist", expect string( vargv[ 1 ] ) )
-				#endif
-				
-				return
-			}
-			else
-				iterOffset = 1
-		}
 			
 		string varName 	= expect string( vargv[ iterOffset ] )
 		string category = IntToNetVarCat( expect int( vargv[ iterOffset + 1 ] ) )
@@ -425,7 +439,7 @@ void function ScriptRegisterNetworkedVariable( ... )
 			string debugCoreMsg = format( "Tried to register networked variable \"%s\" of type \"%s\" in category \"%s\". Maximum allowed %s(%d) reached.", varName, varType, category, varMaxStr, maxAllowed )
 			Warning( debugCoreMsg )
 			
-			mAssert( false, debugCoreMsg )
+			mAssert( 0, debugCoreMsg )
 			return
 		}
 	#endif
@@ -456,7 +470,7 @@ void function ScriptRemote_RegisterClientFunction( ... )
 	
 	int paramCount = expect int( vargc )
 		
-	#if DEBUG_NET
+	#if DEBUG_REMOTE_FUNCS
 		if( file.haltRegistration )
 			return
 			
@@ -483,13 +497,13 @@ void function ScriptRemote_RegisterClientFunction( ... )
 	for ( int j = iterOffset; j < paramCount; j++ )
 		params.append( vargv[ j ] )
 	
-#if DEBUG_NET	
+#if DEBUG_REMOTE_FUNCS	
 	try 
 	{
 #endif
 		Remote_RegisterClientFunction.acall( params )
 
-#if DEBUG_NET
+#if DEBUG_REMOTE_FUNCS
 	}
 	catch( e )
 	{
@@ -525,7 +539,7 @@ void function ScriptRemote_RegisterUIFunction( ... )
 	
 	int paramCount = expect int( vargc )
 	
-	#if DEBUG_NET
+	#if DEBUG_REMOTE_FUNCS
 		if( file.haltRegistration )
 			return
 			
@@ -551,13 +565,13 @@ void function ScriptRemote_RegisterUIFunction( ... )
 	for ( int j = iterOffset; j < paramCount; j++ )
 		params.append( vargv[ j ] )
 	
-#if DEBUG_NET	
+#if DEBUG_REMOTE_FUNCS	
 	try 
 	{
 #endif
 		Remote_RegisterUIFunction.acall( params )
 
-#if DEBUG_NET
+#if DEBUG_REMOTE_FUNCS
 	}
 	catch( e )
 	{
@@ -592,7 +606,7 @@ void function ScriptRemote_RegisterUntypedFunction_deprecated( ... )
 	
 	int paramCount = expect int( vargc )
 	
-	#if DEBUG_NET
+	#if DEBUG_REMOTE_FUNCS
 		if( file.haltRegistration )
 			return
 			
@@ -611,13 +625,13 @@ void function ScriptRemote_RegisterUntypedFunction_deprecated( ... )
 	for ( int j = iterOffset; j < paramCount; j++ )
 		params.append( vargv[ j ] )
 	
-#if DEBUG_NET
+#if DEBUG_REMOTE_FUNCS
 	try 
 	{
 #endif
 		Remote_RegisterUntypedFunction_deprecated.acall( params )
 
-#if DEBUG_NET
+#if DEBUG_REMOTE_FUNCS
 	}
 	catch( e )
 	{
@@ -632,7 +646,7 @@ void function ScriptRemote_RegisterUntypedFunction_deprecated( ... )
 #endif
 }
 
-#if DEBUG_NET && VERBOSE_NET_PRINTS
+#if DEBUG_REMOTE_FUNCS && VERBOSE_NET_PRINTS
 	const int ASCII_ZERO = 48
 	const int ASCII_DOT	 = 46
 	string function GetRemoteFuncParamsAsString( var vArgArr )
@@ -681,7 +695,7 @@ void function ScriptRemote_RegisterUntypedFunction_deprecated( ... )
 	}
 #endif
 
-#if DEBUG_NET
+#if DEBUG_REMOTE_FUNCS
 	void function SetFuncInfo( string funcName, string fileName, string category, int consumption )
 	{
 		if( funcName in file.allFuncInfo.functionInfoTbl )
@@ -780,7 +794,7 @@ void function ScriptRemote_RegisterUntypedFunction_deprecated( ... )
 			Warning( "Buffer of ( %d/%d ) consumed.", file.allFuncInfo.totalBuffer, MAX_BUFFER, "\n\n" )
 			
 			DumpStack()
-			mAssert( false, errorMsg )
+			mAssert( 0, errorMsg )
 		}
 	}
 

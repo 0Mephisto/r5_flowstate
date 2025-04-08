@@ -39,11 +39,11 @@ WeaponData
     "OnWeaponActivate"                              "OnWeaponActivate_Energy_AR"
     "OnWeaponDeactivate"                            "OnWeaponDeactivate_Energy_AR"
 
-    "projectile_launch_speed"			        "32000"
+    "projectile_launch_speed"			        "31000"
 
 	// energy weapons have less drop
     "projectile_drag_coefficient" 		        "0.0"
-   	"projectile_gravity_scale"			        "1"
+   	"projectile_gravity_scale"			        "1.150000"
    	"projectile_ricochet_max_count"		        "0"
 
     "projectile_trail_effect_0_1p" 		        "P_tracer_projectile_smg_blue"
@@ -59,7 +59,7 @@ WeaponData
 
 	"fx_muzzle_flash_view"							""
 	"fx_muzzle_flash_world"							""
-	"fx_muzzle_flash_attach"						""
+	"fx_muzzle_flash_attach"						"muzzle_flash"
 
 	// no shell ejects for this weapon
 	"fx_shell_eject_view"							""
@@ -97,9 +97,9 @@ WeaponData
 	"ammo_min_to_fire"								"1"
     "low_ammo_fraction" 							"0.4"
 
-	"ammo_default_total"							"180"
-	"ammo_stockpile_max"							"180"
-	"ammo_no_remove_from_stockpile"					"1"
+	"ammo_default_total"							"0"
+	"ammo_stockpile_max"							"20"
+	"ammo_no_remove_from_stockpile"					"0"
 
 	// Damage - When Used by Players
     "damage_near_value"   					    "17"
@@ -157,7 +157,7 @@ WeaponData
     //"burst_fire_delay_ramp_max"               "0.1"
     //"burst_fire_delay_ramp_bursts"            "3"
 
-    "viewmodel_offset_hip"                      "0 -3 0"
+    "viewmodel_offset_hip"                      "0 0 0"
 	"viewmodel_offset_ads"					    "0 0 0"
 
 	"dof_zoom_nearDepthStart"				    "-0.5"
@@ -178,7 +178,7 @@ WeaponData
 	"allow_empty_click"   					    "1"
 	"empty_reload_only"   					    "0"
 	"allow_headshots" 					        "1"
-	"damage_headshot_scale"					    "1.75"
+	"damage_headshot_scale"					    "1.300000"
 	"primary_fire_does_not_block_sprint"		"0"
 
 	// View Kick
@@ -188,8 +188,8 @@ WeaponData
     "viewkick_spring_hot"                       "burstenergyar_vkp_hot"
 
     "viewkick_spring_heatpershot"               "1"
-    "viewkick_spring_cooldown_holdtime"         "0.08"
-    "viewkick_spring_cooldown_fadetime"         "0.3"
+    "viewkick_spring_cooldown_holdtime"         "0.270000"
+    "viewkick_spring_cooldown_fadetime"         "0.110000"
 
     "viewmodel_spring_jolt"                     "autofire_viewmodel_jolt"
     "viewmodel_jolt_scale"                      "1"
@@ -202,7 +202,7 @@ WeaponData
 	"viewkick_pitch_softScale"				    "1.9"   //2.1
 	"viewkick_pitch_hardScale"				    "0.9"
 
-	"viewkick_yaw_base"   					    "1.0"
+	"viewkick_yaw_base"   					    "1.050000"
 	"viewkick_yaw_random" 					    "1.0"
 	"viewkick_yaw_random_innerexclude"		    "0.05"   //0
 	"viewkick_yaw_softScale"  				    "1.4"  //.65
@@ -260,7 +260,7 @@ WeaponData
 	"entity_color_from_charge"		"1"
 
 	// Zoomed Sway	
-	"sway_rotate_attach_zoomed"						"SWAY_ROTATE"
+	"sway_rotate_attach_zoomed"						"SWAY_ROTATE_ZOOMED"
 	"sway_rotate_attach_blend_time_zoomed"			"0.2"
 	"sway_rotate_gain_zoomed"						"5"
 
@@ -285,6 +285,15 @@ WeaponData
 	"viewmodel_ads_rui_bottomleft_attachment"		"RUI_BL_CROSSHAIR_NEMESIS"
 	"viewmodel_ads_centerpoint_attachment"      	"ADS_CENTER_SIGHT_NEMESIS"
 	
+
+	"headshot_distance"	"11828"
+	"damage_shield_scale"	"1"
+	"critical_hit"	"1"
+	"critical_hit_damage_scale"	"1.500000"
+	"titanarmor_critical_hit_required"	"1"
+	"damage_near_distance"	"1000"
+	"damage_far_distance"	"2500"
+	"damage_very_far_distance"	"5000"
 	Mods
 	{
 	    gold

@@ -1,9 +1,6 @@
 
 globalize_all_functions
 
-global const float COMMAND_RATE_LIMIT = 0.200 
-global const bool DISABLE_NETINFO = true
-
 global struct SH_flowstateSettings
 {
 	bool GetReplayIsEnabled

@@ -1,11 +1,19 @@
-//untyped																			
+untyped																			
 globalize_all_functions
 #if TRACKER && HAS_TRACKER_DLL																	//~mkos
 
 const bool STORE_STAT = true //this constant is not a toggle.
 
+struct StatResetData
+{
+	string uid
+	string statKey
+	var savedValue
+}
+
 struct 
 {
+	array< StatResetData > shouldResetData
 	bool RegisterCoreStats 	= true
 	bool bStatsIs1v1Type 	= false
 
@@ -13,7 +21,7 @@ struct
 
 void function SetRegisterCoreStats( bool b )
 {
-	file.RegisterCoreStats = b
+	file.RegisterCoreStats = b	
 }
 
 void function Tracker_Init()
@@ -24,6 +32,59 @@ void function Tracker_Init()
 	SetRegisterCoreStats( bRegisterCoreStats )
 	
 	Stats__InternalInit()
+}
+
+void function Tracker_SetShouldResetStatOnShip( string uid, string statKey, var origValue, bool bShouldReset = true )
+{
+	if( bShouldReset )
+	{
+		StatResetData statData
+		
+		statData.uid		= uid
+		statData.statKey 	= statKey
+		statData.savedValue = origValue
+		
+		file.shouldResetData.append( statData )
+	}
+	else 
+	{
+		int maxIter = file.shouldResetData.len()	
+		if( maxIter == 0 )
+			return
+			
+		for( int i = maxIter; i >= 0; i-- )
+		{
+			if( file.shouldResetData[ i ].uid == uid && file.shouldResetData.statKey == statKey )
+				file.shouldResetData.remove( i )
+		}
+	}
+}
+
+void function Tracker_RunStatResets()
+{
+	foreach( int idx, StatResetData statData in file.shouldResetData )
+		Stats__RawSetStat( statData.uid, statData.statKey, statData.savedValue )
+}
+
+void function Tracker_ResyncAllForPlayer( entity playerToSync )
+{
+	foreach( player in GetPlayerArray() )
+		Remote_CallFunction_NonReplay( player, "Tracker_ResyncAllForPlayer", playerToSync )
+}
+
+void function Tracker_ResyncStatForPlayer( entity playerToSync, string statKey )
+{
+	int statKeyLen = statKey.len()
+	mAssert( statKeyLen < 244, "Cannot transmit statkey len > 244 chars" )
+	
+	foreach( player in GetPlayerArray() )
+	{
+		array transmit = [ this, player, "Tracker_ResyncStatForPlayer", playerToSync.GetEncodedEHandle() ]	
+		for( int i = 0; i < statKeyLen; i++ )
+			transmit.append( statKey[ i ] )
+	
+		Remote_CallFunction_NonReplay.acall( transmit )
+	}
 }
 
 //////////////////////////////////////////////////
@@ -118,10 +179,16 @@ void function Script_RegisterAllStats()
 		Tracker_RegisterStat( "previous_champion", null, Tracker_ReturnChampion )
 		Tracker_RegisterStat( "previous_kills", null, Tracker_ReturnKills )
 		Tracker_RegisterStat( "previous_damage", null, Tracker_ReturnDamage )
-		//Tracker_RegisterStat( "previous_survival_time", null,  )
+		//Tracker_RegisterStat( "previous_survival_time", null,  )	
 		
 		AddCallback_PlayerDataFullyLoaded( Callback_CoreStatInit )
 	}
+	
+	Tracker_RegisterStat( "unlocked_badges" )
+	Tracker_RegisterStat( "badge_1", null, Tracker_Badge1 )
+	Tracker_RegisterStat( "badge_2", null, Tracker_Badge2 )
+	Tracker_RegisterStat( "badge_3", null, Tracker_Badge3 )
+	AddCallback_PlayerDataFullyLoaded( Callback_CheckBadges )
 	
 	#if DEVELOPER 
 		//Tracker_RegisterStat( "test_array", null, TrackerStats_TestStringArray )
@@ -258,7 +325,7 @@ var function TrackerStats_FSDMRailjumps( string uid )
 }
 
 //Tracker already has a gamemode play count, which is different from this stat.
-var function TrackerStats_GamesCompleted( string uid )
+var function TrackerStats_GamesCompleted( string uid ) //Todo: Handle accumulation from rejoins
 {
 	entity player = GetPlayerEntityByUID( uid ) 
 	if( !IsValid( player ) )
@@ -304,6 +371,21 @@ var function TrackerStats_CtfWins( string uid )
 	return ent.p.wonctf ? 1 : 0
 }
 
+var function Tracker_Badge1( string uid )
+{
+	return GetPlayerStatInt( uid, "badge_1" )
+}
+
+var function Tracker_Badge2( string uid )
+{
+	return GetPlayerStatInt( uid, "badge_2" )
+}
+
+var function Tracker_Badge3( string uid )
+{
+	return GetPlayerStatInt( uid, "badge_3" )
+}
+
 // var function TrackerStats_TestStringArray( string uid )
 // {
 	// return ["test", "test2", "test3"]
@@ -346,6 +428,41 @@ var function TrackerStats_WasReportedCringe( string uid )
 {
 	entity ent = GetPlayerEntityByUID( uid )
 	return ent.p.cringedCount
+}
+
+void function Callback_CheckBadges( entity player )
+{
+	string uid = player.p.UID
+	
+	int badge_1 = GetPlayerStatInt( uid, "badge_1" )
+	if( !Tracker_IsValidBadge( badge_1, uid ) )
+	{
+		Tracker_SetShouldResetStatOnShip( uid, "badge_1", badge_1 ) 
+		/* 
+			we do this, becase the main stat table is what is synced to clients, however 
+			Tracker_IsValidBadge can return false for dev badges or unlocked badges 
+			if the player isn't dev or doesn't own a badge, however for servers
+			that allow all badges, we must reset this invalid back to the player's 
+			chosen badge so that it reflects their choice which may be valid on those 
+			allowed servers. 		
+		*/
+		
+		SetPlayerStatInt( uid, "badge_1", 0 )
+	}
+		
+	int badge_2 = GetPlayerStatInt( uid, "badge_2" )
+	if( !Tracker_IsValidBadge( badge_2, uid ) )
+	{
+		Tracker_SetShouldResetStatOnShip( uid, "badge_2", badge_2 )
+		SetPlayerStatInt( uid, "badge_2", 0 )
+	}
+		
+	int badge_3 = GetPlayerStatInt( uid, "badge_3" )
+	if( !Tracker_IsValidBadge( badge_3, uid ) )
+	{
+		Tracker_SetShouldResetStatOnShip( uid, "badge_3", badge_3 )
+		SetPlayerStatInt( uid, "badge_3", 0 )
+	}
 }
 
 
@@ -468,5 +585,10 @@ void function OnStatsShipping_Cringe( string uid ) //todo deprecate
 }
 
 
+#else //!TRACKER && !HAS_TRACKER_DLL
 
-#endif //TRACKER && HAS_TRACKER_DLL
+	//non tracker declarations
+	void function Tracker_SetShouldResetStatOnShip( string uid, string statKey, var origValue, bool bShouldReset = true ){}
+	void function Tracker_ResyncAllForPlayer( entity player ){}
+	void function Tracker_ResyncStatForPlayer( entity playerToSync, string statKey ){}
+#endif

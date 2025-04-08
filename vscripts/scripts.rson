@@ -120,10 +120,10 @@ Scripts:
 	sh_weapon_cosmetics.nut
 ]
 
-When: "SERVER"
+When: "SERVER || CLIENT"
 Scripts:
 [
-	mp/banner/_banner_asset.nut
+	mp/banner/sh_banner_asset.nut
 ]
 
 When: "CLIENT"
@@ -686,6 +686,7 @@ Scripts:
 	pilot/_pilot_passive_medic.gnut //Should be shared. Cafe
 	pilot/sh_pilot_passive_voices.gnut
 	pilot/sh_pilot_passive_adrenaline.gnut
+	pilot/sh_pilot_passive_dash.gnut
 	
 	mp/sh_desertlands_train.nut
 	sh_scoreboard.gnut
@@ -759,6 +760,7 @@ Scripts:
 	cl_survival_ship.gnut
 
 	pilot/cl_pilot_tracking_vision.gnut
+	pilot/cl_pilot_passive_dash.gnut
 	client/cl_bleedout.gnut
 	mp/cl_jump_pads.gnut
 ]
@@ -1188,6 +1190,7 @@ Scripts:
 	gamemodes/fs_1v1/_gamemode_1v1.nut
 	gamemodes/fs_lgduels_1v1/_fs_lgduels_1v1.nut
 	gamemodes/fs_scenarios/_gamemode_scenarios.nut
+	gamemodes/fs_scenarios/_gamemode_scenarios_teams.nut
 	gamemodes/custom_ctf/_gamemode_custom_ctf.nut
 	gamemodes/fs_duckhunt/_gamemode_duckhunt.nut
 	gamemodes/fs_prophunt/_gamemode_prophunt.nut

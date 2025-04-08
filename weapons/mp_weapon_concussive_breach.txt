@@ -16,9 +16,9 @@ WeaponData
 
 	"weapon_type_flags"								"WPT_TACTICAL"
 	"weaponClass" 									"human"
-	"fire_mode"   									"offhand"
+	"fire_mode"   									"offhandHybrid"
 	"offhand_cancelled_by_melee"					"1"
-	"is_toss_weapon"								"1"
+	"is_toss_weapon"								"0"
 	"minimap_reveal_distance"						"32000"
 	"fast_swap_to"									"1"
 	"dev_menu_type"									"offhand" // fire_mode isn't readable from script
@@ -82,7 +82,7 @@ WeaponData
 	"sound_dryfire"									"Survival_UI_Ability_NotReady"
 
 	// Damage - When Used by Players
-	"damage_type" 									"burn"
+	"damage_type" 									"none"
 	"damage_near_distance"							"0"
 	"damage_far_distance" 							"0"
 	"damage_near_value"   							"0"
@@ -102,10 +102,10 @@ WeaponData
 	"show_grenade_indicator"						"0"
 
 	// Behavior
-	"fire_rate"   									"10.0"
-	"fire_duration"									"12.0"
-	"deploy_time" 									"0.15"
-	"lower_time"  									"0.15"
+	"fire_rate"   									"10000.000000"
+	"fire_duration"									"2.000000"
+	"deploy_time" 									"0.250000"
+	"lower_time"  									"0.250000"
 	"allow_empty_fire"								"0"
 	"no_ammo_used_on_primary_attack"				"1"
 	"reload_enabled"  								"0"
@@ -117,7 +117,7 @@ WeaponData
 	"aimassist_disable_hipfire"						"1"
 	"aimassist_disable_ads"							"1"
 	"grenade_inherit_owner_velocity"				"1"
-	"cooldown_type"									"ammo_timed"
+	"cooldown_type"									"ammo"
 	//"toss_pullout_time"								"0.8"
 	//"toss_time"									"0.2"
 	//"toss_overhead_time"							"0.2"
@@ -145,13 +145,13 @@ WeaponData
 
 	MP_BASE
 	{
-		"ammo_clip_size"   								"150"
-		"ammo_default_total"							"150"
+		"ammo_clip_size"   								"120"
+		"ammo_default_total"							"0"
 		"ammo_display"									"count"
-		"ammo_min_to_fire"								"150"
-		"ammo_per_shot"									"150"
-		"ammo_stockpile_max"							"150"
-		"regen_ammo_refill_rate"						"8"
+		"ammo_min_to_fire"								"120"
+		"ammo_per_shot"									"120"
+		"ammo_stockpile_max"							"0"
+		"regen_ammo_refill_rate"						"1"
 		"regen_ammo_refill_start_delay"					"0.0"
 
 		"enable_highlight_networking_on_creation"		"<KEEP_DEFAULT>"

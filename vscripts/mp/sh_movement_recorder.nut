@@ -550,12 +550,15 @@ bool function ClientCommand_PlayAnimInSlot( entity player, array<string> args )
 	if( !IsValid( player ) )
 		return false
 		
+	if( !CheckRate( player, "play_anim", COMMAND_RATE_LIMIT, true ) ) //(mk)todo: verify
+		return true
+		
 	if( args.len() == 0 )
 		return false
 	
 	int slot = 0
 	
-	if( IsNumeric( args[ 0 ] ) )
+	if( IsStringNumeric( args[ 0 ] ) )
 	{
 		slot = args[ 0 ].tointeger()
 	}
@@ -1251,7 +1254,7 @@ void function ClientCommand_DestroyDummys( entity player, array<string> args )
 		
 		case "Admin":
 		
-			if( !VerifyAdmin( player.p.name, player.p.UID ) )
+			if( !IsServerAdmin( player.p.UID ) )
 				return
 	
 			if( IsValid( svGlobal.levelEnt ) )
