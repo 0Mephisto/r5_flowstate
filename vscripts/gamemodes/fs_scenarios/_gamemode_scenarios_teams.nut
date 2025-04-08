@@ -65,7 +65,7 @@ bool function RequestJoinTeam( entity player, CustomTeam team ) // ✓
 		team.teamJoinRequests.append( player )
 		
 	foreach( captain in team.captains )
-		LocalMsg_TEMP( captain, "#TMP_13", player.p.name )
+		TeamsMsg( captain, "#FS_NEW_JOIN_REQUEST", player.p.name )
 		
 	return true
 }
@@ -331,13 +331,13 @@ string function GetTokenResponseForSetting( int result ) //✓
 {
 	switch( result )
 	{
-		case -4: return "#TMP_40";
-		case -3: return "#TMP_8";
-		case -2: return "#TMP_37";
-		case -1: return "#TMP_38";
-		case 0:  return "#TMP_39";
-		case 1:  return "#TMP_41";
-		default: mAssert( 0, "Invalid" ); return "#TMP_42";
+		case -4: return "#FS_INV_SETT_VALUE";
+		case -3: return "#FS_NOT_IN_TEAM";
+		case -2: return "#FS_NOT_CAPTAIN";
+		case -1: return "#FS_INV_TEAM_SETTING";
+		case 0:  return "#FS_SAME_SETT_VALUE";
+		case 1:  return "#FS_SETTING_SET";
+		default: mAssert( 0, "Invalid" ); return "#FS_TEAMCMD_ERR_01";
 	}
 	
 	unreachable
@@ -389,7 +389,7 @@ bool function __SetCustomTeamSetting_internal( CustomTeam team, string setting, 
 	return true
 }
 
-//notifications system, use "waiting for players", add "of team"
+//todo: notifications system, use "waiting for players", add "of team"
 
 // add disconnect to remove player:
 void function OnPlayerDisconnected_CustomTeam( entity player ) //✓
@@ -401,52 +401,52 @@ void function OnPlayerDisconnected_CustomTeam( entity player ) //✓
 /*
 	"Tokens"
 	{
-		"TMP_0" "\n\n\n\n\n\n\n\n\n\n\n\n/team help                           - lists commands\n/team list                             - lists teams #\n/team make [name]                                               - makes a team\n/team info [player|uid|team ID]                       - info about team\n/team join [captain name/uid | team id]      - joins a team\n/team leave                                                               - leaves a team -> if no captains exist, team is destroyed\n\nCaptain only:\n\n/team accept [player|uid|id]                    - accepts join request by player or request id\n/team reject [player|uid|id]                      - declines join request by player or request id\n/team kick [player|uid|team member #]                       - kicks member from team\n/team makecaptain [player|uid|team member #]    - gives player captain privileges\n/team settings                                                 - lists teams settings and their values\n/team set [setting] [value]                         - sets a team setting"
-		"TMP_1" "Already in team"
-		"TMP_2" "Error with command parameter length"
-		"TMP_3" "Invalid team"
-		"TMP_4" "Player does not own a team"
-		"TMP_6" "Team is full"
-		"TMP_7" "Join request cooldown"
-		"TMP_8" "Not in a team"
-		"TMP_9" "Player left the team: "
-		"TMP_10" "Player joined the team: "
-		"TMP_11" "You joined team: "
-		"TMP_12" "Failed to join team: "
-		"TMP_13" "New join request: "
-		"TMP_14" "Team join request sent to: "
-		"TMP_15" "You left team: "
-		"TMP_16" "Failed to leave team: "
-		"TMP_17" "Join request failed for team: "
-		"TMP_18" "Failed. Max length for teamname is: "
-		"TMP_19" "Team created successfully"
-		"TMP_20" "Failed to create team"
-		"TMP_21" "Command \"team info\" Requires team # or player of team as last parameter"
-		"TMP_22" "All Teams"
-		"TMP_23" "Team info"
-		"TMP_24" "Help info"
-		"TMP_25" "Team was dismantled"
-		"TMP_26" "Join requests"
-		"TMP_27" "Command requires last parameter of id/player"
-		"TMP_28" "Failed to accept/reject request"
-		"TMP_29" "Invalid request player"
-		"TMP_30" "Request revoked for: "
-		"TMP_31" "Invalid team player"
-		"TMP_32" "Failed to kick player"
-		"TMP_33" "Player not on team"
-		"TMP_34" "Player already captain"
-		"TMP_35" "Added as captain: "
-		"TMP_36" "Team Settings"
-		"TMP_37" "Not captain of team"
-		"TMP_38" "Invalid setting"
-		"TMP_39" "Setting is already this value"
-		"TMP_40" "Invalid value for setting. Numbers only"
-		"TMP_41" "Setting successfully set"
-		"TMP_42" "Command requires setting & value. ex: /team set fill 0"
-		"TMP_43" "Admin has disable teams"
-		"TMP_44" "Not on any team"
-		"TMP_45" "Success"
-		"TMP_46" "Failed"
+		"FS_TEAMHELP" "\n\n\n\n\n\n\n\n\n\n\n\n/team help                           - lists commands\n/team list                             - lists teams #\n/team make [name]                                               - makes a team\n/team info [player|uid|team ID]                       - info about team\n/team join [captain name/uid | team id]      - joins a team\n/team leave                                                               - leaves a team -> if no captains exist, team is destroyed\n\nCaptain only:\n\n/team accept [player|uid|id]                    - accepts join request by player or request id\n/team reject [player|uid|id]                      - declines join request by player or request id\n/team kick [player|uid|team member #]                       - kicks member from team\n/team makecaptain [player|uid|team member #]    - gives player captain privileges\n/team settings                                                 - lists teams settings and their values\n/team set [setting] [value]                         - sets a team setting"
+		"FS_IN_TEAM" "Already in team"
+		"FS_ERR_CMD_PARAM_LEN" "Error with command parameter length"
+		"FS_INVALID_TEAM" "Invalid team"
+		"FS_PLAYER_NOT_OWNER" "Player does not own a team"
+		"FS_TEAM_FULL" "Team is full"
+		"FS_JOIN_REQUEST_COOLDOWN" "Join request cooldown"
+		"FS_NOT_IN_TEAM" "Not in a team"
+		"FS_PLAYER_LEFT_TEAM" "Player left the team: "
+		"FS_PLAYER_JOINED_TEAM" "Player joined the team: "
+		"FS_YOU_JOINED_TEAM" "You joined team: "
+		"FS_FAILED_JOIN_TEAM" "Failed to join team: "
+		"FS_NEW_JOIN_REQUEST" "New join request: "
+		"FS_JOIN_REQUEST_SENT" "Team join request sent to: "
+		"FS_LEFT_TEAM" "You left team: "
+		"FS_FAILED_LEAVE_TEAM" "Failed to leave team: "
+		"FS_JOIN_REQ_FAILED" "Join request failed for team: "
+		"FS_TEAMNAME_MAXLEN" "Failed. Max length for teamname is: "
+		"FS_TEAM_CREATED" "Team created successfully"
+		"FS_FAILED_CREATETEAM" "Failed to create team"
+		"FS_TEAMINFO_ERR" "Command \"team info\" Requires team # or player of team as last parameter"
+		"FS_ALL_TEAMS" "All Teams"
+		"FS_TEAM_INFO" "Team info"
+		"FS_HELP_INFO" "Help info"
+		"FS_TEAM_DISMANTLED" "Team was dismantled"
+		"FS_JOIN_REQ" "Join requests"
+		"FS_TEAMS_CMDHLP_01" "Command requires last parameter of id/player"
+		"FS_TEAMS_FAIL_REQ" "Failed to accept/reject request"
+		"FS_INV_REQ_PLAYER" "Invalid request player"
+		"FS_REQ_REVOKED" "Request revoked for: "
+		"FS_INV_TEAM_PLAYER" "Invalid team player"
+		"FS_TEAMKICK_FAIL" "Failed to kick player"
+		"FS_PLAYER_NOT_ON_TEAM" "Player not on team"
+		"FS_PLAYER_CAPTAIN_ERR" "Player already captain"
+		"FS_ADDED_CAPTAIN" "Added as captain: "
+		"FS_TEAM_SETTINGS" "Team Settings"
+		"FS_NOT_CAPTAIN" "Not captain of team"
+		"FS_INV_TEAM_SETTING" "Invalid setting"
+		"FS_SAME_SETT_VALUE" "Setting is already this value"
+		"FS_INV_SETT_VALUE" "Invalid value for setting. Numbers only"
+		"FS_SETTING_SET" "Setting successfully set"
+		"FS_TEAMCMD_ERR_01" "Command requires setting & value. ex: /team set fill 0"
+		"FS_TEAMS_DISABLED" "Admin has disable teams"
+		"FS_NOT_ON_A_TEAM" "Not on any team"
+		"FS_SUCCESS" "Success"
+		"FS_FAILED" "Failed"
 	}
 */
 
@@ -461,7 +461,7 @@ bool function RemovePlayerFromTeam( entity player, CustomTeam team, bool alert =
 			if( alert )
 			{
 				foreach( teamPlayer in team.players )
-					LocalMsg_TEMP( teamPlayer, "#TMP_9", player.p.name )
+					TeamsMsg( teamPlayer, "#FS_PLAYER_LEFT_TEAM", player.p.name )
 			}
 				
 			if( team.captains.contains( player ) )
@@ -484,7 +484,7 @@ void function __DismantleTeam( CustomTeam team ) //✓
 	foreach( player in team.players )
 	{
 		RemovePlayerFromTeam( player, team, false )
-		LocalMsg_TEMP( player, "#TMP_25" )
+		TeamsMsg( player, "#FS_TEAM_DISMANTLED" )
 	}
 	
 	file.customTeams.fastremovebyvalue( team )
@@ -518,12 +518,12 @@ bool function AddPlayerToTeam( entity player, CustomTeam team ) //✓
 		return false 
 		
 	foreach( teamPlayer in team.players )
-		LocalMsg_TEMP( teamPlayer, "#TMP_10", player.p.name )
+		TeamsMsg( teamPlayer, "#FS_PLAYER_LEFT_TEAM", player.p.name )
 	
 	team.players.append( player )
 	player.p.hasTeam = true
 	
-	LocalMsg_TEMP( player, "#TMP_11", team.name )	
+	TeamsMsg( player, "#FS_YOU_JOINED_TEAM", team.name )	
 	return true
 }
 
@@ -621,7 +621,7 @@ void function FS_Scenarios_CustomTeamCmd( entity player, array<string> args ) //
 {
 	if( !settings.scenarios_teams_allowed )
 	{
-		LocalMsg_TEMP( player, "#TMP_43" )
+		TeamsMsg( player, "#FS_TEAMS_DISABLED" )
 		return
 	}
 		
@@ -637,24 +637,20 @@ void function FS_Scenarios_CustomTeamCmd( entity player, array<string> args ) //
 	switch( command )
 	{
 		case "help":
-			LocalMsg_TEMP( player, "#TMP_24", "#TMP_0", eMsgUI.DEFAULT, 35.0 )
+			LocalMsg( player, "#FS_HELP_INFO", "#FS_TEAMHELP", eMsgUI.DEFAULT, 35.0 )
 			return
 		
 		case "list":
-			if( !CheckRate( player, "verbose_stream", 2.0, true ) )
+			if( !CheckRate( player, "teams_stream", 2.5, true ) )
 				return
 				
 			string listInfo = GetAllTeamsListString()
 			
-			if( listInfo.len() <= 593 )
-				LocalMsg_TEMP( player, "#TMP_22", listInfo, eMsgUI.DEFAULT, 10.0 )
-			else
-				LocalMsg( player, "#FS_OVERFLOW" )
-			
+			TeamsMsg( player, "#FS_ALL_TEAMS", listInfo, 10.0 )			
 			return
 		
 		case "info":
-			if( !CheckRate( player, "verbose_stream", 2.0, true ) )
+			if( !CheckRate( player, "teams_stream", 1.5, true ) )
 				return
 			
 			CustomTeam ornull potentialTeam
@@ -662,7 +658,7 @@ void function FS_Scenarios_CustomTeamCmd( entity player, array<string> args ) //
 			{
 				if( !player.p.hasTeam )
 				{
-					LocalMsg_TEMP( player, "#TMP_44" )
+					TeamsMsg( player, "#FS_NOT_ON_A_TEAM" )
 					return
 				}
 				
@@ -673,39 +669,35 @@ void function FS_Scenarios_CustomTeamCmd( entity player, array<string> args ) //
 			
 			if( potentialTeam == null )
 			{
-				LocalMsg_TEMP( player, "#TMP_3" )
+				TeamsMsg( player, "#FS_INVALID_TEAM" )
 				return 
 			}
 			
 			expect CustomTeam ( potentialTeam )	
 			
-			string teamInfo = GetTeamInfo( potentialTeam )
-			
-			if( teamInfo.len() <= 593 )
-				LocalMsg_TEMP( player, "#TMP_23", teamInfo, eMsgUI.DEFAULT, 10.0 )
-			else 
-				LocalMsg( player, "#FS_OVERFLOW" )
+			string teamInfo = GetTeamInfo( potentialTeam )			
+			TeamsMsg( player, "#FS_TEAM_INFO", teamInfo, 10.0 )
 			
 			return
 		
 		case "make":
 			if( player.p.hasTeam )
 			{
-				LocalMsg_TEMP( player, "#TMP_1" )
+				TeamsMsg( player, "#FS_IN_TEAM" )
 				return
 			}
 			
 			if( param != "" && param.len() > MAX_TEAMNAME_LEN )
 			{
-				LocalMsg_TEMP( player, "#TMP_18", MAX_TEAMNAME_LEN.tostring() )
+				TeamsMsg( player, "#FS_TEAMNAME_MAXLEN", MAX_TEAMNAME_LEN.tostring() )
 				return
 			}
 			
 			param = StringReplace( param, "\"", "" )
 			if( CreateCustomTeam( player, param ) )
-				LocalMsg_TEMP( player, "#TMP_19" )
-			else 
-				LocalMsg_TEMP( player, "#TMP_20" )
+				TeamsMsg( player, "#FS_TEAM_CREATED" )
+			else
+				TeamsMsg( player, "#FS_FAILED_CREATETEAM" )
 				
 			return
 		
@@ -713,19 +705,19 @@ void function FS_Scenarios_CustomTeamCmd( entity player, array<string> args ) //
 		
 			if( !CheckRate( player, "join_team", 5.0, true ) )
 			{
-				LocalMsg_TEMP( player, "#TMP_7" )
+				TeamsMsg( player, "#FS_JOIN_REQUEST_COOLDOWN" )
 				return 
 			}
 		
 			if( player.p.hasTeam )
 			{
-				LocalMsg_TEMP( player, "#TMP_1" )
+				TeamsMsg( player, "#FS_IN_TEAM" )
 				return
 			}
 
 			if( param.len() > 20 )
 			{
-				LocalMsg_TEMP( player, "#TMP_2" )
+				TeamsMsg( player, "#FS_ERR_CMD_PARAM_LEN" )
 				return
 			}
 			
@@ -733,7 +725,7 @@ void function FS_Scenarios_CustomTeamCmd( entity player, array<string> args ) //
 			
 			if( potentialTeam == null )
 			{
-				LocalMsg_TEMP( player, "#TMP_3" )
+				TeamsMsg( player, "#FS_INVALID_TEAM" )
 				return 
 			}
 			
@@ -741,23 +733,23 @@ void function FS_Scenarios_CustomTeamCmd( entity player, array<string> args ) //
 
 			if( potentialTeam.players.len() >= FS_Scenarios_PlayersPerTeam() )
 			{
-				LocalMsg_TEMP( player, "#TMP_6" )
+				TeamsMsg( player, "#FS_TEAM_FULL" )
 				return
 			}
 			
 			if( potentialTeam.customTeamSettings[ "anyone_can_join" ] == 1 )
 			{
 				if( AddPlayerToTeam( player, potentialTeam ) )
-					LocalMsg_TEMP( player, "#TMP_11", potentialTeam.name )
+					TeamsMsg( player, "#FS_YOU_JOINED_TEAM", potentialTeam.name )
 				else 
-					LocalMsg_TEMP( player, "#TMP_12", potentialTeam.name )
+					TeamsMsg( player, "#FS_FAILED_JOIN_TEAM", potentialTeam.name )
 			}
 			else 
 			{
 				if( RequestJoinTeam( player, potentialTeam ) )
-					LocalMsg_TEMP( player, "#TMP_14", potentialTeam.name )
+					TeamsMsg( player, "#FS_JOIN_REQUEST_SENT", potentialTeam.name )
 				else 
-					LocalMsg_TEMP( player, "#TMP_17", potentialTeam.name )
+					TeamsMsg( player, "#FS_JOIN_REQ_FAILED", potentialTeam.name )
 			}
 			
 			return
@@ -770,14 +762,14 @@ void function FS_Scenarios_CustomTeamCmd( entity player, array<string> args ) //
 		
 			if( !player.p.hasTeam )
 			{
-				LocalMsg_TEMP( player, "#TMP_8" )
+				TeamsMsg( player, "#FS_NOT_IN_TEAM" )
 				return
 			}
 
 			if( RemovePlayerFromPlayersTeam( player ) )
-				LocalMsg_TEMP( player, "#TMP_15" )
+				TeamsMsg( player, "#FS_LEFT_TEAM" )
 			else 
-				LocalMsg_TEMP( player, "#TMP_17" )
+				TeamsMsg( player, "#FS_JOIN_REQ_FAILED" )
 	}
 	
 		
@@ -791,18 +783,18 @@ void function FS_Scenarios_CustomTeamCmd( entity player, array<string> args ) //
 			CustomTeam ornull team = GetCustomTeamOfPlayer( player )
 			if( team == null )
 			{
-				LocalMsg_TEMP( player, "#TMP_44" )
+				TeamsMsg( player, "#FS_NOT_ON_A_TEAM" )
 				return
 			}
 			
 			expect CustomTeam ( team )
 			if( !IsCaptainOfTeam( player, team ) )
 			{
-				LocalMsg_TEMP( player, "#TMP_37" )
+				TeamsMsg( player, "#FS_NOT_CAPTAIN" )
 				return
 			}
 				
-			LocalMsg_TEMP( player, "#TMP_26", GetJoinRequestsString( team ) )		
+			TeamsMsg( player, "#FS_JOIN_REQ", GetJoinRequestsString( team ) )		
 			return
 			
 		case "accept":
@@ -819,21 +811,21 @@ void function FS_Scenarios_CustomTeamCmd( entity player, array<string> args ) //
 		
 			if( param == "" )
 			{
-				LocalMsg_TEMP( player, "#TMP_46", "#TMP_27" )
+				LocalMsg( player, "#FS_FAILED", "#FS_TEAMS_CMDHLP_01" )
 				return
 			}
 			
 			CustomTeam ornull team = GetCustomTeamOfPlayer( player )
 			if( team == null )
 			{
-				LocalMsg_TEMP( player, "#TMP_44" )
+				TeamsMsg( player, "#FS_NOT_ON_A_TEAM" )
 				return
 			}
 			
 			expect CustomTeam ( team )
 			if( !IsCaptainOfTeam( player, team ) )
 			{
-				LocalMsg_TEMP( player, "#TMP_37" )
+				TeamsMsg( player, "#FS_NOT_CAPTAIN" )
 				return
 			}
 
@@ -843,15 +835,15 @@ void function FS_Scenarios_CustomTeamCmd( entity player, array<string> args ) //
 			{
 				if( !IsOnTeam( targetPlayer, team ) )
 				{
-					LocalMsg_TEMP( player, "#TMP_33" )
+					TeamsMsg( player, "#FS_PLAYER_NOT_ON_TEAM" )
 					return
 				}
 			
 				if( !RemovePlayerFromTeam( targetPlayer, team ) )
-					LocalMsg_TEMP( player, "#TMP_32" )
+					TeamsMsg( player, "#FS_TEAMKICK_FAIL" )
 			}
 			else 
-				LocalMsg_TEMP( player, "#TMP_31" )
+				TeamsMsg( player, "#FS_INV_TEAM_PLAYER" )
 			
 			return 
 		
@@ -859,21 +851,21 @@ void function FS_Scenarios_CustomTeamCmd( entity player, array<string> args ) //
 			
 			if( param == "" )
 			{
-				LocalMsg_TEMP( player, "#TMP_46", "#TMP_27" )
+				LocalMsg( player, "#FS_FAILED", "#FS_TEAMS_CMDHLP_01" )
 				return
 			}
 			
 			CustomTeam ornull team = GetCustomTeamOfPlayer( player )
 			if( team == null )
 			{
-				LocalMsg_TEMP( player, "#TMP_44" )
+				TeamsMsg( player, "#FS_NOT_ON_A_TEAM" )
 				return
 			}
 			
 			expect CustomTeam ( team )
 			if( !IsCaptainOfTeam( player, team ) )
 			{
-				LocalMsg_TEMP( player, "#TMP_37" )
+				TeamsMsg( player, "#FS_NOT_CAPTAIN" )
 				return
 			}
 			
@@ -883,21 +875,21 @@ void function FS_Scenarios_CustomTeamCmd( entity player, array<string> args ) //
 			{
 				if( !IsOnTeam( targetPlayer, team ) )
 				{
-					LocalMsg_TEMP( player, "#TMP_33" )
+					TeamsMsg( player, "#FS_PLAYER_NOT_ON_TEAM" )
 					return
 				}
 				
 				if( IsCaptainOfTeam( targetPlayer, team ) )
 				{
-					LocalMsg_TEMP( player, "#TMP_34" )
+					TeamsMsg( player, "#FS_PLAYER_CAPTAIN_ERR" )
 					return
 				}
 				
 				team.captains.append( targetPlayer )
-				LocalMsg_TEMP( player, "#TMP_35", targetPlayer.p.name )
+				TeamsMsg( player, "#FS_ADDED_CAPTAIN", targetPlayer.p.name )
 			}
 			else 
-				LocalMsg_TEMP( player, "#TMP_31" )
+				TeamsMsg( player, "#FS_INV_TEAM_PLAYER" )
 			
 			return
 		
@@ -906,40 +898,40 @@ void function FS_Scenarios_CustomTeamCmd( entity player, array<string> args ) //
 			CustomTeam ornull team = GetCustomTeamOfPlayer( player )
 			if( team == null )
 			{
-				LocalMsg_TEMP( player, "#TMP_44" )
+				TeamsMsg( player, "#FS_NOT_ON_A_TEAM" )
 				return
 			}
 			
 			expect CustomTeam ( team )
 			if( !IsCaptainOfTeam( player, team ) )
 			{
-				LocalMsg_TEMP( player, "#TMP_37" )
+				TeamsMsg( player, "#FS_NOT_CAPTAIN" )
 				return
 			}
 				
 			string currentSettings = GetTeamSettingsString( team ) 
-			LocalMsg_TEMP( player, "#TMP_36", currentSettings, eMsgUI.DEFAULT, 10.0 )
+			TeamsMsg( player, "#FS_TEAM_SETTINGS", currentSettings, 10.0 )
 			return
 		
 		case "set":
 		
 			if( param == "" || param2 == "" )
 			{
-				LocalMsg_TEMP( player, "#TMP_46", "#TMP_42" )
+				LocalMsg( player, "#FS_FAILED", "#FS_TEAMCMD_ERR_01" )
 				return
-			}	
+			}
 
 			CustomTeam ornull team = GetCustomTeamOfPlayer( player )
 			if( team == null )
 			{
-				LocalMsg_TEMP( player, "#TMP_44" )
+				TeamsMsg( player, "#FS_NOT_ON_A_TEAM" )
 				return
 			}
 			
 			expect CustomTeam ( team )
 			if( !IsCaptainOfTeam( player, team ) )
 			{
-				LocalMsg_TEMP( player, "#TMP_37" )
+				TeamsMsg( player, "#FS_NOT_CAPTAIN" )
 				return
 			}		
 			
@@ -947,18 +939,18 @@ void function FS_Scenarios_CustomTeamCmd( entity player, array<string> args ) //
 			{ 
 				if( param2.len() > MAX_TEAMNAME_LEN )
 				{
-					LocalMsg_TEMP( player, "#TMP_18", MAX_TEAMNAME_LEN.tostring() )
+					TeamsMsg( player, "#FS_TEAMNAME_MAXLEN", MAX_TEAMNAME_LEN.tostring() )
 					return
 				}
 				
 				team.name = param2
-				LocalMsg_TEMP( player, "#TMP_41" )
+				TeamsMsg( player, "#FS_SETTING_SET" )
 				return
 			}
 			
 			if( !( param in file.paramToSettingTbl ) )
 			{
-				LocalMsg_TEMP( player, "#TMP_38" )
+				TeamsMsg( player, "#FS_INV_TEAM_SETTING" )
 				return
 			}
 			
@@ -966,11 +958,11 @@ void function FS_Scenarios_CustomTeamCmd( entity player, array<string> args ) //
 			
 			string statusToken
 			if( result == 1 )
-				statusToken = "#TMP_45"
+				statusToken = "#FS_SUCCESS"
 			else
-				statusToken = "#TMP_46"
+				statusToken = "#FS_FAILED"
 			
-			LocalMsg_TEMP( player, statusToken, GetTokenResponseForSetting( result ) )
+			TeamsMsg( player, statusToken, GetTokenResponseForSetting( result ) )
 			return
 	}
 	
@@ -979,20 +971,20 @@ void function FS_Scenarios_CustomTeamCmd( entity player, array<string> args ) //
 		CustomTeam ornull team = GetCustomTeamOfPlayer( player )
 		if( team == null )
 		{
-			LocalMsg_TEMP( player, "#TMP_44" )
+			TeamsMsg( player, "#FS_NOT_ON_A_TEAM" )
 			return
 		}
 		
 		expect CustomTeam ( team )
 		if( !IsCaptainOfTeam( player, team ) )
 		{
-			LocalMsg_TEMP( player, "#TMP_37" )
+			TeamsMsg( player, "#FS_NOT_CAPTAIN" )
 			return
 		}
 				
 		if( param == "" )
 		{
-			LocalMsg_TEMP( player, "#TMP_46", "#TMP_27" )
+			LocalMsg( player, "#FS_FAILED", "#FS_TEAMS_CMDHLP_01" )
 			return
 		}
 		
@@ -1002,26 +994,35 @@ void function FS_Scenarios_CustomTeamCmd( entity player, array<string> args ) //
 		{
 			if( !team.teamJoinRequests.contains( targetPlayer ) )
 			{
-				LocalMsg_TEMP( player, "#TMP_29" )
+				TeamsMsg( player, "#FS_INV_REQ_PLAYER" )
 				return
 			}
 		
 			if( bAccept )
 			{
 				if( !AcceptJoinRequest( player, targetPlayer ) )//no need to print success message, all players get an alert on accept.
-					LocalMsg_TEMP( player, "#TMP_28" )
+					TeamsMsg( player, "#FS_TEAMS_FAIL_REQ" )
 			}
 			else if( bReject )
 			{
 				if( !RevokeJoinRequest( targetPlayer, team ) )
-					LocalMsg_TEMP( player, "#TMP_28" )
+					TeamsMsg( player, "#FS_TEAMS_FAIL_REQ" )
 				else
-					LocalMsg_TEMP( player, "#TMP_30", targetPlayer.p.name )
+					TeamsMsg( player, "#FS_REQ_REVOKED", targetPlayer.p.name )
 			}
 		}
 		else
-			LocalMsg_TEMP( player, "#TMP_29" )
+			TeamsMsg( player, "#FS_INV_REQ_PLAYER" )
 	}
+}
+
+void function TeamsMsg( entity player, string token, string varString = "", float duration = 5.0 )
+{
+	#if DEVELOPER 
+		mAssert( varString.find( "#" ) != 0, "Use LocalMsg() instead of TeamsMsg() for passing more than one token." )
+	#endif
+	
+	LocalMsg( player, token, "#FS_NULL", eMsgUI.DEFAULT, duration, "", varString )
 }
 
 #if DEVELOPER 

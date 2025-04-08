@@ -54,6 +54,7 @@ global function SetAfkToRest
 global function ArrayRemoveBot //todo move to code
 global function ClientCommand_RequestStat
 global function Tracker_SetStartLog
+global function Tracker_UpdateMOTDTextForPlayer
 
 #if TRACKER
 	global const bool STUB = false
@@ -368,7 +369,7 @@ array< PlayerVerifyCount > playerVerifyCounts
 #if SERVER   
 	bool function Logging_ShipStats() 				{ return GetCurrentPlaylistVarBool("logging_shipstats", false) }
 	bool function Enable_CC_Administration() 		{ return GetCurrentPlaylistVarBool("cc_administration", false) }
-	bool function Ea_Verify_Server()				{ return ( GetConVarInt( "sv_onlineAuthEnable" ) == 1 && GetCurrentPlaylistVarBool( "ea_verify_server", false ) ) }
+	bool function Ea_Verify_Server()				{ return ( GetCurrentPlaylistVarBool( "ea_verify_server", false ) && GetConVarInt( "sv_onlineAuthEnable" ) == 1 ) }
 #endif
 
 struct PlayerData 
@@ -441,9 +442,6 @@ struct //Todo: move appropriate to tracker.var
 	
 	// Server MOTD
 	bool bMotdEnabled = false
-	bool bUseOnlineMOTD = false
-	string localFlowstate_MOTD = "" //configure in playlist.
-	string onlineMOTD = ""
 	
 	// Chatbot Messages
 	array<string> BotAllowedModes = [ "fs_1v1", "fs_lgduels_1v1", "fs_scenarios", "fs_dm", "fs_haloMod", "fs_movementrecorder", "fs_realistic_ttv" ]
@@ -1087,70 +1085,12 @@ void function INIT_Global_R5RDEV_VarTable()//Todo(mk): send down table from nati
 ////////////////////////////////////////////
 ////////	Custom Query Callbacks	////////
 
-void function SendMotdToPlayer( entity player, string motd )
-{
-	MessageLong( player, "", "", eMsgUI.VAR_MOTD, 10, motd, "", "", true )
-}
-
 void function DummyFunction_ProofOfConcept( string retData )
 {
 	#if DEVELOPER
 		printt("\n\n\n\n\n\n\n restricted_rank LOADED with data: ", retData, "\n\n\n\n\n\n\n\n" )
 	#endif
 }
-
-void function ShowPlayerOnlineMOTD( string retData )
-{
-	file.onlineMOTD = retData	
-	AddCallback_OnClientConnected( ShowOnlineMOTD )
-	
-	foreach( player in GetPlayerArray() )
-		ShowOnlineMOTD( player )
-}
-
-void function ShowOnlineMOTD( entity player )
-{
-	thread
-	( 
-		void function() : ( player )
-		{
-			if( !player.p.isConnected )
-				waitthread WaitSignalOrTimeout( player, 20, "OnConnected", "OnDestroy", "OnDisconnected" )
-			
-			if( IsValid( player ) )
-			{	
-				//run ui script for motd
-				SendMotdToPlayer( player, file.onlineMOTD )
-					
-				// wait 5
-				// if( IsValid( player ) )
-					// LocalMsg( player, "#FS_WELCOME", "", eMsgUI.QUICK, 10, player.p.name )//Extra welcome message
-			}
-		}
-	)()
-}
-
-void function ShowPlayerLocalMOTD( entity player )
-{	
-	thread
-	(
-		void function() : ( player )
-		{
-			if( !player.p.isConnected )
-				waitthread WaitSignalOrTimeout( player, 20, "OnConnected", "OnDestroy", "OnDisconnected" )
-			
-			if( IsValid( player ) )
-			{
-				//run ui script for motd
-				SendMotdToPlayer( player, file.localFlowstate_MOTD ) //LineBreak( file.localFlowstate_MOTD, 80 )
-					
-				// wait 5
-				// LocalMsg( player, "#FS_WELCOME", "", eMsgUI.QUICK, 10, player.p.name )//Extra welcome message
-			}
-		}
-	)()
-}
-
 
 void function FireRemoteMotd( entity player )
 {	
@@ -1188,20 +1128,7 @@ void function Tracker_QueryInit()
 	}
 	
 	if( file.bMotdEnabled )
-	{
-		if ( file.bUseOnlineMOTD )
-		{
-			AddCallback_QueryString( "MOTD:SERVER", ShowPlayerOnlineMOTD )
-		}
-		else if( !empty( file.localFlowstate_MOTD ) )
-		{
-			AddCallback_OnClientConnected( ShowPlayerLocalMOTD )
-		}
-		else 
-		{
-			AddCallback_OnClientConnected( FireRemoteMotd )
-		}
-	}
+		AddCallback_OnClientConnected( FireRemoteMotd )
 }
 
 ////////////////////////////////////////////
@@ -1763,9 +1690,7 @@ void function Tracker_SettingsInit()
 	file.restricted_whitelist_only			= GetCurrentPlaylistVarBool( "restricted_whitelist_only", false )
 
 	//motd
-	file.bUseOnlineMOTD 					= GetCurrentPlaylistVarBool( "use_online_motd", false )
 	file.bMotdEnabled						= GetCurrentPlaylistVarBool( "enable_motd", false )
-	file.localFlowstate_MOTD				= GetCurrentPlaylistVarString( "custom_MOTD", "" )
 
 	//wait for players to connect before querying batch player stats
 	file.maxWaitForBatchLoad				= GetCurrentPlaylistVarFloat( "tracker_max_wait", 7.0 )
@@ -5716,6 +5641,11 @@ void function StatFailed( entity player )
 	Remote_CallFunction_ByRef( player, "Tracker_StatRequestFailed" )
 }
 
+void function Tracker_UpdateMOTDTextForPlayer( entity player, string motdText )
+{
+	LocalMsg( player, "", "", eMsgUI.VAR_MOTD, 10, motdText, "", "" )
+}
+
 #if HAS_TRACKER_DLL
 //do nothing
 #else
@@ -5760,7 +5690,6 @@ struct {
 	bool bChatbotEnabled = false
 	bool global_stats = false
 	bool afk_to_rest_enabled = false
-	string localFlowstate_MOTD = ""
 	int launchStartUnixTime
 
 } file
@@ -5811,20 +5740,8 @@ void function PIN_Init()
 		AddClientCommandCallback( "cc", ClientCommand_mkos_admin ) 
 	}
 	
-	file.localFlowstate_MOTD = GetCurrentPlaylistVarString( "custom_MOTD", "" )
-	
 	if( GetCurrentPlaylistVarBool( "enable_motd", false ) )
-	{
-		if( !empty( file.localFlowstate_MOTD ) )
-			AddCallback_OnClientConnected( ShowPlayerLocalMOTD )
-		else 
-			AddCallback_OnClientConnected( FireRemoteMotd )
-	}
-}
-
-void function SendMotdToPlayer( entity player, string motd )
-{
-	MessageLong( player, "", "", eMsgUI.VAR_MOTD, 10, motd, "", "", true )
+		AddCallback_OnClientConnected( FireRemoteMotd )
 }
 
 void function FireRemoteMotd( entity player )
@@ -5837,36 +5754,7 @@ void function FireRemoteMotd( entity player )
 				waitthread WaitSignalOrTimeout( player, 20, "OnConnected", "OnDestroy", "OnDisconnected" )
 			
 			if( IsValid( player ) && player.p.isConnected )
-			{
-				//run ui script for motd
 				Remote_CallFunction_UI( player, "UI_Callback_MOTD" )
-				
-				// wait 5				
-				// if( IsValid( player ) && player.p.isConnected )
-					// LocalMsg( player, "#FS_WELCOME", "", eMsgUI.QUICK, 10, player.p.name )//Extra welcome message //todo: move to client
-			}
-		}
-	)()
-}
-
-void function ShowPlayerLocalMOTD( entity player )
-{	
-	thread
-	(
-		void function() : ( player )
-		{
-			if( !player.p.isConnected )
-				waitthread WaitSignalOrTimeout( player, 20, "OnConnected", "OnDestroy", "OnDisconnected" )
-			
-				if( IsValid( player ) )
-				{
-					//run ui script for motd
-					SendMotdToPlayer( player, file.localFlowstate_MOTD ) //LineBreak( file.localFlowstate_MOTD, 80 )
-					
-					// wait 5	
-					// if( IsValid( player ) )
-						// LocalMsg( player, "#FS_WELCOME", "", eMsgUI.QUICK, 10, player.p.name )//Extra welcome message
-				}
 		}
 	)()
 }

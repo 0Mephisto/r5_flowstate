@@ -72,7 +72,7 @@ function ithurtsmap_player_setup(entity player) {
 
     player.SetPersistentVar("gen", 0)
 
-    LocalMsg(player, "#HUB_MAP_IT_HURTS", "#FS_STRING_VAR", 9, 5.0, "", "By: Loy Takian", "", false)
+    LocalMsg(player, "#HUB_MAP_IT_HURTS", "#FS_STRING_VAR", 9, 5.0, "", "By: Loy Takian", "" )
 
     thread
     (
@@ -446,11 +446,11 @@ function ithurtsmap_load() {
                     ent.p.isTimerActive = true
                     ent.p.startTime = floor(Time()).tointeger()
                     ent.SetVelocity(<0,0,0>)
-                    LocalMsg(ent, "#HUB_TIMER_START", "", 4, 1.0, "", "", "", false)
+                    LocalMsg(ent, "#HUB_TIMER_START", "", 4, 1.0, "", "", "" )
                 } else {
                     ent.SetPersistentVar("gen", 0)
                     ent.p.isTimerActive = false
-                    LocalMsg(ent, "#HUB_TIMER_STOP", "", 4, 1.0, "", "", "", false)
+                    LocalMsg(ent, "#HUB_TIMER_STOP", "", 4, 1.0, "", "", "" )
                 }
                 file.last_cp[ent] <- false
                 ent.TakeOffhandWeapon(OFFHAND_TACTICAL)
@@ -469,9 +469,9 @@ function ithurtsmap_load() {
                     float final_time = Time() - gen
                     float minutes = final_time / 60
                     float seconds = final_time % 60
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                 } else if (file.cp_table[ent] != < 32776.6, 8120, 50178 > ) {
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
                 }
                 file.cp_table[ent] <-  < 32776.6, 8120, 50178 >
                     file.cp_angle[ent] <-  < 0, 0.0002, 0 >
@@ -487,9 +487,9 @@ function ithurtsmap_load() {
                     float final_time = Time() - gen
                     float minutes = final_time / 60
                     float seconds = final_time % 60
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                 } else if (file.cp_table[ent] != < 33187.7, 8120.1, 50552 > ) {
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
                 }
                 file.cp_table[ent] <-  < 33187.7, 8120.1, 50552 >
                     file.cp_angle[ent] <-  < 0, 0.0002, 0 >
@@ -505,9 +505,9 @@ function ithurtsmap_load() {
                     float final_time = Time() - gen
                     float minutes = final_time / 60
                     float seconds = final_time % 60
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                 } else if (file.cp_table[ent] != < 34765.2, 8120, 50560.7 > ) {
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
                 }
                 file.cp_table[ent] <-  < 34765.2, 8120, 50560.7 >
                     file.cp_angle[ent] <-  < 0, 0.0002, 0 >
@@ -530,9 +530,9 @@ function ithurtsmap_load() {
                     float final_time = Time() - gen
                     float minutes = final_time / 60
                     float seconds = final_time % 60
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                 } else if (file.cp_table[ent] != < 29888.7, 8096.3, 50430.7 > ) {
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
                 }
                 file.cp_table[ent] <-  < 29888.7, 8096.3, 50430.7 >
                     file.cp_angle[ent] <-  < 0, 0.0002, 0 >
@@ -548,9 +548,9 @@ function ithurtsmap_load() {
                     float final_time = Time() - gen
                     float minutes = final_time / 60
                     float seconds = final_time % 60
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                 } else if (file.cp_table[ent] != < 29888.7, 2330.2, 50215.4 > ) {
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
                 }
                 file.cp_table[ent] <-  < 29888.7, 2330.2, 50215.4 >
                     file.cp_angle[ent] <-  < 0, 90, 0 >
@@ -573,10 +573,10 @@ function ithurtsmap_load() {
                             float minutes = final_time / 60
                             float seconds = final_time % 60
 
-                            LocalMsg(ent, "#FS_STRING_VAR", "#HUB_FINAL_TIME", 2, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+                            LocalMsg(ent, "#FS_STRING_VAR", "#HUB_FINAL_TIME", 2, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                             ent.SetPersistentVar("gen", 0)
                         } else {
-                            LocalMsg(ent, "#HUB_YOU_FINISHED", "#HUB_CONGRATULATIONS", 2, 5.0, "", "", "", false)
+                            LocalMsg(ent, "#HUB_YOU_FINISHED", "#HUB_CONGRATULATIONS", 2, 5.0, "", "", "" )
                         }
                     }
 
@@ -595,9 +595,9 @@ function ithurtsmap_load() {
                     float final_time = Time() - gen
                     float minutes = final_time / 60
                     float seconds = final_time % 60
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                 } else if (file.cp_table[ent] != < 29888.7, 3560.4, 50347.4 > ) {
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
                 }
                 file.cp_table[ent] <-  < 29888.7, 3560.4, 50347.4 >
                     file.cp_angle[ent] <-  < 0, 90, 0 >
@@ -627,9 +627,9 @@ function ithurtsmap_load() {
                     float final_time = Time() - gen
                     float minutes = final_time / 60
                     float seconds = final_time % 60
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                 } else if (file.cp_table[ent] != < 29888.7, 8096.3, 50430.7 > ) {
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
                 }
                 file.cp_table[ent] <-  < 29888.7, 8096.3, 50430.7 >
                     file.cp_angle[ent] <-  < 0, 0, 0 >
@@ -659,9 +659,9 @@ function ithurtsmap_load() {
                     float final_time = Time() - gen
                     float minutes = final_time / 60
                     float seconds = final_time % 60
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                 } else if (file.cp_table[ent] != < 33187.7, 8120.1, 50552 > ) {
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
                 }
                 file.cp_table[ent] <-  < 33187.7, 8120.1, 50552 >
                     file.cp_angle[ent] <-  < 0, 0.0002, 0 >
@@ -677,9 +677,9 @@ function ithurtsmap_load() {
                     float final_time = Time() - gen
                     float minutes = final_time / 60
                     float seconds = final_time % 60
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                 } else if (file.cp_table[ent] != < 33187.7, 8120, 50552 > ) {
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
                 }
                 file.cp_table[ent] <-  < 33187.7, 8120, 50552 >
                     file.cp_angle[ent] <-  < 0, 0.0002, 0 >
@@ -695,9 +695,9 @@ function ithurtsmap_load() {
                     float final_time = Time() - gen
                     float minutes = final_time / 60
                     float seconds = final_time % 60
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                 } else if (file.cp_table[ent] != < 29890.6, 840.1001, 50215.4 > ) {
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
                 }
                 file.cp_table[ent] <-  < 29890.6, 840.1001, 50215.4 >
                     file.cp_angle[ent] <-  < 0, 90, 0 >
@@ -713,9 +713,9 @@ function ithurtsmap_load() {
                     float final_time = Time() - gen
                     float minutes = final_time / 60
                     float seconds = final_time % 60
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                 } else if (file.cp_table[ent] != < 35335.7, 5379.2, 53147.5 > ) {
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
                 }
                 file.cp_table[ent] <-  < 35335.7, 5379.2, 53147.5 >
                     file.cp_angle[ent] <-  < 0, -89.9997, 0 >
@@ -731,9 +731,9 @@ function ithurtsmap_load() {
                     float final_time = Time() - gen
                     float minutes = final_time / 60
                     float seconds = final_time % 60
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                 } else if (file.cp_table[ent] != < 29888.7, 4857.4, 50429.8 > ) {
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
                 }
                 file.cp_table[ent] <-  < 29888.7, 4857.4, 50429.8 >
                     file.cp_angle[ent] <-  < 0, 90, 0 >
@@ -749,9 +749,9 @@ function ithurtsmap_load() {
                     float final_time = Time() - gen
                     float minutes = final_time / 60
                     float seconds = final_time % 60
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                 } else if (file.cp_table[ent] != < 35335.7, 7475.8, 52070.9 > ) {
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
                 }
                 file.cp_table[ent] <-  < 35335.7, 7475.8, 52070.9 >
                     file.cp_angle[ent] <-  < 0, -89.9997, 0 >
@@ -767,9 +767,9 @@ function ithurtsmap_load() {
                     float final_time = Time() - gen
                     float minutes = final_time / 60
                     float seconds = final_time % 60
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                 } else if (file.cp_table[ent] != < 35335.7, 7670.8, 51434.4 > ) {
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
                 }
                 file.cp_table[ent] <-  < 35335.7, 7670.8, 51434.4 >
                     file.cp_angle[ent] <-  < 0, 90, 0 >
@@ -785,9 +785,9 @@ function ithurtsmap_load() {
                     float final_time = Time() - gen
                     float minutes = final_time / 60
                     float seconds = final_time % 60
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                 } else if (file.cp_table[ent] != < 35335.7, 6974.2, 52613 > ) {
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
                 }
                 file.cp_table[ent] <-  < 35335.7, 6974.2, 52613 >
                     file.cp_angle[ent] <-  < 0, -89.9997, 0 >
@@ -803,7 +803,7 @@ function ithurtsmap_load() {
                     float final_time = Time() - gen
                     float minutes = final_time / 60
                     float seconds = final_time % 60
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                 }
                 file.cp_table[ent] <-  < 29890.6, -930, 50109 >
                     file.cp_angle[ent] <-  < 0, 90, 0 >
@@ -819,9 +819,9 @@ function ithurtsmap_load() {
                     float final_time = Time() - gen
                     float minutes = final_time / 60
                     float seconds = final_time % 60
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                 } else if (file.cp_table[ent] != < 35332.5, 4338.7, 50904.1 > ) {
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
                 }
                 file.cp_table[ent] <-  < 35332.5, 4338.7, 50904.1 >
                     file.cp_angle[ent] <-  < 0, 90, 0 >

@@ -661,7 +661,7 @@ void function DecideRespawnPlayer( entity player, bool giveLoadoutWeapons = true
 		Highlight_SetFriendlyHighlight( player, "sp_friendly_hero" )
 	}
 	
-	Flowstate_ApplyModifiedMovementToPlayer( player )
+	Flowstate_ApplyModifiedMovementToPlayer( player ) //(mk)todo: check, shouldn't need to reapply every spawn.
 
 	if( Playlist() == ePlaylists.fs_scenarios )
 		return
@@ -675,7 +675,7 @@ void function DecideRespawnPlayer( entity player, bool giveLoadoutWeapons = true
 	if( player.p.assignedCustomModel != -1 )
 	{
 		Flowstate_SetAssignedCustomModelToPlayer( player, player.p.assignedCustomModel )
-	}	
+	}
 	//(mk): commented, already signaled in code callback after DoRespawnPlayer fires
 	
 	// if( Gamemode() != eGamemodes.SURVIVAL && Gamemode() != eGamemodes.WINTEREXPRESS )

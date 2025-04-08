@@ -340,7 +340,7 @@ global function SpawnSystem_GetPakInfoForKey				// string function SpawnSystem_G
 	
 	const vector MAX_ALLOWED_EXTENTS	= < 1730, 1730, 1730 > //for debug
 	const vector MAX_SPAWN_EXTENTS 		= < 300, 300, 300 >
-	const bool OVERIDE_VERIFY_SPAWNS 	= false //set this to true to always check all spawns not just ones marked as "OOB"
+	const bool OVERIDE_VERIFY_SPAWNS 	= false //set this to true to always check all spawns
 	const int MAX_SPAWN_CORRECTION_ITER = 500
 	const float CORRECTION_STEP_LARGE 	= 5.0
 	const float CORRECTION_STEP_SMALL 	= 1.0

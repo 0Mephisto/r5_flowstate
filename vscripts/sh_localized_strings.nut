@@ -12,7 +12,6 @@ global function GetLocalizedStringsCount
 	global function LocalMsg //supports 2 tokens, 2 variable data
 	global function LocalMsg_TEMP // Use this to call tokens placed in playlists_r5_patch.txt
 	global function LocalVarMsg //supports 2 tokens, 251 variable data  ( 255 function call limit minus pre-defined args)
-	global function MessageLong //For streaming text over 599 chars (deprecated in favor of tokens)
 	global function LocalEventMsg //wrapper for LocalMsg ui type 1
 	global function LocalEventMsgDelayed
 	
@@ -434,18 +433,16 @@ struct
 		"#INVALID_BADGE",
 		"#INVALID_BADGE_REQ",
 		"#DEV_ONLY",
-		"#BADGE_SAVED"	
+		"#BADGE_SAVED",
+		
+		/* 4/8/2025 */
+		
+		"#FS_STATS_NOT_READY"
 	]
 	
 } file
 
-//local script vars
-const array<int> longUiTypes = 
-[
-	eMsgUI.EVENT,
-	eMsgUI.QUICK,
-	eMsgUI.VAR_MOTD
-]
+const MAX_CHARS = 2990
 
 //########################################################
 //							init						//
@@ -627,7 +624,7 @@ void function LocalMsg_TEMP( entity player, string token, string token2 = "", in
 	LocalMsg( player, "#FS_NULL", "#FS_NULL", uiType, duration, token, token2 )
 }
 
-void function LocalMsg( entity player, string ref, string subref = "", int uiType = 0, float duration = 5.0, string varString = "", string varSubstring = "", string sound = "", bool long = false )
+void function LocalMsg( entity player, string ref, string subref = "", int uiType = eMsgUI.DEFAULT, float duration = 5.0, string varString = "", string varSubstring = "", string sound = "" )
 {
 	#if DEVELOPER && ASSERT_LOCALIZATION
 		if( !empty(ref) )
@@ -635,9 +632,8 @@ void function LocalMsg( entity player, string ref, string subref = "", int uiTyp
 			mAssert( ref.find("#") != -1, "Reference missing # symbol  ref: [ " + ref + " ] in calling func: " + FUNC_NAME( 3 ) + "()" )
 			mAssert( LocalizedTokenExists( ref ), "Localized Token Reference does not exist for [ " + ref + " ] \n in calling func: " + FUNC_NAME( 3 ) + "()" )
 		}
-	#endif 
-	//original template by @Cafe ( Message() function )
-	
+	#endif
+
 	if ( !IsValid( player ) ) 
 		return
 		
@@ -647,84 +643,57 @@ void function LocalMsg( entity player, string ref, string subref = "", int uiTyp
 	if ( !player.p.isConnected ) 
 		return
 	
-	int datalen = varString.len() + varSubstring.len()
+	int dataLen = varString.len() + varSubstring.len()
 	int varStringLen = varString.len()
 	int varSubStringLen = varSubstring.len()
 	
 	string appendSubstring
 	string appendString
-	bool uiTypeValidLong
 	string sendMessage
 	bool isMotd
 	
 	if( uiType == eMsgUI.VAR_MOTD )
 		isMotd = true
 	
-	if ( ( datalen ) >= 599 )
-	{
-		long = true
-		uiTypeValidLong = longUiTypes.contains( uiType )
-	}
+	if( dataLen > MAX_CHARS )
+		mAssert( 0, "Too many chars for LocalMsg()" )
 	
-	if( long )
+	if ( dataLen > 0 )
 	{
-		if( varStringLen + varSubstring.len() > 1199 )
-		{
-			#if DEVELOPER
-				sqerror( "Variable strings were too long." )
-			#endif
-			return 	
-		}
-		
-		if( varStringLen > 599 && !uiTypeValidLong )
-		{
-			#if DEVELOPER
-				sqerror( "Title for LocalMsg variable string was too long for uiType." )
-			#endif
-			return 			
-		}
-		
-		if( uiTypeValidLong && varStringLen >= 599 )
-		{
-			if( varStringLen > 1 )
-			{	
-				int slicePoint = 599 - varStringLen
-				appendString = varString.slice( slicePoint, varStringLen )
-				varString = varString.slice( 0, slicePoint )
-			}	
-		}
-		else 
-		{
-			if( varSubStringLen > 1 && varSubStringLen >= 599 )
-			{	
-				int slicePoint = 599 - varStringLen
-				appendSubstring = varSubstring.slice( slicePoint, varSubStringLen )
-				varSubstring = varSubstring.slice( 0, slicePoint )
-			}
-			
-			
-		}
-	}	
-	
-	if ( datalen > 0 )
-	{
-		for ( int textType = 0; textType < 2; textType++ )
+		for ( int textType = 0; textType < 2; textType++ ) // cycles both slots
 		{
 			sendMessage = textType == 0 ? varString : varSubstring
+			int msgLen = sendMessage.len()
+			
+			if ( msgLen > 5 ) 
+			{
+				int remainingChars = msgLen
+				int processedChars = 0
 
-			for ( int i = 0; i < sendMessage.len(); i++ )
-				Remote_CallFunction_NonReplay( player, "FS_BuildLocalizedTokenWithVariableString", textType, isMotd, sendMessage[ i ] )
+				while ( remainingChars > 0 ) 
+				{
+					int chunkSize = minint( 5, remainingChars )
+					string chunk = sendMessage.slice( processedChars, processedChars + chunkSize )
+
+					array transmit = [ this, player, "FS_BuildLocalizedTokenWithVariableString", textType, isMotd ]
+					for ( int k = 0; k < chunk.len(); k++ )
+						transmit.append( chunk[ k ] )
+
+					Remote_CallFunction_NonReplay.acall( transmit )
+
+					processedChars += chunkSize
+					remainingChars -= chunkSize
+				}
+			} 
+			else
+			{
+				array transmit = [ this, player, "FS_BuildLocalizedTokenWithVariableString", textType, isMotd ]
+				for ( int k = 0; k < msgLen; k++ )
+					transmit.append( sendMessage[ k ] )
+
+				Remote_CallFunction_NonReplay.acall( transmit )
+			}
 		}
-	}
-	
-	if ( long )
-	{
-		if( uiTypeValidLong )
-			MessageLong( player, ref, subref, uiType, duration, appendString, "", sound, false )
-		else 
-			MessageLong( player, ref, subref, uiType, duration, "", appendSubstring, sound, false )
-		
-		return
 	}
 	
 	int tokenID = Flowstate_FetchTokenID( ref )
@@ -737,18 +706,6 @@ void function LocalMsg( entity player, string ref, string subref = "", int uiTyp
 	
 	if ( sound != "" )
 		thread EmitSoundOnEntityOnlyToPlayer( player, player, sound )
-}
-
-void function MessageLong( entity player, string ref, string subref = "", int uiType = 0, float duration = 5.0, string varString = "", string varSubstring = "", string sound = "", bool long = true )
-{
-	thread
-	(
-		void function() : ( player, ref, subref, uiType, duration, varString, varSubstring, sound, long )
-		{
-			wait 0.5 //HACKFIX: avoid code rock			
-			LocalMsg( player, ref, subref, uiType, duration, varString, varSubstring, sound, long )
-		}
-	)()
 }
 
 void function LocalVarMsg( entity player, string ref, int uiType = 2, float duration = 5, ... )
@@ -802,7 +759,7 @@ bool function ValidateType( ... )
 
 void function LocalEventMsg( entity player, string ref, string varString = "", float duration = 5 )
 {
-	LocalMsg( player, ref, "", eMsgUI.EVENT, duration, varString, "", "", false )
+	LocalMsg( player, ref, "", eMsgUI.EVENT, duration, varString )
 }
 
 void function LocalEventMsgDelayed( float eventdelay, entity player, string ref, string varString = "", float duration = 5 )
@@ -827,7 +784,7 @@ void function IBMM_Notify( entity player, string ibmmLockTypeToken, int enemyPla
 		case 1: inputTypeToken = "#FS_CONTROLLER"; break;
 	}
 	
-	LocalMsg( player, ibmmLockTypeToken, inputTypeToken, eMsgUI.IBMM, duration, "", "", "", false )
+	LocalMsg( player, ibmmLockTypeToken, inputTypeToken, eMsgUI.IBMM, duration )
 }
 
 void function CreatePanelText_Localized( entity player, string ref, string subRef, string varString, string varSubstring, vector origin, vector angles, float textScale, int panelID = 0 )
@@ -857,17 +814,11 @@ void function CreatePanelText_Localized( entity player, string ref, string subRe
 	
 	int datalen = varString.len() + varSubstring.len()
 	
-	string appendSubstring;
-	string appendString;
-	bool uiTypeValidLong;
-	string sendMessage;
+	string appendSubstring
+	string appendString
+	string sendMessage
 	
-	if ( ( datalen ) >= 599 )
-	{
-		#if DEVELOPER //implement limits?
-			Warning( "long text" )
-		#endif 
-	}
+	mAssert( datalen < 599, "Cannot create localized text panel with more than 599 chars" )
 	
 	if ( datalen > 0 )
 	{
@@ -876,9 +827,7 @@ void function CreatePanelText_Localized( entity player, string ref, string subRe
 			sendMessage = textType == 0 ? varString : varSubstring
 
 			for ( int i = 0; i < sendMessage.len(); i++ )
-			{
 				Remote_CallFunction_NonReplay( player, "FS_BuildLocalizedVariable_InfoPanel", textType, sendMessage[i] )
-			}
 		}
 	}
 	
@@ -918,25 +867,27 @@ void function FS_LocalizationConsistencyCheck_014()
 
 void function FS_BuildLocalizedTokenWithVariableString( int Type, bool isMotd, ... )
 {
+	int charCount = expect int( vargc )
+	array chars = [ this, RepeatString( "%c", charCount ) ]
+		
+	for( int i = 0; i < vargc; i++ )
+		chars.append( vargv[ i ] )
+		
+	string appendStr = expect string( format.acall( chars ) )
+	
 	if ( Type == 0 )
 	{
-		for ( int i = 0; i < vargc; i++ )
-		{
-			if( isMotd )
-				file.motd_text += format( "%c", vargv[ i ] )
-			else
-				file.fs_variableString += format( "%c", vargv[ i ] )
-		}
+		if( isMotd )
+			file.motd_text += appendStr
+		else
+			file.fs_variableString += appendStr
 	}
 	else
 	{
-		for ( int i = 0; i < vargc; i++ )
-		{
-			if( isMotd )
-				file.motd_text2 += format( "%c", vargv[ i ] )
-			else
-				file.fs_variableSubString += format( "%c", vargv[ i ] )
-		}
+		if( isMotd )
+			file.motd_text2 += appendStr
+		else
+			file.fs_variableSubString += appendStr
 	}
 }
 
@@ -1050,8 +1001,16 @@ void function FS_DisplayLocalizedToken( int token, int subtoken, int uiType, flo
 			DisplayMessage( Msg, SubMsg, duration, uiType ); break
 	}
 	
-	file.fs_variableString = ""
-	file.fs_variableSubString = ""
+	if( uiType == eMsgUI.VAR_MOTD )
+	{
+		file.motd_text = ""
+		file.motd_text2 = ""
+	}
+	else
+	{
+		file.fs_variableString = ""
+		file.fs_variableSubString = ""
+	}
 }
 
 void function DisplayMessage( string str1, string str2, float duration, int uiType = 0 )

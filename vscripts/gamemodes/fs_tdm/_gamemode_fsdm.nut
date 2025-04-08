@@ -4704,23 +4704,25 @@ void function Message( entity player, string text, string subText = "", float du
 	if ( !player.p.isConnected ) 
 		return
 	
-	if ( ( text.len() + subText.len() ) >= 599 ) 
-		return
+	LocalMsg( player, "#FS_NULL", "#FS_NULL", eMsgUI.DEFAULT, duration, text, subText, sound )
+	
+	// if ( ( text.len() + subText.len() ) >= 599 ) 
+		// return
 
-	string sendMessage
-	for ( int textType = 0 ; textType < 2 ; textType++ )
-	{
-		sendMessage = textType == 0 ? text : subText
+	// string sendMessage
+	// for ( int textType = 0 ; textType < 2 ; textType++ )
+	// {
+		// sendMessage = textType == 0 ? text : subText
 
-		for ( int i = 0; i < sendMessage.len(); i++ )
-		{
-			Remote_CallFunction_NonReplay( player, "Dev_BuildClientMessage", textType, sendMessage[i] )
-		}
-	}
-	Remote_CallFunction_NonReplay( player, "Dev_PrintClientMessage", duration )
+		// for ( int i = 0; i < sendMessage.len(); i++ )
+		// {
+			// Remote_CallFunction_NonReplay( player, "Dev_BuildClientMessage", textType, sendMessage[i] )
+		// }
+	// }
+	// Remote_CallFunction_NonReplay( player, "Dev_PrintClientMessage", duration )
 
-	if ( sound != "" )
-		thread EmitSoundOnEntityOnlyToPlayer( player, player, sound )
+	// if ( sound != "" )
+		// thread EmitSoundOnEntityOnlyToPlayer( player, player, sound )
 }
 
 void function Message_New( entity player, string text, float duration = 7.0, string sound = "" )

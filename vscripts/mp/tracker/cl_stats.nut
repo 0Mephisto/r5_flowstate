@@ -414,7 +414,7 @@ void function Tracker_ResyncStatForPlayer( int remotePlayerEHandle, ... )
 		Tracker_PreloadStat( remotePlayer, currentKey )
 	}
 	
-	file._currentStatKey[ remotePlayer ]._currentKey 	 = ""
+	file._currentStatKey[ remotePlayer ]._currentKey 	= ""
 	file._currentStatKey[ remotePlayer ]._bkeyInProcess = false
 }
 

@@ -1089,6 +1089,7 @@ void function Gamemode1v1_ForceRest( entity player )
 			deleteWaitingPlayer( playerHandle )
 		
 		player.p.lastRestUsedTime = Time()
+		
 		soloModePlayerToRestingList( player )
 		
 		try
@@ -1256,17 +1257,13 @@ bool function ClientCommand_mkos_challenge(entity player, array<string> args)
 			
 		case "list":
 		
+			if( CheckRate( player, "chal_list", 3.0, true ) )
+				return true
+		
 			string list = listPlayerChallenges( player )
-			string title = "CURRENT CHALLENGERS";
+			string title = "CURRENT CHALLENGERS"
 			
-			if( ( list.len() + title.len() ) > 599 )
-			{
-				LocalMsg( player, "#FS_FAILED", "#FS_OVERFLOW" )
-			}
-			else 
-			{
-				Message( player, title, list, 20 )
-			}
+			Message( player, title, list, 20 )
 				
 			return true
 
@@ -2210,12 +2207,12 @@ bool function ClientCommand_Maki_SoloModeRest( entity player, array<string> args
 		LocalMsg( player, "#FS_MATCHING" )	
 		soloModePlayerToWaitingList( player )
 		
-		try
-		{
-			player.Die( null, null, { damageSourceId = eDamageSourceId.damagedef_despawn } )
-		}
-		catch (error)
-		{}
+		// try
+		// {
+			// player.Die( null, null, { damageSourceId = eDamageSourceId.damagedef_despawn } )
+		// }
+		// catch (error)
+		// {}
 	}
 	else
 	{
@@ -2285,8 +2282,6 @@ bool function ClientCommand_Maki_SoloModeRest( entity player, array<string> args
 		else 
 			LocalMsg( player, "#FS_YouAreResting", restText, eMsgUI.DEFAULT, 5, "", restFlag )
 		
-		soloModePlayerToRestingList( player )
-		
 		try
 		{
 			player.Die( null, null, { damageSourceId = eDamageSourceId.damagedef_despawn } )
@@ -2295,6 +2290,8 @@ bool function ClientCommand_Maki_SoloModeRest( entity player, array<string> args
 		{
 
 		}
+		
+		soloModePlayerToRestingList( player )
 		
 		HolsterAndDisableWeapons_Raw( player ) //✓
 		thread respawnInSoloMode( player )
@@ -2644,6 +2641,7 @@ void function soloModePlayerToRestingList( entity player ) //handles opponent to
 	
 	DecideToggleCollision_Rest( player, false )
 	Gamemode1v1_SetPlayerGamestate( player, e1v1State.RESTING )
+	player.p.rest_request = false
 }
 
 void function soloModefixDelayStart( entity player, bool bNextRoundNow = false )
@@ -3035,7 +3033,7 @@ void function BannerImages_1v1Init()
 	float defaultWidth 	= 480 //todo playlistvar
 	float defaultHeight	= 270 //todo playlistvar
 	
-	LocPair setBannerLoc = NewLocPair( BannerAssets_BannerVisibilityMover( testOrigin, testAngles, defaultWidth, defaultHeight ), testAngles )
+	LocPair setBannerLoc = NewLocPair( BannerAssets_BannerVisibilityMover( getWaitingRoomLocation().origin, getWaitingRoomLocation().angles, testOrigin, testAngles, defaultWidth, defaultHeight ), testAngles )
 	
 	BannerAssets_SetAllGroupsFunc
 	(
@@ -3122,7 +3120,7 @@ void function INIT_PregameCallbacks()
 		)
 	}
 		
-	AddCallback_OnPlayerKilled( Gamemode1v1_OnPlayerDied )
+	AddCallback_OnPlayerKilled( Gamemode1v1_OnPlayerKilled )
 	AddCallback_OnTdmStateEnter_InProgress( OnMatchStart )
 }
 
@@ -5213,7 +5211,7 @@ void function SetInput_IN_FORWARD( entity player )
 }
 
 bool function GroupIsLockable( soloGroupStruct newGroup )
-{
+{	//(mk): This can return "could not lock" message when the enemy has not moved yet for the match. Intended behavior.
 	return ( newGroup.player1.p.lastmoved > 2 && newGroup.player2.p.lastmoved > 2 && ( ( Fetch_IBMM_Timeout_For_Player( newGroup.player1 ) == false && Fetch_IBMM_Timeout_For_Player( newGroup.player2 ) == false ) || newGroup.player1.p.input == newGroup.player2.p.input ) )	
 }
 
@@ -5437,7 +5435,7 @@ bool function ClientCommand_enable_input_banner( entity player, array<string> ar
 					
 }
 
-void function Gamemode1v1_OnPlayerDied( entity victim, entity attacker, var damageInfo )
+void function Gamemode1v1_OnPlayerKilled( entity victim, entity attacker, var damageInfo )
 {
 	victim.SetPlayerNetEnt( "FSDM_1v1_Enemy", null )
 
@@ -5450,6 +5448,9 @@ void function Gamemode1v1_OnPlayerDied( entity victim, entity attacker, var dama
 		FS_Coaching_StopRecording( FS_Coaching_GetAvailableMatchIdentifier(), victim, attacker )
 	}
 	
+	if( !isScenariosMode() )
+		HandleGroupIsFinished( victim ) //, damageInfo )
+		
 	if( isPlayerInWaitingList( victim ) )
 	{
 		if( !IsAlive( victim ) )
@@ -5461,7 +5462,7 @@ void function Gamemode1v1_OnPlayerDied( entity victim, entity attacker, var dama
 		LocPair waitingRoomLocation = getWaitingRoomLocation()
 		if ( !IsValid( waitingRoomLocation ) )
 		{//(mk): this should never be hit, Maki had it checked. 
-			mAssert( false, "Waiting room location was invalid." )
+			mAssert( 0, "Waiting room location was invalid." )
 			return
 		}
 		
@@ -5470,14 +5471,10 @@ void function Gamemode1v1_OnPlayerDied( entity victim, entity attacker, var dama
 			
 		return
 	}
-	
-	if( !isScenariosMode() )
-		HandleGroupIsFinished( victim ) //, damageInfo )
 		
 	ClearInvincible( victim ) //(mk): why? MakeInvincible is never called, however raw entity method SetInvulerable is called in fsdm _HandleRespawn() [1v1 is separate] and StartRound(). Leaving for now
 	return
 }
-
 LocPairData function Init_DropoffPatchSpawns()
 {
 	array<LocPair> dropoff_patch = 

@@ -5494,9 +5494,10 @@ void function Invis_Button(vector pos, vector ang, bool up, vector destination, 
         if (!IsValid(ent) || !ent.IsPlayer())
             return
 
-        if (ent.p.isTimerActive) {
-			LocalMsg(ent, token, "", type, duration, "Can't use it while timer is running", "", "", false)
-          return
+        if (ent.p.isTimerActive) 
+		{
+			LocalMsg( ent, token, "", type, duration, "Can't use it while timer is running" ) //make this string a token
+			return
         }
 
         ent.SetOrigin(destination)
@@ -5504,7 +5505,7 @@ void function Invis_Button(vector pos, vector ang, bool up, vector destination, 
         ent.SetVelocity(<0, 0, 0>)
 
         if (message.len() || submessage.len())
-			LocalMsg(ent, token, "", type, duration, message, submessage, "", false)
+			LocalMsg(ent, token, "", type, duration, message, submessage, "" )
     })
 
 	if ( addToArray )

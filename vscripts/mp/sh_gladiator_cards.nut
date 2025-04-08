@@ -1652,9 +1652,15 @@ void function TriggerNestedGladiatorCardUpdate( NestedGladiatorCardHandle handle
 	{
 		if( !CheckRate( player, "save_badge", 2.5, true ) )
 			return
-			
+		
 		if( args.len() < 2 )
-			return 
+			return
+
+		if( !Tracker_IsStatsReadyFor( player ) )
+		{
+			LocalMsg( player, "#FS_STATS_NOT_READY" )
+			return
+		}
 			
 		string badgeKey 	= args[ 0 ]
 		string badgeSAID	= args[ 1 ]
@@ -1921,18 +1927,6 @@ void function ActualUpdateNestedGladiatorCard( NestedGladiatorCardHandle handle 
 					ItemFlavor ornull badgeOrNull = null
 					int ornull overrideDataIntegerOrNull = null
 
-					if ( handle.overrideBadgeList[badgeIndex] != null )
-					{
-						badgeOrNull = handle.overrideBadgeList[badgeIndex]
-						overrideDataIntegerOrNull = handle.overrideBadgeDataIntegerList[badgeIndex]
-					}
-
-					LoadoutEntry badgeSlot = Loadout_GladiatorCardBadge( character, badgeIndex )
-					if ( badgeOrNull == null && havePlayer && LoadoutSlot_IsReady( handle.currentOwnerEHI, badgeSlot ) )
-					{
-						badgeOrNull = LoadoutSlot_GetItemFlavor( handle.currentOwnerEHI, badgeSlot )
-					}
-
 					if( bIsTrackerServer )
 					{
 						switch( badgeIndex )
@@ -1951,6 +1945,20 @@ void function ActualUpdateNestedGladiatorCard( NestedGladiatorCardHandle handle 
 							//badgeOrNull = GetItemFlavorByGUID( ConvertItemFlavorGUIDStringToGUID( "SAID01774065557" ) )
 							//overrideDataIntegerOrNull = 100
 							break
+						}
+					}
+					else 
+					{
+						if ( handle.overrideBadgeList[badgeIndex] != null )
+						{
+							badgeOrNull = handle.overrideBadgeList[badgeIndex]
+							overrideDataIntegerOrNull = handle.overrideBadgeDataIntegerList[badgeIndex]
+						}
+
+						LoadoutEntry badgeSlot = Loadout_GladiatorCardBadge( character, badgeIndex )
+						if ( badgeOrNull == null && havePlayer && LoadoutSlot_IsReady( handle.currentOwnerEHI, badgeSlot ) )
+						{
+							badgeOrNull = LoadoutSlot_GetItemFlavor( handle.currentOwnerEHI, badgeSlot )
 						}
 					}
 

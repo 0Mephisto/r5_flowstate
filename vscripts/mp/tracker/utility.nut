@@ -77,7 +77,7 @@ struct
 	//client command: show
 		bool function ClientCommand_mkos_return_data( entity player, array<string> args )
 		{
-			if ( !CheckRate( player, "verbose_stream", 3.0, true ) ) 
+			if ( !CheckRate( player, "verbose_stream", 5.0, true ) ) 
 				return false
 			
 			if ( args.len() < 1)
@@ -168,7 +168,7 @@ struct
 								data += "Season games: " + l_player.p.season_gamesplayed + "\n"
 								data += "Season score: " + l_player.p.season_score
 								
-								if( ( inputmsg.len() + data.len() ) > 599 )
+								if( ( inputmsg.len() + data.len() ) > 2800 )
 								{
 									Message( player, "Failed", "Cannot execute this command currently due to return data resulting in overflow" )
 									return true
@@ -204,7 +204,7 @@ struct
 							}
 							
 							
-							if( ( inputmsg.len() + data.len()) > 599 )
+							if( ( inputmsg.len() + data.len()) > 2800 )
 							{
 								Message( player, "Failed", "Cannot execute this command currently due to return data resulting in overflow" )
 								return true
@@ -276,7 +276,7 @@ struct
 							}
 							
 							
-							if( ( inputmsg.len() + data.len()) > 599 )
+							if( ( inputmsg.len() + data.len()) > 2800 )
 							{
 								Message( player, "Failed", "Cannot execute this command currently due to return data resulting in overflow" )
 								return true
@@ -305,7 +305,7 @@ struct
 							data += format("\n Console Aim Assist: %.1f ", GetCurrentPlaylistVarFloat( "aimassist_magnet", 0.0 ) )
 							data += format("\n PC Aim Assist: %.1f", GetCurrentPlaylistVarFloat("aimassist_magnet_pc", 0.0 ) )
 									
-							if( (inputmsg.len() + data.len()) > 599 )
+							if( (inputmsg.len() + data.len()) > 2800 )
 							{	
 								Message( player, "Failed", "Cannot execute this command currently due to return data resulting in overflow" )
 								return true		
@@ -334,7 +334,7 @@ struct
 						
 						data += format("\n\n %s ", TrackerMatchID__internal() )
 								
-						if( ( inputmsg.len() + data.len() ) > 599 )
+						if( ( inputmsg.len() + data.len() ) > 2800 )
 						{	
 							Message( player, "Failed", "Cannot execute this command currently due to return data resulting in overflow" )
 							return true		
@@ -409,7 +409,7 @@ struct
 		}
 		catch( erradmin )
 		{
-			sqerror( "Error with adminpair: " + pair + " Error: " + erradmin )
+			sqerror( "Error with adminpair:", pair, "Error:", erradmin )
 		}
 		
 		AddCallback_OnClientConnected( CheckAdmin_OnConnect )
@@ -904,7 +904,7 @@ struct
 							
 							string info = Tracker_BuildAllPlayerMetrics( true )
 							
-							if( ( nputmsg.len() + info.len()) > 599 )
+							if( ( nputmsg.len() + info.len()) > 2800 )
 							{
 								Message( player, "Failed", "Cannot execute this command currently due to return data resulting in overflow" )
 								return true
@@ -1114,8 +1114,8 @@ struct
 									s_data += GetScore( score_player ) + "\n"
 								}
 								
-								if( ( putmsg.len() + s_data.len() ) > 599 )
-								{	
+								if( ( putmsg.len() + s_data.len() ) > 2800 )
+								{
 									Message( player, "Failed", "Cannot execute this command currently due to return data resulting in overflow" )
 									return true
 								}
@@ -1824,10 +1824,36 @@ struct
 			case "endround":
 				g_fCurrentRoundEndTime = Time() //todo EndRound() global call from fsdm
 				break
+				
+			case "addmotd":
+				
+				if( empty( param ) )
+				{
+					Message( player, "Failed", "parameter 1 of 'addmotd' requires playername|uid" )
+					return true 
+				}
+				
+				if( empty( param2 ) )
+				{
+					Message( player, "Failed", "parameter 2 of 'addmotd' requires \"message in quotes\"" )
+					return true
+				}
+				
+				entity potentialPlayer = GetPlayer( param )
+				if( !IsValid( potentialPlayer ) )
+				{
+					Message( player, "Player was invalid" )
+					return true
+				}
+				
+				Tracker_UpdateMOTDTextForPlayer( potentialPlayer, param2 )
+				Message( player, "Success", format( "Message was prepended to player \"%s\" as: \n\n %s", string( potentialPlayer ), param2 ), 15 )
+				
+				break 
 			
 			default:	
-						Message( player, "Usage", "cc #command #param1 #param2 #..." )
-						return true
+					Message( player, "Usage", "cc #command #param1 #param2 #..." )
+					return true
 		}
 			
 		return true

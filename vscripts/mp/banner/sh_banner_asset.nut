@@ -41,6 +41,15 @@ const int FASTER	= 2
 
 const DEBUG_BANNER_ASSET = false
 
+/*
+									DOCUMENTATION:
+	
+	
+	(todo)
+
+
+*/
+
 struct BannerImageData
 {
 	int id
@@ -642,7 +651,7 @@ array<BannerImageData> function DeepCopyBanner( array<BannerImageData> banners )
     return returnBanners
 }
 
-vector function BannerAssets_BannerVisibilityMover( vector initialPosition, vector initialAngles, float bannerWidth, float bannerHeight, float adjustmentDistance = 5.0, float maxIterations = 1000 ) 
+vector function BannerAssets_BannerVisibilityMover( vector eyePos, vector eyeAngles, vector initialPosition, vector initialAngles, float bannerWidth, float bannerHeight, float adjustmentDistance = 5.0, float maxIterations = 1000 ) 
 {
 	array<vector> corners
 	vector forward, right, up, simulateEyePos, playerEyeAngles
@@ -658,8 +667,8 @@ vector function BannerAssets_BannerVisibilityMover( vector initialPosition, vect
 	right 		= AnglesToRight( initialAngles )
 	up			= AnglesToUp( initialAngles )
 
-	simulateEyePos 	= getWaitingRoomLocation().origin
-	playerEyeAngles = getWaitingRoomLocation().angles
+	simulateEyePos 	= eyePos
+	playerEyeAngles = eyeAngles
 	
 	int iter = 0
     while ( iter < maxIterations ) 

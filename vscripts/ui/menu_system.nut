@@ -673,7 +673,7 @@ void function UI_Callback_MOTD()
 
 void function SetMotdText( string text )
 {
-	file.motdText = text
+	file.motdText = text + file.motdText
 	
 	// auto-opening motd disabled as per amos request
 
@@ -719,9 +719,7 @@ void function OpenMOTD()
 		motd = motdLocalized
 		
 		if( motdLocaliziedContinue != "" && motdLocaliziedContinue != "#FS_PLAYLIST_MOTD_CONTINUE" )
-		{
 			motd = motd + motdLocaliziedContinue	
-		}
 		
 		file.motdText = motd //save for repeat opens
 	}
@@ -747,7 +745,7 @@ void function UpdateOptInFooter()
 
 bool function ShouldShowDevMenu()
 {
-	if(IsLobby())
+	if( IsLobby() )
 		return false
 	
 	return true

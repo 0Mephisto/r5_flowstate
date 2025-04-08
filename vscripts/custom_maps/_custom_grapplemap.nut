@@ -68,7 +68,7 @@ function grapplemap_player_setup(entity player) {
 
     player.SetPersistentVar("gen", 0)
 
-    LocalMsg(player, "#FS_STRING_VAR", "", 9, 5.0, "Grapple Map", "By: Loy Takian", "", false)
+    LocalMsg(player, "#FS_STRING_VAR", "", 9, 5.0, "Grapple Map", "By: Loy Takian", "" )
 
     thread
     (
@@ -432,11 +432,11 @@ function grapplemap_load() {
                     user.p.isTimerActive = true
                     user.p.startTime = floor(Time()).tointeger()
                     user.SetVelocity(<0,0,0>)
-                    LocalMsg(user, "#HUB_TIMER_START", "", 4, 1.0, "", "", "", false)
+                    LocalMsg(user, "#HUB_TIMER_START", "", 4, 1.0, "", "", "" )
                 } else {
                     user.SetPersistentVar("gen", 0)
                     user.p.isTimerActive = false
-                    LocalMsg(user, "#HUB_TIMER_STOP", "", 4, 1.0, "", "", "", false)
+                    LocalMsg(user, "#HUB_TIMER_STOP", "", 4, 1.0, "", "", "" )
                 }
             }
         })
@@ -452,10 +452,10 @@ function grapplemap_load() {
                     float minutes = final_time / 60
                     float seconds = final_time % 60
 
-                    LocalMsg(user, "#FS_STRING_VAR", "#HUB_FINAL_TIME", 2, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+                    LocalMsg(user, "#FS_STRING_VAR", "#HUB_FINAL_TIME", 2, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                     user.SetPersistentVar("gen", 0)
                 } else {
-                    LocalMsg(user, "#HUB_YOU_FINISHED", "#HUB_CONGRATULATIONS", 2, 5.0, "", "", "", false)
+                    LocalMsg(user, "#HUB_YOU_FINISHED", "#HUB_CONGRATULATIONS", 2, 5.0, "", "", "" )
                 }
 
                 if (user.p.isTimerActive == true) {
@@ -730,9 +730,9 @@ function grapplemap_load() {
                 //     float final_time = Time() - gen
                 //     float minutes = final_time / 60
                 //     float seconds = final_time % 60
-                //     LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+                //     LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                 // } else if (file.cp_table[ent] != <- 4.4004, -3.5, 20108 > ) {
-                //     LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "", false)
+                //     LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
                 // }
                 ent.TakeOffhandWeapon(OFFHAND_TACTICAL)
                 ent.TakeOffhandWeapon(OFFHAND_ULTIMATE)
@@ -752,9 +752,9 @@ function grapplemap_load() {
                     float final_time = Time() - gen
                     float minutes = final_time / 60
                     float seconds = final_time % 60
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                 } else if (file.cp_table[ent] != < 2940.184, 4.6201, 19889.95 > ) {
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
                 }
                 ent.TakeOffhandWeapon(OFFHAND_TACTICAL)
                 ent.TakeOffhandWeapon(OFFHAND_ULTIMATE)
@@ -774,9 +774,9 @@ function grapplemap_load() {
                     float final_time = Time() - gen
                     float minutes = final_time / 60
                     float seconds = final_time % 60
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                 } else if (file.cp_table[ent] != < 5198.984, -1.1799, 20901.15 > ) {
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
                 }
                 ent.TakeOffhandWeapon(OFFHAND_TACTICAL)
                 ent.TakeOffhandWeapon(OFFHAND_ULTIMATE)
@@ -796,9 +796,9 @@ function grapplemap_load() {
                     float final_time = Time() - gen
                     float minutes = final_time / 60
                     float seconds = final_time % 60
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                 } else if (file.cp_table[ent] != < 7459.584, -1.1799, 21913.65 > ) {
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
                 }
                 ent.TakeOffhandWeapon(OFFHAND_TACTICAL)
                 ent.TakeOffhandWeapon(OFFHAND_ULTIMATE)
@@ -818,9 +818,9 @@ function grapplemap_load() {
                     float final_time = Time() - gen
                     float minutes = final_time / 60
                     float seconds = final_time % 60
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                 } else if (file.cp_table[ent] != < 8724.584, 2009.62, 21913.65 > ) {
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
                 }
                 ent.TakeOffhandWeapon(OFFHAND_TACTICAL)
                 ent.TakeOffhandWeapon(OFFHAND_ULTIMATE)
@@ -840,9 +840,9 @@ function grapplemap_load() {
                     float final_time = Time() - gen
                     float minutes = final_time / 60
                     float seconds = final_time % 60
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                 } else if (file.cp_table[ent] != < 9893.584, 2172.02, 22509.65 > ) {
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
                 }
                 ent.TakeOffhandWeapon(OFFHAND_TACTICAL)
                 ent.TakeOffhandWeapon(OFFHAND_ULTIMATE)
@@ -862,9 +862,9 @@ function grapplemap_load() {
                     float final_time = Time() - gen
                     float minutes = final_time / 60
                     float seconds = final_time % 60
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                 } else if (file.cp_table[ent] != < 9201.884, 2172.02, 23502.65 > ) {
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
                 }
                 ent.TakeOffhandWeapon(OFFHAND_TACTICAL)
                 ent.TakeOffhandWeapon(OFFHAND_ULTIMATE)
@@ -884,9 +884,9 @@ function grapplemap_load() {
                     float final_time = Time() - gen
                     float minutes = final_time / 60
                     float seconds = final_time % 60
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                 } else if (file.cp_table[ent] != < 9893.584, 2172.02, 24542.65 > ) {
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
                 }
                 ent.TakeOffhandWeapon(OFFHAND_TACTICAL)
                 ent.TakeOffhandWeapon(OFFHAND_ULTIMATE)
@@ -906,9 +906,9 @@ function grapplemap_load() {
                     float final_time = Time() - gen
                     float minutes = final_time / 60
                     float seconds = final_time % 60
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                 } else if (file.cp_table[ent] != < 9200.584, 2172.02, 25537.65 > ) {
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
                 }
                 ent.TakeOffhandWeapon(OFFHAND_TACTICAL)
                 ent.TakeOffhandWeapon(OFFHAND_ULTIMATE)
@@ -928,9 +928,9 @@ function grapplemap_load() {
                     float final_time = Time() - gen
                     float minutes = final_time / 60
                     float seconds = final_time % 60
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                 } else if (file.cp_table[ent] != < 18476.58, 2155.62, 17846.65 > ) {
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
                 }
                 ent.TakeOffhandWeapon(OFFHAND_TACTICAL)
                 ent.TakeOffhandWeapon(OFFHAND_ULTIMATE)
@@ -950,9 +950,9 @@ function grapplemap_load() {
                     float final_time = Time() - gen
                     float minutes = final_time / 60
                     float seconds = final_time % 60
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                 } else if (file.cp_table[ent] != < 19656.58, -2070.18, 17856.35 > ) {
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
                 }
                 ent.TakeOffhandWeapon(OFFHAND_TACTICAL)
                 ent.TakeOffhandWeapon(OFFHAND_ULTIMATE)
@@ -972,9 +972,9 @@ function grapplemap_load() {
                     float final_time = Time() - gen
                     float minutes = final_time / 60
                     float seconds = final_time % 60
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                 } else if (file.cp_table[ent] != < 19656.58, -5318.38, 17566.65 > ) {
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
                 }
                 ent.TakeOffhandWeapon(OFFHAND_TACTICAL)
                 ent.TakeOffhandWeapon(OFFHAND_ULTIMATE)
@@ -994,9 +994,9 @@ function grapplemap_load() {
                     float final_time = Time() - gen
                     float minutes = final_time / 60
                     float seconds = final_time % 60
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                 } else if (file.cp_table[ent] != < 19656.58, -8828.38, 17741.65 > ) {
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
                 }
                 ent.TakeOffhandWeapon(OFFHAND_TACTICAL)
                 ent.TakeOffhandWeapon(OFFHAND_ULTIMATE)
@@ -1016,9 +1016,9 @@ function grapplemap_load() {
                     float final_time = Time() - gen
                     float minutes = final_time / 60
                     float seconds = final_time % 60
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                 } else if (file.cp_table[ent] != < 19657.18, -9823.58, 18196.25 > ) {
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
                 }
                 ent.TakeOffhandWeapon(OFFHAND_TACTICAL)
                 ent.TakeOffhandWeapon(OFFHAND_ULTIMATE)
@@ -1038,9 +1038,9 @@ function grapplemap_load() {
                     float final_time = Time() - gen
                     float minutes = final_time / 60
                     float seconds = final_time % 60
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                 } else if (file.cp_table[ent] != < 19050.58, -15185.38, 18286.05 > ) {
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
                 }
                 ent.TakeOffhandWeapon(OFFHAND_TACTICAL)
                 ent.TakeOffhandWeapon(OFFHAND_ULTIMATE)
