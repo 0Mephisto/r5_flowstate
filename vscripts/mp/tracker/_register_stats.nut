@@ -75,7 +75,7 @@ void function Tracker_ResyncAllForPlayer( entity playerToSync )
 void function Tracker_ResyncStatForPlayer( entity playerToSync, string statKey )
 {
 	int statKeyLen = statKey.len()
-	mAssert( statKeyLen < 244, "Cannot transmit statkey len > 244 chars" )
+	mAssert( statKeyLen <= 9, "Cannot transmit statkey len > 9 chars for resync" )//for now (uses a single remote call this way)
 	
 	foreach( player in GetPlayerArray() )
 	{
