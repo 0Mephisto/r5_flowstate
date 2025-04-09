@@ -308,6 +308,7 @@ global function SpawnSystem_GetPakInfoForKey				// string function SpawnSystem_G
 	global function DEV_GetSpawnInfo
 	global function DEV_EditSpawn
 	global function DEV_PrintSpawn
+	global function DEV_GetSpawnPakName
 	
 	const float HIGHLIGHT_SPAWN_DELAY 	= 7.0
 	const int SPAWN_POSITIONS_BUDGET 	= 210
@@ -451,6 +452,7 @@ global function SpawnSystem_GetPakInfoForKey				// string function SpawnSystem_G
 					[" script DEV_GetSpawnInfo( int index )"] = "Returns the string for the spawns info metadata",
 					[" script DEV_EditSpawn( int index, vector ornull origin = null, vector ornull angles = null, string info = \"\" )"] = "Manually modify a spawn's data. Uses current for omitted params",
 					[" script DEV_PrintSpawn( int index = -1 )"] = "Print a spawns coordinates by index",
+					[" script DEV_GetSpawnPakName( string playlist = \"\", string map = \"\", string set = \"\", bool debug = true )"] = "Returns string of datatable rpak location. Uses current map/playlist/1 if not provided. If debug is set to false, ignores checking for existence.",
 					["..........."] = "",
 					["............"] = "",
 					[" ==== GENERATE FILE ===="] = "",
@@ -3400,6 +3402,62 @@ void function DEV_PrintSpawn( int index = -1 )
 	string printStr = LocPairString( spawn )
 	
 	printl( printStr ); printm( printStr )
+}
+
+string function DEV_GetSpawnPakName( string playlist = "", string map = "", string set = "", bool debug = true )
+{
+	if( playlist == "" )
+		playlist = GetCurrentPlaylistName()
+		
+	if( map == "" )
+		map = GetMapName()
+		
+	if( set == "" )
+		set = "1"
+		
+	if( !AllMapsArray().contains( map ) )
+	{
+		if( debug )
+			Warning( "Notice: \"" + map + "\" is not configured in \"sh_mapname_playlist_gamemode_enums.gnut\"" )
+	}
+	else 
+	{	
+		int mapEnumValue = GetEnumValue( "eMaps", map )
+		int baseMapEnumValue = SpawnSystem_FindBaseMapForPak( mapEnumValue )
+		
+		if( mapEnumValue != baseMapEnumValue )
+		{
+			string baseMap = AllMapsArray()[ baseMapEnumValue ]
+			
+			string basemsg
+			{
+				basemsg += "\n\nProvided map was corrected to basemap for this spawn rpak: \n"
+				basemsg += "Old: " + map + "\n"
+				basemsg += "New (basemap): " + baseMap + "\n"
+			}
+			
+			map = baseMap
+			Warning( basemsg )
+		}	
+	}
+	
+	string dtblString = format( "datatable/fs_spawns_%s_%s_set_%s.rpak", playlist, map, set )
+	
+	if( debug )
+	{
+		try
+		{
+			GetDataTable( CastStringToAsset( dtblString ) )	
+		}
+		catch( e )
+		{
+			Warning( "[SpawnSystem] Error: %s", string( e ) )
+		}
+		
+		printl( dtblString ); printm( dtblString )
+	}
+	
+	return dtblString
 }
 
 int function SpawnCount()
