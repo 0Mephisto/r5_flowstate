@@ -8,7 +8,7 @@ global function OpenSystemMenu
 global function UI_Callback_MOTD
 global function SetMotdText
 global function OpenMOTD
-
+global function OpenChampionCard
 
 global function ShouldDisplayOptInOptions
 
@@ -55,6 +55,7 @@ struct
 	table<var, ButtonData > OpenRecordingsMenu
 	table<var, ButtonData > OpenMOTD
 	table<var, ButtonData > OpenScenariosStandings
+	table<var, ButtonData > OpenChampionCard
 
 	InputDef& qaFooter
 	
@@ -195,6 +196,7 @@ void function InitSystemPanel( var panel )
 	file.OpenRecordingsMenu[ panel ] <- clone data
 	file.OpenMOTD[ panel ] <- clone data
 	file.OpenScenariosStandings[ panel ] <- clone data
+	file.OpenChampionCard[ panel ] <- clone data
 
 	file.ExitChallengeButtonData[ panel ].label = "#FS_FINISH_CHALLENGE"
 	file.ExitChallengeButtonData[ panel ].activateFunc = SignalExitChallenge
@@ -283,6 +285,9 @@ void function InitSystemPanel( var panel )
 	file.OpenScenariosStandings[ panel ].label = "#FS_SCENARIOS_STANDINGS"
 	file.OpenScenariosStandings[ panel ].activateFunc = UI_OpenScenariosStandingsMenu	
 	
+	file.OpenChampionCard[ panel ].label = "#FS_OPEN_CHAMPION"
+	file.OpenChampionCard[ panel ].activateFunc = OpenChampionCard	
+	
 	AddPanelEventHandler( panel, eUIEvent.PANEL_SHOW, SystemPanelShow )
 }
 
@@ -344,6 +349,9 @@ void function UpdateSystemPanel( var panel )
 		{
 			SetButtonData( panel, buttonIndex++, file.ToggleRest[ panel ] )
 		}
+		
+		if( Flowstate_IsTrackerSupportedMode() )
+			SetButtonData( panel, buttonIndex++, file.OpenChampionCard[ panel ] )
 
 		if( Playlist() == ePlaylists.fs_lgduels_1v1 || Playlist() == ePlaylists.fs_dm_fast_instagib )		
 			SetButtonData( panel, buttonIndex++, file.OpenLGDuelsSettingsData[ panel ] )
@@ -725,6 +733,11 @@ void function OpenMOTD()
 	}
 	
 	OpenServerMOTD( motd )
+}
+
+void function OpenChampionCard()
+{
+	RunClientScript( "SelfShowChampion" )
 }
 
 void function UpdateOptInFooter()

@@ -1822,7 +1822,7 @@ struct
 				break
 				
 			case "endround":
-				g_fCurrentRoundEndTime = Time() //todo EndRound() global call from fsdm
+				EndRound()
 				break
 				
 			case "addmotd":

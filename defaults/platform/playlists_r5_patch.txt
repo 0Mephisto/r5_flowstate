@@ -188,9 +188,9 @@ playlists
 				//// Character (a.k.a. Legend) Configuration								///////
 				///////////////////////////////////////////////////////////////////////////////////
 				
-				character_dummie								DISABLED
-				character_random								DISABLED
-				character_loba									DISABLED
+				//character_dummie								DISABLED
+				character_random								hide
+				//character_loba									DISABLED
 
 				///////////////////////////////////////////////////////////////////////////////////
 				//// Character (a.k.a. Legend) Damage Balancing								///////
@@ -4029,7 +4029,7 @@ playlists
 				visible											1
 				
 				name										   	"Firing Range"
-				description										"#PL_FIRINGRANGE_DESC"
+				description										"Firing Range"
 				
 				ui_slot											firing_range
 				image										  	firing_range
@@ -4098,8 +4098,8 @@ playlists
 			{
 				visible										1
 				
-				name										   	"Firing Range"
-				description									"#PL_FIRINGRANGE_DESC"
+				name										   	"Training"
+				description									"Training"
 				
 				ui_slot										firing_range
 				image										firing_range
@@ -4216,21 +4216,24 @@ playlists
 				
 			}
 			gamemodes { survival { maps {
-				mp_rr_olympus						 			1
-				mp_rr_party_crasher					 			1
-				mp_rr_arena_composite 							1
-				mp_rr_aqueduct								 	1
-				mp_rr_arena_phase_runner						1
-				mp_rr_canyonlands_staging					  	1
-				mp_rr_canyonlands_64k_x_64k						1
-				mp_rr_canyonlands_mu1						  	1
-				mp_rr_canyonlands_mu1_night						1
 				mp_rr_desertlands_64k_x_64k						1
 				mp_rr_desertlands_64k_x_64k_nx				 	1
 				mp_rr_desertlands_64k_x_64k_tt				 	1
 				mp_rr_desertlands_64k_x_64k_mv				 	1
 				mp_rr_desertlands_mu1				 			1
 				mp_rr_desertlands_mu1_tt				 		1
+				mp_rr_desertlands_mu2					 		1
+				mp_rr_olympus						 			1
+				mp_rr_canyonlands_staging					  	1
+				mp_rr_canyonlands_64k_x_64k						1
+				mp_rr_canyonlands_mu1						  	1
+				mp_rr_canyonlands_mu1_night						1
+				mp_rr_canyonlands_mu2							1
+				mp_rr_canyonlands_mu2_tt						1
+				mp_rr_party_crasher					 			1
+				mp_rr_aqueduct								 	1
+				mp_rr_arena_phase_runner						1
+				mp_rr_arena_composite							1
 			} } }
 		}
 
@@ -4268,19 +4271,24 @@ playlists
 				set_legend									 	"character_revenant"
 			}
 			gamemodes { survival { maps {
-				mp_rr_arena_empty								1
-				mp_rr_arena_phase_runner						1
-				mp_rr_canyonlands_64k_x_64k						1
-				mp_rr_canyonlands_mu1						  	1
 				mp_rr_desertlands_64k_x_64k						1
 				mp_rr_desertlands_64k_x_64k_nx				 	1
 				mp_rr_desertlands_64k_x_64k_tt				 	1
-				mp_rr_party_crasher					 			1
-				mp_rr_canyonlands_mu1_night						1
+				mp_rr_desertlands_64k_x_64k_mv				 	1
+				mp_rr_desertlands_mu1				 			1
+				mp_rr_desertlands_mu1_tt				 		1
+				mp_rr_desertlands_mu2					 		1
+				mp_rr_olympus						 			1
 				mp_rr_canyonlands_staging					  	1
+				mp_rr_canyonlands_64k_x_64k						1
+				mp_rr_canyonlands_mu1						  	1
+				mp_rr_canyonlands_mu1_night						1
+				mp_rr_canyonlands_mu2							1
+				mp_rr_canyonlands_mu2_tt						1
+				mp_rr_party_crasher					 			1
 				mp_rr_aqueduct								 	1
-				mp_rr_arena_composite 							1
-				mp_rr_construct									1
+				mp_rr_arena_phase_runner						1
+				mp_rr_arena_composite							1
 			} } }
 		}
 

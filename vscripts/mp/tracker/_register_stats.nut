@@ -48,13 +48,13 @@ void function Tracker_SetShouldResetStatOnShip( string uid, string statKey, var 
 	}
 	else 
 	{
-		int maxIter = file.shouldResetData.len()	
+		int maxIter = file.shouldResetData.len() - 1
 		if( maxIter == 0 )
 			return
 			
 		for( int i = maxIter; i >= 0; i-- )
 		{
-			if( file.shouldResetData[ i ].uid == uid && file.shouldResetData.statKey == statKey )
+			if( file.shouldResetData[ i ].uid == uid && file.shouldResetData[ i ].statKey == statKey )
 				file.shouldResetData.remove( i )
 		}
 	}

@@ -59,6 +59,7 @@ global function AddCallback_CharacterSelectMenu_OnCharacterFocused
 global function AddCallback_CharacterSelectMenu_OnCharacterLocked
 
 global function CharacterSelect_SetMenuState
+global function IsShowingChampionPresentation
 
 const string CAMERA_ENT_NAME = "target_char_sel_camera_new"
 const string CHARACTER_ENT_NAME = "target_char_sel_pilot_new"
@@ -181,6 +182,7 @@ struct FileLevelStruct
 		int championSquad2EHI = -1
 
 		bool isUpdatePlayerModelRunning = false
+		bool isShowingChampionPresentation = false
 	#endif
 }
 FileLevelStruct& fileLevel
@@ -853,8 +855,15 @@ void function DoAnimatedChampionSquadCardsPresentation()
 //
 // End
 
-void function DoChampionSquadCardsPresentation()
+bool function IsShowingChampionPresentation()
 {
+	return fileLevel.isShowingChampionPresentation
+}
+
+void function DoChampionSquadCardsPresentation( bool bActivatedFromMenu = false )
+{
+	fileLevel.isShowingChampionPresentation = true
+	
 	#if DEVELOPER
 		printt( "CHARACTER SELECT: DoChampionSquadCardsPresentation" )
 	#endif
@@ -867,7 +876,8 @@ void function DoChampionSquadCardsPresentation()
 	float blackDuration         = max( GetSoundDuration( voLine ) * 0.5, 2.0 )
 
 	// Announcer VO
-	EmitSoundOnEntity( GetLocalClientPlayer(), voLine )
+	if( !bActivatedFromMenu )
+		EmitSoundOnEntity( GetLocalClientPlayer(), voLine )
 
 	{
 		int championEHI       = GetGlobalNetInt( "championEEH" )
@@ -881,13 +891,16 @@ void function DoChampionSquadCardsPresentation()
 			Chroma_SetBaseLayer( CHROMALOOP_SMOKE, CHROMATRANS_BLEND, {[0.0] = <0, 0, 0>, [1.0] = <.5, .5, .5>}, 2.0 ) //
 	}
 
-	// Fade to black and change the scene to black smoke
-	EmitSoundOnEntity( GetLocalClientPlayer(), "UI_Survival_Intro_GladiatorCard_Disappear" )
-	ScreenFade( GetLocalClientPlayer(), 0, 0, 0, 255, fadeToBlackDuration, blackDuration, FFADE_OUT | FFADE_PURGE )
-	wait fadeToBlackDuration
-	SetCharacterSelectSceneForChampionSquad()
-	wait blackDuration
-	ScreenFade( GetLocalClientPlayer(), 0, 0, 0, 255, fadeFromBlackDuration, 0.0, FFADE_IN | FFADE_PURGE )
+	if( !bActivatedFromMenu )
+	{
+		// Fade to black and change the scene to black smoke
+		EmitSoundOnEntity( GetLocalClientPlayer(), "UI_Survival_Intro_GladiatorCard_Disappear" )
+		ScreenFade( GetLocalClientPlayer(), 0, 0, 0, 255, fadeToBlackDuration, blackDuration, FFADE_OUT | FFADE_PURGE )
+		wait fadeToBlackDuration
+		SetCharacterSelectSceneForChampionSquad()
+		wait blackDuration
+		ScreenFade( GetLocalClientPlayer(), 0, 0, 0, 255, fadeFromBlackDuration, 0.0, FFADE_IN | FFADE_PURGE )
+	}
 
 	EmitSoundOnEntity( GetLocalClientPlayer(), "UI_Survival_Intro_GladiatorCard_Appear" )
 
@@ -905,7 +918,8 @@ void function DoChampionSquadCardsPresentation()
 		stopShowingCardAt = GetGlobalNetTime( "championDisplayEndTime" )
 	else stopShowingCardAt = GetGlobalNetTime( "pickLoadoutGamestateEndTime" )
 		
-		
+	if( bActivatedFromMenu )
+		stopShowingCardAt = Time() + 6.5
 
 	RuiSetString( rui, "topHeader", topHeader )
 	RuiSetGameTime( rui, "transitionInAt", Time() )
@@ -969,24 +983,27 @@ void function DoChampionSquadCardsPresentation()
 			EmitSoundOnEntity( GetLocalClientPlayer(), "UI_Survival_Intro_GladiatorCard_Disappear" )
 
 			Chroma_EndCharacterSelect()
+			
+			fileLevel.isShowingChampionPresentation = false
 		}
 	)
 
-	if ( ShouldPlayIntroQuip() )
-	{
+	if ( ShouldPlayIntroQuip() && !bActivatedFromMenu )
 		thread PlayIntroQuipThread( GetLocalClientPlayer(), championEHI )
-	}
 
 	wait 1.5
 
-	EmitSoundOnEntity( GetLocalClientPlayer(), "UI_Survival_Intro_BannerChampion" )
-	
-	
+	if( !bActivatedFromMenu )
+		EmitSoundOnEntity( GetLocalClientPlayer(), "UI_Survival_Intro_BannerChampion" )
+		
 	string timeToWait = Gamemode() == eGamemodes.fs_dm ? "championDisplayEndTime" : "pickLoadoutGamestateEndTime"
 	{
 		while( Time() < GetGlobalNetTime( timeToWait ) )
 			WaitFrame()
 	}
+	
+	if( bActivatedFromMenu )
+		wait 5
 }
 
 bool function ShouldPlayIntroQuip()

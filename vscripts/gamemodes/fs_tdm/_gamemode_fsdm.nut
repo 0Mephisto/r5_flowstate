@@ -69,6 +69,7 @@ global function _GetAppropriateSpawnLocation
 global function Flowstate_IsRealisticMode
 global function Halo_GotoNextPlaylist
 global function HaloMod_HandlePlayerModel
+global function EndRound
 
 global function PrimaryWeaponMetagame_Init
 
@@ -963,7 +964,7 @@ void function _OnPlayerConnected(entity player)
 					if( file.tdmState == eTDMState.NEXT_ROUND_NOW )
 						break
 
-					_HandleRespawn(player)
+					//_HandleRespawn(player)
 
                     array<string> InValidMaps = [
 						"mp_rr_canyonlands_staging",
@@ -974,6 +975,7 @@ void function _OnPlayerConnected(entity player)
 					bool DropPodOnSpawn = flowstateSettings.DroppodsOnPlayerConnected
 					bool IsStaging = InValidMaps.find( GetMapName() ) != -1
 					bool IsMapValid = InValidMaps.find(file.selectedLocation.name) != -1
+					
 					if(file.tdmState == eTDMState.NEXT_ROUND_NOW || !DropPodOnSpawn || IsStaging || IsMapValid )
 						_HandleRespawn(player)
 					else
@@ -1010,10 +1012,12 @@ void function _OnPlayerConnected(entity player)
 					if( file.selectedLocation.name == "Lockout" )
 					{
 						Remote_CallFunction_Replay(player, "FS_ForceAdjustSunFlareParticleOnClient", 0 )
-					} else if( file.selectedLocation.name == "The Pit" )
+					} 
+					else if( file.selectedLocation.name == "The Pit" )
 					{
 						Remote_CallFunction_Replay(player, "FS_ForceAdjustSunFlareParticleOnClient", 1 )
-					} else if( file.selectedLocation.name == "Narrows" )
+					} 
+					else if( file.selectedLocation.name == "Narrows" )
 					{
 						Remote_CallFunction_Replay(player, "FS_ForceAdjustSunFlareParticleOnClient", 2 )
 					}
@@ -1756,7 +1760,7 @@ void function _HandleRespawn( entity player, bool isDroppodSpawn = false )
 			SURVIVAL_AddToPlayerInventory(player, optic)
 	}
 	
-	if( Flowstate_IsFSDM() || flowstateSettings.is_halo_gamemode )
+	if( flowstateSettings.is_halo_gamemode ) // || Flowstate_IsFSDM()
 	{
 		const array<string> loot = [ "mp_weapon_frag_grenade_halomod", "mp_weapon_plasma_grenade_halomod" ]
 			foreach(item in loot)
@@ -3620,11 +3624,6 @@ void function SimpleChampionUI()
 			{
 				ResetPlayerStats( eachPlayer )
 				
-				if( !isPlayerInRestingList( eachPlayer ) ) //don't remove players who are in rest, only progress. 
-				{
-					soloModePlayerToWaitingList(eachPlayer)
-				}
-
 				try
 				{
 					eachPlayer.p.lastKiller = null
@@ -3632,6 +3631,12 @@ void function SimpleChampionUI()
 				}
 				catch (error)
 				{}
+				
+				if( !isPlayerInRestingList( eachPlayer ) ) //don't remove players who are in rest, only progress. 
+					soloModePlayerToWaitingList( eachPlayer )
+					
+				if( !IsAlive( eachPlayer ) )
+					DecideRespawnPlayer( eachPlayer, false )
 			}
 		}
 		
@@ -7431,9 +7436,7 @@ void function HaloPlayAnnounce( float roundEndTime )
 	if( targetTime in eventTimes )
 	{
 		foreach( entity player in GetPlayerArray() )
-		{
 			BannerAssets_PlayAudio( player, eventTimes[ targetTime ] )
-		}
 	}
 }
 
@@ -7479,9 +7482,6 @@ void function PrintKillHistoryFor( entity player )
 	foreach( KillHistory history in player.p.killHistoryArray )
 		printt( string( history.victim ), history.killTime, " seconds ago: ", Time() - history.killTime )
 }
-
-
-
 
 const array<int> CYCLE_HALO_PLAYLISTS_ARR =
 [
@@ -7575,4 +7575,9 @@ void function FS_Hack_CreateBulletsCollisionVolume( vector origin, float large =
 	
 	//Kill trigger
 	file.playerSpawnedProps.append( AddDeathTriggerWithParams( origin - <0,0,500>, large ) )
+}
+
+void function EndRound()
+{
+	g_fCurrentRoundEndTime = Time()
 }

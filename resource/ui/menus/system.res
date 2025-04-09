@@ -56,6 +56,7 @@ scripts/resource/ui/menus/system.res
         tabPosition             2
 
         navUp					Button0
+		navDown					Button2
 
         pin_to_sibling			Button0
         pin_corner_to_sibling	TOP
@@ -77,6 +78,7 @@ scripts/resource/ui/menus/system.res
         tabPosition             3
 
         navUp					Button1
+		navDown					Button3
 
         pin_to_sibling			Button1
         pin_corner_to_sibling	TOP
@@ -98,6 +100,7 @@ scripts/resource/ui/menus/system.res
         tabPosition             4
 
         navUp					Button2
+		navDown					Button4
 
         pin_to_sibling			Button2
         pin_corner_to_sibling	TOP
@@ -119,6 +122,7 @@ scripts/resource/ui/menus/system.res
         tabPosition             5
 
         navUp					Button3
+		navDown					Button5
 
         pin_to_sibling			Button3
         pin_corner_to_sibling	TOP
@@ -140,6 +144,7 @@ scripts/resource/ui/menus/system.res
         tabPosition             6
 
         navUp					Button4
+		navDown					Button6
 
         pin_to_sibling			Button4
         pin_corner_to_sibling	TOP
@@ -161,8 +166,74 @@ scripts/resource/ui/menus/system.res
         tabPosition             7
 
         navUp					Button5
+		navDown					Button7
 
         pin_to_sibling			Button5
+        pin_corner_to_sibling	TOP
+        pin_to_sibling_corner	BOTTOM
+    }
+	
+	Button7
+    {
+        ControlName				RuiButton
+        classname				"SystemButtonClass MenuButton"
+        scriptID				6
+        ypos                    8
+        wide					376
+        tall					60
+        rui                     "ui/generic_button.rpak"
+        labelText               ""
+        visible					1
+        cursorVelocityModifier  0.7
+        tabPosition             7
+
+        navUp					Button6
+		navDown					Button8
+
+        pin_to_sibling			Button6
+        pin_corner_to_sibling	TOP
+        pin_to_sibling_corner	BOTTOM
+    }
+	
+	Button8
+    {
+        ControlName				RuiButton
+        classname				"SystemButtonClass MenuButton"
+        scriptID				6
+        ypos                    8
+        wide					376
+        tall					60
+        rui                     "ui/generic_button.rpak"
+        labelText               ""
+        visible					1
+        cursorVelocityModifier  0.7
+        tabPosition             7
+
+        navUp					Button7
+		navDown					Button9
+
+        pin_to_sibling			Button7
+        pin_corner_to_sibling	TOP
+        pin_to_sibling_corner	BOTTOM
+    }
+	
+	Button9
+    {
+        ControlName				RuiButton
+        classname				"SystemButtonClass MenuButton"
+        scriptID				6
+        ypos                    8
+        wide					376
+        tall					60
+        rui                     "ui/generic_button.rpak"
+        labelText               ""
+        visible					1
+        cursorVelocityModifier  0.7
+        tabPosition             7
+
+        navUp					Button8
+
+        pin_to_sibling			Button8
         pin_corner_to_sibling	TOP
         pin_to_sibling_corner	BOTTOM
     }

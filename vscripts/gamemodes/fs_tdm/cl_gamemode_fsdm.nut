@@ -79,6 +79,7 @@ global function FS_Scenarios_SetRingCloseTimeForMinimap
 global function FS4DIntroSequence
 global function HaloBrIntroSequence
 global function Flowstate_RespawnTimer_Thread
+global function SelfShowChampion
 
 const string CIRCLE_CLOSING_IN_SOUND = "UI_InGame_RingMoveWarning" //"survival_circle_close_alarm_01"
 
@@ -2411,9 +2412,15 @@ void function FS_CreateTeleportFirstPersonEffectOnPlayer()
 void function Tracker_ShowChampion()
 {
 	if ( GetCurrentPlaylistVarBool( "show_short_champion_screen", true ) )
-	{
 		thread DoChampionSquadCardsPresentation()
-	}
+}
+
+void function SelfShowChampion()
+{
+	if( IsShowingChampionPresentation() )
+		return 
+		
+	thread DoChampionSquadCardsPresentation( true )
 }
 
 void function UiToClient_ConfirmRest( string arg )
