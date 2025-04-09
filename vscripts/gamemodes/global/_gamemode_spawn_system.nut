@@ -343,12 +343,17 @@ global function SpawnSystem_GetPakInfoForKey				// string function SpawnSystem_G
 	
 	const vector MAX_ALLOWED_EXTENTS	= < 1730, 1730, 1730 > //for debug
 	const vector MAX_SPAWN_EXTENTS 		= < 300, 300, 300 >
-	const bool OVERIDE_VERIFY_SPAWNS 	= true //set this to true to never check spawns
 	const int MAX_SPAWN_CORRECTION_ITER = 500
 	const float CORRECTION_STEP_LARGE 	= 5.0
 	const float CORRECTION_STEP_SMALL 	= 1.0
 	const int CORRECTION_STEP_SWITCH 	= 10
 	const bool PRINT_SPAWN_CORRECTIONS	= true
+	
+	#if DEVELOPER 
+		const bool OVERIDE_VERIFY_SPAWNS 	= true //set this to true to never check spawns
+	#else 
+		const bool OVERIDE_VERIFY_SPAWNS 	= false
+	#endif
 	
 	struct
 	{
