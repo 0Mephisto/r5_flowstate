@@ -206,7 +206,7 @@ struct
 	bool rotate_map
 	bool flowstate_1v1mode
 	bool enable_oddball_gamemode
-	bool patch_for_dropoff
+	//bool patch_for_dropoff
 	bool patch_waiting_area
 	bool ReloadTacticalOnRespawn
 	bool ReloadUltimateOnRespawn
@@ -269,7 +269,7 @@ void function InitializePlaylistSettings()
 	flowstateSettings.flowstate_1v1mode 					= GetCurrentPlaylistVarBool( "flowstate_1v1mode", false )
 	flowstateSettings.enable_oddball_gamemode 				= GetCurrentPlaylistVarBool( "enable_oddball_gamemode", false )
 	flowstateSettings.default_ibmm_wait 					= GetCurrentPlaylistVarFloat( "default_ibmm_wait", 0 )
-	flowstateSettings.patch_for_dropoff 					= GetCurrentPlaylistVarBool( "patch_for_dropoff", false )
+	//flowstateSettings.patch_for_dropoff 					= GetCurrentPlaylistVarBool( "patch_for_dropoff", false )
 	flowstateSettings.patch_waiting_area 					= GetCurrentPlaylistVarBool( "patch_waiting_area", false )
 	flowstateSettings.ReloadTacticalOnRespawn 				= GetCurrentPlaylistVarBool( "flowstateReloadTacticalOnRespawn", false )
 	flowstateSettings.ReloadUltimateOnRespawn 				= GetCurrentPlaylistVarBool( "flowstateReloadUltimateOnRespawn", false )
@@ -539,25 +539,21 @@ void function DM__OnEntitiesDidLoad()
 
     	case eMaps.mp_rr_arena_composite:
 		
-			if( flowstateSettings.patch_for_dropoff )
-			{	
-				Patch_Dropoff()
-			} 
-			else if( flowstateSettings.patch_waiting_area )
-			{
+			// if( flowstateSettings.patch_for_dropoff && is1v1EnabledAndAllowed() ) //disabled for now - prop based extra rooms. ( not good )
+				// Patch_Dropoff()
+			
+			if( flowstateSettings.patch_waiting_area )
 				Patch_Barrier_Dropoff()
-			} 
 
-			array<entity> badMovers = GetEntArrayByClass_Expensive( "script_mover" )
-			foreach(mover in badMovers)
-				if( IsValid(mover) ) mover.Destroy()
+			// array<entity> badMovers = GetEntArrayByClass_Expensive( "script_mover" )
+			// foreach(mover in badMovers)
+				// if( IsValid(mover) ) mover.Destroy()
 			break
 		
 		case eMaps.mp_rr_aqueduct:
 			if( flowstateSettings.patch_waiting_area )
-			{
 				Patch_Barrier_Overflow()
-			} 
+				
 			break
 		case eMaps.mp_flowstate:
 			entity skyboxCamera = GetEnt( "skybox_cam_level" )

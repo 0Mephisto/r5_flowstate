@@ -185,7 +185,7 @@ void function WallTriggerEnter( entity trigger , entity ent )
                 EntityOutOfBounds( trigger, ent, null, null )
             break
 
-            default: if (GetCurrentPlaylistVarBool( "patch_for_dropoff", false )) return;
+            default: //if (GetCurrentPlaylistVarBool( "patch_for_dropoff", false )) return; //(mk): this shouldn't have been here anyway
                 vector lookDir = ent.GetSmoothedVelocity()
                 vector pushBackVel = lookDir * 2.5
 

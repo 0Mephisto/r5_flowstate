@@ -188,9 +188,9 @@ playlists
 				//// Character (a.k.a. Legend) Configuration								///////
 				///////////////////////////////////////////////////////////////////////////////////
 				
-				//character_dummie								DISABLED
-				character_random								hide
-				//character_loba									DISABLED
+				character_dummie								DISABLED
+				character_random								DISABLED
+				character_loba									DISABLED
 
 				///////////////////////////////////////////////////////////////////////////////////
 				//// Character (a.k.a. Legend) Damage Balancing								///////
@@ -701,6 +701,7 @@ playlists
 			gamemodes { survival { maps {
 				mp_rr_party_crasher								1
 				mp_rr_aqueduct									1
+				mp_rr_arena_composite 							1
 				mp_rr_canyonlands_64k_x_64k						1
 				mp_rr_canyonlands_mu1							1
 				mp_rr_canyonlands_mu1_night						1
@@ -1455,6 +1456,7 @@ playlists
 				mp_rr_canyonlands_mu1_night						1
 				mp_rr_canyonlands_staging					  	1
 				mp_rr_aqueduct									1
+				mp_rr_arena_composite 							1
 			} } }
 		}
 		
@@ -1899,6 +1901,7 @@ playlists
 				mp_rr_arena_phase_runner			  			1
 				mp_rr_party_crasher					  			1
 				mp_rr_aqueduct									1
+				mp_rr_arena_composite 							1
 			} } }
 		}
 		
@@ -2023,6 +2026,7 @@ playlists
 				mp_rr_arena_phase_runner			  			1
 				mp_rr_party_crasher					  			1
 				mp_rr_aqueduct									1
+				mp_rr_arena_composite 							1
 			} } }
 		}
 		
@@ -2144,7 +2148,7 @@ playlists
 				afk_to_rest_bool								0 // makes player rest when afk instead of kick, but requires: flowstate_afk_kick_enable 1
 				enable_ping_kick								0 // 0 disables ping kick for this mode
 				enable_afk_thread 								1 //0 disables afk thread for this mode
-				superglide_counter_msg							1 // Shows players superglide count
+				superglide_counter_msg							0 // Shows players superglide count
 				custom_superglide_msg							"Kewl beans" //shows custom msg under counter.
 						
 				rotate_map 										1 // rotatesmaps in enabled maps section.  
@@ -2292,7 +2296,6 @@ playlists
 				enable_afk_thread 								1 //0 disables afk thread for this mode
 				superglide_counter_msg							0 // Shows players superglide count
 				custom_superglide_msg							"Kewl beans" //shows custom msg under counter.
-				patch_for_dropoff								1
 				patch_waiting_area								1 //makes a barrier between waiting and fighting areas
 				
 				////////////////////////////////////////////////////////////////////////////////
@@ -2453,9 +2456,8 @@ playlists
 				afk_to_rest_bool								1 // makes player rest when afk instead of kick
 				enable_ping_kick								0 // 0 disables ping kick for this mode
 				enable_afk_thread 								1 //0 disables afk thread for this mode
-				superglide_counter_msg							1 // Shows players' superglide counts
+				superglide_counter_msg							0 // Shows players' superglide counts
 				custom_superglide_msg							"Kewl beans" //shows custom msg under counter.
-				patch_for_dropoff								1 // enables extra locations for dropoff allowing for 32 max players
 				patch_waiting_area								1
 						
 				use_global_stats								0 //uses global player stats for matchmaking
@@ -2571,9 +2573,8 @@ playlists
 				afk_to_rest_bool								1 // makes player rest when afk instead of kick
 				enable_ping_kick								0 // 0 disables ping kick for this mode
 				enable_afk_thread 								1 //0 disables afk thread for this mode
-				superglide_counter_msg							1 // Shows players superglide count
+				superglide_counter_msg							0 // Shows players superglide count
 				custom_superglide_msg							"Kewl beans" //shows custom msg under counter.
-				patch_for_dropoff								0
 				patch_waiting_area								1 //makes a barrier between waiting and fighting areas
 				
 				////////////////////////////////////////////////////////////////////////////////
@@ -2634,6 +2635,7 @@ playlists
 			gamemodes { fs_dm { maps {
 				mp_rr_canyonlands_64k_x_64k						1
 				mp_rr_aqueduct									1
+				mp_rr_arena_composite 							1
 				mp_rr_arena_phase_runner						1
 			} } }
 		}
@@ -2726,9 +2728,8 @@ playlists
 				afk_to_rest_bool								1 // makes player rest when afk instead of kick
 				enable_ping_kick								0 // 0 disables ping kick for this mode
 				enable_afk_thread 								1 //0 disables afk thread for this mode
-				superglide_counter_msg							1 // Shows players superglide count
+				superglide_counter_msg							0 // Shows players superglide count
 				custom_superglide_msg							"Kewl beans" //shows custom msg under counter.
-				patch_for_dropoff								0
 				patch_waiting_area								1 //makes a barrier between waiting and fighting areas
 				
 				////////////////////////////////////////////////////////////////////////////////
@@ -2783,6 +2784,7 @@ playlists
 				mp_rr_desertlands_64k_x_64k_tt				 	1
 				mp_rr_arena_phase_runner			  			1
 				mp_rr_party_crasher					  			1
+				mp_rr_arena_composite 							1
 				mp_rr_aqueduct									1
 				mp_rr_canyonlands_staging						1
 			} } }
@@ -4027,7 +4029,7 @@ playlists
 				visible											1
 				
 				name										   	"Firing Range"
-				description										"Firing Range"
+				description										"#PL_FIRINGRANGE_DESC"
 				
 				ui_slot											firing_range
 				image										  	firing_range
@@ -4096,8 +4098,8 @@ playlists
 			{
 				visible										1
 				
-				name										   	"Training"
-				description									"Training"
+				name										   	"Firing Range"
+				description									"#PL_FIRINGRANGE_DESC"
 				
 				ui_slot										firing_range
 				image										firing_range
@@ -4214,24 +4216,21 @@ playlists
 				
 			}
 			gamemodes { survival { maps {
+				mp_rr_olympus						 			1
+				mp_rr_party_crasher					 			1
+				mp_rr_arena_composite 							1
+				mp_rr_aqueduct								 	1
+				mp_rr_arena_phase_runner						1
+				mp_rr_canyonlands_staging					  	1
+				mp_rr_canyonlands_64k_x_64k						1
+				mp_rr_canyonlands_mu1						  	1
+				mp_rr_canyonlands_mu1_night						1
 				mp_rr_desertlands_64k_x_64k						1
 				mp_rr_desertlands_64k_x_64k_nx				 	1
 				mp_rr_desertlands_64k_x_64k_tt				 	1
 				mp_rr_desertlands_64k_x_64k_mv				 	1
 				mp_rr_desertlands_mu1				 			1
 				mp_rr_desertlands_mu1_tt				 		1
-				mp_rr_desertlands_mu2					 		1
-				mp_rr_olympus						 			1
-				mp_rr_canyonlands_staging					  	1
-				mp_rr_canyonlands_64k_x_64k						1
-				mp_rr_canyonlands_mu1						  	1
-				mp_rr_canyonlands_mu1_night						1
-				mp_rr_canyonlands_mu2							1
-				mp_rr_canyonlands_mu2_tt						1
-				mp_rr_party_crasher					 			1
-				mp_rr_aqueduct								 	1
-				mp_rr_arena_phase_runner						1
-				mp_rr_arena_composite							1
 			} } }
 		}
 
@@ -4269,24 +4268,19 @@ playlists
 				set_legend									 	"character_revenant"
 			}
 			gamemodes { survival { maps {
+				mp_rr_arena_empty								1
+				mp_rr_arena_phase_runner						1
+				mp_rr_canyonlands_64k_x_64k						1
+				mp_rr_canyonlands_mu1						  	1
 				mp_rr_desertlands_64k_x_64k						1
 				mp_rr_desertlands_64k_x_64k_nx				 	1
 				mp_rr_desertlands_64k_x_64k_tt				 	1
-				mp_rr_desertlands_64k_x_64k_mv				 	1
-				mp_rr_desertlands_mu1				 			1
-				mp_rr_desertlands_mu1_tt				 		1
-				mp_rr_desertlands_mu2					 		1
-				mp_rr_olympus						 			1
-				mp_rr_canyonlands_staging					  	1
-				mp_rr_canyonlands_64k_x_64k						1
-				mp_rr_canyonlands_mu1						  	1
-				mp_rr_canyonlands_mu1_night						1
-				mp_rr_canyonlands_mu2							1
-				mp_rr_canyonlands_mu2_tt						1
 				mp_rr_party_crasher					 			1
+				mp_rr_canyonlands_mu1_night						1
+				mp_rr_canyonlands_staging					  	1
 				mp_rr_aqueduct								 	1
-				mp_rr_arena_phase_runner						1
-				mp_rr_arena_composite							1
+				mp_rr_arena_composite 							1
+				mp_rr_construct									1
 			} } }
 		}
 

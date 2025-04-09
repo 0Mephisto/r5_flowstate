@@ -3102,12 +3102,12 @@ void function INIT_PregameCallbacks()
 		sqerror( format( "Default IBMM wait time was set as '%.2f' ; must be either 0 or >= 3. Resetting to 3.", f_wait ) )
 	}
 
-	//(mk):custom spawns
-	if( MapName() == eMaps.mp_rr_arena_composite && GetCurrentPlaylistVarBool( "patch_for_dropoff", false ) )
-	{
-		DropoffPatch_Init()
-		AddCallback_SpawnsPostInit( Init_DropoffPatchSpawns )
-	}
+	//(mk):custom light for custom spawns
+	// if( MapName() == eMaps.mp_rr_arena_composite && GetCurrentPlaylistVarBool( "patch_for_dropoff", false ) )
+	// {
+		// DropoffPatch_Init()
+		// AddCallback_SpawnsPostInit( Init_DropoffPatchSpawns )
+	// }
 
 	if( Playlist() == ePlaylists.fs_1v1_headshots_only )
 	{
@@ -3115,7 +3115,7 @@ void function INIT_PregameCallbacks()
 		( 
 			void function()
 			{
-				SpawnSystem_SetCustomPlaylist( "fs_1v1" )
+				SpawnSystem_SetCustomPlaylist( "fs_1v1" ) //(mk): this can be set in playlist for simplicity
 			}
 		)
 	}
@@ -3926,16 +3926,16 @@ void function soloModeThread( LocPair waitingRoomLocation )
 			if( IsPlayerInSoloMode( player ) )
 				continue
 			
-			//#if !DEVELOPER 
+			#if !DEVELOPER 
 				if( Distance2D( player.GetOrigin(), waitingRoomLocation.origin ) > file.waitingRoomRadius )
 				{
 					maki_tp_player( player, g_randomWaitingSpawns.getrandom() ) //waiting player should be in waiting room,not battle area
 					HolsterAndDisableWeapons_Raw( player ) //(mk): dirty fix I wanted to avoid.
-					
-					if( !isPlayerInRestingList( player ) && !isPlayerInWaitingList( player ) )
-						soloModePlayerToWaitingList( player ) //(mk): dirty patch
 				}
-			//#endif
+				
+			if( !isPlayerInRestingList( player ) && !isPlayerInWaitingList( player ) )
+				soloModePlayerToWaitingList( player ) //(mk): dirty patch
+			#endif
 		}
 		
 

@@ -1,6 +1,3 @@
-#if SERVER
-globalize_all_functions
-#endif
 globalize_all_functions
 
 global const NO_CHOICES = 2
@@ -1839,6 +1836,11 @@ LocPair function NewLocPair( vector origin, vector angles )
     locPair.angles = angles
 
     return locPair
+}
+
+string function LocPairString( LocPair pair )
+{
+	return VectorToString( pair.origin ) + VectorToString( pair.angles )
 }
 
 LocationSettings function NewLocationSettings(string name, array<LocPair> spawns, vector cinematicCameraOffset, asset Asset = $"rui/menu/maps/map_not_found")

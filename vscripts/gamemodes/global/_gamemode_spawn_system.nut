@@ -305,6 +305,9 @@ global function SpawnSystem_GetPakInfoForKey				// string function SpawnSystem_G
 	global function DEV_TraceSpawnLine
 	global function DEV_CheckSpawns
 	global function DEV_CycleAll
+	global function DEV_GetSpawnInfo
+	global function DEV_EditSpawn
+	global function DEV_PrintSpawn
 	
 	const float HIGHLIGHT_SPAWN_DELAY 	= 7.0
 	const int SPAWN_POSITIONS_BUDGET 	= 210
@@ -340,7 +343,7 @@ global function SpawnSystem_GetPakInfoForKey				// string function SpawnSystem_G
 	
 	const vector MAX_ALLOWED_EXTENTS	= < 1730, 1730, 1730 > //for debug
 	const vector MAX_SPAWN_EXTENTS 		= < 300, 300, 300 >
-	const bool OVERIDE_VERIFY_SPAWNS 	= false //set this to true to always check all spawns
+	const bool OVERIDE_VERIFY_SPAWNS 	= true //set this to true to never check spawns
 	const int MAX_SPAWN_CORRECTION_ITER = 500
 	const float CORRECTION_STEP_LARGE 	= 5.0
 	const float CORRECTION_STEP_SMALL 	= 1.0
@@ -440,6 +443,9 @@ global function SpawnSystem_GetPakInfoForKey				// string function SpawnSystem_G
 					[" script DEV_ShowCenter( int set )"] = "Shows the calculated center of a set that would be calculated automatically in a game mode based on teams per spawns grouping (teamsCount).",
 					[" script DEV_CheckSpawns( vector mins = ZERO_VECTOR, vector maxs = ZERO_VECTOR )"] = "Manually check all current configured spawns for player specified hull collision. Defaults to HULL_HUMAN if not provided.",
 					[" script DEV_CycleAll( float delay = 2.0 )"] = "Teleport's all players in server through each spawn one at a time until complete or called with <= 0  -- DEV_CycleAll( 0 ) to stop",
+					[" script DEV_GetSpawnInfo( int index )"] = "Returns the string for the spawns info metadata",
+					[" script DEV_EditSpawn( int index, vector ornull origin = null, vector ornull angles = null, string info = \"\" )"] = "Manually modify a spawn's data. Uses current for omitted params",
+					[" script DEV_PrintSpawn( int index = -1 )"] = "Print a spawns coordinates by index",
 					["..........."] = "",
 					["............"] = "",
 					[" ==== GENERATE FILE ===="] = "",
@@ -1000,7 +1006,7 @@ array<SpawnData> function FetchReturnAllLocations( int eMap, string set = "_set_
 		#endif
 		
 		trackedSpawns++
-		if( ( OVERIDE_VERIFY_SPAWNS || file.bValidateSpawns && info.toupper() != "OOB" ) && !SpawnSystem_CheckSpawn( origin ) ) 
+		if( !OVERIDE_VERIFY_SPAWNS && ( file.bValidateSpawns && info.toupper() != "OOB" ) && !SpawnSystem_CheckSpawn( origin ) ) 
 		{
 			string oobSpawnInfo = format( "%s index: %d", VectorToString( origin ), trackedSpawns )	
 			
@@ -1540,6 +1546,14 @@ table< string, array< SpawnData > > function SpawnSystem_SortSpawnsByMetaData( a
 //						  DEVELOPER FUNCTIONS						//
 //////////////////////////////////////////////////////////////////////
 
+//Todo(mk): Refactor to use struct in spawn tool. 
+// Originally the tool was made using arrays to mimick the codebase format of 
+// using an array of ordered spawns to determine their pairing, however 
+// this should use a struct containing all data about a spawn including a 
+// table of metadata. The final output can then access each spawn and write 
+// it's respective files including all meta data in a clean and concise way 
+// allowing for future changes to be seamless.
+
 #if DEVELOPER
 
 void function DEV_PrintSortedSpawns( table< string, array< SpawnData > > printSpawns )
@@ -1990,11 +2004,14 @@ void function DEV_AddSpawn( string ornull checkpid, string info = "", int replac
 	if( empty( info ) )
 	{
 		string spawnSetName = _SpawnSetInfo()
+		string currentInfo = replace > -1 && IsValidSpawnIndex( replace ) ? DEV_GetSpawnInfo( replace ) : ""
 		
 		if( !empty( spawnSetName ) )
 			info = spawnSetName //auto set
+		else if( !empty( currentInfo ) && currentInfo.find( "spawn_" ) != -1 )
+			info = currentInfo
 		else
-			info = "spawn_" + currentSpawnCount
+			info = "spawn_" + ( replace > -1 ? replace.tointeger() : currentSpawnCount )
 	}
 	else 
 	{
@@ -2084,8 +2101,11 @@ void function DEV_AddSpawn( string ornull checkpid, string info = "", int replac
 		SendServerMessage( "Spawn added: " + str )
 	#endif
 	
-	printt( format( "\n\n***Last Added Spawn Pos: %s***\n", str ) )
-	printm( format( "\n\n***Last Added spawn Pos: %s***\n", str ) )
+	string lastSpawn = format( "\n\n***Last Added Spawn Pos: %s***\n", str )
+	{
+		printl( lastSpawn )
+		printm( lastSpawn )
+	}
 	
 	if( file.bAutoDelInvalid )
 		DEV_ValidateSpawn( SpawnCount() - 1, true, player )
@@ -2102,6 +2122,78 @@ void function DEV_AddSpawn( string ornull checkpid, string info = "", int replac
 	}
 	
 	CheckAutoSave()
+}
+
+void function DEV_EditSpawn( int index, vector ornull origin = null, vector ornull angles = null, string info = "" )
+{
+	if( !IsValidSpawnIndex( index ) )
+	{
+		string errorMsg = "Invalid spawn"
+		printl( errorMsg ); printm( errorMsg );
+		
+		return
+	}
+	
+	LocPair originalSpawn = GetSpawns()[ index ]
+	vector newOrigin 
+	vector newAngles
+	
+	if( origin == null )
+		newOrigin = originalSpawn.origin
+	else 
+		newOrigin = expect vector( origin )
+		
+	if( angles == null )
+		newAngles = originalSpawn.angles 
+	else 
+		newAngles = expect vector( angles )
+		
+	if( info == "" )
+		info = DEV_GetSpawnInfo( index )
+	
+	LocPair newCoordinates = NewLocPair( newOrigin, newAngles )
+		Warning( LocPairString( newCoordinates ) )
+	
+	DEV_AddSpawn( null, info, index, newCoordinates )
+}
+
+string function DEV_GetSpawnInfo( int index )
+{
+	if ( !IsValidSpawnIndex( index ) )
+	{
+		string msg = format( "Invalid spawn index %d", index )
+		printl( msg ); printm( msg )
+		
+		return ""
+	}
+
+	string positionData = file.dev_positions[ index ]
+	string infoString = ""
+
+	if ( DEV_SpawnType() == "csv" )
+	{
+		int infoStartIdx = positionData.find( ",   \"" )
+		if ( infoStartIdx != -1 )
+		{
+			infoStartIdx += 5
+
+			int infoEndIdx = positionData.find( "\"", infoStartIdx )
+			if ( infoEndIdx != -1 )
+				infoString = positionData.slice( infoStartIdx, infoEndIdx )
+		}
+	}
+	else if ( DEV_SpawnType() == "sq" )
+	{
+		int infoStartIdx = positionData.find( "//" )
+		if( infoStartIdx != -1 )
+		{
+			infoStartIdx += 2
+			infoString = positionData.slice( infoStartIdx )
+			infoString = StringReplace( infoString, "\"", "" )
+		}
+	}
+
+	return infoString
 }
 
 int function GetCurrentSpawnSet( int index, int teamsize = -1 )
@@ -2141,13 +2233,10 @@ void function DEV_ClearSpawns( bool clearHighlights = true )
 	GetSpawns().clear()
 	
 	string msg = "Cleared all saved positions"
-	printt( msg )
-	printm( msg )
+	printt( msg ); printm( msg )
 	
 	if( clearHighlights )
-	{
 		DEV_HighlightAll( REMOVE ) //removes all with true passed
-	}
 }
 
 void function DEV_TeleportToSpawn( string pid = "", int posIndex = 0 )
@@ -2167,15 +2256,13 @@ void function DEV_TeleportToSpawn( string pid = "", int posIndex = 0 )
 	
 	if( !IsValid( player ) )
 	{
-		printt( "Invalid player" )
-		printm( "Invalid player" )
+		printt( "Invalid player" ); printm( "Invalid player" )
 		return 
 	}
 	
 	if( !IsValidSpawnIndex( posIndex ) )
 	{
-		printt( "Invalid spawn selected" )
-		printm( "Invalid spawn selected" )
+		printt( "Invalid spawn selected" ); printm( "Invalid spawn selected" )
 		return
 	}
 	
@@ -3278,7 +3365,7 @@ void function DEV_AutoDeleteInvalid( bool setting = true )
 	printm( msg )
 }
 
-LocPair ornull function DEV_GetSpawn( int index )
+LocPair function DEV_GetSpawn( int index )
 {
 	LocPair nullLoc
 	string msg
@@ -3286,13 +3373,28 @@ LocPair ornull function DEV_GetSpawn( int index )
 	if( !IsValidSpawnIndex( index ) )
 	{
 		msg = "Invalid spawn index."
-		printt( msg )
-		printm( msg )
+		printt( msg ); printm( msg )
 		
-		return null
+		return nullLoc
 	}
 	
 	return GetSpawns()[ index ]
+}
+
+void function DEV_PrintSpawn( int index = -1 )
+{
+	if( !IsValidSpawnIndex( index ) )
+	{
+		string error = "Invalid spawn index. Did you mean to use DEV_PrintSpawns() ?"
+		printl( error ); printm( error )
+		
+		return
+	}
+	
+	LocPair spawn = GetSpawns()[ index ]
+	string printStr = LocPairString( spawn )
+	
+	printl( printStr ); printm( printStr )
 }
 
 int function SpawnCount()
