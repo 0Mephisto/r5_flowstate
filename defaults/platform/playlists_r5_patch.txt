@@ -4231,6 +4231,7 @@ playlists
 				mp_rr_party_crasher					 			1
 				mp_rr_aqueduct								 	1
 				mp_rr_arena_phase_runner						1
+				mp_rr_arena_composite							1
 			} } }
 		}
 
@@ -4285,6 +4286,7 @@ playlists
 				mp_rr_party_crasher					 			1
 				mp_rr_aqueduct								 	1
 				mp_rr_arena_phase_runner						1
+				mp_rr_arena_composite							1
 			} } }
 		}
 
