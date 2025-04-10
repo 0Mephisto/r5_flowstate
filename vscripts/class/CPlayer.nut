@@ -438,6 +438,5 @@ void function ToggleMute( entity player, bool toggle )
 
 bool function HasPlayerSettingMod( entity player, string mod )
 {
-	array<string> mods = player.GetPlayerSettingsMods()
-	return mods.contains( mod )
+	return player.HasClassMod(mod)
 }
