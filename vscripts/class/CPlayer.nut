@@ -10,6 +10,7 @@ global function ToggleMute
 global function CommandsEnabled
 global function IsCommandsEnabled 
 global function p
+global function HasPlayerSettingMod
 
 int __nextInputHandle = 0
 
@@ -433,4 +434,10 @@ void function DisableDemigod( entity player )
 void function ToggleMute( entity player, bool toggle )
 {
 	player.ToggleMute( toggle )
+}
+
+bool function HasPlayerSettingMod( entity player, string mod )
+{
+	array<string> mods = player.GetPlayerSettingsMods()
+	return mods.contains( mod )
 }
