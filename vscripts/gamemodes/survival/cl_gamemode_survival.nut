@@ -3629,10 +3629,14 @@ array<WaitingForPlayersCameraLocPair> function GetCamerasForMap( string map )
 	
 	switch(map)
 	{
-		case "mp_rr_desertlands_holiday":
-		case "mp_rr_desertlands_64k_x_64k":
-		case "mp_rr_desertlands_64k_x_64k_nx":
-		case "mp_rr_desertlands_64k_x_64k_tt":
+		case eMaps.mp_rr_desertlands_holiday:
+		case eMaps.mp_rr_desertlands_64k_x_64k:
+		case eMaps.mp_rr_desertlands_64k_x_64k_nx:
+		case eMaps.mp_rr_desertlands_64k_x_64k_mv:
+		case eMaps.mp_rr_desertlands_64k_x_64k_tt:
+		case eMaps.mp_rr_desertlands_mu1:
+		case eMaps.mp_rr_desertlands_mu1_tt:
+		case eMaps.mp_rr_desertlands_mu2:
 			cutsceneSpawns.append(NewCameraPair( <-17572.3301, 11646.5137, -3777.35034>, <0, 155.688446, 0> ))
 			cutsceneSpawns.append(NewCameraPair( <-15497.5586, 25198.2129, -4041.42749>, <0, 9.20065498, 0> ))
 			cutsceneSpawns.append(NewCameraPair( <28017.6992, 8541.48926, -3296.67017>, <0, 106.955139, 0> ))
@@ -3651,6 +3655,7 @@ array<WaitingForPlayersCameraLocPair> function GetCamerasForMap( string map )
 		break
 		
 		case "mp_rr_canyonlands_mu2":
+		case "mp_rr_canyonlands_mu2_tt":
 			cutsceneSpawns.append(NewCameraPair( <-6049.01807, 18478.2285, 2771.03174>, <0, -34.2617683, 0> ))
 			cutsceneSpawns.append(NewCameraPair( <-15686.7402, 1259.25342, 2888.13013>, <0, 143.531845, 0> ))
 			cutsceneSpawns.append(NewCameraPair( <-26376.4258, -3842.12036, 2760.02759>, <0, 52.9255295, 0> ))
