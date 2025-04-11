@@ -62,11 +62,12 @@ global enum eMaps
 	mp_rr_party_crasher, //19
 	mp_rr_arena_phase_runner, //20
 	mp_rr_arena_composite, //21
-	mp_rr_aqueduct, //22
-	mp_rr_arena_empty, //23
-	mp_lobby, //24
-	mp_rr_construct, //25
-	mp_flowstate, //26
+	mp_rr_arena_skygarden, //22
+	mp_rr_aqueduct, //23
+	mp_rr_arena_empty, //24
+	mp_lobby, //25
+	mp_rr_construct, //26
+	mp_flowstate, //27
 	
 	
 	_MAP_COUNT //LAST
