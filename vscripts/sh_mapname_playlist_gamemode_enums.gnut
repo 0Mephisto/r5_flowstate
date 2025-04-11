@@ -80,13 +80,13 @@ global enum ePlaylists
 	fs_tdm, //2
 	fs_prophunt, //3
 	fs_duckhunt, //4
-	fs_survival_solos, //5
-	fs_survival_duos, //6
-	fs_survival_trios, //7
+	survival_solos, //5
+	survival_duos, //6
+	survival_trios, //7
 	fs_surf, //8
 	fs_movementgym, //9
 	fs_infected, //10
-	fs_survival, //11
+	survival, //11
 	survival_dev, //12
 	custom_ctf, //13
 	fs_lgduels_1v1, //14
