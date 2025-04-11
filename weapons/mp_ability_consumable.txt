@@ -254,7 +254,7 @@ WeaponData
 		
 		snd_bomb
 		{
-            "viewmodel" 							"mdl/Weapons/bomb/ptpov_bomb.rmdl"
+            "viewmodel" 							"mdl/dev/empty_model.rmdl"//"mdl/Weapons/bomb/ptpov_bomb.rmdl"
             "playermodel" 							"mdl/Weapons/bomb/w_bomb.rmdl"
             "printname"                             "Planting Bomb"
             "charge_time"                           "4.0"

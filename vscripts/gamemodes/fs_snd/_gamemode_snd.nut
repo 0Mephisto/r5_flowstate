@@ -99,7 +99,7 @@ void function _GamemodeSND_Init()
 	RegisterSignal("EndWayPointThread")
 	RegisterSignal( "FlagPhysicsEnd" )
 
-	PrecacheModel($"mdl/Weapons/bomb/ptpov_bomb.rmdl")
+	//PrecacheModel($"mdl/Weapons/bomb/ptpov_bomb.rmdl")//FIX THE MODEL - KRAL
 	PrecacheModel($"mdl/Weapons/bomb/w_bomb.rmdl")
 	
 	FS_SND.currentLocation = GetCurrentPlaylistVarInt( "SND_force_initial_map", 0 )

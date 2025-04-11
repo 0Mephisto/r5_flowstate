@@ -17,7 +17,19 @@ void function CodeCallback_MapInit()
 	SURVIVAL_SetMapCenter( <0, 0, 0> )
     SURVIVAL_SetMapDelta( 4900 )
 
-	MapZones_RegisterDataTable( $"datatable/map_zones/zones_mp_rr_canyonlands_mu2.rpak" )
+	if (MapName() == eMaps.mp_rr_canyonlands_mu2_mv )
+		MapZones_RegisterDataTable( $"datatable/map_zones/zones_mp_rr_canyonlands_mu2_mv.rpak" )
+	else if (MapName() == eMaps.mp_rr_canyonlands_mu2_tt )
+	{
+		PrecacheModel( $"mdl/levels_terrain/mp_rr_canyonlands/crypto_holo_map_01.rmdl")
+		PrecacheModel( $"mdl/levels_terrain/mp_rr_canyonlands/crypto_holo_map_02.rmdl")
+		PrecacheModel( $"mdl/levels_terrain/mp_rr_canyonlands/crypto_holo_map_03.rmdl")
+		PrecacheModel( $"mdl/levels_terrain/mp_rr_canyonlands/crypto_holo_map_04.rmdl")
+		PrecacheModel( $"mdl/levels_terrain/mp_rr_canyonlands/crypto_holo_map_05.rmdl")
+		MapZones_RegisterDataTable( $"datatable/map_zones/zones_mp_rr_canyonlands_mu2_tt.rpak" )
+	}
+	else
+		MapZones_RegisterDataTable( $"datatable/map_zones/zones_mp_rr_canyonlands_mu2.rpak" )
 	
 	//Clean up unused ents
 	AddCallback_EntitiesDidLoad( KCMU2_OnEntitiesDidLoad )
@@ -25,6 +37,7 @@ void function CodeCallback_MapInit()
 	AddSpawnCallback( "info_spawnpoint_human", CleanupEnt )
 	Canyonlands_MapInit_Common()
 }
+
 
 void function CleanupEnt( entity ent )
 {
@@ -124,9 +137,9 @@ bool function ShouldDestroyPropDynamic( string model )
 	switch( model )
 	{
 		case "mdl/props/proxy_r5/pvp_currency_container.rmdl":
-		case "mdl/props/crafting_siphon/crafting_siphon.rmdl":
-		case "mdl/props/crafting_replicator/crafting_replicator.rmdl":
-		case "mdl/props/global_access_panel_button/global_access_panel_button_console_w_stand.rmdl":
+		//case "mdl/props/crafting_siphon/crafting_siphon.rmdl":
+		//case "mdl/props/crafting_replicator/crafting_replicator.rmdl":
+		//case "mdl/props/global_access_panel_button/global_access_panel_button_console_w_stand.rmdl":
 		return true
 	}
 	
