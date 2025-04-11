@@ -1751,7 +1751,7 @@ struct
 			
 				//TODO: mini framework for parsing valid map/playlist combos
 				// needs server function capable of swapping playlist & map
-				//CreateServer("","","mp_rr_desertlands_64k_x_64k","fs_survival_solos", 0)
+				//CreateServer("","","mp_rr_desertlands_64k_x_64k","survival_solos", 0)
 				break
 				
 			case "movement_recorder_playback_rate":

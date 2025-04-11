@@ -7117,10 +7117,10 @@ array<entity> function FSDM_ReturnBestPlayers_FromChampions( array<entity> champ
 	
 	switch( Playlist() )
 	{
-		case ePlaylists.fs_survival:
-		case ePlaylists.fs_survival_solos:
-		case ePlaylists.fs_survival_duos:
-		case ePlaylists.fs_survival_trios:
+		case ePlaylists.survival:
+		case ePlaylists.survival_solos:
+		case ePlaylists.survival_duos:
+		case ePlaylists.survival_trios:
 		case ePlaylists.SURVIVAL:
 			
 			allSummaryData.sort( FS_SortSurvival )
@@ -7230,10 +7230,10 @@ array<entity> function Tracker_DetermineBestChampions( array<entity> championCan
 	
 	switch( Playlist() )
 	{
-		case ePlaylists.fs_survival:
-		case ePlaylists.fs_survival_solos:
-		case ePlaylists.fs_survival_duos:
-		case ePlaylists.fs_survival_trios:
+		case ePlaylists.survival:
+		case ePlaylists.survival_solos:
+		case ePlaylists.survival_duos:
+		case ePlaylists.survival_trios:
 		case ePlaylists.SURVIVAL:
 			
 			allSummaryData.sort( FS_SortSurvival_Tracker )

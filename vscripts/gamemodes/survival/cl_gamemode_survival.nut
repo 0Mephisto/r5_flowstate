@@ -3601,7 +3601,7 @@ void function WaitingForPlayers_RemoveCustomCameras()
 	SetMapSetting_FogEnabled( true )
 	DisableCustomMapAndGamemodeNameFrames()
 	
-	if( Playlist() != ePlaylists.fs_survival && Playlist() != ePlaylists.fs_survival_duos && Playlist() != ePlaylists.fs_survival_solos )
+	if( Playlist() != ePlaylists.survival && Playlist() != ePlaylists.survival_duos && Playlist() != ePlaylists.survival_solos )
 		return
 		
 	entity targetCamera = GetEntByScriptName( "target_char_sel_camera_new" )
@@ -3676,7 +3676,7 @@ void function OnGamestatePlaying()
 {
 	WaitingForPlayersOverlay_Destroy()
 	
-	if( Playlist() == ePlaylists.fs_survival || Playlist() == ePlaylists.fs_survival_duos || Playlist() == ePlaylists.fs_survival_solos )
+	if( Playlist() == ePlaylists.survival || Playlist() == ePlaylists.survival_duos || Playlist() == ePlaylists.survival_solos )
 		GetLocalClientPlayer().ClearMenuCameraEntity()
 }
 

@@ -1056,7 +1056,7 @@ void function DisplayMessage( string str1, string str2, float duration, int uiTy
 			case ePlaylists.fs_movementgym:
 			case ePlaylists.fs_scenarios:
 			case ePlaylists.fs_1v1:
-			case ePlaylists.fs_survival_solos:
+			case ePlaylists.survival_solos:
 			case ePlaylists.fs_lgduels_1v1:
 			case ePlaylists.fs_snd:
 			
