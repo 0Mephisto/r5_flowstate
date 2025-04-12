@@ -36,14 +36,14 @@
 	"OnWeaponChargeEnd" 						    "OnWeaponChargeEnd_weapon_doubletake"
 	"OnProjectileCollision"                         "OnProjectileCollision_weapon_doubletake"
 
-	"charge_time" 					"0.000000"
-	"charge_cooldown_time"			"1"
-	"charge_cooldown_delay"   		"0.000000"
+	"charge_time" 					"0.85"
+	"charge_cooldown_time"			"0.1"
+	"charge_cooldown_delay"   		"0.1"
 
-	"charge_levels"					"0"
-	"charge_level_base"				"0"
+	"charge_levels"					"4"
+	"charge_level_base"				"1"
 
-	"rui_crosshair_index"			"0"
+	"rui_crosshair_index"			"1"
 
 	// Enable Hopup RUIs
 	"ui20_enable"					"1"
