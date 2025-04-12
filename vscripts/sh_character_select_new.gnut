@@ -3025,6 +3025,10 @@ array<ItemFlavor> function GetAllGoodAnimsFromGladcardStancesForCharacter( ItemF
 		actualGoodAnimsForThisCharacter.append( GetItemFlavorByGUID( ConvertItemFlavorGUIDStringToGUID( "SAID01749100240" ) ) )
 		return actualGoodAnimsForThisCharacter
 		
+			case "character_dummie":
+		actualGoodAnimsForThisCharacter.append( GetItemFlavorByAsset( $"settings/itemflav/gcard_stance/bangalore/common_01.rpak" ) )
+		return actualGoodAnimsForThisCharacter
+		
 			case "character_bangalore":
 		actualGoodAnimsForThisCharacter.append( GetItemFlavorByGUID( ConvertItemFlavorGUIDStringToGUID( "SAID00775529591" ) ) )
 		actualGoodAnimsForThisCharacter.append( GetItemFlavorByGUID( ConvertItemFlavorGUIDStringToGUID( "SAID02041779191" ) ) )
