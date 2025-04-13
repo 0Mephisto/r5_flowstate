@@ -4105,7 +4105,6 @@ playlists
 				// Firing Range:
 				survival_firingrange						   	1
 				staging_ultimates_enabled					  	1
-				survival_staging_area_enabled				  	0
 
 				custom_loot               						0
 				charge_pylons_raise_time_override               15
@@ -4175,7 +4174,6 @@ playlists
 				// Firing Range:
 				survival_firingrange						   	1
 				staging_ultimates_enabled					1
-				survival_staging_area_enabled				0
 				//survival_infinite_ammo					   	1
 
 				custom_loot               						0

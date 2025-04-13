@@ -346,6 +346,15 @@ bool function IsNewLootEnabled( string ref )
 			return false
 		}
 	}
+
+	if( Playlist() != ePlaylists.survival_firingrange )
+	{
+		switch( ref )
+		{
+			case "mp_weapon_3030":
+			return false
+		}
+	}
 		
 	switch( ref )
 	{
