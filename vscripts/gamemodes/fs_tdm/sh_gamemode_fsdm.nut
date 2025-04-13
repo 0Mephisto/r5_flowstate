@@ -134,6 +134,7 @@ void function Sh_CustomTDM_Init()
 		}
 		break
 	case eMaps.mp_rr_olympus:
+	case eMaps.mp_rr_olympus_tt:
         Shared_RegisterLocation(
             NewLocationSettings(
                "Olympus Test Location",

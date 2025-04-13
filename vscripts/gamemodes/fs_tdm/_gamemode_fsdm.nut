@@ -668,6 +668,7 @@ LocPair function _GetVotingLocation()
 		case eMaps.mp_rr_arena_empty:
 			return NewLocPair(<0,0,0>, <0, -179.447098, 0>)
 		case eMaps.mp_rr_olympus:
+		case eMaps.mp_rr_olympus_tt:
 			return NewLocPair( <7008.73047, 7627.40234, -4623.99805>, <0,63,0> )
         default:
 			mAssert(false, "No voting location for the map!")

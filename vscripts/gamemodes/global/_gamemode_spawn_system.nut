@@ -775,14 +775,9 @@ array<SpawnData> function GenerateCustomSpawns( int eMap, int coreSpawnsLen = -1
 			
 		break ////////////////////////////////////////////////////////////////////////////
 		//////////////////////////////////////////////////////////////////////////////////	
-		/*case eMaps.mp_rr_arena_skygarden:
-		
-			defaultWaitingRoom = NewLocPair( < -7.8126, -1320.75, 2877.51 >, < 359.849, 270.32, 0 > )
-			g_waitingRoomPanelLocation = SetWaitingRoomAndGeneratePanelLocs( defaultWaitingRoom )*/
-		
-		break ////////////////////////////////////////////////////////////////////////////
-		//////////////////////////////////////////////////////////////////////////////////
+
 		case eMaps.mp_rr_olympus:
+		case eMaps.mp_rr_olympus_tt:
 
 			defaultWaitingRoom = NewLocPair( < 318.434906, -19474.4141, -4947.88867 > , < 0, 32.8506927, 0 > )
 			g_waitingRoomPanelLocation = SetWaitingRoomAndGeneratePanelLocs( defaultWaitingRoom )	

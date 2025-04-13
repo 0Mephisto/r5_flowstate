@@ -3666,6 +3666,7 @@ array<WaitingForPlayersCameraLocPair> function GetCamerasForMap( string map )
 		break
 		
 		case "mp_rr_olympus":
+		case "mp_rr_olympus_tt":
 			cutsceneSpawns.append(NewCameraPair( <0,0,0>, <0,0,0> ) )
 		break
 		

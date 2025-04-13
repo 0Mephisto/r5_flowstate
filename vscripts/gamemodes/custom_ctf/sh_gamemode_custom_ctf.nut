@@ -567,6 +567,7 @@ void function Sh_CustomCTF_Init()
 
 			break
 		case eMaps.mp_rr_olympus:
+		case eMaps.mp_rr_olympus_tt:
 			Shared_RegisterLocationCTF(
 				NewCTFLocationSettings(
 					"Gardens",
