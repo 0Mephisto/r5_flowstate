@@ -155,4 +155,5 @@ global const array<asset> WEAPON_ASSETS =
 	$"settings/itemflav/loot/main_weapon/sentinel.rpak",
 	$"settings/itemflav/loot/main_weapon/volt_smg.rpak",
 	$"settings/itemflav/loot/main_weapon/3030repeater.rpak",
+	$"settings/itemflav/loot/main_weapon/compound_bow.rpak",
 ]

@@ -1,9 +1,4 @@
-#base "_base_assault_rifle.txt"
-
-                   
-#base "_base_mags_energy.txt"
-      
-
+#base "_base_assault_rifle_crate.txt"
 WeaponData
 {
 	// General
@@ -20,7 +15,6 @@ WeaponData
 	"fire_mode"   									"automatic"
 
     "damage_flags"									"DF_BULLET | DF_GIB | DF_DISMEMBERMENT"
-	"ammo_pool_type"								"special"
 
 	// Menu
 	"menu_category"                                 "ar"
@@ -44,8 +38,8 @@ WeaponData
 	"projectile_launch_speed"						"30500"
 
 	// energy weapons have less drop
-	"projectile_drag_coefficient" 					"0.0"
-	"projectile_gravity_scale"						"1.15"
+	"projectile_drag_coefficient" 					"0.000000"
+	"projectile_gravity_scale"						"1.150000"
 	"projectile_ricochet_max_count"					"0"
 
 	"projectile_trail_effect_0" 					"P_tracer_projectile_smg_blue"
@@ -93,26 +87,26 @@ WeaponData
 	"low_ammo_sound_name_8"							"Hemlok_LowAmmo_Shot3"
 	"low_ammo_sound_name_9"							"Hemlok_LowAmmo_Shot3"
 
-	"deployfirst_time"								"1.5"
+	"deployfirst_time"								"1.500000"
 
-	"ammo_clip_size"   								"20"
+	"ammo_clip_size"   								"36"
 	"ammo_per_shot" 				                "1"
 	"ammo_min_to_fire"								"1"
-    "low_ammo_fraction" 							"0.4"
+    "low_ammo_fraction" 							"0.400000"
 
-	"ammo_default_total"							"0"
-	"ammo_stockpile_max"							"25"
+	"ammo_default_total"							"288"
+	"ammo_stockpile_max"							"252"
 	"ammo_no_remove_from_stockpile"					"0"
-    "uses_ammo_pool"								"1"
+    "uses_ammo_pool"								"0"
 
 
 	// Damage - When Used by Players
-	"damage_near_value"   							"19"
-	"damage_far_value"								"19"
-	"damage_very_far_value"							"19"
-	"damage_near_value_titanarmor"					"19"
-	"damage_far_value_titanarmor" 					"19"
-	"damage_very_far_value_titanarmor" 				"19"
+	"damage_near_value"   							"21"
+	"damage_far_value"								"21"
+	"damage_very_far_value"							"21"
+	"damage_near_value_titanarmor"					"21"
+	"damage_far_value_titanarmor" 					"21"
+	"damage_very_far_value_titanarmor" 				"21"
 	"damage_rodeo" 									"170"
 
 	// Damage - When Used by NPCs
@@ -126,43 +120,43 @@ WeaponData
 	"npc_max_engage_range_heavy_armor"				"2500"
 
 	// NPC
-	"proficiency_poor_spreadscale"					"5.0"
-	"proficiency_average_spreadscale" 				"3.5"
-	"proficiency_good_spreadscale"					"3.0"
-	"proficiency_very_good_spreadscale"   			"2.5"
-	"proficiency_perfect_spreadscale"   			"1.75"
+	"proficiency_poor_spreadscale"					"5.000000"
+	"proficiency_average_spreadscale" 				"3.500000"
+	"proficiency_good_spreadscale"					"3.000000"
+	"proficiency_very_good_spreadscale"   			"2.500000"
+	"proficiency_perfect_spreadscale"   			"1.750000"
 
-	"proficiency_poor_additional_rest"				"0.2"
-	"proficiency_average_additional_rest"			"0.2"
-	"proficiency_good_additional_rest"				"0.2"
+	"proficiency_poor_additional_rest"				"0.200000"
+	"proficiency_average_additional_rest"			"0.200000"
+	"proficiency_good_additional_rest"				"0.200000"
 
 	"npc_min_engage_range"							"0"
 	"npc_min_engage_range_heavy_armor"				"500"
 
 	"npc_min_burst"   								"7"
 	"npc_max_burst"   								"12"
-	"npc_rest_time_between_bursts_min"				"0.7"
-	"npc_rest_time_between_bursts_max"				"1.2"
+	"npc_rest_time_between_bursts_min"				"0.700000"
+	"npc_rest_time_between_bursts_max"				"1.200000"
 
     "viewmodel_offset_hip"							"-0.3 0.9 0.1"
 	"viewmodel_offset_ads"							"0 4.2 0.22"
 
 	"dof_zoom_nearDepthStart"						"2"
 	"dof_zoom_nearDepthEnd"							"3"
-	"dof_nearDepthStart"							"0.0"
-	"dof_nearDepthEnd"								"0.0"
+	"dof_nearDepthStart"							"0.000000"
+	"dof_nearDepthEnd"								"0.000000"
 
 	dof_zoom_focusArea_horizontal					0.073
 	dof_zoom_focusArea_top							0.080
 	dof_zoom_focusArea_bottom						-0.041
 
 	// Behavior
-	"fire_rate"   									"11.2"
+	"fire_rate"   									"11.200000"
 
-	"reload_time" 									"3.2"
-	"reload_time_late1"								"2.2"
-	"reloadempty_time"								"3.2"
-	"reloadempty_time_late1"						"2.2"
+	"reload_time" 									"3.200000"
+	"reload_time_late1"								"2.200000"
+	"reloadempty_time"								"3.200000"
+	"reloadempty_time_late1"						"2.200000"
 
 	"vortex_refire_behavior"  						"bullet"
 	"allow_empty_fire"								"0"
@@ -172,11 +166,12 @@ WeaponData
 	"trigger_snipercam"   							"0"
 	"allow_headshots" 								"1"
 
-	"charge_time" 									"0.420000"
-	"charge_remain_full_when_fired" 				"1"
+	"charge_time" 									"0.010000"
 	"charge_require_input"							"1"
-	"charge_cooldown_time"							"0.500000"
-	"charge_cooldown_delay"   						"0.100000"
+ 	"charge_cooldown_time"							"0.000000"
+ 	"charge_cooldown_delay"   						"0.000000"
+	"charge_cooldown_time"							"0.000000"
+	"charge_cooldown_delay"   						"0.000000"
 	"charge_end_forces_fire"						"0"
 	"charge_attack_requires_full_charge"    		"0"
 
@@ -199,10 +194,10 @@ WeaponData
 	"sprint_fractional_anims"						"0"
 
 	// ADS - default iron
-	"ads_fov_zoomfrac_start"                "0.15"
-    "ads_fov_zoomfrac_end"                  "0.8"
-    "viewmodel_offset_zoom_frac_start"      "0.15"
-    "viewmodel_offset_zoom_frac_end"        "0.8"
+	"ads_fov_zoomfrac_start"                "0.150000"
+    "ads_fov_zoomfrac_end"                  "0.800000"
+    "viewmodel_offset_zoom_frac_start"      "0.150000"
+    "viewmodel_offset_zoom_frac_end"        "0.800000"
 
 	// View Kick
 	"viewkick_pattern"                              "energy_ar_3"
@@ -210,60 +205,60 @@ WeaponData
     "viewkick_spring" 								"energy_AR_vkp"
     "viewkick_spring_hot"                           "energy_AR_vkp_hot"
 
-    "viewkick_spring_heatpershot"                   "1.0"
-    "viewkick_spring_cooldown_holdtime"             "0.09"
-    "viewkick_spring_cooldown_fadetime"             "0.05"
+    "viewkick_spring_heatpershot"                   "1.000000"
+    "viewkick_spring_cooldown_holdtime"             "0.090000"
+    "viewkick_spring_cooldown_fadetime"             "0.050000"
 
     "viewmodel_spring_jolt"                          "autofire_viewmodel_jolt"
-    "viewmodel_jolt_scale"                           "1.0"
-    "viewmodel_jolt_backwardPerShot"                 "-0.25"
+    "viewmodel_jolt_scale"                           "1.000000"
+    "viewmodel_jolt_backwardPerShot"                 "-0.250000"
     "viewmodel_jolt_roll"                            "0 2.7 0.0"
     "viewmodel_jolt_side"                            "0 0.04 0"
 
-	"viewkick_pitch_base" 							"1.0"
-    "viewkick_pitch_random"   						"1.0"
-	"viewkick_pitch_softScale"						"1.8"   //"1.55"
-	"viewkick_pitch_hardScale"						"0.3"
+	"viewkick_pitch_base" 							"1.000000"
+    "viewkick_pitch_random"   						"1.000000"
+	"viewkick_pitch_softScale"						"1.800000"
+	"viewkick_pitch_hardScale"						"0.300000"
 
-	"viewkick_yaw_base"   							"1.0"
-	"viewkick_yaw_random" 							"1.0"
-	"viewkick_yaw_softScale"  						"1.1"  //"0.65"
-	"viewkick_yaw_hardScale"  						"0.3"
+	"viewkick_yaw_base"   							"1.000000"
+	"viewkick_yaw_random" 							"1.000000"
+	"viewkick_yaw_softScale"  						"1.100000"
+	"viewkick_yaw_hardScale"  						"0.300000"
 
-	"viewkick_roll_base"  							"-1.35"
-    "viewkick_roll_randomMin" 						"-0.35"
-    "viewkick_roll_randomMax" 						"0.35"
-    "viewkick_roll_softScale" 						"0.8"
-    "viewkick_roll_hardScale" 						"0.3"
+	"viewkick_roll_base"  							"-1.350000"
+    "viewkick_roll_randomMin" 						"-0.350000"
+    "viewkick_roll_randomMax" 						"0.350000"
+    "viewkick_roll_softScale" 						"0.800000"
+    "viewkick_roll_hardScale" 						"0.300000"
 
-	"viewkick_hipfire_weaponFraction" 				"0.25"
-	"viewkick_hipfire_weaponFraction_vmScale" 		"0.75"
+	"viewkick_hipfire_weaponFraction" 				"0.250000"
+	"viewkick_hipfire_weaponFraction_vmScale" 		"0.750000"
 	"viewkick_ads_weaponFraction" 					"0"
-	"viewkick_ads_weaponFraction_vmScale" 			"1.0"
+	"viewkick_ads_weaponFraction_vmScale" 			"1.000000"
 
-	"viewkick_scale_firstshot_hipfire"				"1.0"
-	"viewkick_scale_min_hipfire"  					"1.0"
-	"viewkick_scale_max_hipfire"  					"1.72"
-	"viewkick_scale_firstshot_ads"					"1.0"
-	"viewkick_scale_min_ads"  						"1.0"
-	"viewkick_scale_max_ads"  						"1.0"
+	"viewkick_scale_firstshot_hipfire"				"1.000000"
+	"viewkick_scale_min_hipfire"  					"1.000000"
+	"viewkick_scale_max_hipfire"  					"1.720000"
+	"viewkick_scale_firstshot_ads"					"1.000000"
+	"viewkick_scale_min_ads"  						"1.000000"
+	"viewkick_scale_max_ads"  						"1.000000"
 	"viewkick_scale_valuePerShot" 					"1"
 	"viewkick_scale_pitch_valueLerpStart"   		"2"
 	"viewkick_scale_pitch_valueLerpEnd" 			"7"
 	"viewkick_scale_yaw_valueLerpStart"   			"2"
 	"viewkick_scale_yaw_valueLerpEnd" 				"7"
-	"viewkick_scale_valueDecayDelay"  				"0.12"
+	"viewkick_scale_valueDecayDelay"  				"0.120000"
 	"viewkick_scale_valueDecayRate"   				"50"
 
-	"viewkick_perm_pitch_base"						"0.0"
-	"viewkick_perm_pitch_random"  				 	"0.0"
-	"viewkick_perm_yaw_base"						"0.0"
-	"viewkick_perm_yaw_random"						"0.0"
+	"viewkick_perm_pitch_base"						"0.000000"
+	"viewkick_perm_pitch_random"  				 	"0.000000"
+	"viewkick_perm_yaw_base"						"0.000000"
+	"viewkick_perm_yaw_random"						"0.000000"
 
 	//
-	"viewmodel_shake_forward"						"0.0"
-	"viewmodel_shake_up"							"0.0"
-	"viewmodel_shake_right"							"0.0"
+	"viewmodel_shake_forward"						"0.000000"
+	"viewmodel_shake_up"							"0.000000"
+	"viewmodel_shake_right"							"0.000000"
 
 	// WeaponED Unhandled Key/Values and custom script Key/Values
 	//setting to "0" so it's tunable in Bakery
@@ -292,33 +287,9 @@ WeaponData
 	"damage_very_far_distance"	"5000"
 	Mods
 	{
-		funny_selector
-		{
-			"projectile_ricochet_max_count"					"9999"
-			"bolt_bounce_frac" 								"1"
-			"projectile_damages_owner"						"1"
-		}
-
 		crate
 	    {
 	    }
-		
-		gold
-        {
-        }
-		
-        hopup_turbocharger
-        {
-			"charge_time" 					"0.01"
-			"charge_cooldown_time"			"0.0"
-			"charge_cooldown_delay"   		"0.0"
-			"damage_near_value"   							"17"
-			"damage_far_value"								"17"
-			"damage_very_far_value"							"17"
-			"damage_near_value_titanarmor"					"17"
-			"damage_far_value_titanarmor" 					"17"
-			"damage_very_far_value_titanarmor" 				"17"
-        }
         
         hopup_selectfire
         {
@@ -459,40 +430,6 @@ WeaponData
 			"dof_zoom_nearDepthStart"		"1.0"
             "dof_zoom_nearDepthEnd"			"12.3"
 		}
-
-                   
-        energy_mag_l1
-		{
-			"ammo_clip_size"   					"36"
-		}
-
-		energy_mag_l2
-		{
-			"ammo_clip_size"   					"36"
-		}
-
-		energy_mag_l3
-		{
-			"ammo_clip_size"   					"36"
-		}
-        energy_mag_l4
-        {
-            "ammo_clip_size"   		        	"36"
-        }
-
-        amped_damage_alt
-        {
-            "damage_near_value"                             "*1.2"
-            "damage_far_value"                              "*1.2"
-            "damage_very_far_value"                         "*1.2"
-            "damage_near_value_titanarmor"                  "*1.2"
-            "damage_far_value_titanarmor"                   "*1.2"
-            "damage_very_far_value_titanarmor"              "*1.2"
-
-            "tracer_effect"   				                "P_wpn_havok_beam_amp"
-            "tracer_effect_first_person"  	                "P_wpn_havok_beam_amp"
-            "impact_effect_table" 			                "exp_energy_ar_charged_amp"
-        }
 	}
 
 	"ui1_enable"		"1"
