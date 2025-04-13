@@ -10,6 +10,7 @@ global function LootRollerSpawned
 global function Flowstate_ReturnDroneLootForCurrentTier
 global function Flowstate_StartRollerLootLoop
 global function Flowstate_BuildLootForDrone
+global function Pathtt_StartRollerLootLoop
 #endif
 
 #if CLIENT
@@ -193,6 +194,15 @@ void function Flowstate_StartRollerLootLoop( entity roller, int tier = 2, int ma
 		foreach( player in GetPlayerArray() )
 			Remote_CallFunction_NonReplay( player, "ServerCallback_SetLootRollerLootTierFX", roller.GetEncodedEHandle(), tier, roller.e.hasVaultKey )
 	}
+}
+
+void function Pathtt_StartRollerLootLoop( entity roller, int tier = 3, int max_tier = 4 )
+{
+	tier = RandomIntRange( tier, max_tier )
+
+	roller.e.currentTier = RandomIntRange( tier, max_tier )
+	foreach( player in GetPlayerArray() )
+		Remote_CallFunction_NonReplay( player, "ServerCallback_SetLootRollerLootTierFX", roller.GetEncodedEHandle(), RandomIntRange( tier, max_tier ), roller.e.hasVaultKey )
 }
 
 array< string > function Flowstate_ReturnDroneLootForCurrentTier( entity roller )

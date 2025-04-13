@@ -127,11 +127,11 @@ void function PathTT_Init()
 	AddCallback_EntitiesDidLoad( EntitiesDidLoad )
 
 	#if SERVER
-	InitPathTTRingTVSystem()
+	thread InitPathTTRingTVSystem()
 	#endif
 
 	#if CLIENT
-	ClInitPathTTRingTVEntities()
+	thread ClInitPathTTRingTVEntities()
 	#endif
 }
 
@@ -407,8 +407,6 @@ const array<string> RING_ANNOUNCER_LINES_REVENANT_EXT = [
 	"SR_OlyRevTTRing_downed_ext"
 	"SR_OlyRevTTRing_winNoDmg_ext"
 	"SR_OlyRevTTRing_chainKill_ext"
-
-
 ]
       
 
@@ -422,7 +420,6 @@ const array<string> RING_ANNOUNCER_LINES_EXT  = [
 	"bc_OlyPathTTRing_flawless_win_ext",
 	"bc_OlyPathTTRing_chain_kill_ext"
 ]
-
 
 
 
@@ -466,7 +463,7 @@ void function SCB_PathTT_PlayRingAnnouncerDialogue( int lineId )
 	file.currentlyPlayingLinePriority = lineId
 
 	int dialogueFlags = eDialogueFlags.USE_CUSTOM_QUEUE | eDialogueFlags.USE_CUSTOM_SPEAKERS | eDialogueFlags.BLOCK_LOWER_PRIORITY_QUEUE_ITEMS
-	SCB_PlayDialogueOnCustomSpeakers( GetAnyAliasIdForName( lineToPlay ), dialogueFlags, file.customQueueIdx )
+	thread PlayClientDialogue_Internal( GetAnyAliasIdForName( lineToPlay ), dialogueFlags, GetEntArrayByScriptName( "path_tt_announcer_speaker" ), <0,0,0>, file.customQueueIdx )
 }
 #endif
 
@@ -603,7 +600,7 @@ void function PathTT_SpawnLootRollers()
 	array<entity> lootRollerSpawns = GetEntArrayByScriptName( "path_tt_loot_roller_spawn" )
 	foreach( entity spawn in lootRollerSpawns )
 	{
-		//LootRollers_CreatePathTTLootRoller( spawn.GetOrigin(), spawn.GetAngles() )
+		LootRollers_CreatePathTTLootRoller( spawn.GetOrigin(), spawn.GetAngles() )
 	}
 }
 #endif
@@ -1066,6 +1063,9 @@ void function GivePathTTMeleeWeaponsToPlayer( BoxingRingPlayerData playerData )
 		player.TakeOffhandWeapon(OFFHAND_MELEE)
 		player.TakeNormalWeaponByIndexNow( WEAPON_INVENTORY_SLOT_PRIMARY_2 )
 
+		player.TakeOffhandWeapon( OFFHAND_TACTICAL )
+		player.TakeOffhandWeapon( OFFHAND_ULTIMATE )
+
 		if ( offhandWepName == "melee_boxing_ring" )
 		{
 			//offhandWepName = Survival_GetOffhandMeleeWeaponName( player )
@@ -1098,12 +1098,16 @@ void function SetMeleeWeaponToActiveSlot_Thread( entity player )
 	player.EndSignal( "ReturnOriginalMeleeWeaponsToPlayer" )
 	player.EndSignal( "GivePathTTMeleeWeaponsToPlayer" )
 
+	wait 0.1
+
 	while ( player.IsWeaponSlotDisabled( eActiveInventorySlot.mainHand ) )
 	{
-		WaitFrame();
+		WaitFrame()
 	}
 
 	player.SetActiveWeaponBySlot( eActiveInventorySlot.mainHand, WEAPON_INVENTORY_SLOT_PRIMARY_2 )
+	
+	player.LockWeaponChange()
 }
 
 bool function ArePathfinderGloves( string meleeSkinName )
@@ -1128,8 +1132,21 @@ void function ReturnOriginalMeleeWeaponsToPlayer( BoxingRingPlayerData playerDat
 		if ( ArePathfinderGloves( meleeSkinName ) )
 			return
 
+		player.UnlockWeaponChange()
+
+		ItemFlavor character = LoadoutSlot_GetItemFlavor( ToEHI( player ), Loadout_CharacterClass() )
+
 		player.TakeWeaponNow( "mp_weapon_melee_boxing_ring" )
 		player.TakeWeaponNow( "melee_boxing_ring" )
+
+		ItemFlavor ultimateAbility = CharacterClass_GetUltimateAbility( character )
+		ItemFlavor tacticalAbility = CharacterClass_GetTacticalAbility( character )
+	
+		player.GiveOffhandWeapon( CharacterAbility_GetWeaponClassname( tacticalAbility ), OFFHAND_TACTICAL )	
+		player.GiveOffhandWeapon( CharacterAbility_GetWeaponClassname( ultimateAbility ), OFFHAND_ULTIMATE )
+
+		entity tactical = player.GetOffhandWeapon( OFFHAND_TACTICAL )
+		tactical.SetWeaponPrimaryClipCount( 0 )
 
 		while ( true )
 		{
