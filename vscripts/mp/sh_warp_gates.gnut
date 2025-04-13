@@ -800,7 +800,7 @@ void function MovePlayerThroughWarpGate( entity trigger, entity player )
 
 	//TODO: Meg: in a future refactor, let's move away from using this
 	string mapName = GetMapName()
-	bool isOlympus = (mapName.find("mp_rr_olympus") != -1 || mapName.find("mp_rr_olympus_tt") != -1) ? true : false;
+	bool isOlympus = mapName.find( "mp_rr_olympus" ) == -1 ? false : true
 
 	EmitSoundAtPosition( TEAM_ANY, player.GetOrigin(), PHASE_GATE_ENTER_3P, player )
 
