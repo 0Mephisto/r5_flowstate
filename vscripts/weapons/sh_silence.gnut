@@ -2,6 +2,9 @@
 global function SilenceThink
 #endif //SERVER
 global function MpAbilitySharedSilence_Init
+#if CLIENT
+global function Silenced_WeaponStatusCheck
+#endif //CLIENT
                               
                                     
                                    

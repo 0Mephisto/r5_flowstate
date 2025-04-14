@@ -196,17 +196,27 @@ void function Flowstate_StartRollerLootLoop( entity roller, int tier = 2, int ma
 	}
 }
 
-void function Pathtt_StartRollerLootLoop( entity roller, int tier = 3, int max_tier = 4 )
+void function Pathtt_StartRollerLootLoop( entity roller, int tier = 3, int max_tier = 5 )
 {
-	tier = RandomIntRange( tier, max_tier )
-
 	roller.e.currentTier = RandomIntRange( tier, max_tier )
+	roller.e.hasVaultKey = false
 	foreach( player in GetPlayerArray() )
-		Remote_CallFunction_NonReplay( player, "ServerCallback_SetLootRollerLootTierFX", roller.GetEncodedEHandle(), RandomIntRange( tier, max_tier ), roller.e.hasVaultKey )
+		Remote_CallFunction_NonReplay( player, "ServerCallback_SetLootRollerLootTierFX", roller.GetEncodedEHandle(), roller.e.currentTier, roller.e.hasVaultKey )
 }
 
 array< string > function Flowstate_ReturnDroneLootForCurrentTier( entity roller )
 {
+	#if DEVELOPER
+		printt("A loot roller destroyed, loot tier:" + roller.e.currentTier)
+	#endif
+	if ( MapName() == eMaps.mp_rr_olympus_tt )
+	{
+		if ( roller.e.currentTier == 3 )
+			return SURVIVAL_GetMultipleWeightedItemsFromGroup( "flyer_deathbox_all_purple", 5 )
+		
+		if ( roller.e.currentTier == 4 )
+			return SURVIVAL_GetMultipleWeightedItemsFromGroup( "flyer_deathbox_all_gold", 4 )
+	}
 	array< string > accumulatedLoot
 	
 	for(int j = 1; j < roller.e.currentTier + 1; j++)
