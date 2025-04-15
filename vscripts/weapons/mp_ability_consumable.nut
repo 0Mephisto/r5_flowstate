@@ -316,8 +316,8 @@ void function Consumable_Init()
 	#if SERVER
 		AddCallback_OnClientConnected( OnClientConnected )
 
-		AddClientCommandCallbackNew( "SetSelectedConsumableTypeNetInt", ClientCommand_SetSelectedConsumableTypeNetInt )
-		AddClientCommandCallbackNew( "SetNextHealModType", ClientCommand_SetNextHealModType  )
+		AddClientCommandCallbackVoid( "SetSelectedConsumableTypeNetInt", ClientCommand_SetSelectedConsumableTypeNetInt )
+		AddClientCommandCallbackVoid( "SetNextHealModType", ClientCommand_SetNextHealModType  )
 
 		RegisterSignal( "StartHeal" )
 	#endif

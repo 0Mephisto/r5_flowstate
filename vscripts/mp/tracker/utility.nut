@@ -2610,7 +2610,7 @@ void function sqprint( ... )
 	#if HAS_TRACKER_DLL
 		sqprint__internal( msg )
 	#else 
-		print( msg )
+		printl( msg )
 	#endif
 }
 
@@ -2626,7 +2626,7 @@ void function sqerror( ... )
 	#if HAS_TRACKER_DLL
 		sqerror__internal( msg )
 	#else 
-		print( msg )
+		printl( msg )
 	#endif
 }
 

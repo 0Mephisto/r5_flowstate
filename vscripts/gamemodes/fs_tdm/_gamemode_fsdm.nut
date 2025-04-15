@@ -230,6 +230,7 @@ struct
 	
 	//int settings 
 	int endgame_delay
+	int give_weapon_stack_count_amount
 	
 	//float settings
 	float aimassist_magnet_pc
@@ -283,6 +284,7 @@ void function InitializePlaylistSettings()
 	flowstateSettings.give_random_custom_models_toall		= GetCurrentPlaylistVarBool( "flowstate_give_random_custom_models_toall", false )
 	flowstateSettings.show_short_champion_screen			= GetCurrentPlaylistVarBool( "show_short_champion_screen", true )
 	flowstateSettings.bIsRealisticMode 						= Playlist() == ePlaylists.fs_realistic_ttv
+	flowstateSettings.give_weapon_stack_count_amount		= GetCurrentPlaylistVarInt( "give_weapon_stack_count_amount", 0 )
 }
 
 bool function Flowstate_IsRealisticMode()
@@ -302,7 +304,7 @@ array<string> function ReturnChatArray()
 
 int function GetCurrentRound() 
 { 
-    return file.currentRound;
+    return file.currentRound
 }
 
 bool function bIs1v1Mode()
@@ -546,7 +548,7 @@ void function DM__OnEntitiesDidLoad()
 			if( flowstateSettings.patch_waiting_area )
 				Patch_Barrier_Dropoff()
 
-			// array<entity> badMovers = GetEntArrayByClass_Expensive( "script_mover" )
+			// array<entity> badMovers = GetEntArrayByClass_Expensive( "script_mover" )  //(mk): movers fixed by kral
 			// foreach(mover in badMovers)
 				// if( IsValid(mover) ) mover.Destroy()
 			break
@@ -554,6 +556,17 @@ void function DM__OnEntitiesDidLoad()
 		case eMaps.mp_rr_aqueduct:
 			if( flowstateSettings.patch_waiting_area )
 				Patch_Barrier_Overflow()
+				
+		case eMaps.mp_rr_party_crasher:
+			if( flowstateSettings.patch_waiting_area )
+				Patch_Partycrasher_Restarea()
+		break
+		
+		/*case eMaps.mp_rr_arena_skygarden:
+			
+			if( flowstateSettings.patch_waiting_area )
+				Patch_SkyGardenRest()
+		break*/
 				
 			break
 		case eMaps.mp_flowstate:
@@ -587,17 +600,6 @@ void function DM__OnEntitiesDidLoad()
 			MapEditor_CreateRespawnableWeaponRack( <-10954.4912, -14820.9619, 3111.98145> , <0, 45, 0>, "mp_weapon_halobattlerifle", 0.5 )
 		}
 		break
-		case eMaps.mp_rr_party_crasher:
-
-			if( flowstateSettings.patch_waiting_area )
-				Patch_Partycrasher_Restarea()
-		break
-		
-		/*case eMaps.mp_rr_arena_skygarden:
-			
-			if( flowstateSettings.patch_waiting_area )
-				Patch_SkyGardenRest()
-		break*/
     }
 }
 
@@ -2120,16 +2122,6 @@ void function GiveRandomPrimaryWeaponHalo(entity player)
     array<string> Weapons = [
 		"mp_weapon_halomagnum"
 	]
-
-	//R5RDEV-1
-	
-	// foreach(weapon in Weapons)
-	// {
-		// array<string> weaponfullstring = split( weapon , " ")
-		// string weaponName = weaponfullstring[0]
-		// if(file.blacklistedWeapons.find(weaponName) != -1)
-				// Weapons.removebyvalue(weapon)
-	// }
 	
 	ValidateBlacklistedWeapons( Weapons )
 	__GiveWeapon( player, Weapons, slot, RandomIntRange( 0, Weapons.len() ) )
@@ -2159,12 +2151,15 @@ void function GiveRandomSecondaryWeaponHalo(entity player)
 	__GiveWeapon( player, Weapons, slot, RandomIntRange( 0, Weapons.len() ) )
 }
 
-void function SetupInfiniteAmmoForWeapon( entity player, entity weapon)
+void function SetupInfiniteAmmoForWeapon( entity player, entity weapon )
 {
+	if( !IsValid( weapon ) )
+		return
+		
 	if( !InfiniteAmmoEnabled() )
 	{
-		if( GetCurrentPlaylistVarInt( "give_weapon_stack_count_amount", 0 ) != 0 )
-		{	
+		if( flowstateSettings.give_weapon_stack_count_amount != 0 )
+		{
 			player.AmmoPool_SetCapacity( SURVIVAL_MAX_AMMO_PICKUPS )
 
 			SetupPlayerReserveAmmo( player, weapon )
@@ -2174,10 +2169,11 @@ void function SetupInfiniteAmmoForWeapon( entity player, entity weapon)
 			if( weapon.UsesClipsForAmmo() )
 				weapon.SetWeaponPrimaryClipCount( weapon.GetWeaponPrimaryClipCountMax() )	
 		}
+		
 		return
 	}
 	
-	if( IsValid( weapon ) && weapon.UsesClipsForAmmo() )
+	if( weapon.UsesClipsForAmmo() )
 	{
 		int maxClipSize = weapon.UsesClipsForAmmo() ? weapon.GetWeaponSettingInt( eWeaponVar.ammo_clip_size ) : weapon.GetWeaponPrimaryAmmoCountMax( weapon.GetActiveAmmoSource() )
 		int ammoType = weapon.GetWeaponAmmoPoolType()
@@ -2191,8 +2187,8 @@ void function SetupInfiniteAmmoForWeapon( entity player, entity weapon)
 		player.AmmoPool_SetCount( ammoType, ammoInInventory + requiredAmmo + maxClipSize )
 
 		weapon.SetWeaponPrimaryClipCount( weapon.GetWeaponPrimaryClipCountMax() )
-	} 
-	else if( IsValid( weapon ) )
+	}
+	else
 	{
 		int ammoType = weapon.GetWeaponAmmoPoolType()
 		player.AmmoPool_SetCapacity( 65535 )
@@ -2227,7 +2223,7 @@ void function PrimaryWeaponMetagame_Init()
 
 	ValidateBlacklistedWeapons( Weapons )
 	if( Weapons.len() == 0 )
-		mAssert( false, "No valid weapons remain in secondary list. If this is intentional, comment this assert" )
+		mAssert( 0, "No valid weapons remain in secondary list. If this is intentional, comment this assert" )
 		
 	file.metagameWeaponsPrimary = Weapons
 }
@@ -2293,15 +2289,6 @@ void function GiveRandomPrimaryWeapon(entity player)
         "mp_weapon_alternator_smg bullets_mag_l3 stock_tactical_l3",
         "mp_weapon_rspn101 stock_tactical_l2 bullets_mag_l2 barrel_stabilizer_l1"
 	]
-
-	//R5RDEV-1
-	// foreach(weapon in Weapons)
-	// {
-		// array<string> weaponfullstring = split( weapon , " ")
-		// string weaponName = weaponfullstring[0]
-		// if(file.blacklistedWeapons.find(weaponName) != -1)
-				// Weapons.removebyvalue(weapon)
-	// }
 	
 	ValidateBlacklistedWeapons( Weapons )
 	__GiveWeapon( player, Weapons, slot, RandomIntRange( -1, Weapons.len() ) )
@@ -2319,15 +2306,6 @@ void function GiveRandomSecondaryWeapon( entity player)
 		"mp_weapon_vinson optic_cq_hcog_classic stock_tactical_l1 highcal_mag_l3",
 		"mp_weapon_energy_ar optic_cq_hcog_classic hopup_turbocharger",
 	]
-
-	//R5RDEV-1
-	// foreach(weapon in Weapons)
-	// {
-		// array<string> weaponfullstring = split( weapon , " ")
-		// string weaponName = weaponfullstring[0]
-		// if(file.blacklistedWeapons.find(weaponName) != -1)
-				// Weapons.removebyvalue(weapon)
-	// }
 	
 	ValidateBlacklistedWeapons( Weapons )
 	__GiveWeapon( player, Weapons, slot, RandomIntRange( -1, Weapons.len() ) )
@@ -2371,15 +2349,6 @@ void function GiveActualGungameWeapon(int index, entity player)
 		//"mp_weapon_rspn101 optic_cq_holosight_variable",
 		//"mp_weapon_semipistol bullets_mag_l2"
 	]
-
-	//R5RDEV-1
-	// foreach(weapon in Weapons)
-	// {
-		// array<string> weaponfullstring = split( weapon , " ")
-		// string weaponName = weaponfullstring[0]
-		// if(file.blacklistedWeapons.find(weaponName) != -1)
-				// Weapons.removebyvalue(weapon)
-	// }
 	
 	ValidateBlacklistedWeapons( Weapons )
 	__GiveWeapon( player, Weapons, slot, index, true)
@@ -2440,10 +2409,10 @@ void function GiveRandomUlt(entity player )
 
 	]
 
-	foreach(ability in file.blacklistedAbilities)
-		Weapons.removebyvalue(ability)
+	foreach( ability in file.blacklistedAbilities )
+		Weapons.fastremovebyvalue( ability )
 
-	if(IsValid(player))
+	if( IsValid( player ) )
 	    player.GiveOffhandWeapon(Weapons[ RandomIntRange( 0, Weapons.len()) ],  OFFHAND_ULTIMATE)
 }
 
@@ -2456,7 +2425,7 @@ void function GiveRandomUlt_4D( entity player )
 	]
 
 	foreach(ability in file.blacklistedAbilities)
-		Weapons.removebyvalue(ability)
+		Weapons.fastremovebyvalue(ability)
 
 	if(!IsValid(player))
 		return

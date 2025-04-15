@@ -289,7 +289,8 @@ void function SetupDefaultDevCommandsMP()
 		SetupDevCommand( "FSDM: Reset Saved Weapons", "resetguns" )
 	}
 
-	if(GetCheatsState()){
+	if( GetCheatsState() )
+	{
 		SetupDevMenu( "Equip Legend Abilities", SetDevMenu_Abilities )
 		SetupDevMenu( "Equip Custom Abilities", SetDevMenu_CustomAbilities )
 		SetupDevMenu( "Equip Weapons", SetDevMenu_Weapons )
@@ -336,6 +337,10 @@ void function SetupDefaultDevCommandsMP()
 		SetupDevCommand( "Toggle Third Person Mode", "ToggleThirdPerson" )
 
 		SetupDevMenu( "Prototypes", SetDevMenu_Prototypes )
+		
+		
+		
+		SetupDevMenu( "More...", SetDevMenu_MoreCommands ) //last
 	}
 	else
 	{
@@ -846,11 +851,22 @@ void function SetupPrototypesDevMenu()
 {
 	SetupDevCommand( "Toggle Akimbo With Current Weapon", "script DEV_ToggleAkimboWeapon(gp()[0])" )
 	SetupDevCommand( "Toggle Akimbo With Holstered Weapon", "script DEV_ToggleAkimboWeaponAlt(gp()[0])" )
+	//SetupDevCommand( "Give akimbo retail behavior test", "script GiveP2020AkimboTest()" )
 	SetupDevCommand( "Developer: Cubemap Viewer", "give weapon_cubemap" )
 	SetupDevCommand( "Change to Shadow", "script DEV_GiveShadowZombieAbilities( GP() )" )
 	SetupDevCommand( "Change back from Shadow to Legend", "script RemoveShadowZombieAbilities(gp()[0])" )
 }
 
+void function SetDevMenu_MoreCommands( var _ )
+{
+	ChangeToThisMenu( SetupMoreCommandsDevMenu )
+}
+
+void function SetupMoreCommandsDevMenu()
+{
+	SetupDevCommand( "Enable Infinite Ammo", "script DEV_ToggleInfiniteAmmo()" )
+	SetupDevCommand( "Disable Infinite Ammo", "script DEV_ToggleInfiniteAmmo( false )" )
+}
 
 void function RunCodeDevCommandByAlias( string alias )
 {

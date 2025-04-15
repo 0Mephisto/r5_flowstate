@@ -864,9 +864,7 @@ string function PIN_GetDamageCause( var damageInfo )
 		foreach( int enumIdx, string ref in DamageSourceIDToStringTable()  )
 		{
 			if( enumIdx in file.damageSourceIDToName )//janu weapon framework weapons will be here too + precached weps
-			{
 				printText += ( "[ \"" + ref + "\" ] = \"" + file.damageSourceIDToName[ enumIdx ] + "\",\n" )
-			}
 		}
 		
 		printText += "}"

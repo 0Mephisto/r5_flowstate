@@ -43,6 +43,7 @@ global function GetLocalizedStringsCount
 
 	const ASSERT_LOCALIZATION = false
 	const DEBUG_VARMSG = false
+	const MAX_CHAR_PER_CALL = 8
 
 global enum eMsgUI
 {
@@ -665,14 +666,14 @@ void function LocalMsg( entity player, string ref, string subref = "", int uiTyp
 			sendMessage = textType == 0 ? varString : varSubstring
 			int msgLen = sendMessage.len()
 			
-			if ( msgLen > 5 ) 
+			if ( msgLen > MAX_CHAR_PER_CALL )//potentially thread to avoid blocking during large transmission ( amount of calls is msgLen / MAX_CHAR_PER_CALL -- needs unit tested to find optimal switch to thread point )
 			{
 				int remainingChars = msgLen
 				int processedChars = 0
 
 				while ( remainingChars > 0 ) 
 				{
-					int chunkSize = minint( 5, remainingChars )
+					int chunkSize = minint( MAX_CHAR_PER_CALL, remainingChars )
 					string chunk = sendMessage.slice( processedChars, processedChars + chunkSize )
 
 					array transmit = [ this, player, "FS_BuildLocalizedTokenWithVariableString", textType, isMotd ]
@@ -684,7 +685,7 @@ void function LocalMsg( entity player, string ref, string subref = "", int uiTyp
 					processedChars += chunkSize
 					remainingChars -= chunkSize
 				}
-			} 
+			}
 			else
 			{
 				array transmit = [ this, player, "FS_BuildLocalizedTokenWithVariableString", textType, isMotd ]
