@@ -337,7 +337,7 @@ void function WaitForPlayerSpawn( entity player )
 void function WaitForPlayerSpawn_Thread(entity player)
 {
 	while(IsValid(player) && !IsAlive(player))
-		wait 0.5
+		wait 1
 	player.SetOrigin(<26539, -5637, -27479>)
 	player.SetAngles(<0, 0, 0>)
 	SetPlayerInventory( player, [] )
