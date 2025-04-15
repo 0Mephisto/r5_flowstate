@@ -80,7 +80,7 @@ void function Cl_MovementGym_Init()
 {
 	entity player = GetLocalClientPlayer()
 	
-	RequestPakFile( "ui_dea" )
+	//RequestPakFile( "ui_dea" )
 	
 	// Register Signals
 	RegisterSignal("StopStopWatch")
