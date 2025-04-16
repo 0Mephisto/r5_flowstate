@@ -47,7 +47,7 @@ WeaponData
 	// Models
 	"viewmodel"   									"mdl/weapons/revenant_grenade/ptpov_revenant_grenade.rmdl"
 	//"playermodel" 									"mdl/weapons/revenant_grenade/w_revenant_grenade.rmdl"
-	"projectilemodel"								"mdl/weapons/bullets/projectile_arl.rmdl"
+	"projectilemodel"								"mdl/weapons_r5/misc_revenant_grenade/projectile_revenant_grenade.rmdl"
 
     show_grenade_indicator                          0
     grenade_show_indicator_to_owner                 0
