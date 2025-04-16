@@ -284,7 +284,7 @@ void function DeathTotem_DeployTotem( entity owner, vector origin, vector angles
 		return
 
 	owner.Signal( "DeathTotem_Deploy" )
-	owner.EndSignal( "DeathTotem_Deploy", "DeathTotem_Cancel" )
+	owner.EndSignal( "DeathTotem_Deploy", "DeathTotem_Cancel", "CleanUpPlayerAbilities" )
 
 	vector groundFXNormal = AnglesToUp( angles )
 	TraceResults groundTrace = TraceLine( origin, origin - <0, 0, 30>, owner, TRACE_MASK_SOLID )
@@ -794,7 +794,7 @@ void function DeathTotem_RecallPlayer( entity player )
 
 void function DeathTotem_InvincibilityFramesAfterRecall( entity player )
 {
-	EndSignal( player, "OnDestroy" )
+	EndSignal( player, "OnDestroy", "CleanUpPlayerAbilities" )
 
 	OnThreadEnd
 	(
@@ -1016,7 +1016,7 @@ void function DeathTotem_HandleUserDeathOrDesync( entity player, entity totemPro
 {
 	Assert ( IsNewThread(), "Must be threaded off." )
 	player.EndSignal( "OnDestroy", "OnDeath", DEATH_TOTEM_RECALL_SIGNAL )
-	player.EndSignal( "DeathTotem_ForceEnd" )
+	player.EndSignal( "DeathTotem_ForceEnd", "CleanUpPlayerAbilities" )
 	totemProxy.EndSignal( "OnDestroy" )
 
 	player.EnterShadowForm()
@@ -1185,8 +1185,8 @@ void function DeathTotem_CrouchPlayer( entity player )
 {
 	Assert ( IsNewThread(), "Must be threaded off." )
 	Signal( player, "DeathTotem_ChangePlayerStance" )
-	EndSignal( player, "OnDeath" )
-	EndSignal( player, "DeathTotem_ChangePlayerStance" )
+	EndSignal( player, "OnDeath", "DeathTotem_ChangePlayerStance" )
+	
 	/*int forceCrouchHandle = player.PushForcedStance( FORCE_STANCE_CROUCH )
 	OnThreadEnd(
 		function() : ( player, forceCrouchHandle )
@@ -1197,6 +1197,18 @@ void function DeathTotem_CrouchPlayer( entity player )
 			}
 		}
 	)*/
+	
+	player.ForceCrouch()
+	
+	OnThreadEnd
+	(
+		void function() : ( player )
+		{
+			if( IsValid( player ) )
+				player.UnforceCrouch()
+		}
+	)
+	
 	wait 0.2
 }
 
@@ -1204,8 +1216,7 @@ void function DeathTotem_StandPlayer( entity player )
 {
 	Assert ( IsNewThread(), "Must be threaded off." )
 	Signal( player, "DeathTotem_ChangePlayerStance" )
-	EndSignal( player, "OnDeath" )
-	EndSignal( player, "DeathTotem_ChangePlayerStance" )
+	EndSignal( player, "OnDeath", "DeathTotem_ChangePlayerStance", "CleanUpPlayerAbilities" )
 	/*int forceStandHandle = player.PushForcedStance( FORCE_STANCE_STAND )
 	OnThreadEnd(
 		function() : ( player, forceStandHandle )
@@ -1237,16 +1248,15 @@ void function DeathTotem_MarkEndOnDistanceUpdate( entity player, entity totemPro
 {
 	Assert ( IsNewThread(), "Must be threaded off." )
 
-	player.EndSignal( "OnDeath" )
-	player.EndSignal( "OnDestroy" )
-	player.EndSignal( DEATH_TOTEM_RECALL_SIGNAL )
-	player.EndSignal( "DeathTotem_ForceEnd" )
+	player.EndSignal( "OnDeath", "OnDestroy", DEATH_TOTEM_RECALL_SIGNAL )
+	player.EndSignal( "DeathTotem_ForceEnd", "CleanUpPlayerAbilities" )
 	totemProxy.EndSignal( "OnDestroy" )
 
 	float lastInRangeTime = Time()
 
-	OnThreadEnd(
-		function() : ( player )
+	OnThreadEnd
+	(
+		void function() : ( player )
 		{
 			if ( IsValid( player ) )
 				StopSoundOnEntity( player, "DeathProtection_ExpirationWarning_1p" ) //
@@ -1299,8 +1309,9 @@ void function DeathTotem_DecoyFlagFX( entity decoy, entity decoyChildEnt )
 		flagTrailFX.kv.VisibilityFlags = ENTITY_VISIBLE_TO_ENEMY
 	}
 
-	OnThreadEnd(
-		function() : ( flagTrailFX, decoyChildEnt )
+	OnThreadEnd
+	(
+		void function() : ( flagTrailFX, decoyChildEnt )
 		{
 			if ( IsValid( flagTrailFX ) )
 				flagTrailFX.Destroy()
@@ -1318,9 +1329,7 @@ void function DeathTotem_DecoyFlagFX( entity decoy, entity decoyChildEnt )
 void function DeathTotem_UseTotem( entity player, entity totemProxy )
 {
 	if ( !DeathTotem_PlayerCanRecall( player ) )
-	{
 		DeathTotem_MarkLocation( player, totemProxy )
-	}
 }
 
 
@@ -1413,9 +1422,7 @@ void function DeathTotem_OnTotemUse( entity totemProxy, entity player, int useIn
 			return
 
 		if ( !canPlayerRecall )
-		{
 			file.totemData[ totemProxy ].markedPlayerArray.append( player )
-		}
 
 		DeathTotem_UseTotem( player, totemProxy )
 
@@ -1630,8 +1637,9 @@ void function DeathTotem_PlayRecallScreenFX( entity clientPlayer )
 		EffectSetControlPointVector( fxID, 1, <1.0, 999, 0> )
 	}
 
-	OnThreadEnd(
-		function() : ( clientPlayer, fxID )
+	OnThreadEnd
+	(
+		void function() : ( clientPlayer, fxID )
 		{
 			if ( IsValid( clientPlayer ) )
 			{
@@ -1651,7 +1659,7 @@ void function OnWeaponActivate_ability_revenant_death_totem( entity weapon )
 {
 	entity weaponOwner = weapon.GetWeaponOwner()
 
-	bool serverOrPredicted = IsServer() || (InPrediction() && IsFirstTimePredicted())
+	bool serverOrPredicted = IsServer() || ( InPrediction() && IsFirstTimePredicted() )
 	if ( serverOrPredicted )
 	{
 		weapon.RemoveMod( ABILITY_USED_MOD )

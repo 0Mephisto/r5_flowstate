@@ -157,7 +157,7 @@ void function OnProjectileCollision_ability_silence( entity projectile, vector p
 #if SERVER
 void function CreateSilenceField( entity player, vector origin, entity mover, vector normal )
 {
-	player.EndSignal( "OnDestroy" )
+	player.EndSignal( "OnDestroy", "CleanUpPlayerAbilities" )
 	wait 0.25
 	if ( !IsValid( player ) )	//Defensive fix - shouldn't be necessary R5DEV-123707
 		return

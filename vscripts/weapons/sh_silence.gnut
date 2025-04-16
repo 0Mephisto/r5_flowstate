@@ -92,6 +92,7 @@ void function MpAbilitySharedSilence_Init()
 	void function SilenceThink( entity ent, entity silenceOwner, float silenceAreaDuration, float silenceEffectDuration, bool applyInterrupt = false, bool isEndless = false )
 	{
 		ent.EndSignal( "OnDestroy", "OnDeath", "StopSilence" )
+		ent.EndSignal( "CleanUpPlayerAbilities" )
 
 		//Play effect on player so we can see they are silenced.
 		int attachmentID = ent.LookupAttachment( "CHESTFOCUS" )
@@ -253,7 +254,7 @@ void function MpAbilitySharedSilence_Init()
 	void function DisableHealing_Thread( entity ent, float duration )
 	{
 		Assert ( IsNewThread(), "Must be threaded off." )
-		ent.EndSignal( "OnDeath", "OnDestroy" )
+		ent.EndSignal( "OnDeath", "OnDestroy", "CleanUpPlayerAbilities" )
 
 		OnThreadEnd
 		(
@@ -367,9 +368,8 @@ void function MpAbilitySharedSilence_Init()
 		Assert ( IsNewThread(), "Must be threaded off." )
 		Assert ( player == GetLocalViewPlayer() )
 
-		player.EndSignal( "OnDeath" )
-		player.EndSignal( "OnDestroy" )
-		player.EndSignal( "AbilitySilence_StopColorCorrection" )
+		player.EndSignal( "OnDeath", "OnDestroy", "AbilitySilence_StopColorCorrection" )
+		player.EndSignal( "CleanUpPlayerAbilities" )
 
 		int colorCorrection
 
@@ -413,7 +413,7 @@ void function MpAbilitySharedSilence_Init()
 
 	void function AbilitySilence_ScreenEffectThread( entity viewPlayer, int fxHandle, int statusEffect )
 	{
-		EndSignal( viewPlayer, "OnDeath", "AbilitySilence_StopColorCorrection" )
+		EndSignal( viewPlayer, "OnDeath", "AbilitySilence_StopColorCorrection", "CleanUpPlayerAbilities" )
 
 		string silenceSound = ""
 
