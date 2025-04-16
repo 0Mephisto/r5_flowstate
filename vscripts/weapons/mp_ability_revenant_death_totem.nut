@@ -5,20 +5,22 @@ global function OnWeaponActivate_ability_revenant_death_totem
 global function OnWeaponDeactivate_ability_revenant_death_totem
 global function DoesPlayerHaveDeathProtection
 global function OnWeaponPrimaryAttack_ability_revenant_death_totem
-const string ABILITY_USED_MOD = "ability_used_mod"
+
 #if CLIENT
-global function OnCreateClientOnlyModel_ability_revenant_death_totem
+	global function OnCreateClientOnlyModel_ability_revenant_death_totem
 #endif
+
 #if SERVER
-global function DeathTotem_RecallPlayer
-global function DeathTotem_OnShadowHealthExhausted
-global function SetShadowAbilitiesSkin
-global function ShadowSquadCancelCharacterSkin
-global function ShadowSquadApplyCharacterSkin
-global function CancelDeathTotemForPlayer
-global function DeathTotem_RemoveTotem
+	global function DeathTotem_RecallPlayer
+	global function DeathTotem_OnShadowHealthExhausted
+	global function SetShadowAbilitiesSkin
+	global function ShadowSquadCancelCharacterSkin
+	global function ShadowSquadApplyCharacterSkin
+	global function CancelDeathTotemForPlayer
+	global function DeathTotem_RemoveTotem
 #endif //SERVER
 
+const string ABILITY_USED_MOD = "ability_used_mod"
 const string DEATH_TOTEM_MOVER_SCRIPTNAME = "death_totem_mover"
 
 //Totem
@@ -69,10 +71,10 @@ const float SCREEN_FX_STATUS_EFFECT_DURATION = 0.25
 const float SCREEN_FX_STATUS_EFFECT_EASE_OUT_TIME = 0.25
 
 #if CLIENT
-const float DEATH_TOTEM_COLOR_CORRECTION_RANGE_MIN_SQR = 2500 * 2500
-const float DEATH_TOTEM_COLOR_CORRECTION_RANGE_MAX_SQR = 3000 * 3000
-const asset DEATH_TOTEM_TELEPORT_SCREEN_FX = $"P_training_teleport_FP"
-const asset DEATH_TOTEM_SHADOW_SCREEN_FX = $"P_Bshadow_screen"
+	const float DEATH_TOTEM_COLOR_CORRECTION_RANGE_MIN_SQR = 2500 * 2500
+	const float DEATH_TOTEM_COLOR_CORRECTION_RANGE_MAX_SQR = 3000 * 3000
+	const asset DEATH_TOTEM_TELEPORT_SCREEN_FX = $"P_training_teleport_FP"
+	const asset DEATH_TOTEM_SHADOW_SCREEN_FX = $"P_Bshadow_screen"
 #endif //CLIENT
 
 const float IDEAL_TOTEM_DISTANCE = 72.0
@@ -118,12 +120,13 @@ struct
 	#endif //SERVER
 
 	table < entity, TotemData > totemData
-	float deathTotemBuffDuration
-	bool  showEndOfBuffFX
+	float deathTotemBuffDuration 				= DEATH_TOTEM_EFFECT_DURATION_DEFAULT
+	bool  showEndOfBuffFX 						= true
+	bool  revenant_totem_has_distance_limit		= true
 
 	#if CLIENT
 		bool hasMark = false
-		bool hideUsePromptOverride = true
+		bool hideUsePromptOverride = false
 		var  deathProtectionStatusRui
 	#endif //CLIENT
 } file
@@ -153,6 +156,7 @@ void function MpAbilityRevenantDeathTotem_Init()
 	RegisterSignal( "DeathTotem_PreRecallPlayer" )
 	RegisterSignal( "DeathTotem_Cancel" )
 	RegisterSignal( "DeathTotem_RemoveWallClimbDisables" )
+	RegisterSignal( SIGNAL_TELEPORTED )
 
 	#if CLIENT
 		PrecacheParticleSystem( DEATH_TOTEM_TELEPORT_SCREEN_FX )
@@ -170,8 +174,18 @@ void function MpAbilityRevenantDeathTotem_Init()
 		Bleedout_AddCallback_CleanupUtilitySlot( DeathTotem_CleanupWeaponOnBleedout )
 	#endif
 
-	file.deathTotemBuffDuration = GetCurrentPlaylistVarFloat( "revenant_totem_buff_duration", DEATH_TOTEM_EFFECT_DURATION_DEFAULT )
-	file.showEndOfBuffFX = GetCurrentPlaylistVarBool( "revenant_totem_buff_use_ending_fx", true )
+	var revenant_totem_has_distance_limit = GetWeaponInfoFileKeyField_Global( "mp_ability_revenant_death_totem", "revenant_totem_has_distance_limit" )
+	if( revenant_totem_has_distance_limit != null )
+		file.revenant_totem_has_distance_limit = bool( expect int( revenant_totem_has_distance_limit ) )
+		
+	var revenant_totem_buff_use_ending_fx = GetWeaponInfoFileKeyField_Global( "mp_ability_revenant_death_totem", "revenant_totem_buff_use_ending_fx" )
+	if( revenant_totem_buff_use_ending_fx != null )
+		file.showEndOfBuffFX = bool( expect int( revenant_totem_buff_use_ending_fx ) )	
+		
+	var revenant_totem_buff_duration = GetWeaponInfoFileKeyField_Global( "mp_ability_revenant_death_totem", "revenant_totem_buff_duration" )
+	if( revenant_totem_buff_duration != null )
+		file.deathTotemBuffDuration = expect float( revenant_totem_buff_duration )
+
 }
 
 
@@ -230,17 +244,16 @@ var function OnWeaponPrimaryAttack_ability_revenant_death_totem( entity weapon, 
 
 void function DeathTotem_DisableWallClimbWhileDeployingTotem( entity ownerPlayer, entity weapon )
 {
-	ownerPlayer.EndSignal( "OnDestroy" )
-	ownerPlayer.EndSignal( "OnDeath" )
-	weapon.EndSignal( "DeathTotem_RemoveWallClimbDisables" )
-	weapon.EndSignal( "OnDestroy" )
+	ownerPlayer.EndSignal( "OnDestroy", "OnDeath" )
+	weapon.EndSignal( "DeathTotem_RemoveWallClimbDisables", "OnDestroy" )
 
 	int wallClimbID = StatusEffect_AddEndless( ownerPlayer, eStatusEffect.disable_wall_run, 1.0 )
 	int doubleJumpID =  StatusEffect_AddEndless( ownerPlayer, eStatusEffect.disable_double_jump, 1.0 )
 	int wallHangID = StatusEffect_AddEndless( ownerPlayer, eStatusEffect.disable_automantle_hang, 1.0 )
 
-	OnThreadEnd(
-		function() : ( ownerPlayer, wallHangID, wallClimbID, doubleJumpID )
+	OnThreadEnd
+	(
+		void function() : ( ownerPlayer, wallHangID, wallClimbID, doubleJumpID )
 		{
 			if( !IsValid( ownerPlayer ) )
 				return
@@ -271,9 +284,7 @@ void function DeathTotem_DeployTotem( entity owner, vector origin, vector angles
 		return
 
 	owner.Signal( "DeathTotem_Deploy" )
-	owner.EndSignal( "DeathTotem_Deploy" )
-	owner.EndSignal( "DeathTotem_Cancel" )
-
+	owner.EndSignal( "DeathTotem_Deploy", "DeathTotem_Cancel" )
 
 	vector groundFXNormal = AnglesToUp( angles )
 	TraceResults groundTrace = TraceLine( origin, origin - <0, 0, 30>, owner, TRACE_MASK_SOLID )
@@ -333,8 +344,9 @@ void function DeathTotem_DeployTotem( entity owner, vector origin, vector angles
 	totemData.scriptManagedPlayerArrayID = CreateScriptManagedEntArray()
 	file.totemData[ totemProxy ] <- totemData
 
-	OnThreadEnd(
-		function() : ( owner, totemProxy, mover, fx, groundFx )
+	OnThreadEnd
+	(
+		void function() : ( owner, totemProxy, mover, fx, groundFx )
 		{
 			if ( IsValid( owner ) )
 			{
@@ -381,11 +393,6 @@ void function DeathTotem_DeployTotem( entity owner, vector origin, vector angles
 	)
 
 	totemProxy.e.isBusy = true
-
-                 
-                                     
-       
-
 
 	totemProxy.Anim_PlayOnly( "prop_revenant_totem_deploy" )
 	EmitSoundOnEntityToTeam( totemProxy, "Revenant_Totem_Spawn", team )
@@ -453,7 +460,7 @@ void function Totem_CheckForGeoIntersection( entity totemProxy )
 
 	float startTime = Time()
 
-	while ( true )
+	for( ; ; )
 	{
 		array<entity> ignoreEnts = GetPlayerArray_Alive()
 		ignoreEnts.append( totemProxy )
@@ -523,8 +530,9 @@ void function Totem_CheckForGeoIntersection( entity totemProxy )
 
 void function DeathTotem_RemoveTotem( entity totemProxy, entity mover )
 {
-	OnThreadEnd(
-		function () : (mover, totemProxy)
+	OnThreadEnd
+	(
+		void function () : ( mover, totemProxy )
 		{
 			if ( IsValid( mover ) )
 			{
@@ -626,7 +634,6 @@ void function DeathTotem_OnTotemPostDamaged( entity totemProxy, var damageInfo )
 				PlayBattleChatterLineToSpeakerAndTeam( totemTeammates[0], "bc_totemDestroyed" )
 			}
 		}
-
 
 		totemProxy.Signal( "TotemDestroyed" )
 	}
@@ -789,8 +796,9 @@ void function DeathTotem_InvincibilityFramesAfterRecall( entity player )
 {
 	EndSignal( player, "OnDestroy" )
 
-	OnThreadEnd(
-		function() : ( player )
+	OnThreadEnd
+	(
+		void function() : ( player )
 		{
 			if ( IsValid( player ) )
 				player.ClearInvulnerable()
@@ -919,7 +927,7 @@ void function DeathTotem_CreateHoloPilotRecallMarker( entity player, RecallData 
 	markRadiusUpper.SetOwner( player )
 	markRadiusUpper.SetParent( totemProxy )
 
-	if ( GetCurrentPlaylistVarBool( "revenant_totem_has_distance_limit", false ) )
+	if ( file.revenant_totem_has_distance_limit )
 	{
 		thread DeathTotem_MarkEndOnDistanceUpdate( player, totemProxy ) //Desync and destroy mark if player moves too far.
 	}
@@ -1007,9 +1015,7 @@ void function DeathTotem_SetupDecoy( entity player, entity decoy )
 void function DeathTotem_HandleUserDeathOrDesync( entity player, entity totemProxy )
 {
 	Assert ( IsNewThread(), "Must be threaded off." )
-	player.EndSignal( "OnDestroy" )
-	player.EndSignal( "OnDeath" )
-	player.EndSignal( DEATH_TOTEM_RECALL_SIGNAL )
+	player.EndSignal( "OnDestroy", "OnDeath", DEATH_TOTEM_RECALL_SIGNAL )
 	player.EndSignal( "DeathTotem_ForceEnd" )
 	totemProxy.EndSignal( "OnDestroy" )
 
@@ -1049,8 +1055,9 @@ void function DeathTotem_HandleUserDeathOrDesync( entity player, entity totemPro
 	EmitSoundOnEntityToTeamExceptPlayer( player, "DeathProtection_Loop_3p", player.GetTeam(), player )
 	EmitSoundOnEntityToEnemies( player, "DeathProtection_Loop_3p_Enemy", player.GetTeam() )
 
-	OnThreadEnd(
-		function() : ( player, FX_BODY, FX_EYE_L, FX_EYE_R )
+	OnThreadEnd
+	(
+		void function() : ( player, FX_BODY, FX_EYE_L, FX_EYE_R )
 		{
 			if ( IsValid( FX_BODY ) )
 			{
@@ -1098,8 +1105,9 @@ void function DeathTotem_HandleUserDeathOrDesync( entity player, entity totemPro
 
 		EmitSoundOnEntityExceptToPlayer( player, player, "DeathProtection_WarningToEnd_3p" )
 
-		OnThreadEnd(
-			function() : ( FX_TIMER )
+		OnThreadEnd
+		(
+			void function() : ( FX_TIMER )
 			{
 				if ( IsValid( FX_TIMER ) )
 				{
@@ -1208,6 +1216,18 @@ void function DeathTotem_StandPlayer( entity player )
 			}
 		}
 	)*/
+	
+	player.ForceStand()
+	
+	OnThreadEnd
+	(
+		void function() : ( player )
+		{
+			if( IsValid( player ) )
+				player.UnforceStand()
+		}
+	)
+	
 	wait 0.2
 }
 
@@ -1344,7 +1364,7 @@ bool function DeathTotem_PlayerCanRecall( entity player )
 {
 	bool canRecall = false
 	#if SERVER
-		canRecall = (player in file.markedLocation && IsAlive( player ))
+		canRecall = ( player in file.markedLocation && IsAlive( player ) )
 	#else
 		canRecall = file.hasMark && IsAlive( player )
 	#endif //SERVER

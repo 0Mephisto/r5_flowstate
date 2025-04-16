@@ -398,6 +398,21 @@ void function CodeCallback_DamagePlayerOrNPC( entity ent, var damageInfo )
 			DamageInfo_SetDamage( damageInfo, 0 )
 		}
 	}
+	
+	float damageAmount = DamageInfo_GetDamage( damageInfo )
+	bool isKillShot = ( damageAmount >= ent.GetHealth() + ent.GetShieldHealth() )
+	
+	if( ent.IsShadowForm() && isKillShot )
+	{
+		foreach( callback in ent.e.entOnShadowHealthExhaustedCallbacks )
+		{
+			if( callback( ent ) == true )
+			{
+				DamageInfo_SetDamage( damageInfo, 0 )
+				return
+			}
+		}
+	}
 
 	if (  ( entIsNPC && attackerIsPlayer ) ) //|| ( entIsPlayer && attackerIsNPC ) )
 	{
@@ -467,8 +482,8 @@ void function CodeCallback_DamagePlayerOrNPC( entity ent, var damageInfo )
 			StoreDamageHistoryAndUpdate( ent, MAX_DAMAGE_HISTORY_TIME, actualDamageDone, attacker.GetOrigin(), DamageInfo_GetCustomDamageType( damageInfo ), damageSourceId, attacker, GetWeaponModsFromDamageInfo( damageInfo ) )
 		}
 
-		float damageAmount = DamageInfo_GetDamage( damageInfo )
-		bool isKillShot = ( damageAmount >= ent.GetHealth() + ent.GetShieldHealth() )
+		damageAmount = DamageInfo_GetDamage( damageInfo )
+		isKillShot = ( damageAmount >= ent.GetHealth() + ent.GetShieldHealth() )
 	
 		if ( isKillShot && attacker.IsPlayer() && !entIsPlayer )
 		{

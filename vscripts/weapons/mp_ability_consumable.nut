@@ -1,3 +1,5 @@
+untyped //required for CPlayer class functions
+
 global function WeaponDrivenConsumablesEnabled
 
 global function OnWeaponAttemptOffhandSwitch_Consumable
@@ -2251,21 +2253,16 @@ int function Consumable_GetConsumableRecoveryType( int consumableType )
 
 bool function Consumable_CanUseConsumable( entity player, int consumableType, bool printReason = true )
 {
-
 	if ( IsFallLTM() && IsPlayerShadowSquad( player ) )
 		return false
 
 	int canUseResult = TryUseConsumable( player, consumableType )
 
 	if( consumableType == eConsumableType.SND_BOMB && canUseResult == eUseConsumableResult.ALLOW )
-	{
-		return CanPlantBombHere(player)
-	}
+		return CanPlantBombHere( player )
 
 	if ( canUseResult == eUseConsumableResult.ALLOW )
-	{
 		return true
-	}
 
 	#if CLIENT
 		if ( printReason && !player.GetPlayerNetBool( "isHealing" ) )
@@ -2329,6 +2326,9 @@ int function TryUseConsumable( entity player, int consumableType )
 	if ( Bleedout_IsPlayerGivingFirstAid( player ) )
 		return eUseConsumableResult.DENY_NONE
 #endif
+
+	if ( player.IsDisabledFor( WPT_CONSUMABLE ) )
+		return eUseConsumableResult.DENY_NONE
 
 	while ( player.ContextAction_IsActive() ) // not a real loop
 	{

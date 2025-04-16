@@ -4966,9 +4966,21 @@ void function DelayedDestroy( entity mover, float lifetime )
 		mover.Destroy()
 }
 
-void function SwapToLastEquippedPrimary( entity player )
+bool function SwapToLastEquippedPrimary( entity player )
 {
-	player.SetActiveWeaponByName( eActiveInventorySlot.mainHand, SURVIVAL_GetLastActiveWeapon( player ).GetClassName() )
+	entity weapon = SURVIVAL_GetLastActiveWeapon( player )
+	
+	if( !IsValid( weapon ) )
+		return false
+	
+	string weaponString = weapon.GetClassName()
+	
+	if( weaponString == "" )
+		return false
+		
+	player.SetActiveWeaponByName( eActiveInventorySlot.mainHand, weaponString )
+		
+	return true
 }
 
 entity function CreateTraceBlockerVolume( vector fxOrigin, float radius, bool b0, int contents, int team, string scriptname )

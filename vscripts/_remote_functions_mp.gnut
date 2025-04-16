@@ -1172,6 +1172,7 @@ void function RemoteFunctions_Init_Begin()
 	#endif
 
 	ScriptRegisterNetworkedVariable( "cameraNearbyEnemySquads", SNDC_PLAYER_EXCLUSIVE, SNVT_INT, 0 )
+	ScriptRemote_RegisterClientFunction( "ServerCallback_ToggleDisabledWeaponType", "int", INT_MIN, INT_MAX, "bool" )
 
 	s_callbackRegistrationIsClosed = true
 	ExecuteSetupCallbacks()

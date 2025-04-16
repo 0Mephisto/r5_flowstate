@@ -1562,15 +1562,7 @@ int function SURVIVAL_CountItemsInInventory( entity player, string ref )
 
 entity function SURVIVAL_GetLastActiveWeapon( entity player, bool includeSling = false )
 {
-                  
-                       
-                    
-                                                                     
-      
-                                                       
-      
-		array<entity> weapons = SURVIVAL_GetPrimaryWeaponsSorted( player )
-       
+	array<entity> weapons = SURVIVAL_GetPrimaryWeaponsSorted( player )
 
 	entity weapon
 
