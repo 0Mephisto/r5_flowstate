@@ -246,7 +246,7 @@ void function InitPathTTBoxingRingEntities()
 		entity ringShieldTarget = ringShieldTargets[ 0 ] //TODO: Used FX model instead actually FX until we figure out how to port efct assets, remove this model after fixing particles -LorryLeKral
 		entity ringShield = CreatePropScript( GetAssetFromString( BOXING_RING_MODEL ), ringShieldTarget.GetOrigin(), ringShieldTarget.GetAngles(), SOLID_VPHYSICS, 1 )
 		entity ringFx = CreatePropScript( GetAssetFromString( BOXING_RING_FX ), ringShieldTarget.GetOrigin(), ringShieldTarget.GetAngles(), 0, 50000 )
-		ringFx.kv.rendercolor = "104 198 223 255"
+		ringFx.kv.rendercolor = "83 114 186 255"
 		ringFx.kv.solid = 0
 		ringShield.kv.CollisionGroup = TRACE_COLLISION_GROUP_BLOCK_WEAPONS
 		ringShield.kv.contents = int( ringShield.kv.contents ) | CONTENTS_NOGRAPPLE | CONTENTS_BLOCKLOS
