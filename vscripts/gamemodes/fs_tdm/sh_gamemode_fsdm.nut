@@ -1063,7 +1063,7 @@ void function Sh_CustomTDM_Init()
             )
         )
         //break
-		case eMaps.mp_flowstate:
+		case eMaps.mp_rr_arena_empty:
 		if( GetCurrentPlaylistVarBool( "is_halo_gamemode", false ) )
 		{
 			//Disabled for now until it's fixed. Cafe

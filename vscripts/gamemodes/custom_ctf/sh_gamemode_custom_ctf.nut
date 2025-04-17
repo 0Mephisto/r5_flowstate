@@ -186,7 +186,7 @@ void function Sh_CustomCTF_Init()
 	// Map locations, flag spawns, team spawns, deathcam, victory pos, and undermap Z
 	switch( MapName() )
 	{
-		case eMaps.mp_flowstate:
+		case eMaps.mp_rr_arena_empty:
 
 			Shared_RegisterLocationCTF(
 				NewCTFLocationSettings(

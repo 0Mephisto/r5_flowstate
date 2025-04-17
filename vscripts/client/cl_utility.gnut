@@ -1740,7 +1740,7 @@ bool function ShouldShowButtonHints()
 // Set post processing vars which cannot be set through level entity files.
 void function MapConVar_Init()
 {
-	if( GetMapName() == "mp_flowstate" )
+	if( GetMapName() == "mp_rr_arena_empty" )
 		return
 
 	if( Playlist() == ePlaylists.fs_haloMod_survival )
@@ -1799,7 +1799,7 @@ void function DynamicLight_Init()
 	vector angle = < 0, 0, 0 >
 	switch( GetMapName() )
 	{
-		case "mp_flowstate":
+		case "mp_rr_arena_empty":
 			 float brightness_green = 350.0
 			 entity dlight_chill_0 = CreateClientSideDynamicLight( <39952.1602, -10605.457, -20576.3398> , <0, -178.180634, 0>, DLIGHT_LIGHTGREEN, brightness_green ).SetLightExponent( 2.0 )
 			 entity dlight_chill_1 = CreateClientSideDynamicLight( <40224.6211, -10612.4463, -20585.0781> , <0, 8.98998165, 0>, DLIGHT_LIGHTGREEN, brightness_green ).SetLightExponent( 2.0 )

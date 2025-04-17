@@ -377,7 +377,7 @@ void function _CustomTDM_Init()
 		PrecacheBeavercreek()
 		PrecacheChill()
 		
-		if( MapName() == eMaps.mp_flowstate )
+		if( MapName() == eMaps.mp_rr_arena_empty )
 		{
 			VOTING_PHASE_ENABLE = false
 		}
@@ -514,7 +514,7 @@ void function __OnEntitiesDidLoadCTF()
 {
 	switch( MapName() )
     {	
-		case eMaps.mp_flowstate:
+		case eMaps.mp_rr_arena_empty:
 			entity skyboxCamera = GetEnt( "skybox_cam_level" )
 			file.ogSkyboxOrigin = skyboxCamera.GetOrigin()
 		break
@@ -569,7 +569,7 @@ void function DM__OnEntitiesDidLoad()
 		break*/
 				
 			break
-		case eMaps.mp_flowstate:
+		case eMaps.mp_rr_arena_empty:
 			entity skyboxCamera = GetEnt( "skybox_cam_level" )
 			file.ogSkyboxOrigin = skyboxCamera.GetOrigin()
 		break
@@ -666,7 +666,6 @@ LocPair function _GetVotingLocation()
 			return NewLocPair(<4284.88037, -102.993355, 2671.03125>, <0, -179.447098, 0>)*/
 		case eMaps.mp_rr_party_crasher:
 			return NewLocPair(<1729.17407, -3585.65137, 581.736206>, <0, 103.168709, 0>)
-		case eMaps.mp_flowstate:
 		case eMaps.mp_rr_arena_empty:
 			return NewLocPair(<0,0,0>, <0, -179.447098, 0>)
 		case eMaps.mp_rr_olympus:
@@ -1025,7 +1024,7 @@ void function _OnPlayerConnected(entity player)
 						Remote_CallFunction_Replay(player, "FS_ForceAdjustSunFlareParticleOnClient", 2 )
 					}
 					
-					if( MapName() == eMaps.mp_flowstate )
+					if( MapName() == eMaps.mp_rr_arena_empty )
 					{
 						//Remote_CallFunction_NonReplay(player, "Minimap_DisableDraw_Internal")
 						Remote_CallFunction_ByRef( player, "Minimap_DisableDraw_Internal" )
@@ -1495,7 +1494,7 @@ void function _HandleRespawn( entity player, bool isDroppodSpawn = false )
 		//Remote_CallFunction_NonReplay(player, "ServerCallback_KillReplayHud_Deactivate")
     }
 
-	if( MapName() == eMaps.mp_flowstate )
+	if( MapName() == eMaps.mp_rr_arena_empty )
 		//Remote_CallFunction_NonReplay(player, "Minimap_DisableDraw_Internal")
 		Remote_CallFunction_ByRef( player, "Minimap_DisableDraw_Internal" )
 	else
@@ -3279,10 +3278,10 @@ void function SimpleChampionUI()
 					if( !IsValid( player ) || !IsAlive( player ) )
 						return
 					
-					if( MapName() == eMaps.mp_flowstate )
+					if( MapName() == eMaps.mp_rr_arena_empty )
 						Remote_CallFunction_ByRef( player, "Minimap_DisableDraw_Internal" )
 						//Remote_CallFunction_NonReplay(player, "Minimap_DisableDraw_Internal")
-					else //if( GetMapName() != "mp_flowstate" )
+					else //if( GetMapName() != "mp_rr_arena_empty" )
 						Remote_CallFunction_ByRef( player, "Minimap_EnableDraw_Internal" )
 						//Remote_CallFunction_NonReplay(player, "Minimap_EnableDraw_Internal")
 
@@ -6310,7 +6309,7 @@ void function SpawnCyberdyne() //Halo 3 The Pit
 {
 	vector startingpos = Vector(42000, -10000, -19900)
 
-	if( MapName() != eMaps.mp_flowstate )
+	if( MapName() != eMaps.mp_rr_arena_empty )
 		startingpos = Vector(0, 0, 9000)
 
 	vector startingang = Vector(0,-90,0)
@@ -6348,7 +6347,7 @@ void function SpawnCyberdyne() //Halo 3 The Pit
 	cyberdyneCollisionModel.extend( Cyberdyne_Load(startingpos + Vector(-3400,-6623,0) ) )
 	cyberdyneCollisionModel.extend( Cyberdyne_Load2(startingpos + Vector(-3400,-6623,0) ) )
 	
-	if( MapName() == eMaps.mp_flowstate )
+	if( MapName() == eMaps.mp_rr_arena_empty )
 		file.playerSpawnedProps.append( AddOutOfBoundsTriggerWithParams( <41977.8359, -10601.9141, -19263.0371>, 5000 ) )
 	else
 		file.playerSpawnedProps.append( AddOutOfBoundsTriggerWithParams( <-2.35747147, -574.164307, 9636.9624>, 5000 ) )
@@ -6361,7 +6360,7 @@ void function SpawnCyberdyne() //Halo 3 The Pit
 		ForceSaveOgSkyboxOrigin()
 		#endif
 		
-		if( MapName() == eMaps.mp_flowstate )
+		if( MapName() == eMaps.mp_rr_arena_empty )
 		{
 			//Rotate skybox for The Pit map.
 			entity skyboxCamera = GetEnt( "skybox_cam_level" )
@@ -6400,7 +6399,7 @@ void function SpawnCyberdyne() //Halo 3 The Pit
 
 void function SpawnLockout() //Halo 2 Encerrona
 {
-	if( MapName() != eMaps.mp_flowstate )
+	if( MapName() != eMaps.mp_rr_arena_empty )
 		return
 
 	vector startingpos = Vector(42000, -10000, -19900)
@@ -6494,7 +6493,7 @@ void function SpawnLockout() //Halo 2 Encerrona
 
 void function SpawnChill()
 {
-	if( MapName() != eMaps.mp_flowstate )
+	if( MapName() != eMaps.mp_rr_arena_empty )
 		return
 
 	vector startingpos = Vector(42000, -10000, -26000) //Vector( 0,0,2000 ) // 
@@ -6621,7 +6620,7 @@ void function SpawnChill()
 			Remote_CallFunction_Replay( player, "FS_ForceAdjustSunFlareParticleOnClient", 2 ) //chill 
 		}
 
-		if( MapName() == eMaps.mp_flowstate )
+		if( MapName() == eMaps.mp_rr_arena_empty )
 		{
 			//Rotate skybox for Chill map.
 			entity skyboxCamera = GetEnt( "skybox_cam_level" )
@@ -6633,7 +6632,7 @@ void function SpawnChill()
 
 void function SpawnBeavercreek()
 {
-	if( MapName() != eMaps.mp_flowstate )
+	if( MapName() != eMaps.mp_rr_arena_empty )
 		return
 
 	vector startingpos = Vector(42000, -10000, -26000) //Vector( 0,0,2000 ) // 
@@ -6693,7 +6692,7 @@ void function SpawnBeavercreek()
 			Remote_CallFunction_Replay( player, "FS_ForceAdjustSunFlareParticleOnClient", 2 ) //chill 
 		}
 
-		if( MapName() == eMaps.mp_flowstate )
+		if( MapName() == eMaps.mp_rr_arena_empty )
 		{
 			//Rotate skybox for Chill map.
 			entity skyboxCamera = GetEnt( "skybox_cam_level" )

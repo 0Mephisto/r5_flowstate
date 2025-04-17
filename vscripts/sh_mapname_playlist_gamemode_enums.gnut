@@ -66,8 +66,6 @@ global enum eMaps
 	mp_rr_aqueduct, //23
 	mp_rr_arena_empty, //24
 	mp_lobby, //25
-	mp_rr_construct, //26
-	mp_flowstate, //27
 	
 	
 	_MAP_COUNT //LAST
