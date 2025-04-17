@@ -1377,6 +1377,8 @@ void function SetupAbilities()
 	SetupDevCommand( "Wattson Ultimate", "give mp_weapon_trophy_defense_system"  )
 	SetupDevCommand( "Wraith Tactical", "give mp_ability_phase_walk" )
 	SetupDevCommand( "Wraith Ultimate", "give mp_weapon_phase_tunnel" )
+	SetupDevCommand( "Revenant Tactical", "give mp_ability_silence" )
+	SetupDevCommand( "Revenant Ultimate", "give mp_ability_revenant_death_totem" )
 	#endif
 }
 

@@ -81,7 +81,7 @@ const float IDEAL_TOTEM_DISTANCE = 72.0
 
 
 //DEBUG
-const bool DEATH_TOTEM_DEBUG = true
+const bool DEATH_TOTEM_DEBUG = false
 
 struct DeathTotemPlacementInfo
 {
@@ -147,6 +147,8 @@ void function MpAbilityRevenantDeathTotem_Init()
 	PrecacheParticleSystem( DEATH_TOTEM_SHADOW_BODY_FX )
 	PrecacheParticleSystem( DEATH_TOTEM_SHADOW_TIMER_FX )
 
+	RegisterSignal( SIGNAL_TELEPORTED )
+
 	RegisterSignal( "DeathTotem_ChangePlayerStance" )
 	RegisterSignal( DEATH_TOTEM_RECALL_SIGNAL )
 	RegisterSignal( "DeathTotem_ForceEnd" )
@@ -156,7 +158,6 @@ void function MpAbilityRevenantDeathTotem_Init()
 	RegisterSignal( "DeathTotem_PreRecallPlayer" )
 	RegisterSignal( "DeathTotem_Cancel" )
 	RegisterSignal( "DeathTotem_RemoveWallClimbDisables" )
-	RegisterSignal( SIGNAL_TELEPORTED )
 
 	#if CLIENT
 		PrecacheParticleSystem( DEATH_TOTEM_TELEPORT_SCREEN_FX )
@@ -233,6 +234,7 @@ var function OnWeaponPrimaryAttack_ability_revenant_death_totem( entity weapon, 
 
 		vector origin = ownerPlayer.GetOrigin()
 		vector angles = ownerPlayer.GetAngles()
+		//entity parentTo = weapon.GetParent()
 		thread DeathTotem_DeployTotem( ownerPlayer, origin, angles ) // Place your object in some utility function as normal using object placement's final positional data
 
 		if ( DEATH_TOTEM_DEBUG )
@@ -325,7 +327,10 @@ void function DeathTotem_DeployTotem( entity owner, vector origin, vector angles
 	totemProxy.SetOrigin( offsetOrigin )
 	totemProxy.SetOwner( owner )
 	//totemProxy.SetNeverCrush( true )
-
+	/*if ( IsValid( parentTo ) )
+	{
+		totemProxy.SetParent( parentTo )
+	}*/
 	//Register totem so that it is detected by sonar.
 	totemProxy.Highlight_Enable()
 	AddSonarDetectionForPropScript( totemProxy )
