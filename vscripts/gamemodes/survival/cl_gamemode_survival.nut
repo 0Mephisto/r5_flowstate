@@ -3670,7 +3670,7 @@ array<WaitingForPlayersCameraLocPair> function GetCamerasForMap( string map )
 			cutsceneSpawns.append(NewCameraPair( <0,0,0>, <0,0,0> ) )
 		break
 		
-		case "mp_flowstate":
+		case "mp_rr_arena_empty":
 			cutsceneSpawns.append(NewCameraPair( <41000,-10000,0>, <0,0,0> ) )
 		break
 	}
