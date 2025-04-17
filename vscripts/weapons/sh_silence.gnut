@@ -1,4 +1,4 @@
-untyped //required for CPlayer class functions
+untyped //(mk): required for CPlayer class functions
 
 #if SERVER
 	global function SilenceThink

@@ -3084,7 +3084,7 @@ void function RemoveDamageEvents( int attacker_handle, int victim_handle ) //Tod
 					attName = DamageSourceIDToString( attackerID )			
 			}
 			
-			if ( bReportStats )
+			if ( bReportStats && victimIsPlayer )
 			{
 				AddToPlayerDeaths( victim )
 				AddToPlayerShots( v_OID, victimTotalShots )
