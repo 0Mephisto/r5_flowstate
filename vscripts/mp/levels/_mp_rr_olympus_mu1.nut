@@ -80,8 +80,8 @@ void function Olympus_OnEntitiesDidLoad()
 
 		if( ent.GetTargetName() == "vehicle_platform" )
 		{
-			printt( "Removed vehicle platform" )
-			ent.Destroy()
+			//printt( "Removed vehicle platform" )
+			//ent.Destroy()
 		}
 		
 		if( ent.GetModelName() == $"mdl/industrial/gun_rack_arm_down.rmdl" )
