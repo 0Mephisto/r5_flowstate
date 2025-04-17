@@ -402,7 +402,7 @@ void function CodeCallback_DamagePlayerOrNPC( entity ent, var damageInfo )
 	float damageAmount = DamageInfo_GetDamage( damageInfo )
 	bool isKillShot = ( damageAmount >= ent.GetHealth() + ent.GetShieldHealth() )
 	
-	if( !entIsNPC && ent.IsShadowForm() && isKillShot )
+	if( isKillShot && !entIsNPC && ent.IsShadowForm() )
 	{
 		foreach( callback in ent.e.entOnShadowHealthExhaustedCallbacks )
 		{
