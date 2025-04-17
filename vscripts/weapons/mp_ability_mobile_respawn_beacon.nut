@@ -587,7 +587,7 @@ void function SpawnMobileBeacon_SetupPushAway_Thread( entity beaconPod, vector l
 	#if DEVELOPER
 		if ( MOBILE_RESPAWN_BEACON_DEBUG_DRAW )
 		{
-			DebugDrawCylinder( pushAwayTrigger.GetOrigin() - <0.0, 0.0, pushAwayTrigger.GetBelowHeight()>, <270.0, 0.0, 0.0>, pushAwayTrigger.GetRadius(), pushAwayTrigger.GetAboveHeight() + pushAwayTrigger.GetBelowHeight(), 0,0,0, true, 3.0 )
+			DebugDrawCylinder( pushAwayTrigger.GetOrigin() - <0.0, 0.0, pushAwayTrigger.GetBelowHeight()>, <270.0, 0.0, 0.0>, pushAwayTrigger.GetRadius(), pushAwayTrigger.GetAboveHeight() + pushAwayTrigger.GetBelowHeight(), 255,255,255, true, 3.0 )
 		}
 	#endif
 
