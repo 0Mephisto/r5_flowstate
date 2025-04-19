@@ -1322,30 +1322,30 @@ void function CodeCallback_OnServerAnimEvent( entity ent, string eventName )
 			PlayDialogueForAnimEvent( ent, tokens[1] )
 			break
 
-		/*case "rampart_turret_spin_up":
+		case "rampart_turret_spin_up":
 		case "rampart_turret_button_press":
 			OnAnimEvent_weapon_mounted_turret_weapon( ent, tokenName )
 			break
 		case "rampart_turret_mobile_spin_up":
 		case "rampart_turret_mobile_button_press":
 			OnAnimEvent_weapon_mobile_hmg( ent, tokenName )
-			break*/ //TODO: FIX THIS WHEN WE GET SHEILA
+			break
 		                   
 		case "loot_marvin_dispense_loot":
-			LootMarvin_OnDispenseLootAnimEvent( ent )
+			//LootMarvin_OnDispenseLootAnimEvent( ent )
 			break
 
-		/*case "spawn_prop_in_world":
-			Emote_AnimEvent_SpawnModelInWorld( ent, tokens[1], tokens[2] )
+		case "spawn_prop_in_world":
+			//Emote_AnimEvent_SpawnModelInWorld( ent, tokens[1], tokens[2] )
 			break
 
 		case "spawn_spray_in_world":
-			Emote_AnimEvent_SpawnSprayInWorld( ent, tokens[1], tokens[2], tokens[3] )
+			//Emote_AnimEvent_SpawnSprayInWorld( ent, tokens[1], tokens[2], tokens[3] )
 			break
 
 		case "ammo_swap_reload_complete":
-			OnAnimEvent_weapon_car_ammo_swap_complete(ent)
-			break*/
+			//OnAnimEvent_weapon_car_ammo_swap_complete(ent)
+			break
 	}
 
 	PerfEnd( PerfIndexServer.CB_OnServerAnimEvent )
