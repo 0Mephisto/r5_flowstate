@@ -1825,6 +1825,9 @@ bool function Consumable_IsValidModCommand( entity player, entity weapon, string
 }
 void function UseConsumable_Bomb( entity player, ConsumableInfo info )//, ConsumablePersistentData useData )
 {
+	if (!IsFlowstateActive())
+		return
+	
 	if( !IsValid(player) || player.GetTeam() != Sh_GetAttackerTeam() || GetGameState() != eGameState.Playing ) return
 	
 	if( Gamemode() == eGamemodes.fs_snd )

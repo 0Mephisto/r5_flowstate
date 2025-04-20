@@ -259,6 +259,9 @@ void function CodeCallback_MapSpawn() // original script entry point
 
 void function PrecacheFSEntities()
 {
+	if ( !IsFlowstateActive() )
+		return
+	
 	//Server only init for flowstate gamemodes
 	switch( GetCurrentPlaylistName() )
 	{

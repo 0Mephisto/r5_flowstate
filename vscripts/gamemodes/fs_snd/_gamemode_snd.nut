@@ -62,6 +62,9 @@ bool debugdebug = false
 
 void function _GamemodeSND_Init()
 {
+	if (!IsFlowstateActive())
+		return
+	
 	if(GetCurrentPlaylistVarBool("enable_global_chat", true))
 		SetConVarBool("sv_forceChatToTeamOnly", false)
 	else
