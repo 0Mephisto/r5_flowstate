@@ -12,8 +12,35 @@
 
 	"PakLoadOnGameMode"
 	{
-		"dev_default" 1
-		"survival_dev" 0
+		"fs_scenarios" 1
+		"fs_movementrecorder" 1
+		"fs_snd" 1
+		"winterexpress" 1
+		"custom_ctf" 1
+		"fs_prophunt" 1
+		"fs_duckhunt" 1
+		"fs_infected" 1
+		"fs_surf" 1
+		"fs_dm" 1
+		"fs_realistic_ttv" 1
+		"fs_4d" 1
+		"fs_9k" 1
+		"fs_dm_fast_instagib" 1
+		"fs_1v1" 1
+		"fs_vamp_1v1" 1
+		"fs_1v1_headshots_only" 1
+		"fs_lgduels_1v1" 1
+		"fs_movementgym" 1
+		"fs_rankupmapmovementpractice" 1
+		"fs_ltm_mortalevoshields" 1
+		"fs_ithurtsmovementmappractice" 1
+		"fs_fallingforever" 1
+		"fs_doormovementpractice" 1
+		"fs_grapplemovementpractice" 1
+		"fs_mantlejumppractice" 1
+		"fs_firstmovementmappractice" 1
+		"fs_gymmovementmappractice" 1
+		"fs_strafeitmovementmappractice" 1
 		"fs_dm" 1
 	}
 
