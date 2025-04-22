@@ -251,11 +251,6 @@ WeaponData
 	    gold
 	    {
 	    }
-
-		shock_rounds
-		{
-			
-		}
 		
 		survival_finite_ammo
         {
@@ -267,16 +262,6 @@ WeaponData
 
 	   		"uses_ammo_pool"								"1"
         }
-
-		incendiary_rounds
-		{
-			"damage_near_value"   							"13"
-			"damage_far_value"								"13"
-			"damage_very_far_value"							"13"
-			"damage_near_value_titanarmor"					"13"
-			"damage_far_value_titanarmor" 					"13"
-			"damage_very_far_value_titanarmor" 				"13"
-		}
 
         // single shot
 		altfire
