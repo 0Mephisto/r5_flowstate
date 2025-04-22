@@ -1609,7 +1609,7 @@ playlists
 			} } }
 		}
     
-    fs_4d
+    	fs_4d
 		{
 			inherit defaults
 			vars
@@ -3929,7 +3929,7 @@ playlists
 				//		TOKENS FOR SERVER HOSTS		//
 				//////////////////////////////////////
 				
-				"FS_PLAYLIST_MOTD" "An R5Reloaded Server" //set your servers message of the day. 1000 char max.  Use \n for newline.
+				"FS_PLAYLIST_MOTD" "A R5Reloaded Server" //set your servers message of the day. 1000 char max.  Use \n for newline.
 				"FS_PLAYLIST_MOTD_CONTINUE" "" // appends to first, 1000 char max.
 			
 			
