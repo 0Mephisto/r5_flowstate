@@ -294,7 +294,8 @@ void function SetupDefaultDevCommandsMP()
 		SetupDevMenu( "Equip Legend Abilities", SetDevMenu_Abilities )
 		SetupDevMenu( "Equip Custom Abilities", SetDevMenu_CustomAbilities )
 		SetupDevMenu( "Equip Weapons", SetDevMenu_Weapons )
-		SetupDevMenu( "Equip Titanfall Weapons", SetDevMenu_R2Weapons )
+		if( Playlist() != ePlaylists.survival_firingrange ) 
+			SetupDevMenu( "Equip Titanfall Weapons", SetDevMenu_R2Weapons )
 		
 		if ( IsSurvivalMenuEnabled() )
 		{
@@ -381,10 +382,10 @@ void function SetDevMenu_CustomAbilities( var _ )
 
 void function SetDevMenu_Weapons( var _ )
 {
-	if( Playlist() == ePlaylists.survival_firingrange ) 
+	//if( Playlist() == ePlaylists.survival_firingrange ) 
 		thread ChangeToThisMenu( SetupRetailWeapons )
-	else
-		thread ChangeToThisMenu( SetupWeapons )
+	//else
+		//thread ChangeToThisMenu( SetupWeapons )
 }
 void function SetDevMenu_R2Weapons( var _ )
 {
@@ -1274,10 +1275,10 @@ void function SetupRetailWeapons()
 	SetupDevCommand( "", "give blank" )
 
 	//Drop Weapons
-	SetupDevCommand( "Crate: Havoc AR", "give mp_weapon_energy_ar_crate" )
-	SetupDevCommand( "Crate: Peacekeeper", "give mp_weapon_energy_shotgun_crate" )
+	SetupDevCommand( "Crate: Havoc AR", "give mp_weapon_energy_ar_crate crate hopup_selectfire optic_cq_hcog_bruiser" )
+	SetupDevCommand( "Crate: Peacekeeper", "give mp_weapon_energy_shotgun_crate crate optic_cq_hcog_classic shotgun_bolt_l4" )
 	SetupDevCommand( "Crate: Kraber", "give mp_weapon_sniper" )
-	SetupDevCommand( "Crate: Bocek Bow", "give mp_weapon_bow" )
+	//SetupDevCommand( "Crate: Bocek Bow", "give mp_weapon_bow" )
 	#endif
 }
 
