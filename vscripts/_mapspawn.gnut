@@ -441,9 +441,6 @@ void function PrecacheSDKWeapons()
 
 	PrecacheWeapon( $"mp_weapon_mounted_turret_weapon" )
 	PrecacheWeapon( $"mp_weapon_mounted_turret_placeable" )
-
-	PrecacheWeapon( $"mp_weapon_mc_sword_primary" )
-	PrecacheWeapon( $"melee_mc_sword" )
 	
 	//S0 Dev Protos
 	PrecacheWeapon( $"mp_weapon_cover_wall_proto" )
