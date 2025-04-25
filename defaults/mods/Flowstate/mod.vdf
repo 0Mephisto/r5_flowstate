@@ -1,16 +1,17 @@
 "mod"
 {
-	"name" "R5R Basemod: Flowstate"
+	"name" "R5R Mod: Flowstate"
 	"id" "Flowstate"
-	"description" "Basemod for R5Reloaded, includes Flowstate required convars and client text in 13 language files."
+	"description" "MOd for R5Reloaded, includes Flowstate required convars and client text in 13 language files."
 	"version" "1.1"
+	"author" "cafeFPS"
 
 	"LocalizationFiles"
 	{
 		"resource/flowstate_%language%.txt" "1"
 	}
 
-	"PakLoadOnGameMode"
+	"PakLoadOnPlaylists"
 	{
 		"fs_scenarios" 1
 		"fs_movementrecorder" 1
