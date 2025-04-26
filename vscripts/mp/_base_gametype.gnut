@@ -108,6 +108,9 @@ void function BaseGametypeEntitiesDidLoad()
 
 void function Flowstate_CheckForMapTriggers()
 {
+	if( Playlist() == ePlaylists.fs_1v1 )
+		return//why do we break map triggers
+	
 	file.allTriggers.extend( GetEntArrayByClass_Expensive( "trigger_out_of_bounds" ) )
 	file.allTriggers.extend( GetEntArrayByClass_Expensive( "trigger_hurt" ) )
 	file.allTriggers.extend( GetEntArrayByClass_Expensive( "trigger_slip" ) )
