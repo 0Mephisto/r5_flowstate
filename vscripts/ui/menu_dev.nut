@@ -722,7 +722,7 @@ void function SetupHeirloomsDevMenu()
 {
 	SetupDevCommand( "Bolo Sword", "giveheirloom 0" )
 	SetupDevCommand( "Dragonfly Knife", "giveheirloom 1" )
-	//SetupDevCommand( "Diamond Sword", "giveheirloom 2" )
+	SetupDevCommand( "Diamond Sword", "giveheirloom 2" )
 }
 
 void function SetupTDMPrimaryWeapons()

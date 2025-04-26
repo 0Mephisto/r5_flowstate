@@ -163,7 +163,6 @@ When: "SERVER"
 Scripts:
 [
 	dev/_devstats.gnut
-	//_modsystems.gnut
 ]
 
 When: "SERVER && DEV"
