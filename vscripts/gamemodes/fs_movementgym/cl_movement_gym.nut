@@ -1574,10 +1574,13 @@ void function MG_CustomPilotRUI( entity player, var rui ) {
 		case "DEAR5R":
 			RuiSetImage( rui, "playerIcon", $"rui/flowstatecustom/dea/dea_pfp" )
 			RuiSetString( rui, "name", "DEAFPS" )
+   			break
 		case "LoyTakian":
 			RuiSetImage( rui, "playerIcon", $"rui/flowstatecustom/dea/loy_pfp" )
 			RuiSetString( rui, "name", "Loy" )
 			break
+   		default:
+			SURVIVAL_PopulatePlayerInfoRui( player, rui )
 	}
 	
 }
