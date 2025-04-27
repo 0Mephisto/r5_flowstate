@@ -108,9 +108,6 @@ void function BaseGametypeEntitiesDidLoad()
 
 void function Flowstate_CheckForMapTriggers()
 {
-	if( Playlist() == ePlaylists.fs_1v1 )
-		return//why do we break map triggers
-	
 	file.allTriggers.extend( GetEntArrayByClass_Expensive( "trigger_out_of_bounds" ) )
 	file.allTriggers.extend( GetEntArrayByClass_Expensive( "trigger_hurt" ) )
 	file.allTriggers.extend( GetEntArrayByClass_Expensive( "trigger_slip" ) )
@@ -1660,9 +1657,6 @@ void function SetupOutOfBoundsTrigger( entity trigger )
 
 function OutOfBoundsSetup()
 {
-	if( Playlist() == ePlaylists.fs_1v1 )
-		return//why do we break map triggers
-	
 	file.outOfBoundsTriggers.extend( GetEntArrayByClass_Expensive( "trigger_out_of_bounds" ) )
 
 	if( Flowstate_DisableAllMapTriggers() )
@@ -1687,9 +1681,6 @@ void function OutOfBoundsDisable()
 {
 	if( Flowstate_DisableAllMapTriggers() )
 		return
-		
-	if( Playlist() == ePlaylists.fs_1v1 )
-		return//why do we break map triggers
 		
 	foreach( trigger in file.outOfBoundsTriggers )
 	{
