@@ -556,6 +556,7 @@ void function DM__OnEntitiesDidLoad()
 		case eMaps.mp_rr_aqueduct:
 			if( flowstateSettings.patch_waiting_area )
 				Patch_Barrier_Overflow()
+		break
 				
 		case eMaps.mp_rr_party_crasher:
 			if( flowstateSettings.patch_waiting_area )
