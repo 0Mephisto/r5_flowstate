@@ -2281,7 +2281,7 @@ playlists
 				flowstateAdminTgive 							0 // 0 will enable dev menu weapons for players
 				flowstate1v1MatchLoadout						0
 				
-				flowstate_disable_all_map_triggers				1
+				flowstate_disable_all_map_triggers				0
 				
 				flowstate_seconds_to_wait_without_players_before_restarting		3600 // 3600 : 1 hour
 				
