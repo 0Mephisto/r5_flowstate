@@ -1,4 +1,4 @@
-When: "SERVER || CLIENT"
+When: "SERVER || CLIENT || UI"
 Scripts:
 [
 	sh_kralstuff.gnut

@@ -1,6 +1,19 @@
-global function SDKTest_HelloWorld
+globalize_all_functions
 
-void function SDKTest_HelloWorld()
+#if UI
+void function UICodeCallback_kralstuff_ModInit()
 {
-    printl("hello world!")
 }
+#endif
+
+#if SERVER
+void function CodeCallback_kralstuff_ModInit()
+{
+}
+#endif
+
+#if CLIENT
+void function ClientCodeCallback_kralstuff_ModInit()
+{
+}
+#endif
