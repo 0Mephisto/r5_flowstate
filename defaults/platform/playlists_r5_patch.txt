@@ -827,7 +827,7 @@ playlists
 				
 				flowstateAdminTgive 							0 //tgive is for the admin ONLY
 				
-				activate_passive_abilitiese				1
+				activate_passive_abilities				1
 				
 				//winter express exclusive
 				infinite_heal_items								0 //seting to 0 is auto heal
@@ -2104,7 +2104,7 @@ playlists
 				flowstateAdminTgive 							0 //admin is for tgive only, 0 will enable dev menu weapons for players
 				flowstate1v1MatchLoadout						0
 				
-				activate_passive_abilitiese				1
+				activate_passive_abilities				1
 				
 				flowstate_disable_all_map_triggers				0
 
@@ -2287,7 +2287,7 @@ playlists
 				
 				flowstateRoundtime 								600
 				
-				activate_passive_abilitiese				1
+				activate_passive_abilities				1
 				
 				/////////////////////////
 				// mkos added features //
@@ -3502,8 +3502,9 @@ playlists
 				survival_server_restart_after_end				1
 				enable_bullet_slow					1
 				
-				activate_passive_abilitiese				1
+				activate_passive_abilities				1
 				enable_motd										0
+				flowstate_mod_active							0
 			}
 			gamemodes { survival { maps {
 				mp_rr_desertlands_64k_x_64k						1
@@ -3560,8 +3561,9 @@ playlists
 				survival_server_restart_after_end				1
 				enable_bullet_slow					1
 				
-				activate_passive_abilitiese				1
+				activate_passive_abilities				1
 				enable_motd										0
+				flowstate_mod_active							0
 			}
 			gamemodes { survival { maps {
 				mp_rr_desertlands_64k_x_64k						1
@@ -3621,8 +3623,9 @@ playlists
 				survival_server_restart_after_end				0
 				enable_bullet_slow					1
 				
-				activate_passive_abilitiese				1
+				activate_passive_abilities				1
 				enable_motd										0
+				flowstate_mod_active							0
 
 			}
 			gamemodes { survival { maps {
@@ -3708,6 +3711,7 @@ playlists
 
 				enable_bullet_slow					1
 				enable_motd										0
+				flowstate_mod_active							0
 			}
 			gamemodes { survival { maps {
 				mp_rr_canyonlands_staging				   		1
@@ -3777,6 +3781,7 @@ playlists
 				custom_loot               					0
 
 				survival_training 							1
+				flowstate_mod_active						0
 			}
 			gamemodes { survival { maps {
 				mp_rr_canyonlands_staging				   	1
@@ -3793,7 +3798,7 @@ playlists
 				name										   	"Survival Dev"
 				
 				// match teams will not fill with more than one party, up to max_teams of size max_team_size (or less) -- not exceeding max_players
-				max_team_size									2
+				max_team_size									1
 				max_players										120
 				min_players										1
 
