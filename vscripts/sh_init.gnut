@@ -265,6 +265,7 @@ void function SV_CL_Init()
 			RegisterNetworkedVariableChangeCallback_int( "FSDM_GameState", FSCTF_GameStateChanged )
 		}
 	#endif
+	ModSystem_RunCallbacks()//MOD SYSTEM CALLBACK
 	RemoteFunctions_Init_Finish()
 }
 

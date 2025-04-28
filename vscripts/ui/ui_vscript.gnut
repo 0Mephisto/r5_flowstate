@@ -389,6 +389,8 @@ void function UICodeCallback_UIInit()
 		{
 		}
 	#endif
+
+	ModSystem_RunCallbacks()//MOD SYSTEM CALLBACK
 }
 
 
