@@ -198,7 +198,7 @@ const table<string,string> RECORDER_BINDINGS =
 	["F6"] = "\"PlayAnimInSlot 3\"",
 	["F7"] = "\"PlayAnimInSlot 4\"",
 	["F8"] = "PlayAllAnims",
-	["F11"] = "recorder_switchCharacter",
+	["F9"] = "recorder_switchCharacter",
 	["F12"] = "recorder_toggleContinueLoop"
 }
 
@@ -327,8 +327,8 @@ void function FS_MovementRecorder_CreateInputHintsRUI( bool state )
 	file.inputHintLines.append( hintRui7 )
 
 	var hintRui8 = RuiCreate( $"ui/tutorial_hint_line.rpak", topo, RUI_DRAW_POSTEFFECTS, MINIMAP_Z_BASE + 10 )
-	RuiSetString( hintRui8, "buttonText", "%F11%" )
-	RuiSetString( hintRui8, "gamepadButtonText", "%F11%" )
+	RuiSetString( hintRui8, "buttonText", "%F9%" )
+	RuiSetString( hintRui8, "gamepadButtonText", "%F9%" )
 	RuiSetString( hintRui8, "hintText", "Character: Wraith" )
 	RuiSetString( hintRui8, "altHintText", "" )
 	RuiSetInt( hintRui8, "hintOffset", 7 )
@@ -391,20 +391,16 @@ void function FS_MovementRecorder_UpdateHints( int hint, bool state, float durat
 	{
 		string characterToUse
 		switch( duration.tointeger() )
-		{
+		{	
 			case 0:
-			characterToUse = "Wraith"
-			break
-			
-			case 1:
 			characterToUse = "Pathfinder"
 			break
 			
-			case 2:
+			case 1:
 			characterToUse = "Bangalore"
 			break
 			
-			case 3:
+			case 2:
 			characterToUse = "Octane"
 			break
 
@@ -663,12 +659,12 @@ bool function ClientCommand_ToggleContinueLoop(entity player, array<string> args
 	if( player.p.continueLoop )
 	{
 		player.p.continueLoop = false
-		Remote_CallFunction_NonReplay( player, "FS_MovementRecorder_UpdateHints", 8, false, -1 )
+		Remote_CallFunction_NonReplay( player, "FS_MovementRecorder_UpdateHints", 8, false, 0 )
 	} 
 	else if( !player.p.continueLoop )
 	{
 		player.p.continueLoop = true
-		Remote_CallFunction_NonReplay( player, "FS_MovementRecorder_UpdateHints", 8, true, -1 )
+		Remote_CallFunction_NonReplay( player, "FS_MovementRecorder_UpdateHints", 8, true, 0 )
 	}
 	return true
 }
@@ -703,34 +699,34 @@ void function StartRecordingAnimation( entity player )
 	{
 		case 0:
 			msg1 = "RECORDING MOVEMENT AS WRAITH"
-			AssignCharacter(player, 8)
+			CharacterSelect_AssignCharacter(player, GetItemFlavorByHumanReadableRef( "character_wraith" ))
 		break
 		
 		case 1:
 			msg1 = "RECORDING MOVEMENT AS PATHFINDER"
-			AssignCharacter(player, 7)
+			CharacterSelect_AssignCharacter(player, GetItemFlavorByHumanReadableRef( "character_pathfinder" ))
 		break
 		
 		case 2:
 			msg1 = "RECORDING MOVEMENT AS BANGALORE"
-			AssignCharacter(player, 0)
+			CharacterSelect_AssignCharacter(player, GetItemFlavorByHumanReadableRef( "character_bangalore" ))
 		break
 		
 		case 3:
 			msg1 = "RECORDING MOVEMENT AS OCTANE"
-			AssignCharacter(player, 6)
+			CharacterSelect_AssignCharacter(player, GetItemFlavorByHumanReadableRef( "character_octane" ))
 		break
 		
 		default:
 			msg1 = "RECORDING MOVEMENT"
-			AssignCharacter(player, 0)
+			CharacterSelect_AssignCharacter(player, GetItemFlavorByHumanReadableRef( "character_wraith" ))
 		break
 	}
 
 	if( !player.p.recorderHideHud )
 	{
-		LocalEventMsg( player, "#FS_RECORDINGANIM_CUSTOM", msg1, 86400 )
-		Remote_CallFunction_NonReplay( player, "FS_MovementRecorder_UpdateHints", 0, true, -1 )
+		LocalEventMsg( player, "#FS_RECORDINGANIM_CUSTOM", msg1, 6 )
+		Remote_CallFunction_NonReplay( player, "FS_MovementRecorder_UpdateHints", 0, true, 0 )
 	}
 	
 	//asset playermodel = player.GetModelName() //?
@@ -822,7 +818,7 @@ void function StopRecordingAnimation( entity player )
 	if( !player.p.recorderHideHud )
 	{
 		LocalEventMsg( player, "#FS_MOVEMENT_SAVED", slotname( slot + 1 ) )
-		Remote_CallFunction_NonReplay( player, "FS_MovementRecorder_UpdateHints", 0, false, -1 )
+		Remote_CallFunction_NonReplay( player, "FS_MovementRecorder_UpdateHints", 0, false, 0 )
 
 		var anim = player.p.recordingAnims[ slot ]
 		float duration = GetRecordedAnimationDuration( anim )
