@@ -368,9 +368,6 @@ void function RemoteFunctions_Init_Begin()
 	ScriptRemote_RegisterClientFunction( "ServerCallback_ShouldExitDrone" )
 	ScriptRemote_RegisterClientFunction( "Gamemode1v1_ForceLegendSelector_Deprecated" ) //(mk): Todo clientsided ui activation
 	
-	#if DEVELOPER
-		ScriptRemote_RegisterUIFunction( "UICallback_ForceCloseDeathScreenMenu" ) //Audit 2-22-2025
-	#endif
 	
 	#if DEVELOPER
 		if( Playlist() != ePlaylists.fs_scenarios )
@@ -705,10 +702,6 @@ void function RemoteFunctions_Init_Begin()
 	//ScriptRemote_RegisterUntypedFunction_deprecated( "ServerCallback_BLEEDOUT_HideWoundedMarker" ) //Audit 2-22-2025 unused
 	//ScriptRemote_RegisterUntypedFunction_deprecated( "ServerCallback_BLEEDOUT_StartFirstAidProgressBar" ) //Audit 2-22-2025 unused
 	//ScriptRemote_RegisterUntypedFunction_deprecated( "ServerCallback_BLEEDOUT_StopFirstAidProgressBar" ) //Audit 2-22-2025 unused
-	#if DEVELOPER
-		ScriptRemote_RegisterUntypedFunction_deprecated( "ServerCallback_ModelViewerDisableConflicts" ) //Audit 2-22-2025 dev only
-	#endif
-	
 	//ScriptRemote_RegisterClientFunction( "VeryLongFunctionNameVeryLongFunctionNameVeryLongFunctionNameVeryLongVeryLong", "bool", "bool" ) //(mk): test
 	
 	ScriptRemote_RegisterClientFunction( "SCB_AddGrenadeIndicatorForEntity", "entity", "entity", "float", 0.0, 99999.0, 32 )//Audit 2-22-2025
