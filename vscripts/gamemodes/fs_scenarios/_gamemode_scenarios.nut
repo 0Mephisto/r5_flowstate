@@ -38,7 +38,6 @@ global function FS_Scenarios_PlayersPerTeam
 #if DEVELOPER
 	global function Cafe_KillAllPlayers
 	global function Cafe_EndAllRounds
-	global function Mkos_ForceCloseRecap
 #endif
 
 global struct scenariosTeamStruct
@@ -2796,15 +2795,6 @@ vector function OriginToGround_Inverse( vector origin )
 	void function Cafe_EndAllRounds()
 	{
 		FS_Scenarios_ForceAllRoundsToFinish()
-	}
-
-	void function Mkos_ForceCloseRecap()
-	{
-		foreach( player in GetPlayerArray() )
-		{
-			Remote_CallFunction_UI( player, "UICallback_ForceCloseDeathScreenMenu" )
-			ClientCommand_FS_Scenarios_Requeue( player, [] )
-		}
 	}
 #endif
 

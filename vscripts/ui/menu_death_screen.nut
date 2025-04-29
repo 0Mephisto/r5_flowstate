@@ -1,9 +1,6 @@
 global function InitDeathScreenMenu
 
-global function UICallback_ForceCloseDeathScreenMenu //remote func
-//
 global function UI_OpenDeathScreenMenu
-global function UI_CloseDeathScreenMenu
 global function UI_EnableDeathScreenTab
 global function UI_SwitchToDeathScreenTab
 global function UI_SetDeathScreenTabTitle
@@ -402,11 +399,6 @@ void function DeathScreenMenu_Shutdown()
 	if ( IsFullyConnected() )
 		RunClientScript( "UICallback_DestroyAllClientGladCardData" )
 	return
-}
-
-void function UICallback_ForceCloseDeathScreenMenu()
-{
-	UI_CloseDeathScreenMenu()
 }
 
 void function DeathScreenMenuOnNavBack()
