@@ -31,7 +31,7 @@
             "#GAMEUI_LANGUAGE_ITALIAN"  "italian"
             "#GAMEUI_LANGUAGE_JAPANESE"  "japanese"
             "#GAMEUI_LANGUAGE_KOREAN"  "korean"
-            "#GAMEUI_LANGUAGE_MANDARIN"  "mandarin"
+            "Mandarin"  "tchinese"
             "#GAMEUI_LANGUAGE_POLISH"  "polish"
             "#GAMEUI_LANGUAGE_RUSSIAN"  "russian"
             "#GAMEUI_LANGUAGE_SPANISH"  "spanish"
