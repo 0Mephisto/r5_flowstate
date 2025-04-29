@@ -1,7 +1,5 @@
 global function InitDeathScreenMenu
 
-global function UICallback_ForceCloseDeathScreenMenu //remote func
-//
 global function UI_OpenDeathScreenMenu
 global function UI_EnableDeathScreenTab
 global function UI_SwitchToDeathScreenTab
