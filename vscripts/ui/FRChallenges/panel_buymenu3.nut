@@ -195,6 +195,12 @@ void function InitArenasBuyPanel3( var panel )
 	AddEventHandlerToButton( menu, "KraberButton", UIE_CLICK, BuyKraber )
 	AddEventHandlerToButton( menu, "KraberButton", UIE_CLICKRIGHT, BuyKraber )
 	file.weaponButtons.append(Hud_GetChild( menu, "KraberButton" ))
+	
+	var Sentinel = Hud_GetChild( menu, "Sentinel" )
+	RuiSetImage( Hud_GetRui( Sentinel ), "basicImage", $"rui/weapon_icons/r5/weapon_sentinel" )
+	AddEventHandlerToButton( menu, "SentinelButton", UIE_CLICK, BuySentinel )
+	AddEventHandlerToButton( menu, "SentinelButton", UIE_CLICKRIGHT, OpenAttachmentsBox )
+	file.weaponButtons.append(Hud_GetChild( menu, "SentinelButton" ))
 
 	AddUICallback_OnLevelInit( OnLevelInit )
 }
@@ -273,12 +279,12 @@ void function OpenAttachmentsBox( var button )
 		file.desiredweapon = "mp_weapon_sniper"
 		sniper = true
 		file.weapontype = "sniper3"
-	}else if(button == Hud_GetChild( file.menu, "RepeaterButton" ))
+	}else if(button == Hud_GetChild( file.menu, "SentinelButton" ))
 	{
-		file.desiredWeaponButtonToMark = Hud_GetChild( file.menu, "RepeaterButton" )
-		file.desiredweapon = "mp_weapon_3030"
-		sniper = false
-		file.weapontype = "marksman3"
+		file.desiredWeaponButtonToMark = Hud_GetChild( file.menu, "SentinelButton" )
+		file.desiredweapon = "mp_weapon_sentinel"
+		sniper = true
+		file.weapontype = "sniper"
 	}
 	
 	vector mousePos = GetCursorPosition()
@@ -922,4 +928,12 @@ void function BuyKraber(var button)
 	RuiSetInt( Hud_GetRui( button ), "status", eFriendStatus.ONLINE_INGAME )
 	RunClientScript( "UIToClient_MenuGiveWeapon", "mp_weapon_sniper" )
 	PlayerCurrentWeapon = GetWeaponNameForUI("mp_weapon_sniper")
+}
+
+void function BuySentinel(var button)
+{
+	CleanAllButtons()	
+	RuiSetInt( Hud_GetRui( button ), "status", eFriendStatus.ONLINE_INGAME )
+	RunClientScript( "UIToClient_MenuGiveWeapon", "mp_weapon_sentinel" )
+	PlayerCurrentWeapon = GetWeaponNameForUI("mp_weapon_sentinel")
 }

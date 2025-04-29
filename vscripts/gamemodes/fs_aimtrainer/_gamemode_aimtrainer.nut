@@ -95,6 +95,7 @@ void function _ChallengesByColombia_Init()
 	//required assets for different challenges
 	PrecacheParticleSystem($"P_enemy_jump_jet_ON_trails")
 	PrecacheParticleSystem( $"P_skydive_trail_CP" )
+	PrecacheParticleSystem( FIRINGRANGE_ITEM_RESPAWN_PARTICLE )
 	PrecacheModel($"mdl/imc_interior/imc_int_fusebox_01.rmdl")
 	PrecacheModel($"mdl/barriers/shooting_range_target_02.rmdl")
 	PrecacheModel($"mdl/thunderdome/thunderdome_cage_wall_256x256_01.rmdl")

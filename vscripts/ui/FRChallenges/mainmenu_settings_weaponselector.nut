@@ -60,7 +60,7 @@ void function InitFRChallengesSettingsWpnSelector( var newMenuArg )
 	AddTab( file.menu, file.buymenu5, "SMGs" )
 	AddTab( file.menu, file.buymenu2, "Assault Rifles & LMGs" )
 	AddTab( file.menu, file.buymenu3, "Marksman & Snipers" )
-	AddTab( file.menu, file.buymenu4, "Hitscan Weapons" )
+	//AddTab( file.menu, file.buymenu4, "Hitscan Weapons" )
 	
 	SetTabNavigationEnabled( file.menu, true )
 	EmitUISound( "UI_InGame_Inventory_Open" )
@@ -211,6 +211,9 @@ string function GetWeaponNameForUI(string weapon)
             break
         case "mp_weapon_doubletake":
             weaponname = "Triple Take"
+            break
+		case "mp_weapon_sentinel":
+            weaponname = "Sentinel"
             break
         case "mp_weapon_defender":
             weaponname = "Charge Rifle"

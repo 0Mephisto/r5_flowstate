@@ -60,6 +60,9 @@ struct
 ////////////////////////
 void function ShLootRollers_Init()
 {
+	if( Gamemode() == eGamemodes.fs_aimtrainer )
+		return
+
 	#if SERVER
 	AddSpawnCallback( "prop_physics", LootRollerSpawned )
 	AddSpawnCallback( "prop_dynamic", LootRollerSpawned )
@@ -282,6 +285,9 @@ void function ServerCallback_SetLootRollerLootTierFX( int rollerHandle, int tier
 	entity roller = GetEntityFromEncodedEHandle( rollerHandle )
 
 	if ( !IsValid( roller ) )
+		return
+		
+	if( Gamemode() == eGamemodes.fs_aimtrainer )
 		return
 
 	vector tierColor = GetFXRarityColorForTier( tier )
