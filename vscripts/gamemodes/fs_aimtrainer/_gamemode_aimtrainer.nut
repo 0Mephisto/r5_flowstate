@@ -3561,21 +3561,6 @@ bool function CC_MenuGiveAimTrainerWeapon( entity player, array<string> args )
 		if( weaponent.UsesClipsForAmmo() )
 			weaponent.SetWeaponPrimaryClipCount( weaponent.GetWeaponPrimaryClipCountMax() )	
 	}
-
-	if( Playlist() == ePlaylists.fs_aimtrainer )
-	{
-		switch( weaponent.GetWeaponClassName() )
-		{
-			case "mp_weapon_car":
-				weaponSkin = weaponent.GetSkinIndexByName( "charm_preview_black" )
-				break
-			case "mp_weapon_wingman":
-			case "mp_weapon_r97":
-				weaponModelIndex = 2
-				weaponSkin = RandomInt( weaponent.GetSkinCount() )
-				break
-		}
-	}
 	
 	if(slot == "p")
 	{
