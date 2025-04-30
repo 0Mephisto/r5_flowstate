@@ -3540,6 +3540,8 @@ void function WaitingForPlayers_CreateCustomCameras()
 
 void function FS_GamemodeHudSetup()
 {
+	if( Gamemode() == eGamemodes.SURVIVAL )
+		return//hud is set in wrong place, needs to be on loadscreen
 	Hud_SetVisible(HudElement( "WaitingForPlayers_GamemodeFrame" ), true)
 
 	RuiSetImage( Hud_GetRui( HudElement( "WaitingForPlayers_GamemodeFrame" ) ), "basicImage", $"rui/gamemodes/survival/waitingforplayers/gamemode")
