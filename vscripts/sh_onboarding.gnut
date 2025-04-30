@@ -948,7 +948,7 @@ void function OnClientDisconnected( entity player )
 void function OnClientConnectionStarted( entity player )
 {
 	PlayerStopSpectating( player )
-	FS_GiveInitialTeamToPlayer( player )
+	GiveInitialTeamToPlayer( player )
 	
 	if( IsPlayerEliminated( player ) && GetGameState() == eGameState.WaitingForPlayers )
 	{
@@ -971,6 +971,8 @@ void function OnClientConnected( entity player )
 	// Min players logic end
 	AddPlayerMovementEventCallback( player, ePlayerMovementEvents.MANTLE, ResetZiplineUseCountOnMantle )
 	UpdatePlayerCounts()
+
+	GiveInitialTeamToPlayer(player)
 
 	if( GetCurrentPlaylistVarBool( "flowstate_give_random_custom_models_toall", false ) )
 		player.p.assignedCustomModel = RandomIntRangeInclusive(1,10)
@@ -1109,7 +1111,7 @@ void function OnClientConnected( entity player )
 	thread Flowstate_CheckForLv4MagazinesAndRefillAmmo( player )
 }
 
-void function FS_GiveInitialTeamToPlayer( entity player )
+void function GiveInitialTeamToPlayer( entity player )
 {
 	if( IsPlayerEliminated( player ) )
 	{
