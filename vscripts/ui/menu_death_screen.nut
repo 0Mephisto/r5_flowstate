@@ -12,6 +12,7 @@ global function UI_SetCanShowGladCard
 global function UI_SetShouldShowSkip
 global function UI_SetIsEliminiated
 global function UI_DeathScreenFadeInBlur
+global function UI_CloseDeathScreenMenu
 
 global function DeathScreenIsOpen
 global function DeathScreenOnReportButtonClick
