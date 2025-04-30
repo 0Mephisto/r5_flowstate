@@ -3926,16 +3926,14 @@ void function soloModeThread( LocPair waitingRoomLocation )
 			if( IsPlayerInSoloMode( player ) )
 				continue
 			
-			#if !DEVELOPER 
-				if( Distance2D( player.GetOrigin(), waitingRoomLocation.origin ) > file.waitingRoomRadius )
-				{
-					maki_tp_player( player, g_randomWaitingSpawns.getrandom() ) //waiting player should be in waiting room,not battle area
-					HolsterAndDisableWeapons_Raw( player ) //(mk): dirty fix I wanted to avoid.
-				}
+			if( Distance2D( player.GetOrigin(), waitingRoomLocation.origin ) > file.waitingRoomRadius )
+			{
+				maki_tp_player( player, g_randomWaitingSpawns.getrandom() ) //waiting player should be in waiting room,not battle area
+				HolsterAndDisableWeapons_Raw( player ) //(mk): dirty fix I wanted to avoid.
+			}
 				
 			if( !isPlayerInRestingList( player ) && !isPlayerInWaitingList( player ) )
 				soloModePlayerToWaitingList( player ) //(mk): dirty patch
-			#endif
 		}
 		
 
