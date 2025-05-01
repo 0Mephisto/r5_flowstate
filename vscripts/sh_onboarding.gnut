@@ -672,9 +672,9 @@ void function DecideRespawnPlayer( entity player, bool giveLoadoutWeapons = true
 		CharacterSkin_Apply( player, characterSkinsA[characterSkinsA.len()-RandomIntRangeInclusive(1,4)])
 	}
 
-	if( player.p.assignedCustomModel != -1 )
+	//if( player.p.assignedCustomModel != -1 )//Custom models cause engine issues, disabling for now til models are updated. - Kral
 	{
-		Flowstate_SetAssignedCustomModelToPlayer( player, player.p.assignedCustomModel )
+		//Flowstate_SetAssignedCustomModelToPlayer( player, player.p.assignedCustomModel )
 	}
 	//(mk): commented, already signaled in code callback after DoRespawnPlayer fires
 	
@@ -753,9 +753,9 @@ bool function RespawnTitanPilot( entity player )
 	
 	Flowstate_ApplyModifiedMovementToPlayer( player )
 
-	if( player.p.assignedCustomModel != -1 )
+	//if( player.p.assignedCustomModel != -1 )//Custom models cause engine issues, disabling for now til models are updated. - Kral
 	{
-		Flowstate_SetAssignedCustomModelToPlayer( player, player.p.assignedCustomModel )
+		//Flowstate_SetAssignedCustomModelToPlayer( player, player.p.assignedCustomModel )
 	}
 	
 	if( Playlist() == ePlaylists.fs_haloMod_survival )
@@ -971,7 +971,7 @@ void function OnClientConnected( entity player )
 	// Min players logic end
 	AddPlayerMovementEventCallback( player, ePlayerMovementEvents.MANTLE, ResetZiplineUseCountOnMantle )
 	UpdatePlayerCounts()
-
+	
 	GiveInitialTeamToPlayer(player)
 
 	if( GetCurrentPlaylistVarBool( "flowstate_give_random_custom_models_toall", false ) )

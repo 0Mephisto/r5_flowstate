@@ -17,8 +17,8 @@ WeaponData
 	"ammo_pool_type"								"special"
 	"fire_mode"   									"automatic"
 	// Models
-	"viewmodel"   									"mdl/flowstate_custom/ptpov_lightninggun.rmdl"
-	"playermodel" 									"mdl/flowstate_custom/w_lightninggun.rmdl"
+	"viewmodel"   									"mdl/weapons/beam_ar/ptpov_beam_ar.rmdl"
+	"playermodel" 									"mdl/weapons/beam_ar/w_beam_ar.rmdl"
 	"projectilemodel" 								"mdl/dev/empty_model.rmdl"
 	"holster_type"									"anti_titan"
 

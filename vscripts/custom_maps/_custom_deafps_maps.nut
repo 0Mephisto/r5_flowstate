@@ -4,7 +4,6 @@ globalize_all_functions
 
 void function PrecacheDEAFPSMapProps()
 {
-    //if( GetMapName() == "mp_rr_arena_empty" )
 	{
 		PrecacheModel( $"mdl/mendoko/mendoko_rubber_floor_01.rmdl" )
 		PrecacheModel( $"mdl/slum_city/slumcity_fencewall_128x72_dirty.rmdl" )

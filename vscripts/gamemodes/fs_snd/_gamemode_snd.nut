@@ -110,11 +110,12 @@ void function _GamemodeSND_Init()
 	if( GetCurrentPlaylistVarInt( "SND_force_initial_map", 0 ) == SND_MAX_MAPS + 1 )
 		FS_SND.currentLocation = RandomInt( SND_MAX_MAPS + 1 )
 
-	PrecacheDust2()
-	PrecacheDefuseMapProps()
-	PrecacheDEAFPSMapProps()
-	PrecacheZeesMapProps()
-	de_NCanals_precache()
+    if( GetMapName() == "mp_rr_arena_empty" ){
+		PrecacheDust2()
+		PrecacheDefuseMapProps()
+		PrecacheDEAFPSMapProps()
+		PrecacheZeesMapProps()
+		de_NCanals_precache()}
 
 	thread SND_StartGameThread()
 }
@@ -846,9 +847,9 @@ void function SND_GameLoop()
 			player.SetCamo(MILITIA_color)
 		}
 
-		if( player.p.assignedCustomModel != -1 )
+		//if( player.p.assignedCustomModel != -1 )//Custom models cause engine issues, disabling for now til models are updated. - Kral
 		{
-			Flowstate_SetAssignedCustomModelToPlayer( player, player.p.assignedCustomModel )
+			//Flowstate_SetAssignedCustomModelToPlayer( player, player.p.assignedCustomModel )
 		}
 	
 		player.p.playerHasBomb = false

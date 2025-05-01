@@ -324,8 +324,8 @@ void function OnLocalPlayerShoot( entity player, vector origin, vector direction
 
 	if( IsValid( viewmodel ) )
 	{
-		if( weapon.LookupViewModelAttachment( "CAFEWASHERE" ) > 0 )
-			moverForHand.SetParent( viewmodel, "CAFEWASHERE" ) //I'm insane
+		if( weapon.LookupViewModelAttachment( "muzzle_flash" ) > 0 )
+			moverForHand.SetParent( viewmodel, "muzzle_flash" ) //I'm insane
 	}
 	
 	if( player.IsThirdPersonShoulderModeOn() || !IsValid( viewmodel ) )
@@ -619,8 +619,8 @@ void function OnWeaponActivate_Clickweapon( entity weapon )
 						
 						if( IsValid( viewmodel ) )
 						{
-							if( weapon.LookupViewModelAttachment( "CAFEWASHERE" ) > 0 )
-								moverForHand.SetParent( viewmodel, "CAFEWASHERE" ) //I'm insane
+							if( weapon.LookupViewModelAttachment( "muzzle_flash" ) > 0 )
+								moverForHand.SetParent( viewmodel, "muzzle_flash" ) //I'm insane
 						}
 						
 						if( player.IsThirdPersonShoulderModeOn() || !IsValid( viewmodel ) )

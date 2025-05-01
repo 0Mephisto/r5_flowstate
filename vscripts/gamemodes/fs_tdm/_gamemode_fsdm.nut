@@ -364,10 +364,11 @@ void function _CustomTDM_Init()
 	
 	if( !is1v1EnabledAndAllowed() && Playlist() != ePlaylists.fs_scenarios )
 	{
-		PrecacheCustomMapsProps()
-		de_NCanals_precache()
-		PrecacheZeesMapProps()
-		PrecacheDEAFPSMapProps()
+		if( GetMapName() == "mp_rr_arena_empty" ){
+			PrecacheCustomMapsProps()
+			de_NCanals_precache()
+			PrecacheZeesMapProps()
+			PrecacheDEAFPSMapProps()}
 	}
 	
 	if( flowstateSettings.is_halo_gamemode )
@@ -3058,7 +3059,7 @@ void function SimpleChampionUI()
 	if( file.selectedLocation.spawns.len() > 0 )
 		spawnone = file.selectedLocation.spawns[0].origin
 
-	if( Playlist() != ePlaylists.fs_scenarios )
+	/*if( Playlist() != ePlaylists.fs_scenarios )
 		switch( file.selectedLocation.name )
 		{
 			case "Skill trainer By CafeFPS":
@@ -3159,7 +3160,7 @@ void function SimpleChampionUI()
 			thread Load4D4Room()
 			break
 		}
-		
+		*/
 	if( file.currentRound > 1 )
 		WaitSignal( svGlobal.levelEnt, "FS_WaitForBlackScreen" )
 
@@ -6801,9 +6802,9 @@ void function FS_Instagib_PlayerSpawn( entity player )
 
 	SetPlayerSettings(player, INSTAGIB_PLAYER_SETTINGS)
 	
-	if( player.p.assignedCustomModel != -1 )
+	//if( player.p.assignedCustomModel != -1 )//Custom models cause engine issues, disabling for now til models are updated. - Kral
 	{
-		Flowstate_SetAssignedCustomModelToPlayer( player, player.p.assignedCustomModel )
+		//Flowstate_SetAssignedCustomModelToPlayer( player, player.p.assignedCustomModel )
 	}
 	//Disable players collision
 	player.kv.contents = CONTENTS_BULLETCLIP | CONTENTS_MONSTERCLIP | CONTENTS_HITBOX | CONTENTS_BLOCKLOS | CONTENTS_PHYSICSCLIP; //CONTENTS_PLAYERCLIP
