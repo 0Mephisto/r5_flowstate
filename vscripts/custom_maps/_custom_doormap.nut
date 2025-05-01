@@ -74,9 +74,17 @@ function TeleportPlayer(entity player) {
 	TakeAllPassives(player)
     player.SetPlayerNetBool("pingEnabled", false)
     player.SetPersistentVar("gen", 0)
-    player.SetOrigin(file.first_cp)
     LocalMsg(player, "#FS_STRING_VAR", "", 9, 5.0, "Door Map", "By: Loy & Treeree", "" )
     SpawnInfoText(player)
+
+    thread
+    (
+      void function() : ( player )
+      {
+        wait 5.0
+        player.SetOrigin(file.first_cp)
+      }
+    )()
 }
 
 // bool function ClientCommand_runrestart(entity player, array<string> args)
