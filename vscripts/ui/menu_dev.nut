@@ -369,23 +369,17 @@ void function SetupLevelDevCommands()
 			break
 	}
 }
-
 void function SetDevMenu_Abilities( var _ )
 {
 	thread ChangeToThisMenu( SetupAbilities )
 }
-
 void function SetDevMenu_CustomAbilities( var _ )
 {
 	thread ChangeToThisMenu( SetupCustomAbilities )
 }
-
 void function SetDevMenu_Weapons( var _ )
 {
-	//if( Playlist() == ePlaylists.survival_firingrange ) 
-		thread ChangeToThisMenu( SetupRetailWeapons )
-	//else
-		//thread ChangeToThisMenu( SetupWeapons )
+	thread ChangeToThisMenu( SetupRetailWeapons )
 }
 void function SetDevMenu_R2Weapons( var _ )
 {
@@ -720,9 +714,11 @@ void function SetupRespawnPlayersDevMenu()
 
 void function SetupHeirloomsDevMenu()
 {
+	if ( IsKralStuffActive() ){
 	SetupDevCommand( "Bolo Sword", "giveheirloom 0" )
-	SetupDevCommand( "Dragonfly Knife", "giveheirloom 1" )
 	SetupDevCommand( "Diamond Sword", "giveheirloom 2" )
+	SetupDevCommand( "Mjolnir", "giveheirloom 3" )}
+	SetupDevCommand( "Dragonfly Knife", "giveheirloom 1" )
 }
 
 void function SetupTDMPrimaryWeapons()

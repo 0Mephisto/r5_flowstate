@@ -47,7 +47,8 @@ const array< array<string> > CustomHeirlooms =
 	//-1 resets back the default melee
     [ "mp_weapon_bolo_sword_primary", "melee_bolo_sword", defaultkraldesc ], // 0
     [ "mp_weapon_macks_knife_primary", "melee_macks_knife", defaultmackdesc ], // 1
-	[ "mp_weapon_mc_sword_primary", "melee_mc_sword", defaultkraldesc ] // 2
+	[ "mp_weapon_mc_sword_primary", "melee_mc_sword", defaultkraldesc ], // 2
+	[ "mp_weapon_mjolnir_primary", "melee_mjolnir", defaultkraldesc ] // 3
 ]
 
 bool function ClientCommand_GiveHeirloom( entity commandPlayer, array<string> argList )
