@@ -1407,16 +1407,16 @@ playlists
 				flowstateReloadUltimateOnRespawn 				1
 				
 				//custom maps by community
-				flowstate_Enable_Shipment_By_AyeZee				1
-				flowstate_Enable_Killhouse_By_AyeZee			1
-				flowstate_Enable_Nuketown_By_AyeZee				1
+				flowstate_Enable_Shipment_By_AyeZee				0
+				flowstate_Enable_Killhouse_By_AyeZee			0
+				flowstate_Enable_Nuketown_By_AyeZee				0
 				flowstate_Enable_Encore							0 //if disabled, it will try to load Rust first
-				flowstate_Enable_Killyard_By_DEAFPS				1
-				flowstate_Enable_Dustment_By_DEAFPS				1
-				flowstate_Enable_Shoothouse_By_DEAFPS			1
-				flowstate_Enable_Rust_By_DEAFPS					1
-				flowstate_Enable_NCanals_By_DEAFPS				1				
-				flowstate_Enable_Encore_Nuketown_By_AyeZee		1
+				flowstate_Enable_Killyard_By_DEAFPS				0
+				flowstate_Enable_Dustment_By_DEAFPS				0
+				flowstate_Enable_Shoothouse_By_DEAFPS			0
+				flowstate_Enable_Rust_By_DEAFPS					0
+				flowstate_Enable_NCanals_By_DEAFPS				0				
+				flowstate_Enable_Encore_Nuketown_By_AyeZee		0
 				
 				//disabled atm
 				flowstate_Enable_BRIGHWATER_By_Zero				0
@@ -1857,7 +1857,7 @@ playlists
 				flowstate_Enable_Shipment_By_AyeZee				0
 				flowstate_Enable_Killhouse_By_AyeZee			0
 				flowstate_Enable_Nuketown_By_AyeZee				0
-				flowstate_Enable_Encore							1 //if disabled, it will try to load Rust first
+				flowstate_Enable_Encore							0 //if disabled, it will try to load Rust first
 				flowstate_Enable_Killyard_By_DEAFPS				0
 				flowstate_Enable_Dustment_By_DEAFPS				0
 				flowstate_Enable_Shoothouse_By_DEAFPS			0
@@ -1995,16 +1995,16 @@ playlists
 				flowstateRoundsBeforeChangeLevel				3
 
 				//custom maps by community
-				flowstate_Enable_Shipment_By_AyeZee				1
-				flowstate_Enable_Killhouse_By_AyeZee			1
-				flowstate_Enable_Nuketown_By_AyeZee				1
+				flowstate_Enable_Shipment_By_AyeZee				0
+				flowstate_Enable_Killhouse_By_AyeZee			0
+				flowstate_Enable_Nuketown_By_AyeZee				0
 				flowstate_Enable_Encore							0
-				flowstate_Enable_Killyard_By_DEAFPS				1
-				flowstate_Enable_Dustment_By_DEAFPS				1
-				flowstate_Enable_Shoothouse_By_DEAFPS			1
-				flowstate_Enable_Rust_By_DEAFPS					1
-				flowstate_Enable_NCanals_By_DEAFPS				1				
-				flowstate_Enable_Encore_Nuketown_By_AyeZee		1
+				flowstate_Enable_Killyard_By_DEAFPS				0
+				flowstate_Enable_Dustment_By_DEAFPS				0
+				flowstate_Enable_Shoothouse_By_DEAFPS			0
+				flowstate_Enable_Rust_By_DEAFPS					0
+				flowstate_Enable_NCanals_By_DEAFPS				0				
+				flowstate_Enable_Encore_Nuketown_By_AyeZee		0
 
 				flowstateKickHighPingPlayer						0
 				flowstateMaxPingAllowed							300
@@ -2028,12 +2028,6 @@ playlists
 				afk_to_rest_bool								0
 			}
 			gamemodes { fs_dm { maps {
-				mp_rr_canyonlands_64k_x_64k						1
-				mp_rr_canyonlands_mu1						 	1
-				mp_rr_canyonlands_mu1_night						1
-				mp_rr_desertlands_64k_x_64k						1
-				mp_rr_desertlands_64k_x_64k_nx				 	1
-				mp_rr_desertlands_64k_x_64k_tt				 	1
 				mp_rr_arena_phase_runner			  			1
 				mp_rr_party_crasher					  			1
 				mp_rr_aqueduct									1
@@ -2248,6 +2242,8 @@ playlists
 				survival_enable_gladiator_intros   				0
 				jump_from_plane_enabled							0
 				match_ending_enabled			   				0
+				redish_highlight_los                            1
+				redish_highlight_los_range						2
 				
 				//No circle:
 				sur_circle_start_paused							1
@@ -2418,6 +2414,8 @@ playlists
 				
 				survival_jumpkit_enabled		   				0
 				survival_wallrun_enabled		   				0
+				redish_highlight_los                            1
+				redish_highlight_los_range						2
 				
 				survival_infinite_ammo			 				1
 				survival_custom_deploy			 				1
