@@ -36,6 +36,7 @@ function ithurtsmap_precache() {
     PrecacheModel($"mdl/desertlands/icelandic_moss_mod_01.rmdl")
     PrecacheModel($"mdl/beacon/kodai_metal_beam_02_256.rmdl")
     PrecacheModel($"mdl/homestead/homestead_floor_panel_01.rmdl")
+    PrecacheModel($"mdl/levels_terrain/mp_lobby/mp_setting_menu.rmdl")
 }
 
 
@@ -95,6 +96,10 @@ function ithurtsmap_load() {
     // Props
     entity prop
     MapEditor_CreateTextInfoPanel("It hurts", "by: Loy", < 29890.02, -1092.1, 50179.2 > , < 0, -90, 0 > , false, 1)
+
+    prop = MapEditor_CreateProp( $"mdl/levels_terrain/mp_lobby/mp_setting_menu.rmdl", < 33907, 4021, 49588 >, < 0, 0, 0 >, true, 50000, -1, 6.5 )
+    // prop = MapEditor_CreateProp($"mdl/desertlands/icelandic_moss_mod_01.rmdl", < 32595, 3632, 49250 > , < 0, 0, 0 > , true, 50000, -1, 60)
+    
     prop = MapEditor_CreateProp($"mdl/beacon/construction_scaff_128_32.rmdl", < 35398.1, 7835.18, 51615.7 > , < 0.0002, -90.0002, -90.0003 > , false, 50000, -1, 1)
     prop.kv.solid = 3
     prop = MapEditor_CreateProp($"mdl/slum_city/slumcity_fencewall_32x72_dirty.rmdl", < 34288.64, 8053.41, 50653.08 > , < 0, -89.9985, -180 > , false, 50000, -1, 1)
@@ -245,7 +250,6 @@ function ithurtsmap_load() {
     prop = MapEditor_CreateProp($"mdl/thunderdome/thunderdome_cage_frame_128x32_01.rmdl", < 29786, 251.5977, 50192 > , <- 0.0003, -90, 180 > , false, 50000, -1, 1)
     prop.kv.solid = 3
     prop = MapEditor_CreateProp($"mdl/thunderdome/thunderdome_cage_wall_128x352_04.rmdl", < 29887.02, 5154.9, 50373.2 > , < 0, -179.999, 90 > , true, 50000, -1, 1)
-    prop = MapEditor_CreateProp($"mdl/desertlands/icelandic_moss_mod_01.rmdl", < 32595, 3632, 49250 > , < 0, 0, 0 > , true, 50000, -1, 60)
     prop = MapEditor_CreateProp($"mdl/beacon/construction_scaff_post_128_01.rmdl", < 35428.2, 7830.581, 51375.9 > , < 0, 90.0018, 0 > , true, 50000, -1, 1)
     prop.kv.solid = 3
     prop = MapEditor_CreateProp($"mdl/desertlands/construction_bldg_platform_01.rmdl", < 29964.01, 5892.002, 50227 > , < 0, 90.0012, -89.9999 > , true, 50000, -1, 1)

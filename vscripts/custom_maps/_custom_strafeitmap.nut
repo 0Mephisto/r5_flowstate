@@ -21,6 +21,7 @@ function strafeitmap_precache() {
     PrecacheModel( $"mdl/lava_land/volcanic_rock_01a.rmdl" )
     PrecacheModel( $"mdl/thunderdome/thunderdome_cage_ceiling_256x64_05.rmdl" )
     PrecacheModel( $"mdl/fx/water_bubble_pop_fx.rmdl" )
+    PrecacheModel( $"mdl/levels_terrain/mp_lobby/mp_setting_menu.rmdl")
 }
 
 const PROP_DEFAULT_COLOR = "survival_item_common_cargobot"
@@ -80,6 +81,10 @@ void
 function strafeitmap_load() {
     // Props
     entity prop
+
+    // prop = MapEditor_CreateProp( $"mdl/lava_land/volcanic_rock_01a.rmdl", < 10360.73, -22346.8, 44662.46 >, < 0, -52.06, 0 >, true, 50000, -1, 20 )
+    prop = MapEditor_CreateProp( $"mdl/levels_terrain/mp_lobby/mp_setting_menu.rmdl", < 11120, -24759, 45413 >, < 0, -90.0099, 0 >, true, 50000, -1, 6.78 )
+
     prop = MapEditor_CreateProp( $"mdl/thunderdome/thunderdome_cage_frame_128_01.rmdl", < 7543.46, -24034.65, 46070.66 >, < 0, -15, 0 >, true, 50000, -1, 1 )
     prop.kv.solid = 1; Highlight_SetNeutralHighlight( prop, PROP_DEFAULT_COLOR )
     prop = MapEditor_CreateProp( $"mdl/thunderdome/thunderdome_cage_ceiling_256x256_06.rmdl", < 8438.76, -23846.1, 47198.36 >, < 0, 75, 0 >, false, 50000, -1, 1 )
@@ -134,7 +139,6 @@ function strafeitmap_load() {
     prop = MapEditor_CreateProp( $"mdl/thunderdome/thunderdome_cage_ceiling_256x256_06.rmdl", < 7922.54, -24598.12, 47198.36 >, < 0, 75, 0 >, false, 50000, -1, 1 )
     prop.kv.solid = 3; prop.Highlight_SetFunctions(0, 12, false, 136, 2.0, 2, false); prop.Highlight_SetParam(0, 0, < 1, 0, 0 > )
 
-    prop = MapEditor_CreateProp( $"mdl/lava_land/volcanic_rock_01a.rmdl", < 10360.73, -22346.8, 44662.46 >, < 0, -52.06, 0 >, true, 50000, -1, 20 )
     prop = MapEditor_CreateProp( $"mdl/thunderdome/thunderdome_cage_ceiling_256x256_06.rmdl", < 7851.36, -23688.82, 47134.36 >, < 0, -105, 0 >, true, 50000, -1, 1 )
     prop.kv.solid = 1; Highlight_SetNeutralHighlight( prop, PROP_DEFAULT_COLOR )
     prop = MapEditor_CreateProp( $"mdl/thunderdome/thunderdome_cage_frame_16x128_01.rmdl", < 7896.2, -24943.68, 47199.36 >, < 0, -105, 90 >, true, 50000, -1, 1 )
