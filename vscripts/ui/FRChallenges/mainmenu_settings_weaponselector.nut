@@ -60,7 +60,7 @@ void function InitFRChallengesSettingsWpnSelector( var newMenuArg )
 	AddTab( file.menu, file.buymenu5, "SMGs" )
 	AddTab( file.menu, file.buymenu2, "Assault Rifles & LMGs" )
 	AddTab( file.menu, file.buymenu3, "Marksman & Snipers" )
-	//AddTab( file.menu, file.buymenu4, "Hitscan Weapons" )
+	AddTab( file.menu, file.buymenu4, "Hitscan Weapons" )
 	
 	SetTabNavigationEnabled( file.menu, true )
 	EmitUISound( "UI_InGame_Inventory_Open" )
