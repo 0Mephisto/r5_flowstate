@@ -16,7 +16,7 @@ WeaponData
 	
 	// Models
 	"viewmodel"   								"mdl/Weapons/minecraft_sword/ptpov_minecraft_sword.rmdl"
-	"playermodel" 								"mdl/weapons/empty_handed/w_empty_handed_human.rmdl"
+	"playermodel" 								"mdl/Weapons/minecraft_sword/w_minecraft_sword.rmdl"
 
     // FX
 	"impact_effect_table" 						"melee_mir_statue"
