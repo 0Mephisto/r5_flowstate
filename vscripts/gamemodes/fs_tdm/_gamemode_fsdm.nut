@@ -364,11 +364,10 @@ void function _CustomTDM_Init()
 	
 	if( !is1v1EnabledAndAllowed() && Playlist() != ePlaylists.fs_scenarios )
 	{
-		if( GetMapName() == "mp_rr_arena_empty" ){
 			PrecacheCustomMapsProps()
 			de_NCanals_precache()
 			PrecacheZeesMapProps()
-			PrecacheDEAFPSMapProps()}
+			PrecacheDEAFPSMapProps()
 	}
 	
 	if( flowstateSettings.is_halo_gamemode )
@@ -3060,7 +3059,7 @@ void function SimpleChampionUI()
 	if( file.selectedLocation.spawns.len() > 0 )
 		spawnone = file.selectedLocation.spawns[0].origin
 
-	/*if( Playlist() != ePlaylists.fs_scenarios )
+	if( Playlist() != ePlaylists.fs_scenarios )
 		switch( file.selectedLocation.name )
 		{
 			case "Skill trainer By CafeFPS":
@@ -3161,7 +3160,6 @@ void function SimpleChampionUI()
 			thread Load4D4Room()
 			break
 		}
-		*/
 	if( file.currentRound > 1 )
 		WaitSignal( svGlobal.levelEnt, "FS_WaitForBlackScreen" )
 
