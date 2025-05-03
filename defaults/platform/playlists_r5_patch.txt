@@ -2277,7 +2277,7 @@ playlists
 				solo_mode 										1 //this will fix the ingame player count text, so it wont display "??" in players alive (now players connected) count.
 				
 				flowstateAutoChangeLevelEnable					1
-				flowstateRoundsBeforeChangeLevel				2
+				flowstateRoundsBeforeChangeLevel				1
 				
 				flowstateAdminTgive 							0 // 0 will enable dev menu weapons for players
 				flowstate1v1MatchLoadout						0
@@ -2448,7 +2448,7 @@ playlists
 				flowstateRoundtime 								800
 				
 				flowstateAutoChangeLevelEnable					1
-				flowstateRoundsBeforeChangeLevel				2
+				flowstateRoundsBeforeChangeLevel				1
 				
 				flowstateAdminTgive 							0 //admin is for tgive only, 1 will enable dev menu weapons for players
 				flowstate1v1MatchLoadout						0
@@ -2560,7 +2560,7 @@ playlists
 				flowstateRoundtime 								800
 				
 				flowstateAutoChangeLevelEnable					1
-				flowstateRoundsBeforeChangeLevel				2
+				flowstateRoundsBeforeChangeLevel				1
 				
 				flowstateAdminTgive 							0 //admin is for tgive only, 0 will enable dev menu weapons for players
 				flowstate1v1MatchLoadout						0
@@ -2714,7 +2714,7 @@ playlists
 				flowstateRoundtime 								600
 				
 				flowstateAutoChangeLevelEnable					1
-				flowstateRoundsBeforeChangeLevel				2
+				flowstateRoundsBeforeChangeLevel				1
 				
 				flowstateAdminTgive 							1 //admin is for tgive only, 0 will enable dev menu weapons for players
 				flowstate1v1MatchLoadout						0
