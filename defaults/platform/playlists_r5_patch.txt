@@ -3940,7 +3940,8 @@ playlists
 				"FS_PLAYLIST_MOTD" "An R5Reloaded Server" //set your servers message of the day. 1000 char max.  Use \n for newline.
 				"FS_PLAYLIST_MOTD_CONTINUE" "" // appends to first, 1000 char max.
 			
-			
+				"BETA_BUILD_WATERMARK" "R5Reloaded - v2.6.01"
+
 				//////////////////////////////////////////////////
 				// TEMP TOKENS (remove before release shipping )//
 				//////////////////////////////////////////////////
