@@ -553,7 +553,8 @@ void function DM__OnEntitiesDidLoad()
 			// foreach(mover in badMovers)
 				// if( IsValid(mover) ) mover.Destroy()
 			break
-		
+		case eMaps.mp_rr_olympus:
+		case eMaps.mp_rr_olympus_tt:
 		case eMaps.mp_rr_aqueduct:
 			if( flowstateSettings.patch_waiting_area )
 				Patch_Barrier_Overflow()
