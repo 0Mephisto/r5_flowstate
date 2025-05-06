@@ -710,9 +710,6 @@ void function Highlight_Init()
 	HighlightContext_SetADSFade( highlight, false )
 	HighlightContext_SetAfterPostProcess( highlight, false )
 	HighlightContext_SetFarFadeDistance( highlight, CAUSTIC_GAS_THREAT_DIST )
-
-	highlight = RegisterHighlight( "redish_highlight" )
-	HighlightContext_SetOutline( highlight, HIGHLIGHT_OUTLINE_CUSTOM_COLOR_OCCLUDED_NOSCANLINES )
 	
 	highlight = RegisterHighlight( "survival_item_common_no_los_check" )
 	HighlightContext_SetOutline( highlight, HIGHLIGHT_OUTLINE_CUSTOM_COLOR_NOZ_NOSCANLINES )
@@ -774,6 +771,8 @@ void function Highlight_Init()
 	HighlightContext_SetNearFadeDistance( highlight, 0.0 )
 	highlight.colorID = COLORID_LOOT_TIER5
 	
+	highlight = RegisterHighlight( "redish_highlight" )
+	HighlightContext_SetOutline( highlight, HIGHLIGHT_OUTLINE_CUSTOM_COLOR_OCCLUDED_NOSCANLINES )
 	
 	string stringColor = GetCurrentPlaylistVarString( "redish_highlight_los_color", "190 20 20"  )
 	array<string> colors = split( stringColor, " " )
