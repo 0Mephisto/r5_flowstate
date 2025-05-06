@@ -441,13 +441,8 @@ void function CharacterSkin_Apply( entity ent, ItemFlavor skin )
 	}
 
 	ent.SetSkin( skinIndex )
-	if (camoIndex <= 210)
-		ent.SetCamo( camoIndex )
-	else
-	{
-		printt("Tried to set a camo index thats higher than season 3 supports")//TODO: REMOVE THIS ONCE WE FIGURE OUT CUSTOM CAMO TEXTURES -kral
-		camoIndex = 0
-	}
+	ent.SetCamo( camoIndex )
+	
 	#if SERVER
 		if ( ent.IsPlayer() )
 		{
