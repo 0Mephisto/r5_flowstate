@@ -490,13 +490,13 @@ WeaponData
 
 		energy_mag_l3
 		{
-			"ammo_clip_size"   					"48"
+			"ammo_clip_size"   					"52"
 		}
 
-        	energy_mag_l4
-        	{
-            		"ammo_clip_size"   		        	"48"
-        	}      
+        energy_mag_l4
+        {
+        	"ammo_clip_size"   		        	"52"
+        }      
 
 		"barrel_stabilizer_l4_flash_hider"
 		{
@@ -576,7 +576,7 @@ WeaponData
 
 		Crosshair_1
 		{
-			"ui"						"ui/crosshair_plus"
+			"ui"						"ui/crosshair_lstar"
 			"base_spread"				"0.0"
 			Args
 			{

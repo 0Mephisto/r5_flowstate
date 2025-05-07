@@ -23,5 +23,5 @@ WeaponData
 	"dof_nearDepthEnd"							    "6.4"
 
 	// Behavior
-	"deployfirst_time"								"2.3"
+	"deployfirst_time"								"1.800000"
 }

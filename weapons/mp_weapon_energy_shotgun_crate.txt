@@ -45,8 +45,8 @@ WeaponData
 	"charge_levels"									"4"
 	"charge_level_base"								"1"
 
-    "charge_cooldown_time"							"0.750000"
-    "charge_cooldown_delay"   						"0.350000"
+    "charge_cooldown_time"							"1.000000"
+    "charge_cooldown_delay"   						"0.000000"
 
 	"rui_crosshair_index"							"1"
 

@@ -328,19 +328,19 @@ WeaponData
 
 		bullets_mag_l1
 		{
-			"ammo_clip_size" 					"20"
+			"ammo_clip_size" 					"23"
 		}
 		bullets_mag_l2
 		{
-			"ammo_clip_size" 					"25"
+			"ammo_clip_size" 					"285"
 		}
 		bullets_mag_l3
 		{
-			"ammo_clip_size" 					"28"
+			"ammo_clip_size" 					"31"
 		}
         bullets_mag_l4
         {
-            "ammo_clip_size"   					"28"
+            "ammo_clip_size"   					"31"
         }
 	
 		infinite_ammo

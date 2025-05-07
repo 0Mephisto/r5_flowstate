@@ -51,7 +51,7 @@ WeaponData
 	"projectile_adjust_to_gun_barrel"				"0"
 	"projectile_adjust_to_hand"						"1"
 
-	"show_grenade_indicator"						"0"
+	"show_grenade_indicator"						"1"
 	"grenade_disc_throw"							"1"
 
 	"critical_hit"									"0"
@@ -66,33 +66,33 @@ WeaponData
 
 	// Damage - When Used by Players
 	"damage_type" 									"burn"
-	"damage_near_distance"							"1000"
-	"damage_far_distance" 							"3000"
+	"damage_near_distance"							"2048"
+	"damage_far_distance" 							"2048"
 	"damage_near_value"   							"0"
 	"damage_far_value"								"0"
 	"damage_near_value_titanarmor"					"0"
 	"damage_far_value_titanarmor" 					"0"
 	"explosion_damage"								"0"
 	"explosion_damage_heavy_armor"					"0"
-	"explosion_inner_radius"  						"0"
-	"explosionradius" 								"0"
+	"explosion_inner_radius"  						"2048"
+	"explosionradius" 								"2048"
 	"impulse_force"   								"0"
 	"explosion_shake_radius"						"500"
 	"explosion_shake_amplitude"						"5"
 	"explosion_shake_frequency"						"45"
 	"explosion_shake_duration"						"0.1"
 	"damage_flags"									"DF_RAGDOLL | DF_EXPLOSION"
-	"cooldown_type"									"ammo_deployed"
+	"cooldown_type"									"ammo_instant"
 
 	MP_BASE
 	{
-		"ammo_clip_size"   								"8"
-		"ammo_default_total"							"8"
+		"ammo_clip_size"   								"120"
+		"ammo_default_total"							"0"
 		"ammo_display"									"count"
-		"ammo_min_to_fire"								"1"
-		"ammo_per_shot"									"1"
-		"ammo_stockpile_max"							"6"
-		"regen_ammo_refill_rate"						"0"
+		"ammo_min_to_fire"								"120"
+		"ammo_per_shot"									"120"
+		"ammo_stockpile_max"							"120"
+		"regen_ammo_refill_rate"						"1"
 		"regen_ammo_refill_start_delay"					"0.0"
 
 		"enable_highlight_networking_on_creation"		"<KEEP_DEFAULT>"

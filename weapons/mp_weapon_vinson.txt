@@ -303,19 +303,19 @@ WeaponData
 
 		highcal_mag_l1
 		{
-			"ammo_clip_size" 				"25"
+			"ammo_clip_size" 				"23"
 		}
 		highcal_mag_l2
 		{
-			"ammo_clip_size" 				"28"
+			"ammo_clip_size" 				"27"
 		}
 		highcal_mag_l3
 		{
-			"ammo_clip_size" 				"30"
+			"ammo_clip_size" 				"29"
 		}
         highcal_mag_l4
         {
-			"ammo_clip_size"   			  	"30"
+			"ammo_clip_size"   			  	"29"
         }
 
                

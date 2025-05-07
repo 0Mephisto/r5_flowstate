@@ -125,12 +125,12 @@ WeaponData
 	//"net_optimize"		                            "1"
 
 	"bolt_hitsize"									"0.0"
-    "bolt_hitsize_grow1_time"						"0.03"
+    "bolt_hitsize_grow1_time"						"0.065000"
 	"bolt_hitsize_grow1_size"						"0.1"
-	"bolt_hitsize_grow2_time"						"0.065"
-	"bolt_hitsize_grow2_size"						"0.2"
+	"bolt_hitsize_grow2_time"						"0.125000"
+	"bolt_hitsize_grow2_size"						"0.100000"
 	"bolt_hitsize_growfinal_lerptime"				"0.14"
-	"bolt_hitsize_growfinal_size"					"0.5"
+	"bolt_hitsize_growfinal_size"					"0.100000"
 
 	"bolt_gravity_enabled"							"1"
 
@@ -291,15 +291,15 @@ WeaponData
     "viewmodel_jolt_roll"                            "0 3.4 0.0"
     "viewmodel_jolt_side"                            "0 0.038 0"
 
-	"viewkick_pitch_base" 							"1.0"
+	"viewkick_pitch_base" 							"1.200000"
 	"viewkick_pitch_random"   						"1.0"
-	"viewkick_pitch_softScale"						"2.600000"
+	"viewkick_pitch_softScale"						"2.800000"
 	"viewkick_pitch_hardScale"						"0.4"
 
-	"viewkick_yaw_base"   							"1.0"
+	"viewkick_yaw_base"   							"1.100000"
 	"viewkick_yaw_random" 							"1.0"
 	"viewkick_yaw_random_innerexclude"				"0.05"
-	"viewkick_yaw_softScale"  						"2.100000"
+	"viewkick_yaw_softScale"  						"2.300000"
 	"viewkick_yaw_hardScale"  						"0.3"
 
 	"viewkick_roll_base"  							"-1.6"

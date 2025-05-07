@@ -258,7 +258,7 @@ WeaponData
 	"damage_very_far_distance"	"7874"
 	"titanarmor_critical_hit_required"	"1"
 	"headshot_distance"	"29528"
-	"damage_leg_scale"	"0.700000"
+	"damage_leg_scale"	"0.900000"
 	"damage_shield_scale"	"1"
 	"critical_hit_damage_scale"	"2"
 	Mods
@@ -296,19 +296,19 @@ WeaponData
 
 		sniper_mag_l1
         {
-            "ammo_clip_size"							"5"
+            "ammo_clip_size"							"7"
         }
         sniper_mag_l2
         {
-            "ammo_clip_size"   							"6"
+            "ammo_clip_size"   							"8"
         }
         sniper_mag_l3
         {
-            "ammo_clip_size"   							"8"
+            "ammo_clip_size"   							"9"
         }
         sniper_mag_l4
         {
-            "ammo_clip_size"   		        			"8"
+            "ammo_clip_size"   		        			"9"
         }
 	
 		infinite_ammo

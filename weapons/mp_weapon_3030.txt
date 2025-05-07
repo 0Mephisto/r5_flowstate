@@ -354,22 +354,22 @@
 
         highcal_mag_l1
         {
-            "ammo_clip_size" 				"8"
+            "ammo_clip_size" 				"7"
         }
 
         highcal_mag_l2
         {
-            "ammo_clip_size" 				"10"
+            "ammo_clip_size" 				"8"
         }
 
         highcal_mag_l3
         {
-            "ammo_clip_size" 				"12"
+            "ammo_clip_size" 				"10"
         }
 
         highcal_mag_l4
         {
-            "ammo_clip_size"   				"12"
+            "ammo_clip_size"   				"10"
         }
 
         optic_cq_hcog_classic

@@ -243,7 +243,7 @@ WeaponData
 
 
 	"damage_shield_scale"	"1"
-	"damage_headshot_scale"	"1.200000"
+	"damage_headshot_scale"	"1.250000"
 	"damage_leg_scale"	"0.800000"
 	"critical_hit"	"1"
 	"critical_hit_damage_scale"	"2"
@@ -342,20 +342,20 @@ WeaponData
 
 		bullets_mag_l1
 		{
-			"ammo_clip_size"   						"23"
+			"ammo_clip_size"   						"24"
 		}
 		bullets_mag_l2
 		{
-			"ammo_clip_size"   						"26"
+			"ammo_clip_size"   						"27"
 		}
 		bullets_mag_l3
 		{
 			//Extended Ammo
-			"ammo_clip_size"   						"28"
+			"ammo_clip_size"   						"29"
 		}
         bullets_mag_l4
         {
-            "ammo_clip_size"   						"28"
+            "ammo_clip_size"   						"29"
         }
 
 		// // NOTE: override barrel FX for both Alternator barrels

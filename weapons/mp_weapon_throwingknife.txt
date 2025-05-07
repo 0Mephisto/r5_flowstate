@@ -56,8 +56,8 @@ WeaponData
     "projectile_trail_effect_0" 					"P_tracer_proj_sniper_piercer"
 
 	"vortex_impact_effect"							"P_impact_exp_emp_med_default"
-	"vortex_absorb_effect"							"wpn_vortex_projectile_rifle_FP"
-	"vortex_absorb_effect_third_person"				"wpn_vortex_projectile_rifle"
+	"vortex_absorb_effect"							"wpn_vortex_projectile_frag_FP"
+	"vortex_absorb_effect_third_person"				"wpn_vortex_projectile_frag"
 	"vortex_absorb_sound"							"Vortex_Shield_AbsorbBulletSmall"
 	"vortex_absorb_sound_1P_VS_3P"					"Vortex_Shield_AbsorbBulletSmall_1P_VS_3P"
 	"projectile_adjust_to_gun_barrel"				"0"

@@ -96,7 +96,7 @@ WeaponData
     "low_ammo_fraction" 							"0.4"
 
 
-    "ammo_clip_size"   								"18"
+    "ammo_clip_size"   								"21"
     "ammo_default_total"							"0"
     "ammo_stockpile_max"							"36"
     "ammo_no_remove_from_stockpile"					"1"
@@ -264,7 +264,7 @@ WeaponData
 	"viewmodel_ads_centerpoint_attachment"      "ADS_CENTER_SIGHT_HEMLOK"
 
 	"headshot_distance"	"11828"
-	"damage_headshot_scale"	"1.300000"
+	"damage_headshot_scale"	"1.400000"
 	"damage_leg_scale"	"0.750000"
 	"damage_shield_scale"	"1"
 	"critical_hit"	"1"
@@ -448,11 +448,11 @@ WeaponData
 		}
 		highcal_mag_l3
 		{
-			"ammo_clip_size"   							"++12"
+			"ammo_clip_size"   							"++9"
 		}
         highcal_mag_l4
         {
-			"ammo_clip_size"   							"++12"
+			"ammo_clip_size"   							"++9"
         }
 
 		legendary1

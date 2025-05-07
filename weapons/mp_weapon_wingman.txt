@@ -1,5 +1,6 @@
 #base "_base_handgun.txt"
 #base "_base_mags_sniper.txt"
+#base "_base_laser_sights_small.txt"
 
 WeaponData
 {
@@ -125,7 +126,7 @@ WeaponData
 	"dof_nearDepthEnd"								"0.0"
 
 	// Behavior
-	"fire_rate"   									"2.6"
+	"fire_rate"   									"2.800000"
 	"reload_time" 									"2.1"
 	"reload_time_late1" 							"1.75"
 	"reload_time_late2" 							"0.60"
@@ -244,35 +245,9 @@ WeaponData
 	"titanarmor_critical_hit_required"	"1"
 	Mods
 	{
-		shock_rounds
-		{
-		
-		}
-		
-		funny_selector
-		{
-			"projectile_ricochet_max_count"					"9999"
-			"bolt_bounce_frac" 								"1"
-			"projectile_damages_owner"						"1"
-		}
-		
 	    gold
         {
         }
-		
-		fullauto_rounds
-		{
-			"damage_near_value"   							"25"
-			"damage_far_value"								"25"
-			"damage_very_far_value"							"25"
-			"damage_near_value_titanarmor"					"25"
-			"damage_far_value_titanarmor" 					"25"
-			"damage_very_far_value_titanarmor" 				"25"
-			
-			"fire_rate"                                "3.5"
-			"is_semi_auto"				                "0"
-			"viewkick_pitch_base"                        "-5"
-		}
 		
         hopup_headshot_dmg
         {
@@ -285,34 +260,76 @@ WeaponData
 
         sniper_mag_l1
 		{
-			"ammo_clip_size"   							"7"
+			"ammo_clip_size"   							"6"
 		}
 		sniper_mag_l2
 		{
-			"ammo_clip_size"   							"8"
+			"ammo_clip_size"   							"7"
 		}
 		sniper_mag_l3
 		{
-			"ammo_clip_size"   							"9"
+			"ammo_clip_size"   							"8"
 		}
         sniper_mag_l4
         {
-            "ammo_clip_size"   							"9"
+            "ammo_clip_size"   							"8"
         }
-        hopup_quickdraw_holster
-        {
-            "zoom_time_in"						"*0.7"
-            "zoom_time_out"   					"*0.7"
+		laser_sight_l1
+		{
+			"spread_stand_hip" "*0.80"
+			"spread_stand_hip_run" "*0.80"
+			"spread_stand_hip_sprint" "*0.80"
+			"spread_crouch_hip" "*0.80"
+			"spread_air_hip" "*0.80"
+			"spread_moving_increase_rate" "*0.85"
+			"spread_moving_decay_rate" "*1.15"
+			"spread_decay_rate" "*1.20"
+			"spread_decay_delay" "*0.80"
+			"spread_max_kick_stand_hip" "*0.80"
+			"spread_max_kick_crouch_hip" "*0.80"
+			"spread_max_kick_air_hip" "*0.80"
+			"spread_kick_on_fire_stand_hip" "*0.80"
+			"spread_kick_on_fire_crouch_hip" "*0.80"
+			"spread_kick_on_fire_air_hip" "*0.80"
 
-            "deploy_time" 						"*0.7"
-            "holster_time"						"*0.7"
-            "raise_time" 						"*0.75"
-            "lower_time"						"*0.75"
+		}
+		laser_sight_l2
+		{
+			"spread_stand_hip" "*0.70"
+			"spread_stand_hip_run" "*0.70"
+			"spread_stand_hip_sprint" "*0.70"
+			"spread_crouch_hip" "*0.70"
+			"spread_air_hip" "*0.70"
+			"spread_moving_increase_rate" "*0.80"
+			"spread_moving_decay_rate" "*1.20"
+			"spread_decay_rate" "*1.30"
+			"spread_decay_delay" "*0.70"
+			"spread_max_kick_stand_hip" "*0.70"
+			"spread_max_kick_crouch_hip" "*0.70"
+			"spread_max_kick_air_hip" "*0.70"
+			"spread_kick_on_fire_stand_hip" "*0.70"
+			"spread_kick_on_fire_crouch_hip" "*0.70"
+			"spread_kick_on_fire_air_hip" "*0.70"
 
-            "spread_stand_hip"					"*0.75"
-            "spread_stand_hip_run"				"*0.9"
-        }
-	
+		}
+	 	laser_sight_l3
+		{
+			"spread_stand_hip" "*0.60"
+			"spread_stand_hip_run" "*0.60"
+			"spread_stand_hip_sprint" "*0.60"
+			"spread_crouch_hip" "*0.60"
+			"spread_air_hip" "*0.60"
+			"spread_moving_increase_rate" "*0.75"
+			"spread_moving_decay_rate" "*1.25"
+			"spread_decay_rate" "*1.40"
+			"spread_decay_delay" "*0.60"
+			"spread_max_kick_stand_hip" "*0.60"
+			"spread_max_kick_crouch_hip" "*0.60"
+			"spread_max_kick_air_hip" "*0.60"
+			"spread_kick_on_fire_stand_hip" "*0.60"
+			"spread_kick_on_fire_crouch_hip" "*0.60"
+			"spread_kick_on_fire_air_hip" "*0.60"
+		}
 		infinite_ammo
 		{
 			"ammo_min_to_fire"                      "0"
@@ -320,7 +337,7 @@ WeaponData
 			"ammo_no_remove_from_stockpile"         "1"
 			"low_ammo_fraction"                     "0.0"
 		}
-}
+	}
 
 	"ui1_enable"		"1"
 	"ui1_draw_cloaked"	"1"

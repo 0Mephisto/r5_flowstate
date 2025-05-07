@@ -1,6 +1,5 @@
 #base "_base_sniper.txt"
 #base "_base_sniper_optics.txt"
-#base "_base_barrels_large.txt"
 #base "_base_mags_sniper.txt"
 #base "_base_stocks_sniper.txt"
 
@@ -59,7 +58,7 @@
 	"damage_headshot_scale"			           "1.800000"
       
 
-	"damage_leg_scale"                         "0.700000"
+	"damage_leg_scale"                         "0.800000"
 
 	// Viewmodel
 	"viewmodel_shake_forward"                  "0.07"
