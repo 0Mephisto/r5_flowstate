@@ -3675,6 +3675,43 @@ array<WaitingForPlayersCameraLocPair> function GetCamerasForMap( string map )
 		case "mp_rr_arena_empty":
 			cutsceneSpawns.append(NewCameraPair( <41000,-10000,0>, <0,0,0> ) )
 		break
+
+		case "mp_rr_arena_composite":
+		cutsceneSpawns.append(NewCameraPair( <2307.4375, 1415.3374, 429.479797> , <0, 130.879272, 0> ) )
+		cutsceneSpawns.append(NewCameraPair( <2877.44409, 5697.83105, 1672.90344> , <0, 10.1077566, 0> ) )
+		cutsceneSpawns.append(NewCameraPair( <-890.250305, 6196.06494, 1501.16028> , <0, -149.713516, 0> ) )
+		cutsceneSpawns.append(NewCameraPair( <-1853.4906, 4318.04736, 791.386963> , <0, -108.551895, 0> ) )
+		cutsceneSpawns.append(NewCameraPair( <-2628.37329, -472.374023, 325.194672> , <0, 80.4712677, 0> ) )
+		cutsceneSpawns.append(NewCameraPair( <-854.504883, 844.514343, 608.447632> , <0, -21.671114, 0> ) )
+		break
+		
+		case "mp_rr_aqueduct":
+		cutsceneSpawns.append(NewCameraPair( <4536.32324, -4842.01514, 627.977661> , <0, 168.955353, 0> ) )
+		cutsceneSpawns.append(NewCameraPair( <2123.55908, -5994.70752, 422.766052> , <0, 169.391968, 0> ) )
+		cutsceneSpawns.append(NewCameraPair( <-324.00824, -6295.51123, 1393.36169> , <0, 61.8894501, 0> ) )
+		cutsceneSpawns.append(NewCameraPair( <-974.514282, -1108.53979, -55.8972359> , <0, -51.9891815, 0> ) )
+		cutsceneSpawns.append(NewCameraPair( <1274.22766, -5196.98389, 1064.73584> , <0, 143.300842, 0> ) )
+		cutsceneSpawns.append(NewCameraPair( <-763.161804, -5228.40234, 477.852356> , <0, 124.9048, 0> ) )
+		break
+		
+		case "mp_rr_arena_phase_runner":
+		cutsceneSpawns.append(NewCameraPair( <20500.5332, 18673.2109, -371.418091> , <0, 5.8379364, 0> ) )
+		cutsceneSpawns.append(NewCameraPair( <22216.2598, 14448.0566, 120.776726> , <0, 26.7628136, 0> ) )
+		cutsceneSpawns.append(NewCameraPair( <25429.293, 13582.9941, -808.916077> , <0, 10.6653433, 0> ) )
+		cutsceneSpawns.append(NewCameraPair( <28682.6699, 17033.4258, -739.663818> , <0, 171.884537, 0> ) )
+		cutsceneSpawns.append(NewCameraPair( <23470.3652, 17689.8359, -1296.198> , <0, 64.2433472, 0> ) )
+		cutsceneSpawns.append(NewCameraPair( <24990.2383, 21005.0762, -621.474304> , <0, 46.2398949, 0> ) )
+
+		break
+		
+		case "mp_rr_party_crasher":
+		cutsceneSpawns.append(NewCameraPair( <3385.96265, -1591.92493, 2220.44629> , <0, 97.7711029, 0> ) )
+		cutsceneSpawns.append(NewCameraPair( <-1012.03864, -2472.96851, 1999.18762> , <0, 131.942291, 0> ) )
+		cutsceneSpawns.append(NewCameraPair( <-1949.47925, -565.452087, 1366.40222> , <0, -4.39630127, 0> ) )
+		cutsceneSpawns.append(NewCameraPair( <-840.577515, 3031.18994, 1057.86731> , <0, -49.7104607, 0> ) )
+		cutsceneSpawns.append(NewCameraPair( <416.486328, 2083.01709, 562.318604> , <0, -83.0055008, 0> ) )
+		cutsceneSpawns.append(NewCameraPair( <2646.22314, 2588.46582, 1168.85779> , <0, -107.622498, 0> ) )
+		break
 	}
 	
 	return cutsceneSpawns	
