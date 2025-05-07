@@ -100,22 +100,25 @@ function BaseGametype_Init()
 
 void function BaseGametypeEntitiesDidLoad()
 {
-	Flowstate_CheckForMapTriggers()
+	Flowstate_CheckForMapTriggersRemoval()
 
 	TriggerHurtSetup()
 	OutOfBoundsSetup()
 }
 
-void function Flowstate_CheckForMapTriggers()
+void function Flowstate_CheckForMapTriggersRemoval( bool isForced = false )
 {
 	file.allTriggers.extend( GetEntArrayByClass_Expensive( "trigger_out_of_bounds" ) )
 	file.allTriggers.extend( GetEntArrayByClass_Expensive( "trigger_hurt" ) )
 	file.allTriggers.extend( GetEntArrayByClass_Expensive( "trigger_slip" ) )
 	file.allTriggers.extend( GetEntArrayByClass_Expensive( "trigger_no_zipline" ) )
+	file.allTriggers.extend( GetEntArrayByClass_Expensive( "trigger_no_grapple" ) )
+	file.allTriggers.extend( GetEntArrayByClass_Expensive( "trigger_multiple" ) )
+	file.allTriggers.extend( GetEntArrayByClass_Expensive( "trigger_cylinder_heavy" ) )
 	file.allTriggers.extend( GetEntArrayByScriptName( "WallTrigger_Killzone" ) )
 	file.allTriggers.extend( GetEntArrayByScriptName( "WallTrigger_oob_timer" ) )
 
-	if( Flowstate_DisableAllMapTriggers() && Gamemode() == eGamemodes.fs_dm )
+	if( Flowstate_DisableAllMapTriggers() || isForced )
 	{
 		int i = 0
 		foreach( trigger in file.allTriggers )
@@ -128,6 +131,8 @@ void function Flowstate_CheckForMapTriggers()
 		file.allTriggers.clear()
 			
 		printt( "[FS All Triggers Disabled] Removed", i, "map triggers" )
+		
+		SetIgnoreKillPlayersUnderMap( true )
 	}
 }
 
@@ -636,6 +641,10 @@ bool function ShouldDoKillFeedback( entity ent )
 		return true
 	if ( ent.IsShadowForm() )// && !IsInForgedShadows( ent ) )
 		return false
+	
+	if ( Gamemode() == eGamemodes.fs_aimtrainer )
+		return false
+	
 	return true
 }
 void function UpdateLastDamageTime( entity ent )
