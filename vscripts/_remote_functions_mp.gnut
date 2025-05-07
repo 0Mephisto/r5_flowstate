@@ -1091,7 +1091,7 @@ void function RemoteFunctions_Init_Begin()
 		ScriptRemote_RegisterUntypedFunction_deprecated( "FS_BuildLocalizedMultiVarString" )
 		ScriptRemote_RegisterClientFunction( "FS_ShowLocalizedMultiVarMessage", "int", 0, localizedStringsMax, "int", 0, eMsgUI.len() + 1, "float", 0.0, 5000.0, 16 ) //Audit 2-22-2025
 		ScriptRemote_RegisterUntypedFunction_deprecated( "FS_BuildLocalizedTokenWithVariableString" ) //only for variable string
-		ScriptRemote_RegisterClientFunction( "FS_DisplayLocalizedToken", "int", 0, localizedStringsMax, "int", 0, localizedStringsMax, "int", 0, eMsgUI.len() + 1, "float", 0.0, FLT_MAX, 16 )
+		ScriptRemote_RegisterClientFunction( "FS_DisplayLocalizedToken", "int", 0, localizedStringsMax, "int", 0, localizedStringsMax, "int", 0, eMsgUI.len() + 1, "float", 0.0, FLT_MAX, 32 )
 
 		// Localized TextPanel
 		ScriptRemote_RegisterUntypedFunction_deprecated( "FS_BuildLocalizedVariable_InfoPanel" )
