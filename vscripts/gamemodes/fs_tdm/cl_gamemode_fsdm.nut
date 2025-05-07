@@ -326,7 +326,7 @@ void function Flowstate_1v1EnemyChanged( entity player, entity oldEnt, entity ne
 		return
 	
 	#if DEVELOPER
-		printt( "1v1 enemy changed " + player, oldEnt, newEnt, actuallyChanged )
+		printw( "Flowstate_1v1EnemyChanged ", newEnt, actuallyChanged )
 	#endif
 	
 	if ( !IsValid( localPlayer ) || !IsValid( newEnt ) || !newEnt.IsPlayer() || localPlayer != GetLocalViewPlayer() )
@@ -724,6 +724,9 @@ void function Flowstate_RespawnTimer_Thread( int timeUntilRespawn, int type )
 	} else if( type == 3 )
 	{
 		msg = "Round Starts In "
+	} else if( type == 4 )
+	{
+		msg = "Selecting Team In "
 	}
 	
 	while ( timeUntilRespawn > 0 )
@@ -834,7 +837,6 @@ void function CoolCamera()
 		break
 		
 		case eMaps.mp_rr_canyonlands_staging:
-		//case eMaps.mp_rr_ashs_redemption:
 		cutsceneSpawns.append(NewCameraPair(<32645.04,-9575.77,-25911.94>, <7.71,91.67,0.00>)) 
 		cutsceneSpawns.append(NewCameraPair(<49180.1055, -6836.14502, -23461.8379>, <0, -55.7723808, 0>)) 
 		cutsceneSpawns.append(NewCameraPair(<43552.3203, -1023.86182, -25270.9766>, <0, 20.9528542, 0>))
@@ -856,10 +858,20 @@ void function CoolCamera()
 		cutsceneSpawns.append(NewCameraPair(<32170.3008, -1944.38562, 3590.89258>,<0, 27.8040161, 0>))
 		break
 		
+		case eMaps.mp_rr_arena_phase_runner:
+		cutsceneSpawns.append(NewCameraPair(<26864.2109, 15601.6094, -552.943604> , <0, -150.047638, 0>))
+		cutsceneSpawns.append(NewCameraPair(<28349.5098, 16262.6318, -60.8187943> , <0, -23.0048409, 0>))
+		cutsceneSpawns.append(NewCameraPair(<31179.7949, 14227.6787, 1918.80981> , <0, 145.544983, 0>))
+		cutsceneSpawns.append(NewCameraPair(<30483.4727, 18615.0508, -563.385559> , <0, 69.6765442, 0>))
+		cutsceneSpawns.append(NewCameraPair(<24773.834, 21167.2012, 52.9560318> , <0, 63.6609154, 0>))
+		cutsceneSpawns.append(NewCameraPair(<22836.1133, 16965.5742, -516.453979> , <0, -10.6384602, 0>))
+		break
+		
 		case eMaps.mp_rr_party_crasher:
-		// case eMaps.mp_rr_party_crasher_new:
 		cutsceneSpawns.append(NewCameraPair(<-1363.75867, -2183.58081, 1354.65466>, <0, 72.5054092, 0>)) 
 		cutsceneSpawns.append(NewCameraPair(<2378.75439, 1177.52783, 1309.69019>, <0, 146.118546, 0>))
+		cutsceneSpawns.append(NewCameraPair(<-1472.35242, -1927.02917, 2238.11084>, <0, 169.861725, 0>))
+		cutsceneSpawns.append(NewCameraPair(<681.364319, -240.568985, 945.704834>, <0, 53.7547188, 0>))
 		break
 		
 		case eMaps.mp_rr_arena_composite:
@@ -1770,19 +1782,23 @@ void function DM_HintCatalog( int index, entity otherPlayer )
 		switch( Playlist() )
 		{
 			case ePlaylists.fs_movementrecorder:
+			Obituary_Print_Localized( "R5Reloaded by @AmosModz", GetChatTitleColorForPlayer( GetLocalViewPlayer() ), BURN_COLOR )
 			Obituary_Print_Localized( "FS Movement Recorder - Made by @CafeFPS and mkos.", GetChatTitleColorForPlayer( GetLocalViewPlayer() ), BURN_COLOR )
 			break
 
 			case ePlaylists.fs_lgduels_1v1:
+			Obituary_Print_Localized( "R5Reloaded by @AmosModz", GetChatTitleColorForPlayer( GetLocalViewPlayer() ), BURN_COLOR )
 			Obituary_Print_Localized( "FS LG Duels - Made by @CafeFPS and mkos.", GetChatTitleColorForPlayer( GetLocalViewPlayer() ), BURN_COLOR )
 			break
 			
 			case ePlaylists.fs_scenarios:
+			Obituary_Print_Localized( "R5Reloaded by @AmosModz", GetChatTitleColorForPlayer( GetLocalViewPlayer() ), BURN_COLOR )
 			Obituary_Print_Localized( "%$rui/bullet_point% Players Connected: " + GetPlayerArray().len(), GetChatTitleColorForPlayer( GetLocalViewPlayer() ), BURN_COLOR )
 			Obituary_Print_Localized( "FS Scenarios - Made and designed by @CafeFPS with the help from @ttvmkos.", GetChatTitleColorForPlayer( GetLocalViewPlayer() ), BURN_COLOR )
 			break
 			
 			case ePlaylists.fs_1v1:
+			Obituary_Print_Localized( "R5Reloaded by @AmosModz", GetChatTitleColorForPlayer( GetLocalViewPlayer() ), BURN_COLOR )
 			Obituary_Print_Localized( "FS 1V1 - Made by __makimakima__ - Maintained by @CafeFPS and mkos.", GetChatTitleColorForPlayer( GetLocalViewPlayer() ), BURN_COLOR )
 			break
 		}
