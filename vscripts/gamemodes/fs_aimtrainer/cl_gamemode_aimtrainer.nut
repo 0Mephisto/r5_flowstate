@@ -182,7 +182,27 @@ void function ActuallyPutDefaultSettings()
 	EndSignal( player, "OnDestroy" )
 
 	player.ClientCommand("CC_AimTrainer_AI_SHIELDS_LEVEL " + GetConVarInt("fs_aimtrainer_dummies_shield").tostring())
-	player.ClientCommand("CC_AimTrainer_STRAFING_SPEED " + GetConVarInt("fs_aimtrainer_dummies_speed_selector").tostring())
+
+	float speed
+	switch( GetConVarInt("fs_aimtrainer_dummies_speed_selector") )
+	{
+		case 0:
+			speed = 0
+			break
+		case 1:
+			speed = 0.85
+			break
+		case 2:
+			speed = 1
+			break
+		case 3:
+			speed = 1.35
+			break
+		case 4:
+			speed = 1.8
+			break
+	}
+	player.ClientCommand("CC_AimTrainer_STRAFING_SPEED " + speed)
 	player.ClientCommand("CC_RGB_HUD " + GetConVarInt("fs_aimtrainer_rgb_hud").tostring())
 	player.ClientCommand("CC_AimTrainer_INFINITE_CHALLENGE " + GetConVarInt("fs_aimtrainer_infinite_training").tostring())
 	player.ClientCommand("CC_AimTrainer_INFINITE_AMMO " + GetConVarInt("fs_aimtrainer_infinite_ammo").tostring())
@@ -992,22 +1012,23 @@ void function ChangeAimTrainer_STRAFING_SPEEDClient(string desiredSpeed)
 	
 	float speed
 	
-	switch(int(desiredSpeed)){
-	case 0:
-		speed = 0
-		break
-	case 1:
-		speed = 0.85
-		break
-	case 2:
-		speed = 1
-		break
-	case 3:
-		speed = 1.35
-		break
-	case 4:
-		speed = 1.8
-		break
+	switch( int(desiredSpeed) )
+	{
+		case 0:
+			speed = 0
+			break
+		case 1:
+			speed = 0.85
+			break
+		case 2:
+			speed = 1
+			break
+		case 3:
+			speed = 1.35
+			break
+		case 4:
+			speed = 1.8
+			break
 	}
 	
 	AimTrainer_STRAFING_SPEED = speed
