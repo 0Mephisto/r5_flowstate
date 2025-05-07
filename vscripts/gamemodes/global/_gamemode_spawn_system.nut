@@ -767,8 +767,8 @@ array<SpawnData> function GenerateCustomSpawns( int eMap, int coreSpawnsLen = -1
 		//////////////////////////////////////////////////////////////////////////////////
 		case eMaps.mp_rr_party_crasher:
 		
-			defaultWaitingRoom = NewLocPair( < 1859.75, -4162.87, 648.106 >, < 359.047, 104.246, 0 > )
-			g_waitingRoomPanelLocation = SetWaitingRoomAndGeneratePanelLocs( defaultWaitingRoom, < 0, 0, -22 >, 100 )		
+            defaultWaitingRoom = NewLocPair( < 1854.75, -4108.87, 648.106 >, < 359.047, 104.246, 0 > )
+            g_waitingRoomPanelLocation = SetWaitingRoomAndGeneratePanelLocs( defaultWaitingRoom, < 0, 0, -22 >, 200 )	
 		
 		break ////////////////////////////////////////////////////////////////////////////
 		//////////////////////////////////////////////////////////////////////////////////	
