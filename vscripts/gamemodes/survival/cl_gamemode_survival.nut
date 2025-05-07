@@ -3667,9 +3667,22 @@ array<WaitingForPlayersCameraLocPair> function GetCamerasForMap( string map )
 			cutsceneSpawns.append(NewCameraPair( <-12433.5381, -9732.68555, 3427.97339>, <0, -48.9345093, 0> ))
 		break
 		
-		case "mp_rr_olympus":
 		case "mp_rr_olympus_tt":
-			cutsceneSpawns.append(NewCameraPair( <0,0,0>, <0,0,0> ) )
+		case "mp_rr_olympus":
+			cutsceneSpawns.append(NewCameraPair( <-25235.1055, 1220.16565, -5563.3125> , <0, 14.9181824, 0> ))
+			cutsceneSpawns.append(NewCameraPair( <-22515.6289, 18350.7285, -6227.43359> , <0, -31.012104, 0> ))
+			cutsceneSpawns.append(NewCameraPair( <-34199.1133, 10023.2178, -3739.12305> , <0, 57.2625656, 0> ))
+			cutsceneSpawns.append(NewCameraPair( <-42535.6719, -8651.65527, -3381.62817> , <0, -117.898598, 0> ))
+			cutsceneSpawns.append(NewCameraPair( <-34771.207, -18455.5371, -3415.63062> , <0, 96.4288177, 0> ))
+			cutsceneSpawns.append(NewCameraPair( <-7813.10205, -26010.8672, -2247.70752> , <0, -149.884628, 0> ))
+			cutsceneSpawns.append(NewCameraPair( <-3477.38794, -29067.6367, -975.647644> , <0, 51.4941902, 0> ))
+			cutsceneSpawns.append(NewCameraPair( <22722.5684, -17699.8711, -5239.71533> , <0, -123.869438, 0> ))
+			cutsceneSpawns.append(NewCameraPair( <14765.1807, -4291.78955, -3995.76563> , <0, -23.8360157, 0> ))
+			cutsceneSpawns.append(NewCameraPair( <16342.6611, 5930.64844, -3591.96875> , <0, 149.040939, 0> ))
+			cutsceneSpawns.append(NewCameraPair( <5397.75439, 22433.9219, -5673.11865> , <0, 43.7146683, 0> ))
+			cutsceneSpawns.append(NewCameraPair( <-293.680786, 6115.55811, -4848.82373> , <0, 68.2613144, 0> ))
+			cutsceneSpawns.append(NewCameraPair( <-2724.11963, 862.047485, -5981.30273> , <0, -88.4052658, 0> ))
+			cutsceneSpawns.append(NewCameraPair( <-20965.0313, 373.067291, -5486.98096> , <0, -61.3815041, 0> ))
 		break
 		
 		case "mp_rr_arena_empty":
