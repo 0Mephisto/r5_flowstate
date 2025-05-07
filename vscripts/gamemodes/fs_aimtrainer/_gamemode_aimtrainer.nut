@@ -263,8 +263,8 @@ void function StartStraferDummyChallenge(entity player)
 		
 		dummy.SetShieldHealthMax( ReturnShieldAmountForDesiredLevel() )
 		dummy.SetShieldHealth( ReturnShieldAmountForDesiredLevel() )
-		dummy.SetMaxHealth( 100 )//AimTrainer_AI_HEALTH - locking the dummie health due to a weird graphic issue, need to fix in the future
-		dummy.SetHealth( 100 )//AimTrainer_AI_HEALTH
+		dummy.SetMaxHealth( AimTrainer_AI_HEALTH )
+		dummy.SetHealth( AimTrainer_AI_HEALTH )
 		SetCommonDummyLines(dummy)
 		AddEntityCallback_OnDamaged(dummy, OnStraferDummyDamaged)
 		AddEntityCallback_OnKilled(dummy, OnDummyKilled)
