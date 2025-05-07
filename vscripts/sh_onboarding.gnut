@@ -979,6 +979,9 @@ void function OnClientConnected( entity player )
 	else
 		player.p.assignedCustomModel = -1
 	
+	if( is1v1EnabledAndAllowed() )
+		player.p.playerCamo = RandomIntRangeInclusive( 1, 10 )
+	
 	bool replaceOrigin = false
 	if( IsDevGamemode() || GetCurrentPlaylistVarBool( "is_practice_map", false ) || Playlist() == ePlaylists.fs_movementrecorder )
 	{

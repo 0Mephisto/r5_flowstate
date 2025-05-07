@@ -45,10 +45,10 @@ void function ClScreenfade_Init()
 
 void function ScreenCoverTransition( float endTime )
 {
-	#if DEVELOPER
-		DumpStack()
-		printt( "Calling ScreenCoverTransition with endTime", endTime, " at time", Time() )
-	#endif
+	// #if DEVELOPER
+		// DumpStack()
+		// printt( "Calling ScreenCoverTransition with endTime", endTime, " at time", Time() )
+	// #endif
 	// can be called from server
 	// returns the time remaining until the out transition plays
 

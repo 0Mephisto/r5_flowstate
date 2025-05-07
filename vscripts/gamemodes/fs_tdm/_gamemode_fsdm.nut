@@ -120,7 +120,7 @@ const float STATIC_WAIT_TIME = 1.0
 struct 
 {
 	string scriptversion = ""
-    int tdmState = eTDMState.IN_PROGRESS
+    int tdmState = eTDMState.NEXT_ROUND_NOW
     int nextMapIndex = 0
 	bool mapIndexChanged = true
 	array<entity> playerSpawnedProps
@@ -901,7 +901,8 @@ void function _OnPlayerConnected(entity player)
 		return
 
 	Survival_OnClientConnected( player )
-
+	player.SetMinimapZoomScale( 0.75, 3.0 )
+	
 	if( flowstateSettings.hackersVsPros )
 	{
 		AssignCharacter(player, characterslist.getrandom())
@@ -1077,7 +1078,9 @@ void function _OnPlayerConnected(entity player)
 	}
 	
 	if( is1v1EnabledAndAllowed() )
-		thread soloModefixDelayStart( player )
+	{
+		Gamemode1v1_SetPlayerGamestate( player, e1v1State.MATCH_START  )
+	}
 }
 
 bool function is1v1EnabledAndAllowed()
@@ -1825,9 +1828,9 @@ void function _HandleRespawn( entity player, bool isDroppodSpawn = false )
 	if( is1v1EnabledAndAllowed() ) //(mk): handle respawn is only fired for newjoins in 1v1 type gamemodes.
 		Gamemode1v1_TakeAll( player )
 		
-	#if DEVELOPER
-		printt( "End of _HandleRespawn function" )//Cafe debugging halo mod stuff
-	#endif
+	// #if DEVELOPER
+		// printt( "End of _HandleRespawn function" )//Cafe debugging halo mod stuff
+	// #endif
 }
 
 void function SetPlayerCustomModel( entity player, int index )
@@ -1905,7 +1908,7 @@ void function TpPlayerToSpawnPoint(entity player)
 
 void function Flowstate_GrantSpawnImmunity(entity player, float duration)
 {
-	if(!IsValid(player) || !IsValid(player) && !player.IsPlayer() || is1v1EnabledAndAllowed() ) return //wtf?
+	if(!IsValid(player) || !player.IsPlayer() || is1v1EnabledAndAllowed() ) return //wtf?
 	
 	// thread WpnPulloutOnRespawn(player, duration)
 
@@ -2926,6 +2929,10 @@ void function GiveGungameWeapon(entity player)
 
 void function RunTDM()
 {
+	#if DEVELOPER 
+	printw( "RunTDM" )
+	#endif
+	
     WaitForGameState(eGameState.Playing)
 	
 	if (Flowstate_Is4DMode())
@@ -3367,7 +3374,7 @@ void function SimpleChampionUI()
 	
 	bool presentChampion = false
 	
-	if( flowstateSettings.show_short_champion_screen && GetChampion() )
+	if( flowstateSettings.show_short_champion_screen && IsValid( GetChampion() ) )
 	{
 		presentChampion = true
 		thread
@@ -3610,12 +3617,11 @@ void function SimpleChampionUI()
 			}
 		}
 		
-		
 		////////////////////////////////
 		//// 	CORE TIMER LOOP 	////
 		////////////////////////////////
 		
-		while( Time() <= g_fCurrentRoundEndTime ) //Todo: Execute callbacks for gamemode and add via AddCallback_ShouldTimerEnd( int timeRemaining, bool functionref() condFunc )
+		while( Time() <= g_fCurrentRoundEndTime && file.tdmState == eTDMState.IN_PROGRESS ) //Todo: Execute callbacks for gamemode and add via AddCallback_ShouldTimerEnd( int timeRemaining, bool functionref() condFunc )
 		{
 			if( flowstateSettings.hackersVsPros )
 			{
@@ -3761,7 +3767,10 @@ void function SimpleChampionUI()
 		FS_DM.scoreboardShowing = true
 		FS_Scenarios_ForceAllRoundsToFinish()
 	}
-
+	
+	if( is1v1EnabledAndAllowed() )
+		ForceAllRoundsToFinish_solomode()
+	
 	if( GetBestPlayer() != null )
 		SurvivalCommentary_HostAnnounce( eSurvivalCommentaryBucket.WINNER )
 	
@@ -3905,7 +3914,7 @@ void function SimpleChampionUI()
 				if( !IsValid( player ) )
 					continue
 				
-				ScreenFadeToBlack( player, 0.5, 0.6 ) // a little extra so we stay black
+				// ScreenFadeToBlack( player, 0.5, 0.6 ) // a little extra so we stay black
 				// wait EMBARK_FADE_TIME
 				// ScreenFadeFromBlack( player, EMBARK_FADE_TIME, EMBARK_FADE_TIME )
 				// Remote_CallFunction_Replay(player, "ServerCallback_FSDM_OpenVotingPhase", false)
@@ -4031,9 +4040,6 @@ void function SimpleChampionUI()
 	
 	if( !isScenariosMode() )
 		SetDeathFieldParams( <0,0,0>, 100000, 0, 90000, 99999 )
-
-	if( is1v1EnabledAndAllowed() )
-		waitthread ForceAllRoundsToFinish_solomode()
 	
 	////////////////////////////////////////////
 	// 		SET STATE FOR INTERNAL CHECKS 	  //
@@ -4590,9 +4596,10 @@ void function HaloMod_HandlePlayerModel( entity player )
 
 void function CharSelect( entity player)
 {
-	#if DEVELOPER 
-		DumpStack()
-	#endif 
+	// #if DEVELOPER 
+		// DumpStack()
+	// #endif 
+	
 	//Char select.
 	//file.characters = clone GetAllCharacters()
 	
@@ -7017,16 +7024,16 @@ void function FSDM_SetMatchPersistentVarsForPlayer( entity player )
 	player.SetPersistentVar( "lastGameSquadStats[" + i + "].respawnsGiven", statSummaryData.respawnsGiven )
 	
 	#if DEVELOPER 
-		printt( "\n\n\n" )
-		printt( "-------- SAVING DATA ----------" )
-		printt( "player", player )
-		printt( "uid", player.GetPlatformUID() )
-		printt( "kills", statSummaryData.kills )
-		printt( "damageDealt", statSummaryData.damageDealt )
-		printt( "survivalTime", statSummaryData.survivalTime )
-		printt( "revivesGiven", statSummaryData.revivesGiven )
-		printt( "respawnsGiven", statSummaryData.respawnsGiven )
-		printt( "\n\n\n" )
+		// printt( "\n\n\n" )
+		// printt( "-------- SAVING DATA ----------" )
+		// printt( "player", player )
+		// printt( "uid", player.GetPlatformUID() )
+		// printt( "kills", statSummaryData.kills )
+		// printt( "damageDealt", statSummaryData.damageDealt )
+		// printt( "survivalTime", statSummaryData.survivalTime )
+		// printt( "revivesGiven", statSummaryData.revivesGiven )
+		// printt( "respawnsGiven", statSummaryData.respawnsGiven )
+		// printt( "\n\n\n" )
 	#endif 
 }
 
@@ -7044,16 +7051,16 @@ GameSummarySquadData function FSDM_GetPreivousMatch_PersistentData( entity playe
 	statsSummaryData.respawnsGiven = player.GetPersistentVarAsInt( "lastGameSquadStats[" + i + "].respawnsGiven" )
 
 	#if DEVELOPER 
-		printt( "\n\n\n" )
-		printt( "-------- READING PLAYERS ----------" )
-		printt( "player", player )
-		printt( "uid", statsSummaryData.uid )
-		printt( "kills", statsSummaryData.kills )
-		printt( "damageDealt", statsSummaryData.damageDealt )
-		printt( "survivalTime", statsSummaryData.survivalTime )
-		printt( "revivesGiven", statsSummaryData.revivesGiven )
-		printt( "respawnsGiven", statsSummaryData.respawnsGiven )
-		printt( "\n\n\n" )
+		// printt( "\n\n\n" )
+		// printt( "-------- READING PLAYERS ----------" )
+		// printt( "player", player )
+		// printt( "uid", statsSummaryData.uid )
+		// printt( "kills", statsSummaryData.kills )
+		// printt( "damageDealt", statsSummaryData.damageDealt )
+		// printt( "survivalTime", statsSummaryData.survivalTime )
+		// printt( "revivesGiven", statsSummaryData.revivesGiven )
+		// printt( "respawnsGiven", statsSummaryData.respawnsGiven )
+		// printt( "\n\n\n" )
 	#endif
 
 	return statsSummaryData
@@ -7069,18 +7076,18 @@ array<entity> function FSDM_ReturnBestPlayers_FromChampions( array<entity> champ
 		allSummaryData.append( FSDM_GetPreivousMatch_PersistentData( player ) )	
 		
 	#if DEVELOPER 
-		foreach( GameSummarySquadData data in allSummaryData )
-		{
-			printt( "\n\n\n" )
-			printt( "-------- SHOWING CHAMPIONS ----------" )
-			printt( "uid", data.uid )
-			printt( "kills", data.kills )
-			printt( "damageDealt", data.damageDealt )
-			printt( "survivalTime", data.survivalTime )
-			printt( "revivesGiven", data.revivesGiven )
-			printt( "respawnsGiven", data.respawnsGiven )
-			printt( "\n\n\n" )
-		}
+		// foreach( GameSummarySquadData data in allSummaryData )
+		// {
+			// printt( "\n\n\n" )
+			// printt( "-------- SHOWING CHAMPIONS ----------" )
+			// printt( "uid", data.uid )
+			// printt( "kills", data.kills )
+			// printt( "damageDealt", data.damageDealt )
+			// printt( "survivalTime", data.survivalTime )
+			// printt( "revivesGiven", data.revivesGiven )
+			// printt( "respawnsGiven", data.respawnsGiven )
+			// printt( "\n\n\n" )
+		// }
 	#endif
 		
 	//determine champion based on current mode. //Todo: Make better sorts for various modes + utilize more data

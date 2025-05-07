@@ -536,11 +536,11 @@ global struct ServerEntityStruct
 	
 	array<entity> coverWalls
 	
-	// entity dummyPanelForMercs
-	// entity hackableTerminalWaypoint
-	// int hackableTerminalSpawnID
-	// int terminalID
-	// bool isBeingDataknifed
+	entity dummyPanelForMercs
+	entity hackableTerminalWaypoint
+	int hackableTerminalSpawnID
+	int terminalID
+	bool isBeingDataknifed
 }
 
 global struct MeritData
@@ -577,6 +577,14 @@ global struct CringeReport
 // This struct is hooked up to entity.p in code
 global struct ServerPlayerStruct
 {
+	int playerCamo
+	bool canChangeGadgets
+	int selectedGadget1 = 0
+	int selectedGadget2 = 1
+	array<entity>				placedTurrets
+	bool						isPlayerInCloakAbility = false
+	float 						nextAutoCloakTime
+	
 	// table<string,int> 			weaponsAndMeleeLockedSources
 	float						connectTime
 	bool						clientScriptInitialized = false
@@ -1022,12 +1030,12 @@ global struct ServerPlayerStruct
 	bool askedForHunter = false
 
 	//knockbacks
-	// int roundPlayerPoints = 0
-	// int ampedDamageBonus = 0
-	// float lastTimeGrabberBoostZonePoints = 0
-	// float currentPlayerSpeed = 1.0
-	// int ampedFireRateBonus = 0
-	// int totalpoints = 0
+	int roundPlayerPoints = 0
+	int ampedDamageBonus = 0
+	float lastTimeGrabberBoostZonePoints = 0
+	float currentPlayerSpeed = 1.0
+	int ampedFireRateBonus = 0
+	int totalpoints = 0
 
 	//infection
 	array<entity> shadowAttachedEntities
@@ -1358,14 +1366,14 @@ global struct ServerAIStruct
 global struct ServerWeaponStruct
 {
 	// clearable
-	// entity        translocate_initialProjectile = null
-	// entity        translocate_redirectedProjectile = null
-	// bool          translocate_hasProjectilePlanted
-	// bool ornull   translocate_wasTeleportSuccessState = null
-	// array<vector> translocate_projectileThrowPathTaken
-	// int ornull    translocate_wallClimbBlockStatusEffectID = null
-	// int ornull    translocate_doubleJumpBlockStatusEffectID = null
-	// int ornull    translocate_wallHangBlockStatusEffectID = null
+	entity        translocate_initialProjectile = null
+	entity        translocate_redirectedProjectile = null
+	bool          translocate_hasProjectilePlanted
+	bool ornull   translocate_wasTeleportSuccessState = null
+	array<vector> translocate_projectileThrowPathTaken
+	int ornull    translocate_wallClimbBlockStatusEffectID = null
+	int ornull    translocate_doubleJumpBlockStatusEffectID = null
+	int ornull    translocate_wallHangBlockStatusEffectID = null
 
 	float startChargeTime = 0.0
 	bool wasCharged = false
@@ -1421,7 +1429,7 @@ global struct ServerWeaponStruct
 	bool isInAdsCustom
 	int savedShieldHealth
 
-	bool toggleShot
+	bool toggleShot = true
 }
 
 

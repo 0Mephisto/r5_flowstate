@@ -16,7 +16,6 @@ global function ClientCommand_mkos_challenge
 global function endSpectate
 global function Gamemode1v1_Init
 global function resetChallenges
-global function soloModefixDelayStart
 global function isPlayerInWaitingList
 global function getWaitingRoomLocation
 global function maki_tp_player
@@ -131,6 +130,8 @@ global struct soloGroupStruct
 	
 	float startTime
 	table <entity,groupStats> statsRecap
+	
+	entity winner
 }
 
 global struct soloPlayerStruct
@@ -144,6 +145,12 @@ global struct soloPlayerStruct
 	float kd //stored this player's kd to help server match proper opponent
 	entity lastOpponent //opponent of last round
 	bool IsTimeOut = false
+}
+
+global struct Heirloom
+{
+	string melee
+	string primary
 }
 
 global enum e1v1State
@@ -218,10 +225,12 @@ struct
 	vector notificationPanel_Coordinates
 	vector notificationPanel_Angles
 	
-	#if DEVELOPER 
+	#if DEVELOPER
 		table< string, int > e1v1StateNameToIntMap = {}
 		table< int, string > e1v1StateIDToNameMap = {}
-	#endif 
+	#endif
+	
+	array<Heirloom> heirlooms
 	
 } file
 
@@ -309,6 +318,9 @@ const array<string> LEGEND_INDEX_ARRAY =
 		{
 			ItemFlavor select_character = file.characters[ characterslist[ id ] ]
 			CharacterSelect_AssignCharacter( ToEHI( player ), select_character )
+	
+			player.SetSkin(2)
+			player.SetCamo(player.p.playerCamo) //todo(cafe):allow player to choose his color
 		}
 		else
 		{
@@ -888,49 +900,44 @@ void function addGroup( soloGroupStruct newGroup )
 {	
 	mGroupMutexLock = true
 	
-		int groupHandle = GetUniqueID()
-		
-		newGroup.groupHandle = groupHandle
-		newGroup.startTime = Time()
-		
-		#if DEVELOPER
-			sqprint(format("adding group: %d", groupHandle ))
-		#endif
-		
-		if( !( groupHandle in file.groupsInProgress ) )
+	int groupHandle = GetUniqueID()
+	
+	newGroup.groupHandle = groupHandle
+	newGroup.startTime = Time()
+	
+	if( !( groupHandle in file.groupsInProgress ) )
+	{
+		bool success = true		
+		if( IsValid( newGroup.player1 && IsValid( newGroup.player2 ) ) )
 		{
-			bool success = true		
-			if( IsValid( newGroup.player1 && IsValid( newGroup.player2 ) ) )
-			{
-				file.playerToGroupMap[ newGroup.player1_handle ] <- newGroup
-				#if DEVELOPER
-					sqprint( format( "player 1 added to group: %s", newGroup.player1.p.name ))
-				#endif
-				file.playerToGroupMap[ newGroup.player2_handle ] <- newGroup
-				#if DEVELOPER
-					sqprint( format( "player 2 added to group: %s", newGroup.player2.p.name ))
-				#endif
-			}
-			else 
-			{	
-				#if DEVELOPER
-					sqerror("FAILURE adding players to group")
-				#endif
-				success = false
-			}
-			
-			if( success )
-			{
-				newGroup.isValid = true
-				file.groupsInProgress[ groupHandle ] <- newGroup
-			}
+			file.playerToGroupMap[ newGroup.player1_handle ] <- newGroup
+			file.playerToGroupMap[ newGroup.player2_handle ] <- newGroup
 		}
 		else 
 		{	
 			#if DEVELOPER
-				sqerror(format("Logic flow error, group: [%d] already exists", groupHandle))
+				printw("addGroup ERROR - a player was not valid")
+			#endif
+			success = false
+		}
+		
+		if( success )
+		{
+			newGroup.isValid = true
+			file.groupsInProgress[ groupHandle ] <- newGroup
+
+			
+			#if DEVELOPER
+				printw( format( "addGroup SUCCESS - players added to group %d - %s & %s - with realm %d", groupHandle, newGroup.player1.p.name, newGroup.player2.p.name, newGroup.slotIndex ))
 			#endif
 		}
+	}
+	else 
+	{	
+		#if DEVELOPER
+			printw(format("addGroup ERROR - group %d already exists", groupHandle))
+		#endif
+	}
 	
 	mGroupMutexLock = false
 }
@@ -956,45 +963,53 @@ void function removeGroupByHandle( int handle )
 
 void function removeGroup( soloGroupStruct groupToRemove ) 
 {
+	#if DEVELOPER
+	// DumpStack()
+	// printw( "removeGroup", groupToRemove.groupHandle )
+	#endif
 	mGroupMutexLock = true
 	
 	int groupHandle = groupToRemove.groupHandle
-	int handle1
-	int handle2
-	
-	if ( IsValid( groupToRemove.player1 ) )
-		handle1 = groupToRemove.player1.p.handle
-		
-	if ( IsValid( groupToRemove.player2 ) )
-		handle2 = groupToRemove.player2.p.handle
+	int handle1 = groupToRemove.player1_handle
+	int handle2 = groupToRemove.player2_handle
 	
 	if ( handle1 in file.playerToGroupMap )
 	{	
 		#if DEVELOPER
-			sqprint( format( "deleting player 1 handle: %d from group map", handle1 ) )
+			sqprint( format( "removeGroup - removed player 1 %d from group map", handle1 ) )
 		#endif
 		delete file.playerToGroupMap[ handle1 ]
+	} else
+	{
+		#if DEVELOPER
+			sqprint(format( "removeGroup ERROR - player 1 didn't exist in the group map", handle1 ) )
+		#endif
 	}
 		
 	if ( handle2 in file.playerToGroupMap )
 	{
 		#if DEVELOPER
-			sqprint(format( "deleting player 2 handle: %d from group map", handle2 ) )
+			sqprint(format( "removeGroup - removed player 2 %d from group map", handle2 ) )
 		#endif
 		delete file.playerToGroupMap[ handle2 ]
+	} else
+	{
+		#if DEVELOPER
+			sqprint(format( "removeGroup ERROR - player 2 didn't exist in the group map", handle2 ) )
+		#endif
 	}
 	
 	if( groupHandle in file.groupsInProgress )
 	{
 		#if DEVELOPER
-			sqprint( format( "removing group: %d", groupHandle ) )
+			printw( format( "removeGroup SUCCESS - removing group %d for players with handles %d %d", groupHandle, handle1, handle2 ) )
 		#endif
 		delete file.groupsInProgress[ groupHandle ]
 	}
 	else 
 	{
 		#if DEVELOPER
-			sqprint( format( "groupToRemove.groupHandle: %d not in file.groupsInProgress", groupToRemove.groupHandle ) )
+			printw( format( "removeGroup ERROR - groupHandle %d not in file.groupsInProgress", groupToRemove.groupHandle ) )
 		#endif
 	}
 	
@@ -1518,6 +1533,9 @@ bool function ClientCommand_mkos_challenge(entity player, array<string> args)
 			{
 				ItemFlavor select_character = file.characters[ characterslist[ index ] ]
 				CharacterSelect_AssignCharacter( ToEHI( player ), select_character )
+
+				player.SetSkin(2)
+				player.SetCamo(player.p.playerCamo) //todo(cafe):allow player to choose his color
 				
 				if( !settings.bAllowAbilities )
 					player.TakeOffhandWeapon( OFFHAND_TACTICAL )
@@ -2367,12 +2385,13 @@ entity function returnOpponentOfPlayer( entity player )
 }
 
 
-void function soloModePlayerToWaitingList( entity player )
+void function soloModePlayerToWaitingList( entity player, bool isWinner = false )
 {
 	if( !IsValid( player ) || isPlayerInWaitingList( player ) || IsBotEnt( player ) ) 	
 		return
 		
 	Gamemode1v1_SetPlayerGamestate( player, e1v1State.WAITING )
+	player.SetMinimapZoomScale( 0.75, 3.0 ) // (cafe) There should be a better place for this call
 	
 	if( settings.isScenariosMode )
 	{
@@ -2452,7 +2471,10 @@ void function soloModePlayerToWaitingList( entity player )
 	playerStruct.handle = player.p.handle
 	
 	if( !settings.isScenariosMode && !bIsCoachingMode() )
-		playerStruct.waitingTime = Time() + 2
+	{
+		float waitingTime = isWinner ? 2.0 : 5.0
+		playerStruct.waitingTime = Time() + waitingTime
+	}
 
 	float season_kd
 	float current_kd
@@ -2476,7 +2498,7 @@ void function soloModePlayerToWaitingList( entity player )
 	//set realms for resting player
 	FS_ClearRealmsAndAddPlayerToAllRealms( player )
 	
-	if( !isScenariosMode() && !bIsCoachingMode() )
+	if( !isScenariosMode() && !bIsCoachingMode() && GetTDMState() == eTDMState.IN_PROGRESS )
 		Remote_CallFunction_ByRef( player, "ForceScoreboardFocus" )
 
 	// Check opponent -- (mk):cannot do this here, it will simply result in double calls for both players.
@@ -2642,26 +2664,6 @@ void function soloModePlayerToRestingList( entity player ) //handles opponent to
 	DecideToggleCollision_Rest( player, false )
 	Gamemode1v1_SetPlayerGamestate( player, e1v1State.RESTING )
 	player.p.rest_request = false
-}
-
-void function soloModefixDelayStart( entity player, bool bNextRoundNow = false )
-{
-	Gamemode1v1_SetPlayerGamestate( player, e1v1State.MATCH_START  )
-	AddEntityCallback_OnPlayerRespawned_FireOnce( player, Gamemode1v1_TakeAll )//(mk): probably not needed.
-	
-	if( settings.isScenariosMode || bNextRoundNow )
-		return
-	
-	if( GetGameState() >= eGameState.Playing )
-		wait 7
-	else
-		wait 12
-	
-	if( !IsValid( player ) )
-		return
-	
-	if( !isPlayerInRestingList( player ) )
-		soloModePlayerToWaitingList( player )
 }
 
 const int MAX_REALM = 63
@@ -2954,6 +2956,9 @@ void function _decideLegend( soloGroupStruct group )
 		{
 			select_character = file.characters[ characterslist[ group.p1LegendIndex ] ]
 			CharacterSelect_AssignCharacter( ToEHI( group.player1 ), select_character )
+
+			group.player1.SetSkin(2)
+			group.player1.SetCamo(group.player1.p.playerCamo) //todo(cafe):allow player to choose his color
 		}
 		else 
 		{
@@ -2967,6 +2972,9 @@ void function _decideLegend( soloGroupStruct group )
 		{
 			select_character = file.characters[ characterslist[ group.p2LegendIndex ] ]
 			CharacterSelect_AssignCharacter( ToEHI( group.player2 ), select_character )
+
+			group.player2.SetSkin(2)
+			group.player2.SetCamo(group.player2.p.playerCamo) //todo(cafe):allow player to choose his color
 		}
 		else 
 		{
@@ -2988,8 +2996,9 @@ void function _decideLegend( soloGroupStruct group )
 
 void function GivePlayerCustomPlayerModel( entity ent )
 {
-	if( FlowState_ChosenCharacter() > 10 )
-		SetPlayerCustomModel( ent, FlowState_ChosenCharacter() )
+	// (cafe) nuked to avoid crashes while we fix the custom models
+	// if( FlowState_ChosenCharacter() > 10 )
+		// SetPlayerCustomModel( ent, FlowState_ChosenCharacter() )
 }
 
 void function INIT_WeaponsMenu()
@@ -3126,6 +3135,10 @@ void function INIT_PregameCallbacks()
 
 void function Gamemode1v1_Init( int eMap )
 {
+	#if DEVELOPER 
+	printw( "Gamemode1v1_Init" )
+	#endif
+	
 	RegisterSignal( "ChallengeStarted" )
 	RegisterSignal( "ChallengeEnded" )
 	
@@ -3359,8 +3372,6 @@ void function Gamemode1v1_Init( int eMap )
 
 	forbiddenZoneInit( GetMapName() )
 	
-	thread Gamemode1v1_soloModeThread( getWaitingRoomLocation() )
-	
 	AddCallback_OnClientConnected
 	( 
 		void function( entity player )
@@ -3391,6 +3402,30 @@ void function Gamemode1v1_Init( int eMap )
 	}
 	else
 		Gamemode1v1_SetRestEnabled( false )
+	
+	FS_InitCommunityHeirlooms()
+	
+	thread Gamemode1v1_soloModeThread( getWaitingRoomLocation() )
+}
+
+//todo(cafe): probably move this to a more general place
+void function FS_InitCommunityHeirlooms()
+{
+	file.heirlooms.append( CreateHeirloom( "melee_bolo_sword", "mp_weapon_bolo_sword_primary" ) )
+	file.heirlooms.append( CreateHeirloom( "melee_karambit", "mp_weapon_karambit_primary" ) )
+	file.heirlooms.append( CreateHeirloom( "melee_mc_sword", "mp_weapon_mc_sword_primary" ) )
+	file.heirlooms.append( CreateHeirloom( "melee_mjolnir", "mp_weapon_mjolnir_primary" ) )
+	file.heirlooms.append( CreateHeirloom( "melee_macks_knife", "mp_weapon_macks_knife_primary" ) )
+	file.heirlooms.append( CreateHeirloom( "melee_pilot_emptyhanded", "mp_weapon_melee_survival" ) )
+}
+
+Heirloom function CreateHeirloom( string melee, string primary )
+{
+	Heirloom heirloom
+	heirloom.melee = melee
+	heirloom.primary = primary
+	
+	return heirloom
 }
 
 void function Gamemode1v1_SetRestEnabled( bool value = true )
@@ -3405,13 +3440,21 @@ bool function Gamemode1v1_GetRestEnabled()
 
 void function Gamemode1v1_soloModeThread( LocPair waitingRoom )
 {
-	FlagWait( "EntitiesDidLoad" )
+	WaitForGameState( eGameState.Playing )
+	
+	// Required so WaitForChampionToFinish works
+	while( GetTDMState() != eTDMState.IN_PROGRESS )
+		WaitFrame()
 	
 	#if DEVELOPER 
-		printt( "Time():", Time(), "championDisplayEndTime:", GetGlobalNetTime( "championDisplayEndTime" ) )
+		printt( "GAME STATE PLAYING - Time():", Time(), "championDisplayEndTime:", GetGlobalNetTime( "championDisplayEndTime" ) )
 	#endif 
 	
-	WaitForChampionToFinish()	
+	WaitForChampionToFinish()
+	
+	#if DEVELOPER 
+		printt( "CHAMPION SCREEN FINISHED" )
+	#endif 	
 	thread soloModeThread( waitingRoom )
 }
 
@@ -3700,38 +3743,43 @@ bool function ValidateSpawns( array<SpawnData> allSoloLocations )
 
 void function soloModeThread( LocPair waitingRoomLocation )
 {
-	//printt("solo mode thread start!")
-
 	string Text5 = "#FS_OpponentDisconnect"
 	
-	wait 8
+	#if DEVELOPER
+	printw("SOLO MODE MAIN THREAD STARTED")
+	#endif
+	
+	OnThreadEnd
+	(
+		function() : (  )
+		{
+			printw(Time() + "/////////////////////////////////////////////////")
+			printw(Time() + "[!!!!!!!!!!!] 1v1 GAME MODE CRASHED [!!!!!!!!!!!]")
+			printw(Time() + "/////////////////////////////////////////////////")
+			GameRules_ChangeMap( GetMapName(), GameRules_GetGameMode() )
+		}
+	)
 	
 	for( ; ; )
 	{
 		WaitFrame()
 		
-		if( GetScoreboardShowingState() )
-			continue
-			
-		if( GetChampionShowingState() )
-			continue
-		
 		//遍历等待队列 - cycle waiting queue
-		foreach ( playerHandle, playerInWaitingStruct in file.soloPlayersWaiting )
+		foreach ( playerHandle, playerWaiting in file.soloPlayersWaiting )
 		{
-			if ( !IsValidPlayer( playerInWaitingStruct.player ) )
+			if ( !IsValidPlayer( playerWaiting.player ) )
 				continue
 
-			if ( Time() - playerInWaitingStruct.queue_time > playerInWaitingStruct.player.p.IBMM_grace_period )
-				playerInWaitingStruct.IBMM_Timeout_Reached = true
+			if ( Time() - playerWaiting.queue_time > playerWaiting.player.p.IBMM_grace_period )
+				playerWaiting.IBMM_Timeout_Reached = true
 			else
-				playerInWaitingStruct.IBMM_Timeout_Reached = false
+				playerWaiting.IBMM_Timeout_Reached = false
 
 			//timeout preferred matchmaking 
 
-			if ( !bIsCoachingMode() && playerInWaitingStruct.waitingTime < Time() && !playerInWaitingStruct.IsTimeOut && IsValid(playerInWaitingStruct.player))
+			if ( !bIsCoachingMode() && playerWaiting.waitingTime < Time() && !playerWaiting.IsTimeOut && IsValid(playerWaiting.player))
 			{
-				playerInWaitingStruct.IsTimeOut = true;
+				playerWaiting.IsTimeOut = true;
 			}
 		}//foreach
 
@@ -3758,18 +3806,18 @@ void function soloModeThread( LocPair waitingRoomLocation )
 				{
 					player1Rested = TryProcessRestRequest( group.player1 )
 					if( !player1Rested )
-						soloModePlayerToWaitingList( group.player1 )		
+						soloModePlayerToWaitingList( group.player1, group.player1 == group.winner )		
 				}
 					
 				if ( IsValid( group.player2 ) )
 				{
 					if( !TryProcessRestRequest( group.player2 ) && !player1Rested )
-						soloModePlayerToWaitingList( group.player2 )
+						soloModePlayerToWaitingList( group.player2, group.player2 == group.winner )
 				}
 				
-				#if DEVELOPER
-					sqprint("remove group request 04")
-				#endif
+				// #if DEVELOPER
+					// sqprint("remove group request 04")
+				// #endif
 				
 				while( mGroupMutexLock ) 
 				{
@@ -3855,10 +3903,6 @@ void function soloModeThread( LocPair waitingRoomLocation )
 				if( !removed )
 					SetIsUsedBoolForRealmSlot( group.slotIndex, false )
 				
-				#if DEVELOPER
-					sqprint("remove group request 05")
-				#endif
-				
 				groupsToRemove.append( group )
 				quit = true
 			}
@@ -3885,14 +3929,11 @@ void function soloModeThread( LocPair waitingRoomLocation )
 		}//foreach
 		
 		foreach ( group in groupsToRemove )
-		{	
-			#if DEVELOPER
-				sqprint(format("arrayloop: Removing group: %d", group.groupHandle ))
-			#endif 
+		{
 			while( mGroupMutexLock ) 
 			{	
 				#if DEVELOPER
-					sqprint("Waiting for lock to release arrayloop") //no mutex print has ever happened in tests but its still possible
+					printw("removeGroup Waiting for lock to release arrayloop") //no mutex print has ever happened in tests but its still possible
 				#endif
 				WaitFrame() 
 			}
@@ -3901,7 +3942,7 @@ void function soloModeThread( LocPair waitingRoomLocation )
 		}
 
 		//遍历休息队列
-		foreach ( restingPlayerHandle, restingStruct in file.soloPlayersResting )
+		foreach ( restingPlayerHandle, playerResting in file.soloPlayersResting )
 		{
 			if( !restingPlayerHandle )
 			{	
@@ -3917,7 +3958,11 @@ void function soloModeThread( LocPair waitingRoomLocation )
 			if( !IsAlive( restingPlayerEntity ) )	
 				thread respawnInSoloMode( restingPlayerEntity )
 		}
-
+		
+		// Condiciones que detienen la creación de juegos
+		if( GetScoreboardShowingState() || GetChampionShowingState() || GetTDMState() != eTDMState.IN_PROGRESS)
+			continue
+		
 		foreach ( player in GetPlayerArray() )
 		{
 			if( !IsValid( player ) ) 
@@ -3936,32 +3981,7 @@ void function soloModeThread( LocPair waitingRoomLocation )
 				soloModePlayerToWaitingList( player ) //(mk): dirty patch
 		}
 		
-
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		
 		//开始匹配
 		
 		if( file.soloPlayersWaiting.len() < 2 ) //等待队列人数不足,无法开始匹配
@@ -4061,13 +4081,13 @@ void function soloModeThread( LocPair waitingRoomLocation )
 		//player1:超时的玩家,player2:随机从等待队列里找一个玩家
 		
 		//check challenges first
-		foreach ( playerHandle, eachPlayerStruct in file.soloPlayersWaiting ) //找player1
+		foreach ( playerHandle, playerWaiting in file.soloPlayersWaiting ) //找player1
 		{
-			if( !IsValid( eachPlayerStruct ) )
+			if( !IsValid( playerWaiting ) )
 				continue		
 			
-			entity playerSelf = eachPlayerStruct.player
-			bool player_IBMM_timeout = eachPlayerStruct.IBMM_Timeout_Reached		
+			entity playerSelf = playerWaiting.player
+			bool player_IBMM_timeout = playerWaiting.IBMM_Timeout_Reached		
 			
 			//challenge system
 
@@ -4123,20 +4143,19 @@ void function soloModeThread( LocPair waitingRoomLocation )
 				{
 					Gamemode1v1_NotifyPlayerOnce( newGroup.player1, eNotify.MATCHING, "#FS_MATCHING_FOR", FetchInputName( newGroup.player1 ) )
 				}
-							
 			}
 		}//超时玩家处理结束
 		else if ( !bMatchFound )//不存在已超时玩家,正常按照kd匹配
 		{	
 			// Warning("Normal matching")
-			foreach ( playerHandle, eachPlayerStruct in file.soloPlayersWaiting ) //找player1
+			foreach ( playerHandle, playerWaiting in file.soloPlayersWaiting ) //找player1
 			{	
-				if( !IsValid( eachPlayerStruct ) )
+				if( !IsValid( playerWaiting ) )
 					continue		
 				
-				entity playerSelf = eachPlayerStruct.player
-				bool player_IBMM_timeout = eachPlayerStruct.IBMM_Timeout_Reached
-				float selfKd = eachPlayerStruct.kd
+				entity playerSelf = playerWaiting.player
+				bool player_IBMM_timeout = playerWaiting.IBMM_Timeout_Reached
+				float selfKd = playerWaiting.kd
 				table <entity,float> properOpponentTable
 				
 				foreach ( opponentHandle, eachOpponentPlayerStruct in file.soloPlayersWaiting ) //找player2
@@ -4188,7 +4207,7 @@ void function soloModeThread( LocPair waitingRoomLocation )
 					}
 				}
 
-				entity lastOpponent = eachPlayerStruct.lastOpponent
+				entity lastOpponent = playerWaiting.lastOpponent
 
 				if(!IsValid(bestOpponent)) continue//没找到最合适玩家,为下一位玩家匹配
 				
@@ -4227,8 +4246,8 @@ void function soloModeThread( LocPair waitingRoomLocation )
 				}
 			}//foreach
 		}//else
-
-		if ( bMatchFound && !IsValid( newGroup.player1 ) || !IsValid( newGroup.player2 ) ) 
+		
+		if( !IsValid( newGroup.player1 ) || !IsValid( newGroup.player2 ) )
 		{
 			SetIsUsedBoolForRealmSlot( newGroup.slotIndex, false )
 			
@@ -4337,16 +4356,6 @@ void function soloModeThread( LocPair waitingRoomLocation )
 			deletions.resize(0)
 		}
 	}//for( ; ; ) -- main loop
-
-	OnThreadEnd
-	(
-		function() : (  )
-		{
-			// Warning(Time() + "Solo thread is down!!!!!!!!!!!!!!!")
-			GameRules_ChangeMap( GetMapName(), GameRules_GetGameMode() )
-		}
-	)
-
 }//thread
 
 void function FS_1v1_OnPlayerDisconnected( entity player )
@@ -4362,26 +4371,20 @@ void function FS_1v1_OnPlayerDisconnected( entity player )
 	if( IsValid( opponent ) )
 		endLock1v1( opponent )
 	
-	// if( playerHandle in file.acceptedChallenges ) //potential B1D
-		// delete file.acceptedChallenges[ playerHandle ]
-	
 	foreach( index, zstruct in file.allChallenges )
 	{
 		if( player == zstruct.player )
 			file.allChallenges.fastremove( index )
 	}
 
-	foreach ( _, playerInWaitingStruct in file.soloPlayersWaiting ) //(mk): _ is waiting struct playerHandle, not used here.
+	foreach ( _, playerWaiting in file.soloPlayersWaiting ) //(mk): _ is waiting struct playerHandle, not used here.
 	{
-		if ( playerInWaitingStruct.handle == playerHandle )
+		if ( playerWaiting.handle == playerHandle )
 		{
 			deleteWaitingPlayer( playerHandle )
 			break
 		}
 	}
-
-	if( playerHandle in file.playerToGroupMap )
-		delete file.playerToGroupMap[ playerHandle ]
 }
 
 void function RemovePlayerFromGroup( entity player )
@@ -4506,6 +4509,9 @@ void function GiveWeaponsToGroup( array<entity> players, soloGroupStruct groupRe
 			if ( settings.bGiveSameRandomLegendToBothPlayers && random_character_index <= 10 && !bIsCoachingMode() )
 				CharacterSelect_AssignCharacter( ToEHI( player ), random_character )
 			
+			player.SetSkin(2)
+			player.SetCamo(player.p.playerCamo) //todo(cafe):allow player to choose his color
+			
 			DeployAndEnableWeapons_Raw( player )//✓
 			
 			//re-enable for inventory. 
@@ -4533,9 +4539,11 @@ void function GiveWeaponsToGroup( array<entity> players, soloGroupStruct groupRe
 			player.TakeOffhandWeapon( OFFHAND_MELEE )
 			
 			if ( !Flowstate_IsLGDuels() ) //TODO: set bool during init based on array of game modes where melee is allowed, repeat for more. 
-			{	
-				player.GiveWeapon( "mp_weapon_melee_survival", WEAPON_INVENTORY_SLOT_PRIMARY_2, [] )
-				player.GiveOffhandWeapon( "melee_pilot_emptyhanded", OFFHAND_MELEE, [] )
+			{
+				Heirloom randomMelee = file.heirlooms.getrandom() //todo(cafe): allow players to choose heirloom? possibly a new menu for "cosmetics" where players can choose the heirloom and camo color with persistence
+				
+				player.GiveWeapon( randomMelee.primary, WEAPON_INVENTORY_SLOT_PRIMARY_2, [] )
+				player.GiveOffhandWeapon( randomMelee.melee, OFFHAND_MELEE, [] )
 			}
 		}
 		
@@ -4680,12 +4688,17 @@ string function ReturnRandomSecondaryMetagame_1v1()
 
 void function ForceAllRoundsToFinish_solomode()
 {
+	#if DEVELOPER
+	printw( "ForceAllRoundsToFinish_solomode" )
+	#endif
+	
 	foreach( player in GetPlayerArray() )
 	{
 		if( !IsValid( player ) ) 
 			continue
 		
 		Gamemode1v1_SetPlayerGamestate( player, e1v1State.SEQUENCE )
+		player.SetPlayerNetEnt( "FSDM_1v1_Enemy", null )
 		
 		try
 		{
@@ -4705,15 +4718,19 @@ void function ForceAllRoundsToFinish_solomode()
 		catch(e420){}
 		
 		soloGroupStruct group = returnSoloGroupOfPlayer( player ) 		
-		if( group.isValid )
+		if( group.isValid && !group.IsFinished )
 		{
 			destroyRingsForGroup( group )		
-			group.IsFinished = true //tell solo thread this round has finished
+			group.IsFinished = true //tell solo thread this round has finished so it can be removed
+			#if DEVELOPER
+			printw( format("group %d forcedly marked as IsFinished", group.groupHandle) )
+			#endif
 		}
 		
 		if( isPlayerInWaitingList( player ) )
 			continue
 		
+		maki_tp_player( player, getWaitingRoomLocation() )
 		soloModePlayerToWaitingList( player )
 		FS_ClearRealmsAndAddPlayerToAllRealms( player )
 	}
@@ -4723,14 +4740,11 @@ void function ForceAllRoundsToFinish_solomode()
 		if( !isChalValid( challengeStruct ) )
 			continue	
 			
-		endLock1v1( challengeStruct.player )
+		endLock1v1( challengeStruct.player, false )
 	}
 	
 	if( GetCurrentRound() > 0 )
 	{
-		file.soloPlayersWaiting = {}
-		file.groupsInProgress = {}
-		file.playerToGroupMap = {}
 		ClearAllNotifications()
 	}
 }
@@ -5013,20 +5027,27 @@ void function ReloadTactical( entity player )
 	player.SetSuitGrapplePower( 100 )
 }
 
-void function HandleGroupIsFinished( entity player ) //, var damageInfo )
+void function HandleGroupIsFinished( entity player, entity winner ) //, var damageInfo )
 {
 	if( !IsValid( player ) )
 		return
-
-	soloGroupStruct group = returnSoloGroupOfPlayer( player ) 
-	if( !isGroupValid( group ) )
-	{
-		removeGroup( group )
-		return
-	}
 	
-	if( !group.IsKeep )
-		group.IsFinished = true //tell solo thread this round has finished
+	soloGroupStruct group = returnSoloGroupOfPlayer( player )
+	
+	if( !isGroupValid( group ) )
+		return
+	
+	if( !group.IsKeep && !group.IsFinished )
+	{
+		#if DEVELOPER
+			printw( format("group %d marked as IsFinished from HandleGroupIsFinished", group.groupHandle ) )
+		#endif
+		
+		if( IsValid( winner ) )
+			group.winner = winner
+		
+		group.IsFinished = true //tell main thread this round has finished so it can be removed
+	}
 }
 
 void function TakeUltimate( entity player )
@@ -5439,7 +5460,7 @@ void function Gamemode1v1_OnPlayerKilled( entity victim, entity attacker, var da
 
 	if( IsValid( attacker ) )
 		victim.p.lastKiller = attacker
-
+	
 	if( bIsCoachingMode() )
 	{
 		//(cafe)stops recording
@@ -5447,7 +5468,7 @@ void function Gamemode1v1_OnPlayerKilled( entity victim, entity attacker, var da
 	}
 	
 	if( !isScenariosMode() )
-		HandleGroupIsFinished( victim ) //, damageInfo )
+		HandleGroupIsFinished( victim, attacker ) //, damageInfo )
 		
 	if( isPlayerInWaitingList( victim ) )
 	{
@@ -5622,7 +5643,12 @@ void function Gamemode1v1_TakeAll( entity player )
 {
 	if( !IsValid( player ) ) //(mk):this can fire after a player has quit, delayed.
 		return
-		
+	
+	#if DEVELOPER
+	if( player == gp()[0] )
+		printw( "Gamemode1v1_TakeAll" )
+	#endif
+	
 	TakeUltimate( player )
 	player.TakeOffhandWeapon( OFFHAND_MELEE )
 	TakeAllPassives( player )
@@ -5643,6 +5669,9 @@ void function AssignLegendToGroup( int index, array<entity> players )
 			player.TakeOffhandWeapon( OFFHAND_TACTICAL )
 			TakeUltimate( player )
 			TakeAllPassives( player )
+			
+			player.SetSkin(2)
+			player.SetCamo(player.p.playerCamo) //todo(cafe):allow player to choose his color
 		}
 		else
 		{

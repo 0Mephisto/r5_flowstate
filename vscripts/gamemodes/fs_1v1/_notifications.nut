@@ -220,7 +220,8 @@ void function __UpdateNotificationText( entity player, string token, string subT
 	
 	AppendNotificationID( player, panelID )
 	
-	Remote_CallFunction_ByRef( player, "ForceScoreboardLoseFocus" )
+	if( panelID != eNotify.WAITING )
+		Remote_CallFunction_ByRef( player, "ForceScoreboardLoseFocus" )
 	
 	CreatePanelText_Localized
 	( 
