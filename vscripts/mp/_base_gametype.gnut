@@ -132,7 +132,7 @@ void function Flowstate_CheckForMapTriggersRemoval( bool isForced = false )
 			
 		printt( "[FS All Triggers Disabled] Removed", i, "map triggers" )
 		
-		SetIgnoreKillPlayersUnderMap( true )
+		// SetIgnoreKillPlayersUnderMap( true )
 	}
 }
 
