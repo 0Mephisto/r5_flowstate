@@ -92,6 +92,7 @@ global function ClientCommand_GiveWeapon
 
 global function ValidateWeaponTgiveSettings
 global function GetCommunityHeirlooms
+global function FS_InitCommunityHeirlooms
 
 const string WHITE_SHIELD = "armor_pickup_lv1"
 const string BLUE_SHIELD = "armor_pickup_lv2"
@@ -493,8 +494,6 @@ void function _CustomTDM_Init()
 	{
 		file.blacklistedAbilities.append(GetCurrentPlaylistVarString("blacklisted_ability_" + i.tostring(), "~~none~~"))
 	}
-	
-	FS_InitCommunityHeirlooms()
 	
 	if( FlowState_SURF() )
 	{

@@ -375,7 +375,6 @@ global struct ServerEntityStruct
 	bool functionref( entity player, entity ent ) canUseEntityCallback
 	bool functionref( entity player, entity ent, int useFlags ) canUseEntityCallbackNew = null
 	bool headshotImmunity
-	bool forceHeadshotDeath
 	bool isLeftDoor
 	vector spawnAngles
 	vector goalAngles
@@ -1286,7 +1285,7 @@ global struct ServerAIStruct
 	bool preventOwnerDamage
 	bool invulnerableToNPC = false
 	bool buddhaMode
-	bool killShotSound = true
+	bool killShotSound = false
 
 	table<int,int> stalkerHitgroupDamageAccumulated // used to decide when to blow off limbs
 	table<int,float> stalkerHitgroupLastHitTime // used to decide when to blow off limbs

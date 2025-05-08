@@ -211,10 +211,18 @@ void function SetCommonDummyLines(entity dummy)
 	dummy.SetDeathNotifications( true )
 	dummy.SetValidHealthBarTarget( true )
 	SetObjectCanBeMeleed( dummy, true )
-	// if(AimTrainer_AI_COLOR == 5)
-		// dummy.SetSkin(RandomIntRangeInclusive(1,4))
-	// else
-		// dummy.SetSkin(AimTrainer_AI_COLOR)
+	
+	if( AimTrainer_STRAFING_SPEED == 0 )
+	{
+		dummy.EnableNPCFlag( NPC_IGNORE_ALL | NPC_DISABLE_SENSING)
+		dummy.DisableNPCFlag( NPC_ALLOW_PATROL | NPC_ALLOW_INVESTIGATE | NPC_USE_SHOOTING_COVER )
+	}
+	
+	if(AimTrainer_AI_COLOR == 5)
+		dummy.SetSkin(RandomIntRangeInclusive(1,4))
+	else
+		dummy.SetSkin(AimTrainer_AI_COLOR)
+	
 	dummy.DisableHibernation()
 }
 
@@ -255,21 +263,24 @@ void function StartStraferDummyChallenge(entity player)
 		vector pos = dummy.GetOrigin()
 		vector angles = dummy.GetAngles()
 		StartParticleEffectInWorld( GetParticleSystemIndex( FIRINGRANGE_ITEM_RESPAWN_PARTICLE ), pos, angles )
-		// SetSpawnOption_AISettings( dummy, "npc_dummie_combat_trainer" )
 		DispatchSpawn( dummy )
+		
 		dummy.SetOrigin(dummy.GetOrigin() + Vector(0,0,1))
-		
-		//PutEntityInSafeSpot( dummy, null, null, dummy.GetOrigin() + dummy.GetUpVector()*2048 + dummy.GetForwardVector()*2048 , dummy.GetOrigin() )
-		
 		dummy.SetShieldHealthMax( ReturnShieldAmountForDesiredLevel() )
 		dummy.SetShieldHealth( ReturnShieldAmountForDesiredLevel() )
 		dummy.SetMaxHealth( AimTrainer_AI_HEALTH )
 		dummy.SetHealth( AimTrainer_AI_HEALTH )
+		
 		SetCommonDummyLines(dummy)
+		
 		AddEntityCallback_OnDamaged(dummy, OnStraferDummyDamaged)
 		AddEntityCallback_OnKilled(dummy, OnDummyKilled)
 		
-		waitthread StrafeMovement(dummy, player)
+		if( AimTrainer_STRAFING_SPEED > 0 )
+			waitthread StrafeMovement(dummy, player)
+		else
+			WaitSignal(dummy, "OnDeath")
+		
 		wait 0.2
 	}
 }
@@ -290,12 +301,7 @@ void function StrafeMovement(entity ai, entity player)
 	while(IsValid(ai))
 	{
 		ai.SetAngles(VectorToAngles( player.GetOrigin() - ai.GetOrigin()))
-		if(AimTrainer_STRAFING_SPEED == 0)
-		{
-			WaitFrame()
-			continue
-		}
-			
+		
 		int random = RandomIntRangeInclusive(1,10)
 		if (random == 9 || random == 10){
 			ai.Anim_ScriptedPlayActivityByName( "ACT_STAND", true, 0.1 )
@@ -2864,21 +2870,24 @@ void function ClippingAIWorkaround(entity dummy)
 //CLIENT COMMANDS
 void function PreChallengeStart(entity player, int challenge)
 {
-	if( IsAlive( player ) )
-		player.Die( null, null, { damageSourceId = eDamageSourceId.damagedef_despawn } )
-	
-	thread SetupPlayer( player )
-	player.FreezeControlsOnServer()
+	thread function() : (player, challenge)
+	{
+		if( IsAlive( player ) )
+			player.Die( null, null, { damageSourceId = eDamageSourceId.damagedef_despawn } )
+		
+		waitthread SetupPlayer( player )
+		player.FreezeControlsOnServer()
 
-	player.p.storedWeapons = StoreWeapons(player)
-	AddCinematicFlag( player, CE_FLAG_HIDE_MAIN_HUD_INSTANT )
-	AddCinematicFlag( player, CE_FLAG_HIDE_PERMANENT_HUD)
-	player.p.challengeName = challenge
+		player.p.storedWeapons = StoreWeapons(player)
+		AddCinematicFlag( player, CE_FLAG_HIDE_MAIN_HUD_INSTANT )
+		AddCinematicFlag( player, CE_FLAG_HIDE_PERMANENT_HUD)
+		player.p.challengeName = challenge
 
-	player.p.isChallengeActivated = true
-	Remote_CallFunction_NonReplay(player, "ServerCallback_SetChallengeActivated", true)
+		player.p.isChallengeActivated = true
+		Remote_CallFunction_NonReplay(player, "ServerCallback_SetChallengeActivated", true)
 
-	SetGameState( eGameState.WaitingForPlayers )
+		SetGameState( eGameState.WaitingForPlayers )
+	}()
 }
 
 bool function CC_StartChallenge1( entity player, array<string> args )
@@ -3638,8 +3647,8 @@ void function SetupPlayer( entity player, bool fromSelector = false )
 
 	TakeAllWeapons( player )
 	
-	player.GiveWeapon( "mp_weapon_melee_survival", WEAPON_INVENTORY_SLOT_PRIMARY_2, [] )
-	player.GiveOffhandWeapon( "melee_pilot_emptyhanded", OFFHAND_MELEE, [] )
+	FS_GiveRandomMelee( player )
+	
 	entity weapon = player.GiveWeapon_NoDeploy( player.p.weapon, WEAPON_INVENTORY_SLOT_PRIMARY_0, player.p.mods )
 
 	if( !fromSelector )

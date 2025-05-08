@@ -94,7 +94,8 @@ function BaseGametype_Init()
 	AddCallback_EntitiesDidLoad( BaseGametypeEntitiesDidLoad )
 
 	BaseGametype_Init_MPSP()
-	
+
+	FS_InitCommunityHeirlooms()	
 	//AddCallback_OnTitanBecomesPilot( OnTitanBecomesPilot_OutOfBoundsCheck ) //disabled for r5r
 }
 
@@ -637,13 +638,14 @@ function PlayerDamageFeedback( entity ent, damageInfo, int shieldDamage = 0 )
 
 bool function ShouldDoKillFeedback( entity ent )
 {
-	if ( !ent.IsPlayer() )
-		return true
+	if ( Gamemode() == eGamemodes.fs_aimtrainer )
+		return false
+	
 	if ( ent.IsShadowForm() )// && !IsInForgedShadows( ent ) )
 		return false
 	
-	if ( Gamemode() == eGamemodes.fs_aimtrainer )
-		return false
+	if ( !ent.IsPlayer() )
+		return true
 	
 	return true
 }
