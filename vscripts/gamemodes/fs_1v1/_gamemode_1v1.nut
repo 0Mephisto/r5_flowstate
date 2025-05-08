@@ -147,12 +147,6 @@ global struct soloPlayerStruct
 	bool IsTimeOut = false
 }
 
-global struct Heirloom
-{
-	string melee
-	string primary
-}
-
 global enum e1v1State
 {
 	INVALID = -1,
@@ -229,8 +223,6 @@ struct
 		table< string, int > e1v1StateNameToIntMap = {}
 		table< int, string > e1v1StateIDToNameMap = {}
 	#endif
-	
-	array<Heirloom> heirlooms
 	
 } file
 
@@ -3151,6 +3143,9 @@ void function Gamemode1v1_Init( int eMap )
 	INIT_1v1_sbmm()
 	INIT_HostCustomWeapons()
 	
+	if( MapName() == eMaps.mp_rr_olympus_tt )
+		SpawnSystem_UseNavMeshCorrection( false )
+		
 	if( !isScenariosMode() && !bIsCoachingMode() ) //intertwined D:
 	{
 		AddClientCommandCallback( "start_in_rest", ClientCommand_mkos_start_in_rest_setting ) 
@@ -3403,29 +3398,7 @@ void function Gamemode1v1_Init( int eMap )
 	else
 		Gamemode1v1_SetRestEnabled( false )
 	
-	FS_InitCommunityHeirlooms()
-	
 	thread Gamemode1v1_soloModeThread( getWaitingRoomLocation() )
-}
-
-//todo(cafe): probably move this to a more general place
-void function FS_InitCommunityHeirlooms()
-{
-	file.heirlooms.append( CreateHeirloom( "melee_bolo_sword", "mp_weapon_bolo_sword_primary" ) )
-	file.heirlooms.append( CreateHeirloom( "melee_karambit", "mp_weapon_karambit_primary" ) )
-	file.heirlooms.append( CreateHeirloom( "melee_mc_sword", "mp_weapon_mc_sword_primary" ) )
-	file.heirlooms.append( CreateHeirloom( "melee_mjolnir", "mp_weapon_mjolnir_primary" ) )
-	file.heirlooms.append( CreateHeirloom( "melee_macks_knife", "mp_weapon_macks_knife_primary" ) )
-	file.heirlooms.append( CreateHeirloom( "melee_pilot_emptyhanded", "mp_weapon_melee_survival" ) )
-}
-
-Heirloom function CreateHeirloom( string melee, string primary )
-{
-	Heirloom heirloom
-	heirloom.melee = melee
-	heirloom.primary = primary
-	
-	return heirloom
 }
 
 void function Gamemode1v1_SetRestEnabled( bool value = true )
@@ -4540,10 +4513,7 @@ void function GiveWeaponsToGroup( array<entity> players, soloGroupStruct groupRe
 			
 			if ( !Flowstate_IsLGDuels() ) //TODO: set bool during init based on array of game modes where melee is allowed, repeat for more. 
 			{
-				Heirloom randomMelee = file.heirlooms.getrandom() //todo(cafe): allow players to choose heirloom? possibly a new menu for "cosmetics" where players can choose the heirloom and camo color with persistence
-				
-				player.GiveWeapon( randomMelee.primary, WEAPON_INVENTORY_SLOT_PRIMARY_2, [] )
-				player.GiveOffhandWeapon( randomMelee.melee, OFFHAND_MELEE, [] )
+				FS_GiveRandomMelee(player)
 			}
 		}
 		
@@ -4636,8 +4606,10 @@ void function GivePrimaryWeapon_1v1( entity player, string weapon, int slot ) //
 	}
 
 	entity weaponNew = player.GiveWeapon( weaponclass, slot, Mods, false )
-	//entity weaponNew = player.GiveWeapon_NoDeploy( weaponclass , slot, Mods, false )
 
+	array<string> fsCharmsToUse = [ "SAID00701640565", "SAID01451752993", "SAID01334887835", "SAID01993399691", "SAID00095078608", "SAID01439033541", "SAID00510535756", "SAID00985605729" ]
+	WeaponCosmetics_Apply( weaponNew, null, GetItemFlavorByGUID( ConvertItemFlavorGUIDStringToGUID( fsCharmsToUse.getrandom() ) ) )
+	
 	int ammoType = weaponNew.GetWeaponAmmoPoolType()
 
 	if( InfiniteAmmoEnabled() )
@@ -4660,9 +4632,7 @@ void function GivePrimaryWeapon_1v1( entity player, string weapon, int slot ) //
 	if( settings.enableCosmetics )
 	{
 		ItemFlavor ornull weaponSkinOrNull = null
-		array<string> fsCharmsToUse = [ "SAID00701640565", "SAID01451752993", "SAID01334887835", "SAID01993399691", "SAID00095078608", "SAID01439033541", "SAID00510535756", "SAID00985605729" ]
 		int chosenCharm = ConvertItemFlavorGUIDStringToGUID( fsCharmsToUse.getrandom() )
-		ItemFlavor ornull weaponCharmOrNull = settings.giveCharmsWeapons == false ? null : GetItemFlavorByGUID( chosenCharm )
 		ItemFlavor ornull weaponFlavor = GetWeaponItemFlavorByClass( weapon )
 
 		if( weaponFlavor != null )
@@ -4672,7 +4642,7 @@ void function GivePrimaryWeapon_1v1( entity player, string weapon, int slot ) //
 				weaponSkinOrNull = GetItemFlavorByGUID( weaponLegendaryIndexMap[RandomIntRangeInclusive(1,weaponLegendaryIndexMap.len()-1)] )
 		}
 
-		WeaponCosmetics_Apply( weaponNew, weaponSkinOrNull, weaponCharmOrNull )
+		WeaponCosmetics_Apply( weaponNew, weaponSkinOrNull, null )
 	}
 }
 

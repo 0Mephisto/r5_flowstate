@@ -72,7 +72,7 @@ global function HaloMod_HandlePlayerModel
 global function EndRound
 
 global function PrimaryWeaponMetagame_Init
-
+global function FS_GiveRandomMelee
 #if DEVELOPER
 	global function DEV_NextRound
 #endif
@@ -91,6 +91,7 @@ global function ClientCommand_SaveCurrentWeapons
 global function ClientCommand_GiveWeapon
 
 global function ValidateWeaponTgiveSettings
+global function GetCommunityHeirlooms
 
 const string WHITE_SHIELD = "armor_pickup_lv1"
 const string BLUE_SHIELD = "armor_pickup_lv2"
@@ -116,6 +117,12 @@ global function CheckForObservedTarget
 global function FS_Hack_CreateBulletsCollisionVolume
 
 const float STATIC_WAIT_TIME = 1.0
+
+global struct Heirloom
+{
+	string melee
+	string primary
+}
 
 struct 
 {
@@ -169,6 +176,8 @@ struct
 	
 	bool is1v1GameType
 	
+	array<Heirloom> heirlooms
+	array<ItemFlavor> characters
 } file
 
 struct
@@ -484,7 +493,9 @@ void function _CustomTDM_Init()
 	{
 		file.blacklistedAbilities.append(GetCurrentPlaylistVarString("blacklisted_ability_" + i.tostring(), "~~none~~"))
 	}
-
+	
+	FS_InitCommunityHeirlooms()
+	
 	if( FlowState_SURF() )
 	{
 		PrecacheModel( $"mdl/thunderdome/thunderdome_cage_ceiling_256x256_06.rmdl" )
@@ -523,6 +534,8 @@ void function __OnEntitiesDidLoadCTF()
 
 void function DM__OnEntitiesDidLoad()
 {
+	file.characters = clone GetAllCharacters()
+	
 	if( Gamemode() == eGamemodes.CUSTOM_CTF && Flowstate_IsHaloMode() )
 	{
 		__OnEntitiesDidLoadCTF()
@@ -1366,7 +1379,7 @@ void function _OnPlayerDied( entity victim, entity attacker, var damageInfo )
 
 	    			if(FlowState_Gungame())
 	    			{
-	    			    GiveGungameWeapon(attacker)
+	    			    GiveGungameWeapon(attacker) //!FIXME qué le pasó a esto? lol
 	    			    //KillStreakAnnouncer(attacker, false)
 	    			}
 					
@@ -1496,21 +1509,17 @@ void function _HandleRespawn( entity player, bool isDroppodSpawn = false )
 		player.SetObserverTarget( null )
 		player.StopObserverMode()
         Remote_CallFunction_ByRef( player, "ServerCallback_KillReplayHud_Deactivate" )
-		//Remote_CallFunction_NonReplay(player, "ServerCallback_KillReplayHud_Deactivate")
     }
 
 	if( MapName() == eMaps.mp_rr_arena_empty )
-		//Remote_CallFunction_NonReplay(player, "Minimap_DisableDraw_Internal")
 		Remote_CallFunction_ByRef( player, "Minimap_DisableDraw_Internal" )
 	else
 		Remote_CallFunction_ByRef( player, "Minimap_EnableDraw_Internal" )
-		//Remote_CallFunction_NonReplay(player, "Minimap_EnableDraw_Internal")
-
 	
-	//: always true in halo:
+	// Always true in halo
 	if( flowstateSettings.ForceCharacter && !player.GetPlayerNetBool( "hasLockedInCharacter" ) || flowstateSettings.is_halo_gamemode )
 	{
-		CharSelect( player ) //(mk): gives melee if not 1v1 mode, has conditions for halo, dummies, 
+		CharSelect( player )
 		player.SetPlayerNetBool( "hasLockedInCharacter", true )
 	}
 
@@ -1576,6 +1585,7 @@ void function _HandleRespawn( entity player, bool isDroppodSpawn = false )
         }
     }
 
+	//Weapons and melee
 	if( IsValid( player ) && IsAlive( player ) )
 	{
 		if( !isDroppodSpawn && !is1v1EnabledAndAllowed() )
@@ -1600,85 +1610,122 @@ void function _HandleRespawn( entity player, bool isDroppodSpawn = false )
 		if( !isScenariosMode() && !file.is1v1GameType )
 			PlayerRestoreHP(player, 100, Equipment_GetDefaultShieldHP())
 
-		try
+		if( flowstateSettings.is_halo_gamemode ) // Halo DM
 		{
-			player.TakeNormalWeaponByIndexNow( WEAPON_INVENTORY_SLOT_PRIMARY_2 )
-			player.TakeOffhandWeapon( OFFHAND_MELEE )
-			
-			//(mk): modes handle melee
-			//player.GiveWeapon( "mp_weapon_melee_survival", WEAPON_INVENTORY_SLOT_PRIMARY_2, [] )
-			//player.GiveOffhandWeapon( "melee_pilot_emptyhanded", OFFHAND_MELEE, [] )		
-
-			if( flowstateSettings.is_halo_gamemode )
+			try
 			{
+				player.TakeNormalWeaponByIndexNow( WEAPON_INVENTORY_SLOT_PRIMARY_0 )
+				player.TakeNormalWeaponByIndexNow( WEAPON_INVENTORY_SLOT_PRIMARY_1 )
+
+				GiveRandomPrimaryWeaponHalo(player)
+				GiveRandomSecondaryWeaponHalo(player)
+
+				player.TakeNormalWeaponByIndexNow( WEAPON_INVENTORY_SLOT_PRIMARY_2 )
+				player.TakeOffhandWeapon( OFFHAND_MELEE )
+
 				player.GiveWeapon( "mp_weapon_melee_halo", WEAPON_INVENTORY_SLOT_PRIMARY_2, [] )
 				player.GiveOffhandWeapon( "melee_pilot_emptyhanded_halo", OFFHAND_MELEE, [] )
-			}else
+			} catch (e420) 
 			{
-				player.GiveWeapon( "mp_weapon_melee_survival", WEAPON_INVENTORY_SLOT_PRIMARY_2, [] )
-				player.GiveOffhandWeapon( "melee_pilot_emptyhanded", OFFHAND_MELEE, [] )
+				#if DEVELOPER
+				printw("GiveFSDMWeapons ERROR - ", player, "failed to get weapons" )
+				#endif
 			}
-			
-		}catch(e420){
-		//AttachEdict rare crash
 		}
-	}
-
-	if( flowstateSettings.is_halo_gamemode && IsValid( player ) )
-	{
-		try
+		else if( Flowstate_IsFastInstaGib() ) // Cafe's Instagib
 		{
-		    player.TakeNormalWeaponByIndexNow( WEAPON_INVENTORY_SLOT_PRIMARY_0 )
-            player.TakeNormalWeaponByIndexNow( WEAPON_INVENTORY_SLOT_PRIMARY_1 )
+			try
+			{
+				player.TakeNormalWeaponByIndexNow( WEAPON_INVENTORY_SLOT_PRIMARY_0 )
+				player.TakeNormalWeaponByIndexNow( WEAPON_INVENTORY_SLOT_PRIMARY_1 )
 
-			GiveRandomPrimaryWeaponHalo(player)
-			GiveRandomSecondaryWeaponHalo(player)
-		} catch (e420) {}
-	} 
-	else if ( FlowState_RandomGuns() && !FlowState_Gungame() && IsValid( player ) )
-    {
-		try
+				FS_GiveRandomMelee(player)
+				__GiveWeapon( player, ["mp_weapon_lightninggun"], WEAPON_INVENTORY_SLOT_PRIMARY_0, RandomIntRange( 0, 1 ) )
+				// __GiveWeapon( player, ["mp_weapon_lightninggun"], WEAPON_INVENTORY_SLOT_PRIMARY_1, RandomIntRange( 0, 1 ) ) //If we give another one, player can exploit it by changing weapons and restoring next attack time
+			} catch (e420) 
+			{
+				#if DEVELOPER
+				printw("GiveFSDMWeapons ERROR - ", player, "failed to get weapons" )
+				#endif
+			}
+		} else if( FlowState_Gungame() ) // Gungame (broken atm)
 		{
-		    player.TakeNormalWeaponByIndexNow( WEAPON_INVENTORY_SLOT_PRIMARY_0 )
-            player.TakeNormalWeaponByIndexNow( WEAPON_INVENTORY_SLOT_PRIMARY_1 )
-		    player.TakeNormalWeaponByIndexNow( WEAPON_INVENTORY_SLOT_PRIMARY_2 )
-
-			GiveRandomPrimaryWeapon(player)
-			GiveRandomSecondaryWeapon(player)
-
-            player.GiveWeapon( "mp_weapon_melee_survival", WEAPON_INVENTORY_SLOT_PRIMARY_2, [] )
-            player.GiveOffhandWeapon( "melee_pilot_emptyhanded", OFFHAND_MELEE, [] )
-		} catch (e420) {}
-    }
-	else if(FlowState_RandomGunsMetagame() && !FlowState_Gungame() && IsValid( player ) && !Flowstate_IsFastInstaGib() )
-	{
-		try
+			GiveGungameWeapon(player) // !FIXME qué le pasó a esto? lol
+		} else if( flowstateSettings.hackersVsPros  ) // Hackers vs pros (broken atm)
 		{
-		    player.TakeNormalWeaponByIndexNow( WEAPON_INVENTORY_SLOT_PRIMARY_0 )
-            player.TakeNormalWeaponByIndexNow( WEAPON_INVENTORY_SLOT_PRIMARY_1 )
-		    player.TakeNormalWeaponByIndexNow( WEAPON_INVENTORY_SLOT_PRIMARY_2 )
-			player.TakeOffhandWeapon( OFFHAND_MELEE )
+			TakeAllWeapons(player)
 			GiveRandomPrimaryWeaponMetagame(player)
 			GiveRandomSecondaryWeaponMetagame(player)
+			
+			FS_GiveRandomMelee(player)
 
-            player.GiveWeapon( "mp_weapon_melee_survival", WEAPON_INVENTORY_SLOT_PRIMARY_2, [] )
-            player.GiveOffhandWeapon( "melee_pilot_emptyhandede", OFFHAND_MELEE, [] )
-		} catch (e420) {}
-	} 
-	else if( Flowstate_IsFastInstaGib() )
-	{
-		try
+			entity tactical = player.GetOffhandWeapon( OFFHAND_TACTICAL )
+			
+			if( IsValid( tactical ) ) 
+				player.TakeOffhandWeapon( OFFHAND_TACTICAL )
+			
+			entity ultimate = player.GetOffhandWeapon( OFFHAND_ULTIMATE )
+			
+			if( IsValid( ultimate ) ) 
+				player.TakeOffhandWeapon( OFFHAND_ULTIMATE )
+			
+			player.GiveOffhandWeapon("mp_ability_grapple", OFFHAND_TACTICAL, [])
+			
+		}
+		else if( FlowState_RandomGunsMetagame() )
 		{
-			player.TakeNormalWeaponByIndexNow( WEAPON_INVENTORY_SLOT_PRIMARY_0 )
-			player.TakeNormalWeaponByIndexNow( WEAPON_INVENTORY_SLOT_PRIMARY_1 )
-			player.TakeNormalWeaponByIndexNow( WEAPON_INVENTORY_SLOT_PRIMARY_2 )
-			player.TakeOffhandWeapon( OFFHAND_MELEE )
-			__GiveWeapon( player, ["mp_weapon_lightninggun"], WEAPON_INVENTORY_SLOT_PRIMARY_0, RandomIntRange( 0, 1 ) )
-			// __GiveWeapon( player, ["mp_weapon_lightninggun"], WEAPON_INVENTORY_SLOT_PRIMARY_1, RandomIntRange( 0, 1 ) ) //If we give another one, player can exploit it by changing weapons and restoring next attack time
-		} catch (e420) {}
-	}
+			try
+			{
+				player.TakeNormalWeaponByIndexNow( WEAPON_INVENTORY_SLOT_PRIMARY_0 )
+				player.TakeNormalWeaponByIndexNow( WEAPON_INVENTORY_SLOT_PRIMARY_1 )
+				GiveRandomPrimaryWeaponMetagame(player)
+				GiveRandomSecondaryWeaponMetagame(player)
 
-	if( IsValid( player ) && FlowState_GungameRandomAbilities() )
+				FS_GiveRandomMelee(player)
+			} catch (e420) 
+			{
+				#if DEVELOPER
+				printw("GiveFSDMWeapons ERROR - ", player, "failed to get weapons" )
+				#endif
+			}
+		}
+		else if ( FlowState_RandomGuns() )
+		{
+			try
+			{
+				player.TakeNormalWeaponByIndexNow( WEAPON_INVENTORY_SLOT_PRIMARY_0 )
+				player.TakeNormalWeaponByIndexNow( WEAPON_INVENTORY_SLOT_PRIMARY_1 )
+
+				GiveRandomPrimaryWeapon(player)
+				GiveRandomSecondaryWeapon(player)
+
+				FS_GiveRandomMelee(player)
+			} catch (e420) 
+			{
+				#if DEVELOPER
+				printw("GiveFSDMWeapons ERROR - ", player, "failed to get weapons" )
+				#endif
+			}
+		} else if(FlowState_RandomGunsEverydie() ) // FS Fiesta (broken atm)
+		{
+			try{
+				TakeAllWeapons(player)
+				GiveRandomPrimaryWeapon(player)
+				GiveRandomSecondaryWeapon( player)
+				GiveRandomTac(player)
+				GiveRandomUlt(player)
+				
+				FS_GiveRandomMelee(player)
+			}catch(e420) 
+			{
+				#if DEVELOPER
+				printw("GiveFSDMWeapons ERROR - ", player, "failed to get abilities" )
+				#endif
+			}
+		}
+	}
+	
+	if( IsValid( player ) && FlowState_GungameRandomAbilities() ) // Gungame random abilities
 	{
 		if( FlowState_RandomTactical() )
 		{
@@ -1700,45 +1747,7 @@ void function _HandleRespawn( entity player, bool isDroppodSpawn = false )
 		GiveRandomUlt_4D( player )
 	}
 
-	if(FlowState_RandomGunsEverydie() && !FlowState_Gungame() && IsValid( player )) //fiesta
-    {
-		try{
-		TakeAllWeapons(player)
-        GiveRandomPrimaryWeapon(player)
-        GiveRandomSecondaryWeapon( player)
-        GiveRandomTac(player)
-        GiveRandomUlt(player)
-        player.GiveWeapon( "mp_weapon_melee_survival", WEAPON_INVENTORY_SLOT_PRIMARY_2, [] )
-        player.GiveOffhandWeapon( "melee_pilot_emptyhanded", OFFHAND_MELEE, [] )
-		}catch(e420){}
-    } 
-	else if(FlowState_Gungame() && IsValid( player ))
-		GiveGungameWeapon(player)
-
-	if( flowstateSettings.hackersVsPros  )
-	{
-		TakeAllWeapons(player)
-		GiveRandomPrimaryWeaponMetagame(player)
-		GiveRandomSecondaryWeaponMetagame(player)	
-		// player.GiveWeapon( "mp_weapon_melee_survival", WEAPON_INVENTORY_SLOT_PRIMARY_2, [] )
-		// player.GiveOffhandWeapon( "melee_pilot_emptyhanded", OFFHAND_MELEE, [] )
-		player.GiveWeapon( "mp_weapon_melee_survival", WEAPON_INVENTORY_SLOT_PRIMARY_2, [] )
-		player.GiveOffhandWeapon( "melee_pilot_emptyhanded", OFFHAND_MELEE, [] )
-
-		entity tactical = player.GetOffhandWeapon( OFFHAND_TACTICAL )
-		
-		if( IsValid( tactical ) ) 
-			player.TakeOffhandWeapon( OFFHAND_TACTICAL )
-		
-		entity ultimate = player.GetOffhandWeapon( OFFHAND_ULTIMATE )
-		
-		if( IsValid( ultimate ) ) 
-			player.TakeOffhandWeapon( OFFHAND_ULTIMATE )
-		
-		player.GiveOffhandWeapon("mp_ability_grapple", OFFHAND_TACTICAL, [])
-		
-	}
-	
+	// Pilot blood passive
 	if( !player.HasPassive( ePassives.PAS_PILOT_BLOOD ) && 
 		!Flowstate_IsFS1v1() && 
 		!Flowstate_IsLGDuels() && 
@@ -1748,13 +1757,13 @@ void function _HandleRespawn( entity player, bool isDroppodSpawn = false )
 		GivePassive(player, ePassives.PAS_PILOT_BLOOD)
 	}
 
-	//allow healing items to be used	
+	// Allow healing items to be used	
 	player.TakeOffhandWeapon( OFFHAND_SLOT_FOR_CONSUMABLES )
 	player.GiveOffhandWeapon( CONSUMABLE_WEAPON_NAME, OFFHAND_SLOT_FOR_CONSUMABLES, [] )
 	
-	//give flowstate holo sprays
-	player.TakeOffhandWeapon( OFFHAND_EQUIPMENT )
-	player.GiveOffhandWeapon( "mp_ability_emote_projector", OFFHAND_EQUIPMENT )
+	// Holo Sprays Disabled until kral fixes the model
+	// player.TakeOffhandWeapon( OFFHAND_EQUIPMENT )
+	// player.GiveOffhandWeapon( "mp_ability_emote_projector", OFFHAND_EQUIPMENT )
 	
 	Survival_SetInventoryEnabled( player, true )
 	SetPlayerInventory( player, [] )
@@ -1784,36 +1793,35 @@ void function _HandleRespawn( entity player, bool isDroppodSpawn = false )
 
 	thread Flowstate_GrantSpawnImmunity(player, 2.5)
 
-	if( !flowstateSettings.is_halo_gamemode )
+	if( !flowstateSettings.is_halo_gamemode && !Flowstate_IsFastInstaGib() )
 	{
 		Inventory_SetPlayerEquipment( player, "backpack_pickup_lv3", "backpack")
+		
+		waitthread LoadCustomWeapon(player)		///TDM Auto-Reloaded Saved Weapons at Respawn
+		thread LoadCustomSkill(player)
+		
 		WpnPulloutOnRespawn(player, 0)
-		thread LoadCustomWeapon(player)		///TDM Auto-Reloaded Saved Weapons at Respawn
-		//maki script
-		thread LoadCustomSkill(player)	
-		//maki script
 	} else
 		HaloMod_HandlePlayerModel( player )
 
+	// Weapons instadeploy
+	player.ClearFirstDeployForAllWeapons()
+
+	entity primary = player.GetNormalWeapon( WEAPON_INVENTORY_SLOT_PRIMARY_0 )
+	entity secondary = player.GetNormalWeapon( WEAPON_INVENTORY_SLOT_PRIMARY_1 )
+
+	if(IsValid(secondary) && secondary.UsesClipsForAmmo())
 	{
-		player.ClearFirstDeployForAllWeapons()
-
-		entity primary = player.GetNormalWeapon( WEAPON_INVENTORY_SLOT_PRIMARY_0 )
-		entity secondary = player.GetNormalWeapon( WEAPON_INVENTORY_SLOT_PRIMARY_1 )
-
-		if(IsValid(secondary) && secondary.UsesClipsForAmmo())
-		{
-			//secondary.DeployInstant()
-			secondary.SetWeaponPrimaryClipCount( secondary.GetWeaponPrimaryClipCountMax())
-			
-		}
+		//secondary.DeployInstant()
+		secondary.SetWeaponPrimaryClipCount( secondary.GetWeaponPrimaryClipCountMax())
 		
-		if(IsValid(primary) && primary.UsesClipsForAmmo())
-		{
-			//primary.DeployInstant()
-			primary.SetWeaponPrimaryClipCount(primary.GetWeaponPrimaryClipCountMax())
-			player.SetActiveWeaponBySlot(eActiveInventorySlot.mainHand, WEAPON_INVENTORY_SLOT_PRIMARY_0)
-		}
+	}
+	
+	if(IsValid(primary) && primary.UsesClipsForAmmo())
+	{
+		//primary.DeployInstant()
+		primary.SetWeaponPrimaryClipCount(primary.GetWeaponPrimaryClipCountMax())
+		player.SetActiveWeaponBySlot(eActiveInventorySlot.mainHand, WEAPON_INVENTORY_SLOT_PRIMARY_0)
 	}
 	
 		
@@ -1908,10 +1916,8 @@ void function TpPlayerToSpawnPoint(entity player)
 
 void function Flowstate_GrantSpawnImmunity(entity player, float duration)
 {
-	if(!IsValid(player) || !player.IsPlayer() || is1v1EnabledAndAllowed() ) return //wtf?
+	if(!IsValid(player) || !player.IsPlayer() || is1v1EnabledAndAllowed() ) return
 	
-	// thread WpnPulloutOnRespawn(player, duration)
-
 	EmitSoundOnEntityOnlyToPlayer( player, player, "PhaseGate_Enter_1p" )
 	EmitSoundOnEntityExceptToPlayer( player, player, "PhaseGate_Enter_3p" )
 
@@ -1960,17 +1966,7 @@ void function Flowstate_GrantSpawnImmunity(entity player, float duration)
 void function WpnPulloutOnRespawn(entity player, float duration)
 {
 	if(!IsValid( player ) || !IsAlive(player) ) return
-	//maki script
-	// OnThreadEnd(
-	// function() : ( player )
-	// 	{
-	// 		if( IsValid( player ) && file.tdmState != eTDMState.NEXT_ROUND_NOW )
-	// 			DeployAndEnableWeapons( player )
-	// 	}
-	// )
-
-	// if( IsValid( player ) && file.tdmState != eTDMState.NEXT_ROUND_NOW )
-	// 	DeployAndEnableWeapons( player )
+	
 	player.ClearFirstDeployForAllWeapons()
 	if( flowstateSettings.ReloadTacticalOnRespawn )
 	{
@@ -1986,20 +1982,22 @@ void function WpnPulloutOnRespawn(entity player, float duration)
 		if ( !IsValid( ultimate ) ) return
 		ultimate.SetWeaponPrimaryClipCount( ultimate.GetWeaponPrimaryClipCountMax() )
 	}
-
+	
+	array<string> fsCharmsToUse = [ "SAID00701640565", "SAID01451752993", "SAID01334887835", "SAID01993399691", "SAID00095078608", "SAID01439033541", "SAID00510535756", "SAID00985605729" ]
+	
 	if(IsValid( player.GetNormalWeapon( WEAPON_INVENTORY_SLOT_PRIMARY_1 )))
 	{
 		entity weapon = player.GetNormalWeapon( WEAPON_INVENTORY_SLOT_PRIMARY_1 )
 		
 		if( weapon.LookupAttachment( "CHARM" ) != 0 )
-			weapon.SetWeaponCharm( $"mdl/props/charm/charm_nessy.rmdl", "CHARM")
+			WeaponCosmetics_Apply( weapon, null, GetItemFlavorByGUID( ConvertItemFlavorGUIDStringToGUID( fsCharmsToUse.getrandom() ) ) )
 	}
 	if(IsValid( player.GetNormalWeapon( WEAPON_INVENTORY_SLOT_PRIMARY_0 )))
 	{
 		entity weapon = player.GetNormalWeapon( WEAPON_INVENTORY_SLOT_PRIMARY_0 )
 		
 		if( weapon.LookupAttachment( "CHARM" ) != 0 )
-			weapon.SetWeaponCharm( $"mdl/props/charm/charm_nessy.rmdl", "CHARM")
+			WeaponCosmetics_Apply( weapon, null, GetItemFlavorByGUID( ConvertItemFlavorGUIDStringToGUID( fsCharmsToUse.getrandom() ) ) )
 			
 		player.SetActiveWeaponBySlot(eActiveInventorySlot.mainHand, WEAPON_INVENTORY_SLOT_PRIMARY_0)
 	}
@@ -4596,18 +4594,14 @@ void function HaloMod_HandlePlayerModel( entity player )
 
 void function CharSelect( entity player)
 {
-	// #if DEVELOPER 
+	#if DEVELOPER 
 		// DumpStack()
-	// #endif 
-	
-	//Char select.
-	//file.characters = clone GetAllCharacters()
-	
-	array<ItemFlavor> characters = clone GetAllCharacters() //(mk): does this even need to be updated every call?
+		printw("CharSelect", player)
+	#endif 
 	
 	if( FlowState_ForceAdminCharacter() && IsAdmin( player ) )
 	{
-		ItemFlavor PersonajeEscogido = characters[ FlowState_ChosenAdminCharacter() ]
+		ItemFlavor PersonajeEscogido = file.characters[ FlowState_ChosenAdminCharacter() ]
 		CharacterSelect_AssignCharacter( ToEHI( player ), PersonajeEscogido )
 	} 
 	else if( !flowstateSettings.is_halo_gamemode )
@@ -4617,7 +4611,7 @@ void function CharSelect( entity player)
 		if( FlowState_ChosenCharacter() > 10 )
 			chosen = 5
 		
-		ItemFlavor PersonajeEscogido = characters[ chosen ]
+		ItemFlavor PersonajeEscogido = file.characters[ chosen ]
 		CharacterSelect_AssignCharacter( ToEHI( player ), PersonajeEscogido )
 	}
 
@@ -4627,18 +4621,7 @@ void function CharSelect( entity player)
 		player.SetArmsModelOverride( $"mdl/humans/class/medium/pilot_medium_generic.rmdl" )
 		player.SetSkin(player.GetTeam())
 	}
-
-	//Data knife
-	player.TakeNormalWeaponByIndexNow( WEAPON_INVENTORY_SLOT_PRIMARY_2 )
-	player.TakeOffhandWeapon( OFFHAND_MELEE )
-	player.TakeOffhandWeapon( WEAPON_INVENTORY_SLOT_PRIMARY_2 )
 	
-	if( !is1v1EnabledAndAllowed() )
-	{
-		player.GiveWeapon( "mp_weapon_melee_survival", WEAPON_INVENTORY_SLOT_PRIMARY_2, [] )
-		player.GiveOffhandWeapon( "melee_pilot_emptyhanded", OFFHAND_MELEE, [] )
-	}
-
 	//Give master chief skin and assign a color
 	if( flowstateSettings.is_halo_gamemode )
 	{
@@ -7557,4 +7540,47 @@ void function FS_Hack_CreateBulletsCollisionVolume( vector origin, float large =
 void function EndRound()
 {
 	g_fCurrentRoundEndTime = Time()
+}
+
+//todo(cafe): probably move this to a more general place
+void function FS_InitCommunityHeirlooms()
+{
+	// Disabled until we figure out which one crash the client
+	
+	// file.heirlooms.append( CreateHeirloom( "melee_bolo_sword", "mp_weapon_bolo_sword_primary" ) )
+	// file.heirlooms.append( CreateHeirloom( "melee_karambit", "mp_weapon_karambit_primary" ) )
+	// file.heirlooms.append( CreateHeirloom( "melee_mc_sword", "mp_weapon_mc_sword_primary" ) )
+	// file.heirlooms.append( CreateHeirloom( "melee_mjolnir", "mp_weapon_mjolnir_primary" ) )
+	// file.heirlooms.append( CreateHeirloom( "melee_macks_knife", "mp_weapon_macks_knife_primary" ) )
+	
+	file.heirlooms.append( CreateHeirloom( "melee_pilot_emptyhanded", "mp_weapon_melee_survival" ) )
+}
+
+Heirloom function CreateHeirloom( string melee, string primary )
+{
+	Heirloom heirloom
+	heirloom.melee = melee
+	heirloom.primary = primary
+	
+	return heirloom
+}
+
+array<Heirloom> function GetCommunityHeirlooms()
+{
+	return file.heirlooms
+}
+
+void function FS_GiveRandomMelee(entity player)
+{
+	// #if DEVELOPER
+	// DumpStack()
+	// printw("FS_GiveRandomMelee", player)
+	// #endif
+	
+	Heirloom randomMelee = GetCommunityHeirlooms().getrandom() //todo(cafe): allow players to choose heirloom? possibly a new menu for "cosmetics" where players can choose the heirloom and camo color with persistence
+
+	player.TakeNormalWeaponByIndexNow( WEAPON_INVENTORY_SLOT_PRIMARY_2 )
+	player.TakeOffhandWeapon( OFFHAND_MELEE )	
+	player.GiveWeapon( randomMelee.primary, WEAPON_INVENTORY_SLOT_PRIMARY_2, [] )
+	player.GiveOffhandWeapon( randomMelee.melee, OFFHAND_MELEE, [] )
 }
