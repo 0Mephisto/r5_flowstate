@@ -1,3 +1,4 @@
+
 //Made by CafeFPS
 
 Resource/UI/flowstate_customhudvgui.res
@@ -1063,7 +1064,7 @@ Resource/UI/flowstate_customhudvgui.res
 		"wide"						"90"
 		"tall"						"90"
 		"xpos"						"-15"
-		"ypos"						"-115"
+		"ypos"						"-150"
 		"visible"					"0"
 		"enabled"					"1"
 		"scaleImage"				"1"
@@ -2825,7 +2826,7 @@ Resource/UI/flowstate_customhudvgui.res
 	{
 			ControlName				Label
 			auto_wide_tocontents    1
-			labelText				"Flowstate Survival v1.0 Beta"
+			labelText				"Flowstate Battle Royale v2.0"
 			visible                 0
 			zpos 					2
 			tall					30
@@ -2867,7 +2868,7 @@ Resource/UI/flowstate_customhudvgui.res
 	{
 			ControlName				Label
 			auto_wide_tocontents    1
-			labelText				"Powered by R5Reloaded"
+			labelText				"Engine by @AmosModz"
 			visible                 0
 			zpos 					2
 			tall					30
@@ -4287,5 +4288,925 @@ Resource/UI/flowstate_customhudvgui.res
 		pin_to_sibling          FS_DMCountDown_Frame_Center
 		pin_corner_to_sibling   CENTER
 		pin_to_sibling_corner   CENTER
+	}
+
+	// "FS_Spies_Center_Msg_Frame_Center"
+	// {
+		// ControlName				RuiPanel
+		// wide					286
+		// tall					66
+		// ypos 					0
+		// xpos 					-32
+		// zpos 					0
+		// visible					0
+		// rui                     "ui/basic_image.rpak"
+
+		// pin_to_sibling          Screen
+		// pin_corner_to_sibling   CENTER
+		// pin_to_sibling_corner   CENTER
+	// }
+	
+	"FS_Spies_Center_Msg"
+	{
+		ControlName				Label
+		labelText				"THIS IS A TEST MSG"
+		visible                 0
+		zpos 					2
+		// tall					200
+		auto_tall_tocontents	1
+		auto_wide_tocontents	1
+		fontHeight				60
+		font					"DialogTitle"
+		fgcolor_override		"255 255 255 225"
+		ypos                    -250
+		xpos					0
+		textAlignment			center
+		allcaps					1
+
+		pin_to_sibling          Screen
+		pin_corner_to_sibling   BOTTOM
+		pin_to_sibling_corner   BOTTOM
+	}
+
+	"FS_Spies_RoundInfo_BG0"
+	{
+		ControlName				RuiPanel
+		wide					250
+		tall					90
+		ypos 					-50
+		xpos 					-50
+		zpos 1
+		
+		visible					0
+		rui                     "ui/basic_image.rpak"
+		
+		ruiArgs
+		{
+			basicImageColor     "0 0 0"
+			basicImageAlpha     0.2
+		}
+		pin_to_sibling          Screen
+		pin_corner_to_sibling   TOP_LEFT
+		pin_to_sibling_corner   TOP_LEFT
+	}	
+	"FS_Spies_RoundInfo_BG"
+	{
+		ControlName				RuiPanel
+		wide					250
+		tall					90
+		ypos 					-50
+		xpos 					-50
+		zpos 					0
+		visible					0
+		rui 					"ui/screen_blur.rpak"//"ui/tabs_background.rpak"
+		visible					0
+		drawColor				"0 0 0 50"
+		
+		pin_to_sibling          Screen
+		pin_corner_to_sibling   TOP_LEFT
+		pin_to_sibling_corner   TOP_LEFT
+	}
+
+	"FS_Spies_LocalTeam_Score_Gradient"
+	{
+		ControlName				RuiPanel
+		wide					250
+		tall					45
+		ypos 					-145
+		xpos 					-50
+		zpos 1
+		
+		visible					0
+		rui                     "ui/basic_image.rpak"
+		
+		ruiArgs
+		{
+			// basicImageColor     "0 0 0"
+			// basicImageAlpha     0.8
+		}
+		pin_to_sibling          Screen
+		pin_corner_to_sibling   TOP_LEFT
+		pin_to_sibling_corner   TOP_LEFT
+	}	
+	
+	"FS_Spies_LocalTeam_Score_Blur"
+	{
+		ControlName				RuiPanel
+		wide					250
+		tall					45
+		ypos 					-145
+		xpos 					-50
+		zpos 					0
+		visible					0
+		rui 					"ui/screen_blur.rpak"//"ui/tabs_background.rpak"
+		drawColor				"0 0 0 10"
+		
+		pin_to_sibling          Screen
+		pin_corner_to_sibling   TOP_LEFT
+		pin_to_sibling_corner   TOP_LEFT
+	}
+	
+	"FS_Spies_LocalTeam_Score_Logo"
+	{
+		ControlName				RuiPanel
+		wide					35
+		tall					35
+		ypos 					0
+		xpos 					-10//-40
+		zpos 1
+		
+		visible					0
+		rui                     "ui/basic_image.rpak"
+		
+		ruiArgs
+		{
+			// basicImageColor     "0 0 0"
+			// basicImageAlpha     0.8
+		}
+		pin_to_sibling          FS_Spies_LocalTeam_Score_Gradient
+		pin_corner_to_sibling   LEFT
+		pin_to_sibling_corner   LEFT
+	}
+
+	"FS_Spies_LocalTeam_Score_Text"
+	{
+		ControlName				Label
+		labelText				"0 / 3"
+		visible                 0
+		zpos 					2
+		// tall					200
+		auto_tall_tocontents	1
+		// auto_wide_tocontents	20
+		wide					100
+		fontHeight				45
+		font					"DialogTitle"
+		fgcolor_override		"255 255 255 225"
+		ypos                    3
+		xpos					110
+		textAlignment			west
+		allcaps					1
+
+		pin_to_sibling          FS_Spies_LocalTeam_Score_Logo
+		pin_corner_to_sibling   RIGHT
+		pin_to_sibling_corner   RIGHT
+	}
+	
+	"FS_Spies_EnemyTeam_Score_Gradient"
+	{
+		ControlName				RuiPanel
+		wide					250
+		tall					45
+		ypos 					-195
+		xpos 					-50
+		zpos 1
+		
+		visible					0
+		rui                     "ui/basic_image.rpak"
+		
+		ruiArgs
+		{
+			// basicImageColor     "0 0 0"
+			// basicImageAlpha     0.8
+		}
+		pin_to_sibling          Screen
+		pin_corner_to_sibling   TOP_LEFT
+		pin_to_sibling_corner   TOP_LEFT
+	}	
+	
+	"FS_Spies_EnemyTeam_Score_Blur"
+	{
+		ControlName				RuiPanel
+		wide					250
+		tall					45
+		ypos 					-195
+		xpos 					-50
+		zpos 					0
+		visible					0
+		rui 					"ui/screen_blur.rpak"//"ui/tabs_background.rpak"
+		drawColor				"0 0 0 10"
+		
+		pin_to_sibling          Screen
+		pin_corner_to_sibling   TOP_LEFT
+		pin_to_sibling_corner   TOP_LEFT
+	}
+	
+	"FS_Spies_EnemyTeam_Score_Logo"
+	{
+		ControlName				RuiPanel
+		wide					35
+		tall					35
+		ypos 					0
+		xpos 					-10//-40
+		zpos 1
+		
+		visible					0
+		rui                     "ui/basic_image.rpak"
+		
+		ruiArgs
+		{
+			// basicImageColor     "0 0 0"
+			// basicImageAlpha     0.8
+		}
+		pin_to_sibling          FS_Spies_EnemyTeam_Score_Gradient
+		pin_corner_to_sibling   LEFT
+		pin_to_sibling_corner   LEFT
+	}	
+
+	"FS_Spies_EnemyTeam_Score_Text"
+	{
+		ControlName				Label
+		labelText				"0 / 3"
+		visible                 0
+		zpos 					2
+		// tall					200
+		auto_tall_tocontents	1
+		// auto_wide_tocontents	20
+		wide					100
+		fontHeight				45
+		font					"DialogTitle"
+		fgcolor_override		"255 255 255 225"
+		ypos                    3
+		xpos					110
+		textAlignment			west
+		allcaps					1
+
+		pin_to_sibling          FS_Spies_EnemyTeam_Score_Logo
+		pin_corner_to_sibling   RIGHT
+		pin_to_sibling_corner   RIGHT
+	}
+		
+	// "FS_Spies_RoundInfo_Frame_Center"
+	// {
+		// ControlName				RuiPanel
+		// wide					286
+		// tall					66
+		// ypos 					-50
+		// xpos 					-60
+		// zpos 					0
+		// visible					0
+		// rui                     "ui/basic_image.rpak"
+
+		// pin_to_sibling          Screen
+		// pin_corner_to_sibling   TOP_LEFT
+		// pin_to_sibling_corner   TOP_LEFT
+	// }
+	
+	"FS_Spies_RoundInfo_Text"
+	{
+		ControlName				Label
+		labelText				"00:00"
+		visible                 0
+		zpos 					2
+		// tall					200
+		auto_tall_tocontents	1
+		auto_wide_tocontents	1
+		fontHeight				60
+		font					"DialogTitle"
+		fgcolor_override		"255 255 255 225"
+		ypos                    -15
+		xpos					-10
+		textAlignment			left
+		allcaps					1
+
+		pin_to_sibling          FS_Spies_RoundInfo_BG
+		pin_corner_to_sibling   LEFT
+		pin_to_sibling_corner   LEFT
+	}
+
+	"FS_Spies_RoundInfo_Text2"
+	{
+		ControlName				Label
+		labelText				"ROUND"
+		visible                 0
+		zpos 					2
+		// tall					200
+		auto_tall_tocontents	1
+		auto_wide_tocontents	1
+		fontHeight				40
+		font					"DialogTitle"
+		fgcolor_override		"255 255 255 225"
+		ypos                    25
+		xpos					-10
+		textAlignment			left
+		allcaps					1
+
+		pin_to_sibling          FS_Spies_RoundInfo_BG
+		pin_corner_to_sibling   LEFT
+		pin_to_sibling_corner   LEFT
+	}
+
+	//(cafe) Audio Visual Clues
+	"Footstep_1"
+	{
+		ControlName				RuiPanel
+		wide					50
+		tall					50
+		ypos 					0
+		xpos 					0
+		zpos 					0
+		visible					0
+		rui                     "ui/basic_image.rpak"
+
+		pin_to_sibling          Screen
+		pin_corner_to_sibling   CENTER
+		pin_to_sibling_corner   CENTER
+	}
+	"Footstep_2"
+	{
+		ControlName				RuiPanel
+		wide					50
+		tall					50
+		ypos 					0
+		xpos 					0
+		zpos 					0
+		visible					0
+		rui                     "ui/basic_image.rpak"
+
+		pin_to_sibling          Screen
+		pin_corner_to_sibling   CENTER
+		pin_to_sibling_corner   CENTER
+	}
+	"Footstep_3"
+	{
+		ControlName				RuiPanel
+		wide					50
+		tall					50
+		ypos 					0
+		xpos 					0
+		zpos 					0
+		visible					0
+		rui                     "ui/basic_image.rpak"
+
+		pin_to_sibling          Screen
+		pin_corner_to_sibling   CENTER
+		pin_to_sibling_corner   CENTER
+	}
+	"Footstep_4"
+	{
+		ControlName				RuiPanel
+		wide					50
+		tall					50
+		ypos 					0
+		xpos 					0
+		zpos 					0
+		visible					0
+		rui                     "ui/basic_image.rpak"
+
+		pin_to_sibling          Screen
+		pin_corner_to_sibling   CENTER
+		pin_to_sibling_corner   CENTER
+	}
+	"Footstep_5"
+	{
+		ControlName				RuiPanel
+		wide					50
+		tall					50
+		ypos 					0
+		xpos 					0
+		zpos 					0
+		visible					0
+		rui                     "ui/basic_image.rpak"
+
+		pin_to_sibling          Screen
+		pin_corner_to_sibling   CENTER
+		pin_to_sibling_corner   CENTER
+	}
+	"Footstep_6"
+	{
+		ControlName				RuiPanel
+		wide					50
+		tall					50
+		ypos 					0
+		xpos 					0
+		zpos 					0
+		visible					0
+		rui                     "ui/basic_image.rpak"
+
+		pin_to_sibling          Screen
+		pin_corner_to_sibling   CENTER
+		pin_to_sibling_corner   CENTER
+	}
+	"Footstep_7"
+	{
+		ControlName				RuiPanel
+		wide					50
+		tall					50
+		ypos 					0
+		xpos 					0
+		zpos 					0
+		visible					0
+		rui                     "ui/basic_image.rpak"
+
+		pin_to_sibling          Screen
+		pin_corner_to_sibling   CENTER
+		pin_to_sibling_corner   CENTER
+	}
+	"Footstep_8"
+	{
+		ControlName				RuiPanel
+		wide					50
+		tall					50
+		ypos 					0
+		xpos 					0
+		zpos 					0
+		visible					0
+		rui                     "ui/basic_image.rpak"
+
+		pin_to_sibling          Screen
+		pin_corner_to_sibling   CENTER
+		pin_to_sibling_corner   CENTER
+	}
+	"Footstep_9"
+	{
+		ControlName				RuiPanel
+		wide					50
+		tall					50
+		ypos 					0
+		xpos 					0
+		zpos 					0
+		visible					0
+		rui                     "ui/basic_image.rpak"
+
+		pin_to_sibling          Screen
+		pin_corner_to_sibling   CENTER
+		pin_to_sibling_corner   CENTER
+	}
+	"Footstep_10"
+	{
+		ControlName				RuiPanel
+		wide					50
+		tall					50
+		ypos 					0
+		xpos 					0
+		zpos 					0
+		visible					0
+		rui                     "ui/basic_image.rpak"
+
+		pin_to_sibling          Screen
+		pin_corner_to_sibling   CENTER
+		pin_to_sibling_corner   CENTER
+	}
+	"Gunfire_1"
+	{
+		ControlName				RuiPanel
+		wide					50
+		tall					50
+		ypos 					0
+		xpos 					0
+		zpos 					0
+		visible					0
+		rui                     "ui/basic_image.rpak"
+
+		pin_to_sibling          Screen
+		pin_corner_to_sibling   CENTER
+		pin_to_sibling_corner   CENTER
+	}
+	"Gunfire_2"
+	{
+		ControlName				RuiPanel
+		wide					50
+		tall					50
+		ypos 					0
+		xpos 					0
+		zpos 					0
+		visible					0
+		rui                     "ui/basic_image.rpak"
+
+		pin_to_sibling          Screen
+		pin_corner_to_sibling   CENTER
+		pin_to_sibling_corner   CENTER
+	}
+	"Gunfire_3"
+	{
+		ControlName				RuiPanel
+		wide					50
+		tall					50
+		ypos 					0
+		xpos 					0
+		zpos 					0
+		visible					0
+		rui                     "ui/basic_image.rpak"
+
+		pin_to_sibling          Screen
+		pin_corner_to_sibling   CENTER
+		pin_to_sibling_corner   CENTER
+	}
+	"Gunfire_4"
+	{
+		ControlName				RuiPanel
+		wide					50
+		tall					50
+		ypos 					0
+		xpos 					0
+		zpos 					0
+		visible					0
+		rui                     "ui/basic_image.rpak"
+
+		pin_to_sibling          Screen
+		pin_corner_to_sibling   CENTER
+		pin_to_sibling_corner   CENTER
+	}
+	"Gunfire_5"
+	{
+		ControlName				RuiPanel
+		wide					50
+		tall					50
+		ypos 					0
+		xpos 					0
+		zpos 					0
+		visible					0
+		rui                     "ui/basic_image.rpak"
+
+		pin_to_sibling          Screen
+		pin_corner_to_sibling   CENTER
+		pin_to_sibling_corner   CENTER
+	}
+	"Gunfire_6"
+	{
+		ControlName				RuiPanel
+		wide					50
+		tall					50
+		ypos 					0
+		xpos 					0
+		zpos 					0
+		visible					0
+		rui                     "ui/basic_image.rpak"
+
+		pin_to_sibling          Screen
+		pin_corner_to_sibling   CENTER
+		pin_to_sibling_corner   CENTER
+	}
+	"Gunfire_7"
+	{
+		ControlName				RuiPanel
+		wide					50
+		tall					50
+		ypos 					0
+		xpos 					0
+		zpos 					0
+		visible					0
+		rui                     "ui/basic_image.rpak"
+
+		pin_to_sibling          Screen
+		pin_corner_to_sibling   CENTER
+		pin_to_sibling_corner   CENTER
+	}
+	"Gunfire_8"
+	{
+		ControlName				RuiPanel
+		wide					50
+		tall					50
+		ypos 					0
+		xpos 					0
+		zpos 					0
+		visible					0
+		rui                     "ui/basic_image.rpak"
+
+		pin_to_sibling          Screen
+		pin_corner_to_sibling   CENTER
+		pin_to_sibling_corner   CENTER
+	}
+	"Gunfire_9"
+	{
+		ControlName				RuiPanel
+		wide					50
+		tall					50
+		ypos 					0
+		xpos 					0
+		zpos 					0
+		visible					0
+		rui                     "ui/basic_image.rpak"
+
+		pin_to_sibling          Screen
+		pin_corner_to_sibling   CENTER
+		pin_to_sibling_corner   CENTER
+	}
+	"Gunfire_10"
+	{
+		ControlName				RuiPanel
+		wide					50
+		tall					50
+		ypos 					0
+		xpos 					0
+		zpos 					0
+		visible					0
+		rui                     "ui/basic_image.rpak"
+
+		pin_to_sibling          Screen
+		pin_corner_to_sibling   CENTER
+		pin_to_sibling_corner   CENTER
+	}
+
+	//
+	"Circle_1"
+	{
+		ControlName		ImagePanel
+		xpos 			0
+		ypos 			0
+		zpos			0
+		wide			73
+		tall			17
+		visible			0
+		scaleImage		1
+		image			vgui/hud/custom/circle_shape
+		drawColor		"255 255 255 255"
+
+		pin_to_sibling				Screen
+		pin_corner_to_sibling		CENTER
+		pin_to_sibling_corner		CENTER
+	}
+
+	"Circle_2"
+	{
+		ControlName		ImagePanel
+		xpos 			0
+		ypos 			0
+		zpos			0
+		wide			73
+		tall			17
+		visible			0
+		scaleImage		1
+		image			vgui/hud/custom/circle_shape
+		drawColor		"255 255 255 255"
+
+		pin_to_sibling				Screen
+		pin_corner_to_sibling		CENTER
+		pin_to_sibling_corner		CENTER
+	}
+
+	"Circle_3"
+	{
+		ControlName		ImagePanel
+		xpos 			0
+		ypos 			0
+		zpos			0
+		wide			73
+		tall			17
+		visible			0
+		scaleImage		1
+		image			vgui/hud/custom/circle_shape
+		drawColor		"255 255 255 255"
+
+		pin_to_sibling				Screen
+		pin_corner_to_sibling		CENTER
+		pin_to_sibling_corner		CENTER
+	}
+
+	"Circle_4"
+	{
+		ControlName		ImagePanel
+		xpos 			0
+		ypos 			0
+		zpos			0
+		wide			73
+		tall			17
+		visible			0
+		scaleImage		1
+		image			vgui/hud/custom/circle_shape
+		drawColor		"255 255 255 255"
+
+		pin_to_sibling				Screen
+		pin_corner_to_sibling		CENTER
+		pin_to_sibling_corner		CENTER
+	}
+
+	"Circle_5"
+	{
+		ControlName		ImagePanel
+		xpos 			0
+		ypos 			0
+		zpos			0
+		wide			73
+		tall			17
+		visible			0
+		scaleImage		1
+		image			vgui/hud/custom/circle_shape
+		drawColor		"255 255 255 255"
+
+		pin_to_sibling				Screen
+		pin_corner_to_sibling		CENTER
+		pin_to_sibling_corner		CENTER
+	}
+
+	"Circle_6"
+	{
+		ControlName		ImagePanel
+		xpos 			0
+		ypos 			0
+		zpos			0
+		wide			73
+		tall			17
+		visible			0
+		scaleImage		1
+		image			vgui/hud/custom/circle_shape
+		drawColor		"255 255 255 255"
+
+		pin_to_sibling				Screen
+		pin_corner_to_sibling		CENTER
+		pin_to_sibling_corner		CENTER
+	}
+
+	"Circle_7"
+	{
+		ControlName		ImagePanel
+		xpos 			0
+		ypos 			0
+		zpos			0
+		wide			73
+		tall			17
+		visible			0
+		scaleImage		1
+		image			vgui/hud/custom/circle_shape
+		drawColor		"255 255 255 255"
+
+		pin_to_sibling				Screen
+		pin_corner_to_sibling		CENTER
+		pin_to_sibling_corner		CENTER
+	}
+
+	"Circle_8"
+	{
+		ControlName		ImagePanel
+		xpos 			0
+		ypos 			0
+		zpos			0
+		wide			73
+		tall			17
+		visible			0
+		scaleImage		1
+		image			vgui/hud/custom/circle_shape
+		drawColor		"255 255 255 255"
+
+		pin_to_sibling				Screen
+		pin_corner_to_sibling		CENTER
+		pin_to_sibling_corner		CENTER
+	}
+
+	"Circle_9"
+	{
+		ControlName		ImagePanel
+		xpos 			0
+		ypos 			0
+		zpos			0
+		wide			73
+		tall			17
+		visible			0
+		scaleImage		1
+		image			vgui/hud/custom/circle_shape
+		drawColor		"255 255 255 255"
+
+		pin_to_sibling				Screen
+		pin_corner_to_sibling		CENTER
+		pin_to_sibling_corner		CENTER
+	}
+
+	"Circle_10"
+	{
+		ControlName		ImagePanel
+		xpos 			0
+		ypos 			0
+		zpos			0
+		wide			73
+		tall			17
+		visible			0
+		scaleImage		1
+		image			vgui/hud/custom/circle_shape
+		drawColor		"255 255 255 255"
+
+		pin_to_sibling				Screen
+		pin_corner_to_sibling		CENTER
+		pin_to_sibling_corner		CENTER
+	}
+	
+	"FS_ProgressTest"
+	{
+		ControlName				RuiPanel
+		rui                     "ui/training_install_progress.rpak"
+
+		wide                    250
+		tall                    250
+		visible					0
+
+		xpos 			-100
+		ypos 			75
+		zpos			2
+
+		pin_to_sibling          	Screen
+		pin_corner_to_sibling		TOP
+		pin_to_sibling_corner		TOP
+	}
+	
+	// "FS_ProgressTestBG0"
+	// {
+		// ControlName				RuiPanel
+		// wide					400
+		// tall					105	
+		// xpos					250
+		// ypos					25
+		// zpos 1
+		
+		// visible					1
+		// rui                     "ui/basic_image.rpak"
+		
+		// ruiArgs
+		// {
+			// basicImageColor     "0 0 0"
+			// basicImageAlpha     0.2
+		// }
+		// pin_to_sibling          FS_ProgressTest
+		// pin_corner_to_sibling   CENTER
+		// pin_to_sibling_corner   CENTER
+	// }
+	
+	// "FS_ProgressTestBG"
+	// {
+		// ControlName				RuiPanel
+		// wide					400
+		// tall					105	
+		// xpos					250
+		// ypos					25
+		// zpos 					0
+		// visible					1
+		// rui 					"ui/screen_blur.rpak"//"ui/tabs_background.rpak"
+		// visible					0
+		// drawColor				"0 0 0 50"
+		
+		// pin_to_sibling          FS_ProgressTest
+		// pin_corner_to_sibling   CENTER
+		// pin_to_sibling_corner   CENTER
+	// }
+	
+	"FS_ProgressTest_Text"
+	{
+		ControlName				Label
+		labelText				"HACK IN PROGRESS"
+		visible                 0
+		zpos 					2
+		
+		wide					300
+		auto_tall_tocontents	1
+		// auto_wide_tocontents	1
+		
+		fontHeight				40
+		font					"DefaultBold_62_DropShadow"
+		fgcolor_override		"255 255 255 225"
+		ypos                    23
+		xpos					335
+		textAlignment			west
+		allcaps					1
+
+		pin_to_sibling          FS_ProgressTest
+		pin_corner_to_sibling   RIGHT
+		pin_to_sibling_corner   RIGHT
+	}
+	
+	"FS_ProgressTest_Text2"
+	{
+		ControlName				Label
+		labelText				"HACKER"
+		visible                 0
+		
+		zpos 					2
+		
+		wide					300
+		auto_tall_tocontents	1
+		// auto_wide_tocontents	1
+		
+		fontHeight				40
+		font					"DefaultBold_62_DropShadow"
+		fgcolor_override		"255 255 255 225"
+		ypos                    15
+		xpos					130
+		textAlignment			east
+		allcaps					1
+
+		pin_to_sibling          FS_ProgressTest
+		pin_corner_to_sibling   LEFT
+		pin_to_sibling_corner   LEFT
+	}
+	
+	"FS_ProgressTest_TextHackerName"
+	{
+		ControlName				Label
+		labelText				"CafeFPS"
+		visible                 0
+		
+		zpos 					2
+		
+		wide					300
+		auto_tall_tocontents	1
+		// auto_wide_tocontents	1
+		
+		fontHeight				40
+		font					"DefaultBold_62_DropShadow"
+		fgcolor_override		"255 255 255 225"
+		ypos                    40
+		xpos					130
+		textAlignment			east	
+		allcaps					0
+
+		pin_to_sibling          FS_ProgressTest
+		pin_corner_to_sibling   LEFT
+		pin_to_sibling_corner   LEFT
 	}
 }
