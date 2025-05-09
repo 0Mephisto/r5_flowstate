@@ -550,7 +550,7 @@ void function Infection_Lobby()
 					if( !IsValid( player ) )
 						continue
 
-					Remote_CallFunction_Replay(player, "ServerCallback_FSDM_SetScreen", eFSDMScreen.TiedScreen, eFSDMScreen.NotUsed, 42069, eFSDMScreen.NotUsed)
+					Remote_CallFunction_Replay(player, "ServerCallback_FSDM_SetScreen", eFSDMScreen.TiedScreen, eFSDMScreen.NotUsed, 42068, eFSDMScreen.NotUsed)
 				}
 
 				mapsWithHighestVoteCount.randomize()

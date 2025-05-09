@@ -1329,7 +1329,7 @@ void function ServerCallback_FSDM_SetScreen(int screen, int team, int mapid, int
 					break
             }
 
-            if (mapid == 42069)
+            if (mapid == 42068)
                 RunUIScript( "UpdateVotedLocation_FSDMTied", "")
             else
                 RunUIScript( "UpdateVotedLocation_FSDMTied", file.locationSettings[mapid].name)
