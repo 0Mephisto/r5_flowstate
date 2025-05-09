@@ -1792,49 +1792,53 @@ void function _HandleRespawn( entity player, bool isDroppodSpawn = false )
 
 	thread Flowstate_GrantSpawnImmunity(player, 2.5)
 
-	if( !flowstateSettings.is_halo_gamemode && !Flowstate_IsFastInstaGib() )
+	thread function () : ( player )
 	{
-		Inventory_SetPlayerEquipment( player, "backpack_pickup_lv3", "backpack")
+		EndSignal( player, "OnDestroy" )
 		
-		waitthread LoadCustomWeapon(player)		///TDM Auto-Reloaded Saved Weapons at Respawn
-		thread LoadCustomSkill(player)
-		
-		WpnPulloutOnRespawn(player, 0)
-	} else
-		HaloMod_HandlePlayerModel( player )
+		if( !flowstateSettings.is_halo_gamemode && !Flowstate_IsFastInstaGib() )
+		{
+			Inventory_SetPlayerEquipment( player, "backpack_pickup_lv3", "backpack")
+			
+			waitthread LoadCustomWeapon(player)		///TDM Auto-Reloaded Saved Weapons at Respawn
+			thread LoadCustomSkill(player)
+			
+			WpnPulloutOnRespawn(player, 0)
+		} else
+			HaloMod_HandlePlayerModel( player )
 
-	// Weapons instadeploy
-	player.ClearFirstDeployForAllWeapons()
+		// Weapons instadeploy
+		player.ClearFirstDeployForAllWeapons()
 
-	entity primary = player.GetNormalWeapon( WEAPON_INVENTORY_SLOT_PRIMARY_0 )
-	entity secondary = player.GetNormalWeapon( WEAPON_INVENTORY_SLOT_PRIMARY_1 )
+		entity primary = player.GetNormalWeapon( WEAPON_INVENTORY_SLOT_PRIMARY_0 )
+		entity secondary = player.GetNormalWeapon( WEAPON_INVENTORY_SLOT_PRIMARY_1 )
 
-	if(IsValid(secondary) && secondary.UsesClipsForAmmo())
-	{
-		//secondary.DeployInstant()
-		secondary.SetWeaponPrimaryClipCount( secondary.GetWeaponPrimaryClipCountMax())
+		if(IsValid(secondary) && secondary.UsesClipsForAmmo())
+		{
+			//secondary.DeployInstant()
+			secondary.SetWeaponPrimaryClipCount( secondary.GetWeaponPrimaryClipCountMax())
+			
+		}
 		
-	}
-	
-	if(IsValid(primary) && primary.UsesClipsForAmmo())
-	{
-		//primary.DeployInstant()
-		primary.SetWeaponPrimaryClipCount(primary.GetWeaponPrimaryClipCountMax())
-		player.SetActiveWeaponBySlot(eActiveInventorySlot.mainHand, WEAPON_INVENTORY_SLOT_PRIMARY_0)
-	}
-	
+		if(IsValid(primary) && primary.UsesClipsForAmmo())
+		{
+			//primary.DeployInstant()
+			primary.SetWeaponPrimaryClipCount(primary.GetWeaponPrimaryClipCountMax())
+			player.SetActiveWeaponBySlot(eActiveInventorySlot.mainHand, WEAPON_INVENTORY_SLOT_PRIMARY_0)
+		}
 		
-	if( FlowState_ChosenCharacter() > 10 && !flowstateSettings.give_random_custom_models_toall )
-	{
-		SetPlayerCustomModel( player, FlowState_ChosenCharacter() )
-	} 
+			
+		if( FlowState_ChosenCharacter() > 10 && !flowstateSettings.give_random_custom_models_toall )
+		{
+			SetPlayerCustomModel( player, FlowState_ChosenCharacter() )
+		} 
 
-	if( Flowstate_IsFastInstaGib() )
-		FS_Instagib_PlayerSpawn( player )
-		
-	if( is1v1EnabledAndAllowed() ) //(mk): handle respawn is only fired for newjoins in 1v1 type gamemodes.
-		Gamemode1v1_TakeAll( player )
-		
+		if( Flowstate_IsFastInstaGib() )
+			FS_Instagib_PlayerSpawn( player )
+			
+		if( is1v1EnabledAndAllowed() ) //(mk): handle respawn is only fired for newjoins in 1v1 type gamemodes.
+			Gamemode1v1_TakeAll( player )
+	}()
 	// #if DEVELOPER
 		// printt( "End of _HandleRespawn function" )//Cafe debugging halo mod stuff
 	// #endif
@@ -5199,11 +5203,14 @@ bool function ClientCommand_SpectateEnemies(entity player, array<string> args)
 			try{
 				player.p.isSpectating = true
 				player.Die( null, null, { damageSourceId = eDamageSourceId.damagedef_suicide } )
-				player.SetPlayerNetInt( "spectatorTargetCount", GetPlayerArray().len() )
-				player.SetObserverTarget( specTarget )
+				// player.SetPlayerNetInt( "spectatorTargetCount", GetPlayerArray().len() )
+				// player.SetObserverTarget( specTarget )
+				
+				// player.StartObserverMode( OBS_MODE_IN_EYE )				
+				// thread CheckForObservedTarget(player)
+				
+				thread ObserverThread( player )
 				player.SetSpecReplayDelay( 5 )
-				player.StartObserverMode( OBS_MODE_IN_EYE )				
-				thread CheckForObservedTarget(player)
 				player.p.lastTimeSpectateUsed = Time()
 			} 
 			catch(e420)
