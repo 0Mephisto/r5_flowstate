@@ -5203,14 +5203,11 @@ bool function ClientCommand_SpectateEnemies(entity player, array<string> args)
 			try{
 				player.p.isSpectating = true
 				player.Die( null, null, { damageSourceId = eDamageSourceId.damagedef_suicide } )
-				// player.SetPlayerNetInt( "spectatorTargetCount", GetPlayerArray().len() )
-				// player.SetObserverTarget( specTarget )
-				
-				// player.StartObserverMode( OBS_MODE_IN_EYE )				
-				// thread CheckForObservedTarget(player)
-				
-				thread ObserverThread( player )
+				player.SetPlayerNetInt( "spectatorTargetCount", GetPlayerArray().len() )
+				player.SetObserverTarget( specTarget )
 				player.SetSpecReplayDelay( 5 )
+				player.StartObserverMode( OBS_MODE_IN_EYE )				
+				thread CheckForObservedTarget(player)
 				player.p.lastTimeSpectateUsed = Time()
 			} 
 			catch(e420)
