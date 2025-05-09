@@ -208,7 +208,7 @@ void function NotificationThread( entity player )
 void function __UpdateNotificationText( entity player, string token, string subToken, string title, string text, int panelID )
 {	
 	#if DEVELOPER 
-		Warning( format( "Spawning for id %d. eNum: %s, player: %s", panelID, DEV_GetEnumNameForNotification( panelID ), string( player ) ) )
+		printt( format( "Spawning for id %d. eNum: %s, player: %s", panelID, DEV_GetEnumNameForNotification( panelID ), string( player ) ) )
 	#endif 
 	
 	wait 0.2
@@ -262,7 +262,7 @@ void function __UpdateNotificationText( entity player, string token, string subT
 	}
 	
 	#if DEVELOPER 
-		Warning( format( "Thread for id %d ended. eNum: %s, player: %s", panelID, DEV_GetEnumNameForNotification( panelID ), string( player ) ) )
+		printt( format( "Thread for id %d ended. eNum: %s, player: %s", panelID, DEV_GetEnumNameForNotification( panelID ), string( player ) ) )
 	#endif
 }
 

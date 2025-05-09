@@ -325,9 +325,9 @@ void function Flowstate_1v1EnemyChanged( entity player, entity oldEnt, entity ne
 	if( player != localPlayer )
 		return
 	
-	#if DEVELOPER
-		printw( "Flowstate_1v1EnemyChanged ", newEnt, actuallyChanged )
-	#endif
+	// #if DEVELOPER
+		// printw( "Flowstate_1v1EnemyChanged ", newEnt, actuallyChanged )
+	// #endif
 	
 	if ( !IsValid( localPlayer ) || !IsValid( newEnt ) || !newEnt.IsPlayer() || localPlayer != GetLocalViewPlayer() )
 	{

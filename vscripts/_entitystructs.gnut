@@ -885,7 +885,7 @@ global struct ServerPlayerStruct
 	string weapon_loadout 		= "NA"
 	bool lock1v1_setting 		= true
 	bool start_in_rest_setting 	= false
-	bool enable_input_banner 	= false
+	bool enable_input_banner 	= true
 	bool rest_request 			= false
 	bool waitingFor1v1			= false
 	bool ClientCommandsEnabled 	= true
