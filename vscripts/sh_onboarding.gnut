@@ -913,6 +913,7 @@ void function OnPlayerKilled( entity victim, entity attacker, var damageInfo )
 	if( Gamemode() != eGamemodes.CUSTOM_CTF && Gamemode() != eGamemodes.fs_snd )
 		__IncrementPlayerNetInt( victim, "deaths" )
 	
+	victim.ClearParent()
 	victim.FreezeControlsOnServer()
 	
 	victim.SetPredictionEnabled( false )
