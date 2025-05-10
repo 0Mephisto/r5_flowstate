@@ -332,7 +332,7 @@ WeaponData
 		}
 		bullets_mag_l2
 		{
-			"ammo_clip_size" 					"285"
+			"ammo_clip_size" 					"28"
 		}
 		bullets_mag_l3
 		{
