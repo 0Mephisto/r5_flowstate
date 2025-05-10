@@ -22,6 +22,8 @@ playlists
 				flowstate_see_enemies_in_minimap				0 //Radar
 				replay_disabled									1 //For Survival modes
 				
+				enable_global_chat								1 //Enables global chat
+				
 				enable_grapple_recovers_banner						0
 				gibraltar_fast_revive								1
 				enable_mirage_revive_cloak_upgrade					0
@@ -42,7 +44,7 @@ playlists
 				bleedout_infinite_self_res_only_with_living_squad	1
 				bleedout_infinite_self_res_eliminate_with_self_res	1
 				
-				flowstate_rat_wipe_notification							0
+				flowstate_rat_wipe_notification					0
 				flowstate_enable_health_bars 					1
 				flowstate_enable_editor_hud						0
 				flowstate_force_softened_locale					1		//Removes blood sprays and blood shot fx
@@ -579,7 +581,7 @@ playlists
 			vars
 			{
 				visible											1
-				flowstate_mod_active							0
+				flowstate_mod_active							1
 
 				name											"AimTrainer"
 				description										"AimTrainer"
@@ -614,13 +616,6 @@ playlists
 
 				// General Gamemode Settings:
 				match_ending_enabled							0
-				
-				// Firing Range:
-				survival_firingrange							1
-				staging_ultimates_enabled						1
-				survival_staging_area_enabled					0
-				
-				
 				
 				firingrange_aimtrainerbycolombia				1
 				aimtrainer_enableSkins							1
@@ -719,7 +714,7 @@ playlists
 				mp_rr_desertlands_64k_x_64k_tt					1
 			} } }
 		}
-
+		
 		fs_snd
 		{
 			inherit survival
@@ -1433,7 +1428,6 @@ playlists
 
 				//visuals
 				flowstateForceCharacter 						1	//It enables the following settings
-				// 11 blisk, 12 fade, 13 amogus, 14 rhapsody, 15 ash, 16 jack cooper, 17 loba, 18 revenant, 19 ballistic, 20 marvin, 21 pete
 				flowstateChosenCharacter 						8	// 0 Bang// 1 Bloodhound// 2 Caustic// 3 Gibby// 4 Lifeline// 5 Mirage// 6 Octane// 7 Pathy// 8 Wraith// 9 Watty// 10 Crypto
 				flowstateForceAdminCharacter					0
 				flowstateChosenAdminCharacter					0	// 0 Bang// 1 Bloodhound// 2 Caustic// 3 Gibby// 4 Lifeline// 5 Mirage// 6 Octane// 7 Pathy// 8 Wraith// 9 Watty// 10 Crypto
@@ -1582,7 +1576,6 @@ playlists
 
 				//visuals
 				flowstateForceCharacter 						1	//It enables the following settings
-				// 11 blisk, 12 fade, 13 amogus, 14 rhapsody, 15 ash, 16 jack cooper, 17 loba, 18 revenant, 19 ballistic, 20 marvin, 21 pete
 				flowstateChosenCharacter 						8	// 0 Bang// 1 Bloodhound// 2 Caustic// 3 Gibby// 4 Lifeline// 5 Mirage// 6 Octane// 7 Pathy// 8 Wraith// 9 Watty// 10 Crypto
 				flowstateForceAdminCharacter					0
 				flowstateChosenAdminCharacter					0	// 0 Bang// 1 Bloodhound// 2 Caustic// 3 Gibby// 4 Lifeline// 5 Mirage// 6 Octane// 7 Pathy// 8 Wraith// 9 Watty// 10 Crypto
@@ -1732,7 +1725,6 @@ playlists
 
 				//visuals
 				flowstateForceCharacter 						1	//It enables the following settings
-				// 11 blisk, 12 fade, 13 amogus, 14 rhapsody, 15 ash, 16 jack cooper, 17 loba, 18 revenant, 19 ballistic, 20 marvin, 21 pete
 				flowstateChosenCharacter 						8	// 0 Bang// 1 Bloodhound// 2 Caustic// 3 Gibby// 4 Lifeline// 5 Mirage// 6 Octane// 7 Pathy// 8 Wraith// 9 Watty// 10 Crypto
 				flowstateForceAdminCharacter					0
 				flowstateChosenAdminCharacter					0	// 0 Bang// 1 Bloodhound// 2 Caustic// 3 Gibby// 4 Lifeline// 5 Mirage// 6 Octane// 7 Pathy// 8 Wraith// 9 Watty// 10 Crypto
@@ -1880,7 +1872,6 @@ playlists
 
 				//visuals
 				flowstateForceCharacter 						1	//It enables the following settings
-				// 11 blisk, 12 fade, 13 amogus, 14 rhapsody, 15 ash, 16 jack cooper, 17 loba, 18 revenant, 19 ballistic, 20 marvin, 21 pete
 				flowstateChosenCharacter 						8	// 0 Bang// 1 Bloodhound// 2 Caustic// 3 Gibby// 4 Lifeline// 5 Mirage// 6 Octane// 7 Pathy// 8 Wraith// 9 Watty// 10 Crypto
 				flowstateForceAdminCharacter					0
 				flowstateChosenAdminCharacter					0	// 0 Bang// 1 Bloodhound// 2 Caustic// 3 Gibby// 4 Lifeline// 5 Mirage// 6 Octane// 7 Pathy// 8 Wraith// 9 Watty// 10 Crypto
@@ -2014,7 +2005,6 @@ playlists
 
 				//visuals
 				flowstateForceCharacter 						1	//It enables the following settings
-				// 11 blisk, 12 fade, 13 amogus, 14 rhapsody, 15 ash, 16 jack cooper, 17 loba, 18 revenant, 19 ballistic, 20 marvin, 21 pete
 				flowstateChosenCharacter 						9	// 0 Bang// 1 Bloodhound// 2 Caustic// 3 Gibby// 4 Lifeline// 5 Mirage// 6 Octane// 7 Pathy// 8 Wraith// 9 Watty// 10 Crypto
 
 				//visuals
@@ -2090,7 +2080,6 @@ playlists
 				survival_custom_deploy			 				1
 
 				flowstateForceCharacter 						1	//It enables the following settings
-				// 11 blisk, 12 fade, 13 amogus, 14 rhapsody, 15 ash, 16 jack cooper, 17 loba, 18 revenant, 19 ballistic, 20 marvin, 21 pete
 				flowstateChosenCharacter 						8	// 0 Bang// 1 Bloodhound// 2 Caustic// 3 Gibby// 4 Lifeline// 5 Mirage// 6 Octane// 7 Pathy// 8 Wraith// 9 Watty// 10 Crypto
 				
 				flowstate_1v1mode								1
@@ -2243,7 +2232,7 @@ playlists
 				jump_from_plane_enabled							0
 				match_ending_enabled			   				0
 				redish_highlight_los                            1
-				redish_highlight_los_range						2
+				redish_highlight_los_range						20
 				
 				//No circle:
 				sur_circle_start_paused							1
@@ -2270,14 +2259,13 @@ playlists
 
 
 				flowstateForceCharacter 						1	//It enables the following settings
-				// 11 blisk, 12 fade, 13 amogus, 14 rhapsody, 15 ash, 16 jack cooper, 17 loba, 18 revenant, 19 ballistic, 20 marvin, 21 pete
 				flowstateChosenCharacter 						8	// 0 Bang// 1 Bloodhound// 2 Caustic// 3 Gibby// 4 Lifeline// 5 Mirage// 6 Octane// 7 Pathy// 8 Wraith// 9 Watty// 10 Crypto
 				
 				flowstate_1v1mode								1
 				solo_mode 										1 //this will fix the ingame player count text, so it wont display "??" in players alive (now players connected) count.
 				
 				flowstateAutoChangeLevelEnable					1
-				flowstateRoundsBeforeChangeLevel				1
+				flowstateRoundsBeforeChangeLevel				2
 				
 				flowstateAdminTgive 							0 // 0 will enable dev menu weapons for players
 				flowstate1v1MatchLoadout						0
@@ -2379,6 +2367,7 @@ playlists
 				mp_rr_arena_composite 							1
 				mp_rr_arena_phase_runner 						1
 				mp_rr_party_crasher 							1
+				mp_rr_olympus_tt								1
 			} } }
 		}
 
@@ -2415,7 +2404,7 @@ playlists
 				survival_jumpkit_enabled		   				0
 				survival_wallrun_enabled		   				0
 				redish_highlight_los                            1
-				redish_highlight_los_range						2
+				redish_highlight_los_range						20
 				
 				survival_infinite_ammo			 				1
 				survival_custom_deploy			 				1
@@ -2440,7 +2429,6 @@ playlists
 				
 				
 				flowstateForceCharacter 						1	//It enables the following settings
-				// 11 blisk, 12 fade, 13 amogus, 14 rhapsody, 15 ash, 16 jack cooper, 17 loba, 18 revenant, 19 ballistic, 20 marvin, 21 pete
 				flowstateChosenCharacter 						8	// 0 Bang// 1 Bloodhound// 2 Caustic// 3 Gibby// 4 Lifeline// 5 Mirage// 6 Octane// 7 Pathy// 8 Wraith// 9 Watty// 10 Crypto
 				
 				flowstate_1v1mode								1
@@ -2448,7 +2436,7 @@ playlists
 				flowstateRoundtime 								800
 				
 				flowstateAutoChangeLevelEnable					1
-				flowstateRoundsBeforeChangeLevel				1
+				flowstateRoundsBeforeChangeLevel				2
 				
 				flowstateAdminTgive 							0 //admin is for tgive only, 1 will enable dev menu weapons for players
 				flowstate1v1MatchLoadout						0
@@ -2552,7 +2540,6 @@ playlists
 				
 
 				flowstateForceCharacter 						1	//It enables the following settings
-				// 11 blisk, 12 fade, 13 amogus, 14 rhapsody, 15 ash, 16 jack cooper, 17 loba, 18 revenant, 19 ballistic, 20 marvin, 21 pete
 				flowstateChosenCharacter 						8	// 0 Bang// 1 Bloodhound// 2 Caustic// 3 Gibby// 4 Lifeline// 5 Mirage// 6 Octane// 7 Pathy// 8 Wraith// 9 Watty// 10 Crypto
 				
 				flowstate_1v1mode								1
@@ -2560,7 +2547,7 @@ playlists
 				flowstateRoundtime 								800
 				
 				flowstateAutoChangeLevelEnable					1
-				flowstateRoundsBeforeChangeLevel				1
+				flowstateRoundsBeforeChangeLevel				2
 				
 				flowstateAdminTgive 							0 //admin is for tgive only, 0 will enable dev menu weapons for players
 				flowstate1v1MatchLoadout						0
@@ -2706,7 +2693,6 @@ playlists
 				
 				
 				flowstateForceCharacter 						1	//It enables the following settings
-				// 11 blisk, 12 fade, 13 amogus, 14 rhapsody, 15 ash, 16 jack cooper, 17 loba, 18 revenant, 19 ballistic, 20 marvin, 21 pete
 				flowstateChosenCharacter 						8	// 0 Bang// 1 Bloodhound// 2 Caustic// 3 Gibby// 4 Lifeline// 5 Mirage// 6 Octane// 7 Pathy// 8 Wraith// 9 Watty// 10 Crypto
 				
 				flowstate_1v1mode								1
@@ -2714,7 +2700,7 @@ playlists
 				flowstateRoundtime 								600
 				
 				flowstateAutoChangeLevelEnable					1
-				flowstateRoundsBeforeChangeLevel				1
+				flowstateRoundsBeforeChangeLevel				2
 				
 				flowstateAdminTgive 							1 //admin is for tgive only, 0 will enable dev menu weapons for players
 				flowstate1v1MatchLoadout						0
@@ -2949,7 +2935,7 @@ playlists
 				charselect_intro_countdown_duration				0.0
 				solo_mode 										1
 				
-				enable_global_chat								1
+				enable_global_chat								0
 				flowstate_enable_punch_boosting					0
 				r5reloaded_AnimatedCharacterSelect				0
 				flowstate_spectator_team_only					0
@@ -3508,6 +3494,7 @@ playlists
 				activate_passive_abilities				1
 				enable_motd										0
 				flowstate_mod_active							0
+				enable_global_chat								0
 			}
 			gamemodes { survival { maps {
 				mp_rr_desertlands_64k_x_64k						1
@@ -3567,6 +3554,7 @@ playlists
 				activate_passive_abilities				1
 				enable_motd										0
 				flowstate_mod_active							0
+				enable_global_chat								0
 			}
 			gamemodes { survival { maps {
 				mp_rr_desertlands_64k_x_64k						1
@@ -3629,6 +3617,7 @@ playlists
 				activate_passive_abilities				1
 				enable_motd										0
 				flowstate_mod_active							0
+				enable_global_chat								0
 
 			}
 			gamemodes { survival { maps {
