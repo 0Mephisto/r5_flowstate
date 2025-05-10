@@ -24,7 +24,7 @@ function ClassWallrun_Init()
 {
 	//(mk): use local copy of values instead of lookups
 	
-	file.enable_bullet_slow = GetCurrentPlaylistVarBool( "flowstate_enable_bullet_slow", false )
+	file.enable_bullet_slow = GetCurrentPlaylistVarBool( "enable_bullet_slow", false )
 	file.flowstate_headshots_only_gamemode = GetCurrentPlaylistVarBool( "flowstate_headshots_only_gamemode", false )
 	file.helmet_lv4 = GetCurrentPlaylistVarFloat( "helmet_lv4", 0.65 )
 	file.helmet_lv3 = GetCurrentPlaylistVarFloat( "helmet_lv3", 0.65 )
