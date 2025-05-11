@@ -141,6 +141,7 @@ void function LGUN_Airborne( entity player )
 	Signal( player, "RestartAirborne" )
 	EndSignal( player, "RestartAirborne" )
 	EndSignal( player, "OnDeath" )
+	EndSignal( player, "OnDestroy" )
 	
 	player.SetOneHandedWeaponUsageOn()
 	EmitSoundOnEntityExceptToPlayer( player, player, "boost_freefall_body_3p" )
@@ -152,27 +153,30 @@ void function LGUN_Airborne( entity player )
 	int team                  = player.GetTeam()
 	foreach ( attachment in attachments )
 	{
-		int friendlyID    = GetParticleSystemIndex( TEAM_JUMPJET_DBL )
-		entity friendlyFX = StartParticleEffectOnEntity_ReturnEntity( player, friendlyID, FX_PATTACH_POINT_FOLLOW, player.LookupAttachment( attachment ) )
-		friendlyFX.SetOwner( player )
-		SetTeam( friendlyFX, team )
-		
-		friendlyFX.RemoveFromAllRealms()
-		friendlyFX.AddToOtherEntitysRealms( player )
-		
-		friendlyFX.kv.VisibilityFlags = (ENTITY_VISIBLE_TO_FRIENDLY | ENTITY_VISIBLE_TO_ENEMY)
-		jumpJetFXs.append( friendlyFX )
+		if( player.LookupAttachment( "vent_left" ) > 0 && player.LookupAttachment( "vent_right" ) > 0 ) // todo(cafe): find which model is triggering the lack of jumpjet attachments
+		{
+			int friendlyID    = GetParticleSystemIndex( TEAM_JUMPJET_DBL )
+			entity friendlyFX = StartParticleEffectOnEntity_ReturnEntity( player, friendlyID, FX_PATTACH_POINT_FOLLOW, player.LookupAttachment( attachment ) )
+			friendlyFX.SetOwner( player )
+			SetTeam( friendlyFX, team )
+			
+			friendlyFX.RemoveFromAllRealms()
+			friendlyFX.AddToOtherEntitysRealms( player )
+			
+			friendlyFX.kv.VisibilityFlags = (ENTITY_VISIBLE_TO_FRIENDLY | ENTITY_VISIBLE_TO_ENEMY)
+			jumpJetFXs.append( friendlyFX )
 
-		int enemyID    = GetParticleSystemIndex( ENEMY_JUMPJET_DBL )
-		entity enemyFX = StartParticleEffectOnEntity_ReturnEntity( player, enemyID, FX_PATTACH_POINT_FOLLOW, player.LookupAttachment( attachment ) )
-		enemyFX.SetOwner( player )
-		SetTeam( enemyFX, team )
-		enemyFX.kv.VisibilityFlags = (ENTITY_VISIBLE_TO_FRIENDLY | ENTITY_VISIBLE_TO_ENEMY)
+			int enemyID    = GetParticleSystemIndex( ENEMY_JUMPJET_DBL )
+			entity enemyFX = StartParticleEffectOnEntity_ReturnEntity( player, enemyID, FX_PATTACH_POINT_FOLLOW, player.LookupAttachment( attachment ) )
+			enemyFX.SetOwner( player )
+			SetTeam( enemyFX, team )
+			enemyFX.kv.VisibilityFlags = (ENTITY_VISIBLE_TO_FRIENDLY | ENTITY_VISIBLE_TO_ENEMY)
 
-		enemyFX.RemoveFromAllRealms()
-		enemyFX.AddToOtherEntitysRealms( player )
-		
-		jumpJetFXs.append( enemyFX )
+			enemyFX.RemoveFromAllRealms()
+			enemyFX.AddToOtherEntitysRealms( player )
+			
+			jumpJetFXs.append( enemyFX )
+		}
 	}
 	
 	OnThreadEnd(
