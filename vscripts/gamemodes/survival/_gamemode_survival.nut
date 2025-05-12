@@ -132,7 +132,7 @@ struct
 } file
 
 void function GamemodeSurvival_Init()
-{	
+{
 	if(GetCurrentPlaylistVarBool("enable_global_chat", true))
 		SetConVarBool("sv_forceChatToTeamOnly", false) //thanks rexx
 	else
@@ -145,7 +145,6 @@ void function GamemodeSurvival_Init()
 	FlagInit( "PlaneStartMoving" )
 	FlagInit( "PlaneDoorOpen" )
 	FlagInit( "PlaneAtLaunchPoint" )
-	FlagInit( "DeathCircleActive" )
 	FlagInit( "SpawnInDropship", false )
 	FlagInit( "PlaneDrop_Respawn_SetUseCallback", false )
 
@@ -440,6 +439,16 @@ void function EntitiesDidLoad_Survival()
 	//defaulting to false crashes survival game modes expecting a plane
 	if( GetCurrentPlaylistVarBool( "jump_from_plane_enabled", true ) || GetCurrentPlaylistVarBool( "force_plane_to_spawn_without_players", false ) )
 		thread Survival_RunPlaneLogic_Thread( Survival_GenerateSingleRandomPlanePath, Survival_RunSinglePlanePath_Thread, false )
+	else
+	{
+		if ( GetCurrentPlaylistVarBool( "survival_deathfield_enabled", true ) )
+			FlagSet( "DeathCircleActive" )
+
+		if ( GetCurrentPlaylistVarBool( "sur_circle_start_paused", false ) )
+		{
+			FlagSet( "DeathFieldPaused" )
+		}
+	}
 }
 
 void function Survival_RunPlaneLogic_Thread( array< PlanePathData > functionref( bool, int = 0 ) generatePlanePathFunc, void functionref( array< PlanePathData >, int = 0 ) runPlanePathFunc, bool beQuick, int planeInt = 0 )
@@ -824,7 +833,7 @@ void function Survival_RunSinglePlanePath_Thread( array< PlanePathData > paths, 
 
 	if ( GetCurrentPlaylistVarBool( "sur_circle_start_paused", false ) )
 	{
-		FlagClear( "DeathFieldPaused" )
+		FlagSet( "DeathFieldPaused" )
 	}
 }
 
@@ -1304,10 +1313,6 @@ void function OnPlayerDamaged( entity victim, var damageInfo )
 //Centralized start bleedout
 int function CodeCallback_KillDamagePlayerOrNPC( entity ent, var damageInfo, int actualTotalDamage )
 {
-	#if DEVELOPER
-	Warning( "CodeCallback_KillDamagePlayerOrNPC " + ent + " actualTotalDamage " + actualTotalDamage )
-	#endif
-
 	entity damagedEnt = ent
 
 	if ( !damagedEnt.IsPlayer() )

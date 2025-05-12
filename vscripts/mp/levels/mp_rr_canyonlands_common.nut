@@ -250,12 +250,15 @@ void function EntitiesDidLoad()
 
 void function __EntitiesDidLoad()
 {
-	waitthread FindHoverTankEndNodes()
-	SpawnHoverTanks()
+	//Moved to Playing Game State due to some changes in survival deathfield. Cafe
+	// FlagWait( "DeathCircleSetup" )
+	// waitthread FindHoverTankEndNodes()
+	// SpawnHoverTanks()
 
-	if ( GetCurrentPlaylistVarBool( "enable_nessies", false ) )
-		Nessies()
+	// if ( GetCurrentPlaylistVarBool( "enable_nessies", false ) )
+		// Nessies()
 
+	// FlagSet( "IntroHovertanksSet" )
 	//DestroyHoverTankNodes()
 }
 
@@ -467,6 +470,10 @@ void function HoverTanksOnGamestatePlaying()
 void function HoverTanksOnGamestatePlaying_Thread()
 {
 	FlagWait( "Survival_LootSpawned" )
+	FlagWait( "DeathCircleSetup" )
+	
+	waitthread FindHoverTankEndNodes()
+	SpawnHoverTanks()
 
 	if ( GetCurrentPlaylistVarInt( "canyonlands_hovertank_flyin", 1 ) == 1 )
 	{
@@ -483,7 +490,8 @@ void function HoverTanksOnGamestatePlaying_Thread()
 		TeleportHoverTanksIntoPosition( file.hoverTanksIntro, HOVER_TANKS_TYPE_INTRO )
 	}
 
-	FlagSet( "IntroHovertanksSet" )
+	if ( GetCurrentPlaylistVarBool( "enable_nessies", false ) )
+		Nessies()
 }
 
 void function HoverTanksOnDeathFieldStageChanged( int stage, float nextCircleStartTime )
