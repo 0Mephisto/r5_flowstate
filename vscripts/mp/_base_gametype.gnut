@@ -96,6 +96,17 @@ function BaseGametype_Init()
 	BaseGametype_Init_MPSP()
 
 	FS_InitCommunityHeirlooms()	
+
+	if(GetCurrentPlaylistVarBool("enable_global_chat", true))
+	{
+		SetConVarBool("sv_overrideTeamChatRestriction", true)
+		SetConVarBool("sv_forceChatToTeamOnly", false)
+	}
+	else
+	{
+		SetConVarBool("sv_overrideTeamChatRestriction", false)
+		SetConVarBool("sv_forceChatToTeamOnly", true)
+	}
 	//AddCallback_OnTitanBecomesPilot( OnTitanBecomesPilot_OutOfBoundsCheck ) //disabled for r5r
 }
 
