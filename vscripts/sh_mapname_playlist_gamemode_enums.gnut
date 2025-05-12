@@ -122,7 +122,11 @@ global enum ePlaylists
 	fs_realistic_ttv, //45
 	fs_1v1_coaching, //46
 	fs_haloMod_survival, //47
-	fs_strafeitmovementmappractice //48
+	fs_strafeitmovementmappractice, //48
+	fs_spieslegends, //49,
+	fs_knockbackknockout, //50
+	fs_onlyup, //51
+	fs_nextbots, //52
 	
 	_PLAYLISTS_COUNT //LAST
 }
@@ -144,6 +148,7 @@ global enum eGamemodes
 	map_editor_deprecated, //12
 	fs_apexkart, //13
 	WINTEREXPRESS, //14	
+	fs_spieslegends, //15
 	
 	_GAMEMODES_COUNT //LAST
 }
