@@ -5738,6 +5738,7 @@ void function PIN_Init()
 	{ 
 		__PlayerAdminsInit()
 		AddClientCommandCallback( "cc", ClientCommand_mkos_admin ) 
+		AddCallback_OnClientConnected( CheckAdmin_OnConnect )
 	}
 	
 	if( GetCurrentPlaylistVarBool( "enable_motd", false ) )

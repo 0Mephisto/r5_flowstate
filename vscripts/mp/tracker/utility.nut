@@ -40,6 +40,7 @@ global function DEV_PrintTrackerWeapons
 global function __PlayerAdminsInit
 global function ClientCommand_mkos_return_data
 global function ClientCommand_mkos_admin
+global function CheckAdmin_OnConnect
 
 //ibmm util ( Todo: rework how this is done )
 global function GetDefaultIBMM
@@ -411,8 +412,6 @@ struct
 		{
 			sqerror( "Error with adminpair:", pair, "Error:", erradmin )
 		}
-		
-		AddCallback_OnClientConnected( CheckAdmin_OnConnect )
 	}
 	
 	array<string> function GetAdminList()
@@ -2248,8 +2247,9 @@ void function CheckAdmin_OnConnect( entity player )
 		player.SetPlayerNetBool( "IsAdmin", true )
 		Remote_CallFunction_UI(player, "UICallback_AdminStatus", true )
 		
-		printw( "CheckAdmin_OnConnect ADMIN DETECTED, IsAdmin netvar = TRUE, and UI VM var set" )
-	}
+		printw( "CheckAdmin_OnConnect ADMIN DETECTED", player.GetPlayerName(), "IsAdmin netvar = TRUE, and UI VM var set" )
+	} else
+		Remote_CallFunction_UI(player, "UICallback_AdminStatus", false ) //refresh
 }
 
 bool function IsAuthEnabled()
