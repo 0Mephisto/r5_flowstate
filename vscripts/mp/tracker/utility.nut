@@ -366,7 +366,7 @@ struct
 		
 
 	void function __PlayerAdminsInit()
-	{	
+	{
 		if( !IsAuthEnabled() )
 			sqwarning( "WARNING: Client Command Admin is enabled but online auth is disabled" )
 	
@@ -396,7 +396,7 @@ struct
 			array<string> list = StringToArray( admins_list )
 			
 			foreach ( admin_pair in list ) //backwards compat
-			{	
+			{
 				pair = admin_pair			
 				if( admin_pair.find( "-" ) != -1 )
 				{
@@ -2244,7 +2244,12 @@ void function CheckAdmin_OnConnect( entity player )
 		return
 	
 	if( IsServerAdmin( player.GetPlatformUID() ) ) //use new oid list
+	{
 		player.SetPlayerNetBool( "IsAdmin", true )
+		Remote_CallFunction_UI(player, "UICallback_AdminStatus", true )
+		
+		printw( "CheckAdmin_OnConnect ADMIN DETECTED, IsAdmin netvar = TRUE, and UI VM var set" )
+	}
 }
 
 bool function IsAuthEnabled()

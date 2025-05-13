@@ -628,16 +628,6 @@ void function UICodeCallback_FullyConnected( string levelname )
 		uiGlobal.matchPinData = {}
 
 	file.TEMP_circularReferenceCleanupEnabled = GetCurrentPlaylistVarBool( "circular_reference_cleanup_enabled", true )
-	
-	thread function () : ()
-	{
-		wait 1 //!FIXME Cafe
-		if( CanRunClientScript() )
-		{
-			RunClientScript( "FS_RegisterAdmin" )
-			ClearRecordings()
-		}
-	}()
 }
 
 

@@ -182,6 +182,8 @@ void function CoachingMenuOnNavBack()
 
 void function ClearRecordings()
 {
+	printw( "ClearRecordings coaching" )
+	
 	file.coachingRecordingList.clear()
 }
 

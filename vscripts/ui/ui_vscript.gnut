@@ -517,25 +517,16 @@ void function Load_Level_based_UIGlobals()
 
 void function UICallback_AdminStatus( bool status )
 {
+	#if DEVELOPER
+	printw( "UICallback_AdminStatus", status )
+	#endif
 	uiGlobal.bIsServerAdmin = status
+	
+	if( Playlist() == ePlaylists.fs_1v1_coaching )
+	{
+		ClearRecordings()
+	}
 }
-
-/* 
-void function RefreshAdminStatus()
-{
-	entity player = GetLocalClientPlayer()
-	thread( void function () : ( player )
-		{
-			EndSignal( player, "OnDestroy" )
-			
-			while( !IsFullyConnected() )
-				WaitFrame()
-			
-			RunClientScript("FS_RegisterAdmin" , player )
-		
-		}())
-} 
-*/
 
 void function ResetDefaults()
 {

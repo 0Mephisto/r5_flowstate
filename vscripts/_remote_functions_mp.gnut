@@ -1104,6 +1104,7 @@ void function RemoteFunctions_Init_Begin()
 	
 	// Client-side helper (not permissive)
 	ScriptRegisterNetworkedVariable( "IsAdmin", SNDC_PLAYER_EXCLUSIVE, SNVT_BOOL, false )
+	ScriptRemote_RegisterUIFunction( "UICallback_AdminStatus", "bool" )
 	
 	//r5r.dev player stats
 	ScriptRemote_RegisterClientFunction( "Tracker_SetPlayerStatBool", "entity", "bool" )
