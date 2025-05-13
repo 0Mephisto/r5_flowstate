@@ -497,6 +497,11 @@ void function Cl_OnResolutionChanged()
 	{
 		FS_1v1_ToggleUIVisibility( true, player.GetPlayerNetEnt( "FSDM_1v1_Enemy" ) )
 	}
+	
+	if( Playlist() == ePlaylists.fs_1v1_coaching )
+	{
+		ReloadRecordingsList()
+	}
 }
 
 void function Flowstate_RoundEndTimeChanged( entity player, float old, float new, bool actuallyChanged )

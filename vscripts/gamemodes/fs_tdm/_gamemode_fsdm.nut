@@ -1093,6 +1093,12 @@ void function _OnPlayerConnected(entity player)
 	{
 		Gamemode1v1_SetPlayerGamestate( player, e1v1State.MATCH_START  )
 	}
+	
+	if( Playlist() == ePlaylists.fs_1v1_coaching )
+	{
+		Remote_CallFunction_UI(player, "ClearRecordings" )
+		ReloadRecordingsList_Server( player )
+	}
 }
 
 bool function is1v1EnabledAndAllowed()

@@ -11,6 +11,9 @@ global function GetStartNewGameBool
 global function SetStartNewGameBool
 
 global function bIsCoachingMode
+global function ReloadRecordingsList_Server
+
+global function Recordings_SetPlaybackRate
 #endif
 
 #if CLIENT
@@ -20,6 +23,8 @@ global function CC_StartNewGame
 global function Flowstate_OpenCoachingMenu
 global function Flowstate_CloseCoachingMenu
 global function Flowstate_AddRecordingIdentifierToClient
+
+global function ReloadRecordingsList
 #endif
 
 struct recordingInfo_Identifier
@@ -37,6 +42,11 @@ struct
 
 	table< int, array< var > > recordingAnims
 	table< int, array< recordingInfo > > recordingAnimsInfo
+	
+	float adminSetPlaybackRate = 1.0
+	
+	entity adminDummy
+	entity coachedPlayerDummy
 	#endif
 	
 	array< recordingInfo_Identifier > recordingsIdentifiers //len should be the same as recordingAnims and recordingAnimsInfo
@@ -48,7 +58,8 @@ const int MAX_SLOT = 50
 void function FS_Init_1v1_Coaching()
 {
 	AddClientCommandCallback( "coaching_startnew", FS_1v1Coaching_StartNew ) //Start new game
-	AddClientCommandCallback( "coaching_playselected", FS_1v1Coaching_PlaySelected ) //Start new game
+	AddClientCommandCallback( "coaching_playselected", FS_1v1Coaching_PlaySelected ) //Play selected
+	AddClientCommandCallback( "coaching_timescale", FS_1v1Coaching_TimeScaleTest ) //Change hosttime scale
 
 	for( int i = 0; i < MAX_SLOT; i++ )
 	{
@@ -61,6 +72,9 @@ void function FS_Init_1v1_Coaching()
 	}
 	
 	AddCallback_OnWeaponAttack( FS_Coaching_RecordWeaponShot )
+	//test
+	SetConVarInt( "script_server_fps", 60 )
+	SetConVarFloat( "base_tickinterval_mp", 0.0166667 )
 }
 
 bool function bIsCoachingMode()
@@ -135,6 +149,27 @@ bool function FS_1v1Coaching_StartNew(entity player, array<string> args )
 		
 		splayer.p.playerisready = false
 	}
+	return true
+}
+
+// requires sv_cheats 1
+bool function FS_1v1Coaching_TimeScaleTest(entity player, array<string> args )
+{
+	if( !IsValid(player) )
+		return false
+	
+	if( !IsAdmin(player) )
+	{
+		Message_New(player, "ONLY FOR ADMIN")
+		return false
+	}
+	
+	if( args.len() != 1 || !IsStringNumeric(args[0]) )
+		return false
+	
+	float scale = args[0].tofloat()
+	
+	ServerCommand( "host_timescale " + scale )
 	return true
 }
 
@@ -222,7 +257,10 @@ bool function FS_1v1Coaching_PlaySelected(entity player, array<string> args )
 	entity coachedPlayerDummy = CreateDummy( 99, coachedPlayerStartingPos.origin, coachedPlayerStartingPos.angles )
 	SetCommonDummyLines( adminDummy, admin )
 	SetCommonDummyLines( coachedPlayerDummy, coachedPlayer )
-
+	
+	file.adminDummy = adminDummy
+	file.coachedPlayerDummy = coachedPlayerDummy
+	
 	adminDummy.PlayRecordedAnimation( file.recordingAnims[matchIdentifier][0], adminStartingPos.origin, adminStartingPos.angles )
 	coachedPlayerDummy.PlayRecordedAnimation( file.recordingAnims[matchIdentifier][1], coachedPlayerStartingPos.origin, coachedPlayerStartingPos.angles )
 	
@@ -265,20 +303,41 @@ bool function FS_1v1Coaching_PlaySelected(entity player, array<string> args )
 			}
 		)
 		
-		wait GetRecordedAnimationDuration( file.recordingAnims[matchIdentifier][0] )
+		//HACK, wait for anim to finish
+		waitthread function () : ( matchIdentifier, adminDummy )
+		{
+			if( adminDummy.GetCurrentSequenceName() == "ref" )
+				while( IsValid( adminDummy ) && adminDummy.GetCurrentSequenceName() == "ref" ) //it will always start with two or three ref frames
+					WaitFrame()
+			
+			while( IsValid( adminDummy ) && adminDummy.GetCurrentSequenceName() != "ref" )
+				WaitFrame()
+		}()
 		
-		//Can't change playback rate after this point
-
 		if( IsValid( adminDummy ) )
 			adminDummy.Destroy()
 				
 		if( IsValid( coachedPlayerDummy ) )
 			coachedPlayerDummy.Destroy()
 
-		wait 3
+		wait 1
 	}()
 	return true
 }
+
+//The problem with this approach is that there is something bad in the engine Anim Recording functs that causes anim to change
+//current position when you change the playbackrate mid anim
+void function Recordings_SetPlaybackRate( float value )
+{
+	file.adminSetPlaybackRate = value
+	
+	if( IsValid( file.coachedPlayerDummy ) )
+		file.coachedPlayerDummy.SetRecordedAnimationPlaybackRate( file.adminSetPlaybackRate )
+	
+	if( IsValid( file.adminDummy ) )
+		file.adminDummy.SetRecordedAnimationPlaybackRate( file.adminSetPlaybackRate )
+}
+
 void function PlayPlayerShots( entity dummyPlayer, recordingInfo shotsData )
 {
 	EndSignal( dummyPlayer, "OnDestroy" )
@@ -294,9 +353,8 @@ void function PlayPlayerShots( entity dummyPlayer, recordingInfo shotsData )
 
 		if( deltaTime > 0 )
 		{
-			wait deltaTime - FrameTime()
+			wait deltaTime - (FrameTime() * 0.25) 
 		}
-	
 		
 		if( shot.weaponName != oldweapon )
 		{
@@ -467,6 +525,15 @@ void function SetStartNewGameBool( bool start )
 {
 	file.forceStartNewGame = start
 }
+
+void function ReloadRecordingsList_Server( entity player )
+{
+	foreach( recordingIdentifier in file.recordingsIdentifiers )
+	{
+		Remote_CallFunction_NonReplay(player, "Flowstate_AddRecordingIdentifierToClient", recordingIdentifier.index, recordingIdentifier.duration, recordingIdentifier.dateTime, recordingIdentifier.winnerHandle )
+	}
+}
+
 #endif
 
 #if CLIENT
@@ -512,4 +579,13 @@ void function Flowstate_AddRecordingIdentifierToClient( int index, float duratio
 	
 	RunUIScript( "UI_Flowstate_AddRecordingIdentifierToClient", index, duration, dateTime, winnerHandle )
 }
+
+void function ReloadRecordingsList()
+{
+	foreach( recording in file.recordingsIdentifiers )
+	{
+		RunUIScript( "UI_Flowstate_AddRecordingIdentifierToClient", recording.index, recording.duration, recording.dateTime, recording.winnerHandle )
+	}
+}
+
 #endif

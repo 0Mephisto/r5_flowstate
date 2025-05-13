@@ -521,11 +521,6 @@ void function UICallback_AdminStatus( bool status )
 	printw( "UICallback_AdminStatus", status )
 	#endif
 	uiGlobal.bIsServerAdmin = status
-	
-	if( Playlist() == ePlaylists.fs_1v1_coaching )
-	{
-		ClearRecordings()
-	}
 }
 
 void function ResetDefaults()

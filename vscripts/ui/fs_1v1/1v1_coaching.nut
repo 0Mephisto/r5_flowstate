@@ -99,6 +99,13 @@ void function UI_Open1v1CoachingMenu()
 
 		Hud_SetVisible( file.buttonStartNewText, false )
 		Hud_SetVisible( file.buttonCloseText, false )
+	} else
+	{
+		Hud_SetVisible( file.buttonStartNew, true )
+		Hud_SetVisible( file.buttonClose, true )
+
+		Hud_SetVisible( file.buttonStartNewText, true )
+		Hud_SetVisible( file.buttonCloseText, true )
 	}
 	
 	if( file.coachingRecordingList.len() == 0 )
