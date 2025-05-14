@@ -47,6 +47,7 @@ struct
 	
 	entity adminDummy
 	entity coachedPlayerDummy
+	int recordingPlaying
 	#endif
 	
 	array< recordingInfo_Identifier > recordingsIdentifiers //len should be the same as recordingAnims and recordingAnimsInfo
@@ -60,6 +61,8 @@ void function FS_Init_1v1_Coaching()
 	AddClientCommandCallback( "coaching_startnew", FS_1v1Coaching_StartNew ) //Start new game
 	AddClientCommandCallback( "coaching_playselected", FS_1v1Coaching_PlaySelected ) //Play selected
 	AddClientCommandCallback( "coaching_timescale", FS_1v1Coaching_TimeScaleTest ) //Change hosttime scale
+	AddClientCommandCallback( "coaching_stop", FS_1v1Coaching_StopRecording ) //Stop the current recording playing
+	AddClientCommandCallback( "coaching_startagain", FS_1v1Coaching_StartAgain ) //Start again the current recording
 
 	for( int i = 0; i < MAX_SLOT; i++ )
 	{
@@ -173,6 +176,52 @@ bool function FS_1v1Coaching_TimeScaleTest(entity player, array<string> args )
 	return true
 }
 
+bool function FS_1v1Coaching_StopRecording(entity player, array<string> args )
+{
+	if( !IsValid(player) )
+		return false
+	
+	if( !IsAdmin(player) )
+	{
+		Message_New(player, "ONLY FOR ADMIN")
+		return false
+	}
+	
+	if( IsValid( file.adminDummy ) )
+	{
+		file.adminDummy.Destroy()
+		return true
+	}
+	
+	return false
+}
+
+bool function FS_1v1Coaching_StartAgain(entity player, array<string> args )
+{
+	if( !IsValid(player) )
+		return false
+	
+	if( !IsAdmin(player) )
+	{
+		Message_New(player, "ONLY FOR ADMIN")
+		return false
+	}
+	
+	if( file.recordingPlaying != -1 )
+	{
+		if( IsValid( file.adminDummy ) )
+			file.adminDummy.Destroy()
+		
+		FS_1v1Coaching_PlaySelected( player, [file.recordingPlaying.tostring()] )
+		
+		Remote_CallFunction_NonReplay(player, "Flowstate_CloseCoachingMenu")
+		
+		return true
+	}
+	
+	return false
+}
+
 bool function FS_1v1Coaching_PlaySelected(entity player, array<string> args )
 {
 	if( !IsValid(player) )
@@ -218,7 +267,7 @@ bool function FS_1v1Coaching_PlaySelected(entity player, array<string> args )
 		Message_New( admin, "ERROR ASK CAFE TO DEBUG THIS 2" )
 		return false
 	}
-
+	
 	if( isPlayerInWaitingList( admin ) )
 	{
 		deleteWaitingPlayer( admin.p.handle )
@@ -264,6 +313,10 @@ bool function FS_1v1Coaching_PlaySelected(entity player, array<string> args )
 	adminDummy.PlayRecordedAnimation( file.recordingAnims[matchIdentifier][0], adminStartingPos.origin, adminStartingPos.angles )
 	coachedPlayerDummy.PlayRecordedAnimation( file.recordingAnims[matchIdentifier][1], coachedPlayerStartingPos.origin, coachedPlayerStartingPos.angles )
 	
+	file.recordingPlaying = matchIdentifier
+	
+	SetGlobalNetBool( "FS_Coaching_IsPlayingRecording", true )
+	
 	//admin shots
 	thread PlayPlayerShots( adminDummy, adminData )
 	
@@ -275,10 +328,19 @@ bool function FS_1v1Coaching_PlaySelected(entity player, array<string> args )
 	{
 		EndSignal( admin, "OnDestroy" )
 		EndSignal( coachedPlayer, "OnDestroy" )
+		EndSignal( adminDummy, "OnDestroy" )
 
 		OnThreadEnd(
 			function() : ( admin, coachedPlayer )
 			{
+				if( IsValid( file.coachedPlayerDummy ) )
+					file.coachedPlayerDummy.Destroy()
+				
+				if( IsValid( file.adminDummy ) )
+					file.adminDummy.Destroy()
+				
+				SetGlobalNetBool( "FS_Coaching_IsPlayingRecording", false )
+				
 				if( IsValid( admin ) )
 				{
 					ClearInvincible( admin )
@@ -314,13 +376,14 @@ bool function FS_1v1Coaching_PlaySelected(entity player, array<string> args )
 				WaitFrame()
 		}()
 		
+		//Si no se ejecuta esta parte, significa que se usó la feature "start again"
+		file.recordingPlaying = -1
+		
 		if( IsValid( adminDummy ) )
 			adminDummy.Destroy()
 				
 		if( IsValid( coachedPlayerDummy ) )
 			coachedPlayerDummy.Destroy()
-
-		wait 1
 	}()
 	return true
 }
@@ -345,6 +408,14 @@ void function PlayPlayerShots( entity dummyPlayer, recordingInfo shotsData )
 	string oldweapon
 	float previousShotTime
 	entity weapon
+
+	OnThreadEnd(
+		function() : ( weapon )
+		{
+			if( IsValid( weapon ) )
+				weapon.Destroy()
+		}
+	)
 	
 	foreach( int i, weaponShotRecord shot in shotsData.shots )
 	{

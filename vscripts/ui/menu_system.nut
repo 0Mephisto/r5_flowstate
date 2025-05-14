@@ -56,7 +56,9 @@ struct
 	table<var, ButtonData > OpenMOTD
 	table<var, ButtonData > OpenScenariosStandings
 	table<var, ButtonData > OpenChampionCard
-
+	table<var, ButtonData > CoachingStartAgain
+	table<var, ButtonData > CoachingStop
+	
 	InputDef& qaFooter
 	
 	bool SETHUNTERALLOWED
@@ -197,7 +199,9 @@ void function InitSystemPanel( var panel )
 	file.OpenMOTD[ panel ] <- clone data
 	file.OpenScenariosStandings[ panel ] <- clone data
 	file.OpenChampionCard[ panel ] <- clone data
-
+	file.CoachingStartAgain[ panel ] <- clone data
+	file.CoachingStop[ panel ] <- clone data
+	
 	file.ExitChallengeButtonData[ panel ].label = "#FS_FINISH_CHALLENGE"
 	file.ExitChallengeButtonData[ panel ].activateFunc = SignalExitChallenge
 
@@ -276,7 +280,7 @@ void function InitSystemPanel( var panel )
 	file.OpenWeaponsMenu[ panel ].label = "#FS_WEAPONS_MENU"
 	file.OpenWeaponsMenu[ panel ].activateFunc = OpenWeaponSelector
 
-	file.OpenRecordingsMenu[ panel ].label = "1v1 RECORDINGS MENU"
+	file.OpenRecordingsMenu[ panel ].label = "RECORDINGS LIST"
 	file.OpenRecordingsMenu[ panel ].activateFunc = OpenRecordingsMenu
 	
 	file.OpenMOTD[ panel ].label = "#FS_SERVER_MOTD"
@@ -287,6 +291,12 @@ void function InitSystemPanel( var panel )
 	
 	file.OpenChampionCard[ panel ].label = "#FS_OPEN_CHAMPION"
 	file.OpenChampionCard[ panel ].activateFunc = OpenChampionCard	
+
+	file.CoachingStartAgain[ panel ].label = "REPEAT RECORDING"
+	file.CoachingStartAgain[ panel ].activateFunc = OpenCoachingStartAgain	
+
+	file.CoachingStop[ panel ].label = "STOP RECORDING"
+	file.CoachingStop[ panel ].activateFunc = OpenCoachingStop
 	
 	AddPanelEventHandler( panel, eUIEvent.PANEL_SHOW, SystemPanelShow )
 }
@@ -336,6 +346,12 @@ void function UpdateSystemPanel( var panel )
 			SetButtonData( panel, buttonIndex++, file.OpenWeaponsMenu[ panel ] )
 		} else if( Playlist() == ePlaylists.fs_1v1_coaching )
 		{
+			if( GetGlobalNetBool( "FS_Coaching_IsPlayingRecording" ) && uiGlobal.bIsServerAdmin )
+			{
+				SetButtonData( panel, buttonIndex++, file.CoachingStartAgain[ panel ] )
+				SetButtonData( panel, buttonIndex++, file.CoachingStop[ panel ] )
+			}
+			
 			SetButtonData( panel, buttonIndex++, file.OpenRecordingsMenu[ panel ] )
 			SetButtonData( panel, buttonIndex++, file.OpenWeaponsMenu[ panel ] )
 		}
@@ -633,6 +649,17 @@ void function AdminDestroyDummys_MovementRecorder()
 {
 	ClientCommand( "DestroyDummys Admin" )
 }
+
+void function OpenCoachingStartAgain()
+{
+	ClientCommand( "coaching_startagain" )
+}
+
+void function OpenCoachingStop()
+{
+	ClientCommand( "coaching_stop" )
+}
+	
 
 void function ReturnToMain_OnActivate( var button )
 {

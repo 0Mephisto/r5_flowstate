@@ -433,6 +433,9 @@ void function RemoteFunctions_Init_Begin()
 				ScriptRemote_RegisterClientFunction( "Flowstate_OpenCoachingMenu" )
 				ScriptRemote_RegisterClientFunction( "Flowstate_CloseCoachingMenu" )
 				ScriptRemote_RegisterClientFunction( "Flowstate_AddRecordingIdentifierToClient", "int", INT_MIN, INT_MAX, "float", 0.0, 999999.0, 32, "float", 0.0, 999999.0, 32, "int", INT_MIN, INT_MAX ) //todo ranges
+				ScriptRemote_RegisterUIFunction( "ClearRecordings" )
+				
+				RegisterNetworkedVariable( "FS_Coaching_IsPlayingRecording", SNDC_GLOBAL, SNVT_BOOL, false )
 			}
 			
 			ScriptRegisterNetworkedVariable( "championDisplayEndTime", SNDC_GLOBAL, SNVT_TIME, -1 )
