@@ -108,6 +108,7 @@ global enum eDamageSourceId
 	// Crate Weapons
 	mp_weapon_energy_ar_crate
 	mp_weapon_energy_shotgun_crate
+	mp_weapon_doubletake_crate
 
 	mp_weapon_melee_survival
 	mp_weapon_car_r2
