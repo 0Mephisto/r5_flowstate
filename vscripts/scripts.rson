@@ -89,7 +89,7 @@ Scripts:
 	sh_survival_loot_actions.gnut
 	sh_survival_loot_types.gnut
 	sh_survival_equipment_slot.gnut
-    sh_survival_loot_distribution.gnut
+	sh_survival_loot_distribution.gnut
 	
 	sh_world_draw.gnut
 	sh_draw_register_assets.gnut
@@ -1236,12 +1236,12 @@ Scripts:
 	custom_maps/_custom_ithurtsmap.nut
 	custom_maps/_custom_rankupmap.nut
 
-    // ReMap Live
-    mp/levels/mp_rr_remap.nut
+	// ReMap Live
+	mp/levels/mp_rr_remap.nut
 	  _mapeditor.gnut
-    custom_maps/_custom_strafeitmap.nut
+	custom_maps/_custom_strafeitmap.nut
 	
-    mp/_movement_recorder_deprecated.nut
+	mp/_movement_recorder_deprecated.nut
 ]
 
 When: "CLIENT"
@@ -1277,9 +1277,9 @@ Scripts:
 When: "SERVER"
 Scripts:
 [
-    mp/_zipline_utility/_zipline_utility.gnut
-    mp/_zipline_utility/_zipline_func.gnut
-    mp/_zipline_utility/_zipline_debug.gnut
+	mp/_zipline_utility/_zipline_utility.gnut
+	mp/_zipline_utility/_zipline_func.gnut
+	mp/_zipline_utility/_zipline_debug.gnut
 ]
 
 When: "SERVER || CLIENT"
@@ -1287,7 +1287,7 @@ Scripts:
 [	
 	sh_localized_strings.nut
 	mp/_zipline_utility/sh_zipline_utility.gnut
-    mp/_zipline_utility/sh_zipline_panel.gnut
+	mp/_zipline_utility/sh_zipline_panel.gnut
 ]
 
 When: "SERVER || CLIENT || UI"
