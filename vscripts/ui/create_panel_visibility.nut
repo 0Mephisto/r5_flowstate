@@ -30,13 +30,18 @@ void function InitR5RVisPanel( var panel )
         var rui = Hud_GetRui( button )
 	    RuiSetString( rui, "buttonText", GetUIVisibilityName(vis) )
 
-		//Add the Event handler for the button
-		Hud_AddEventHandler( button, UIE_CLICK, SelectServerVis )
-		Hud_AddEventHandler( button, UIE_GET_FOCUS, OnVisHover )
-		Hud_AddEventHandler( button, UIE_LOSE_FOCUS, OnVisUnHover )
+		// If the button has not already had its event handlers registered, add them!
+		if ( !( button in file.vis_button_table ) )
+		{
+			// Add button event handlers
+			Hud_AddEventHandler( button, UIE_CLICK, SelectServerVis )
+			Hud_AddEventHandler( button, UIE_GET_FOCUS, OnVisHover )
+			Hud_AddEventHandler( button, UIE_LOSE_FOCUS, OnVisUnHover )
 
-		//Add the button and map to a table
-		file.vis_button_table[button] <- vis
+			// Store the visibility that corresponds with this button
+			// so that we can skip adding event handlers on future calls
+			file.vis_button_table[button] <- vis
+		}
 	}
 }
 

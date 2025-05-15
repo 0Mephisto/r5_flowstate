@@ -21,29 +21,27 @@ void function RefreshUIMaps()
 {
 	var scrollPanel = Hud_GetChild( file.listPanel, "ScrollPanel" )
 
-	array<string> m_vMaps = GetPlaylistMaps(ServerSettings.svPlaylist)
-	Hud_InitGridButtons( file.listPanel, m_vMaps.len() )
-	foreach ( int id, string map in m_vMaps )
+	array<string> availableMapsForPlaylist = GetPlaylistMaps(ServerSettings.svPlaylist)
+	Hud_InitGridButtons( file.listPanel, availableMapsForPlaylist.len() )
+	
+	foreach ( int id, string map in availableMapsForPlaylist )
 	{
 		var button = Hud_GetChild( scrollPanel, "GridButton" + id )
         var rui = Hud_GetRui( button )
 	    RuiSetString( rui, "buttonText", GetUIMapName(map) )
 
-        //If button already has a evenhandler remove it
-		if ( button in file.map_button_table ) {
-			Hud_RemoveEventHandler( button, UIE_CLICK, SelectServerMap )
-			Hud_RemoveEventHandler( button, UIE_GET_FOCUS, OnMapHover )
-			Hud_RemoveEventHandler( button, UIE_LOSE_FOCUS, OnMapUnHover )
-			delete file.map_button_table[button]
+		// If the button has not already had its event handlers registered, add them!
+		if ( !( button in file.map_button_table ) )
+		{
+			// Add button event handlers
+			Hud_AddEventHandler( button, UIE_CLICK, SelectServerMap )
+			Hud_AddEventHandler( button, UIE_GET_FOCUS, OnMapHover )
+			Hud_AddEventHandler( button, UIE_LOSE_FOCUS, OnMapUnHover )
+
+			// Store the map name that corresponds with this button
+			// so that we can skip adding event handlers on future calls
+			file.map_button_table[button] <- map
 		}
-
-		//Add the Even handler for the button
-		Hud_AddEventHandler( button, UIE_CLICK, SelectServerMap )
-		Hud_AddEventHandler( button, UIE_GET_FOCUS, OnMapHover )
-		Hud_AddEventHandler( button, UIE_LOSE_FOCUS, OnMapUnHover )
-
-		//Add the button and map to a table
-		file.map_button_table[button] <- map
 	}
 
 	Hud_SetHeight(Hud_GetChild(file.panel, "PanelBG"), Hud_GetHeight(file.listPanel) + 1)

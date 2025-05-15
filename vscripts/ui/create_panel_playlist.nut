@@ -21,37 +21,35 @@ void function RefreshUIPlaylists()
 {
 	var scrollPanel = Hud_GetChild( file.listPanel, "ScrollPanel" )
 
-	array<string> m_vPlaylists = GetPlaylists()
-	Hud_InitGridButtons( file.listPanel, m_vPlaylists.len() )
-	foreach ( int id, string playlist in m_vPlaylists )
+	array<string> visiblePlaylists = GetVisiblePlaylists()
+	Hud_InitGridButtons( file.listPanel, visiblePlaylists.len() )
+
+	foreach ( int id, string playlist in visiblePlaylists )
 	{
 		var button = Hud_GetChild( scrollPanel, "GridButton" + id )
         var rui = Hud_GetRui( button )
 	    RuiSetString( rui, "buttonText", GetUIPlaylistName(playlist) )
 
-        //If button already has a evenhandler remove it
-		if ( button in file.playlist_button_table ) {
-			Hud_RemoveEventHandler( button, UIE_CLICK, SelectServerPlaylist )
-			Hud_RemoveEventHandler( button, UIE_GET_FOCUS, OnPlaylistHover )
-			Hud_RemoveEventHandler( button, UIE_LOSE_FOCUS, OnPlaylistUnHover )
-			delete file.playlist_button_table[button]
+		// If the button has not already had its event handlers registered, add them!
+		if ( !( button in file.playlist_button_table ) )
+		{
+			// Add button event handlers
+			Hud_AddEventHandler( button, UIE_CLICK, SelectServerPlaylist )
+			Hud_AddEventHandler( button, UIE_GET_FOCUS, OnPlaylistHover )
+			Hud_AddEventHandler( button, UIE_LOSE_FOCUS, OnPlaylistUnHover )
+
+			// Store the playlist name that corresponds with this button
+			// so that we can skip adding event handlers on future calls
+			file.playlist_button_table[button] <- playlist
 		}
-
-		//Add the Event handler for the button
-		Hud_AddEventHandler( button, UIE_CLICK, SelectServerPlaylist )
-		Hud_AddEventHandler( button, UIE_GET_FOCUS, OnPlaylistHover )
-		Hud_AddEventHandler( button, UIE_LOSE_FOCUS, OnPlaylistUnHover )
-
-		//Add the button and playlist to a table
-		file.playlist_button_table[button] <- playlist
 	}
 
 	Hud_SetHeight(Hud_GetChild(file.panel, "PanelBG"), Hud_GetHeight(file.listPanel) + 1)
 }
 
-array<string> function GetPlaylists()
+array<string> function GetVisiblePlaylists()
 {
-	array<string> m_vPlaylists
+	array<string> visiblePlaylists
 
 	//Setup available playlists array
 	foreach( string playlist in GetAvailablePlaylists())
@@ -61,10 +59,10 @@ array<string> function GetPlaylists()
 			continue
 
 		//Add playlist to the array
-		m_vPlaylists.append(playlist)
+		visiblePlaylists.append(playlist)
 	}
 
-	return m_vPlaylists
+	return visiblePlaylists
 }
 
 void function SelectServerPlaylist( var button )
