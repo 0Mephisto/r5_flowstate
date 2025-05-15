@@ -215,7 +215,7 @@ void function Sequence_WaitingForPlayers()
 			
 			if( Gamemode() != eGamemodes.CUSTOM_CTF )
 			{
-				ScreenCoverTransition_Player(player, Time() + 2)
+				ScreenCoverTransition_Player( player, Time() + CharSelect_GetIntroTransitionDuration() )
 			} 
 			else
 			{

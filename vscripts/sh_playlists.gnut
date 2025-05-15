@@ -316,18 +316,19 @@ string function Playlist_GetLTMSlotPlaylist()
 
 asset function GetModeEmblemImage( string playlistName )
 {
-	// string emblemKey = GetPlaylistVarString( playlistName, "emblem", "" )
+	string emblemKey = GetPlaylistVarString( playlistName, "emblem", "" )
 	asset emblemImage = $""
 
-	// if ( emblemKey != "" )
-	// {
-		// if ( emblemKey in GAMEMODE_EMBLEM_MAP )
-			// emblemImage = GAMEMODE_EMBLEM_MAP[emblemKey]
-		// else
-			// Warning( "Playlist '%s' has invalid value for 'emblem': %s", playlistName, emblemKey )
-	// }
+	if ( emblemKey != "" )
+	{
+		if ( emblemKey in GAMEMODE_EMBLEM_MAP )
+			emblemImage = GAMEMODE_EMBLEM_MAP[emblemKey]
+	}
+
+	if ( emblemImage != "" )
+		return emblemImage
 	
-	
+	// Look for custom game modes.
 	#if CLIENT
 	switch( Gamemode() )
 	{

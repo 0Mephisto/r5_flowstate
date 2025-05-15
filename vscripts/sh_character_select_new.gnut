@@ -384,7 +384,7 @@ void function _OpenCharacterSelectNewMenu_AimTrainer( var menu )
 	UpdateMenuElementHandles_AimTrainer( menu )
 
 	// thread FlashScreenWhite()
-	// thread DoIntroAimTrainer()
+	// thread ScreenCoverTransition( Time() + CharSelect_GetIntroTransitionDuration() )
 	
 	fileLevel.localClientLockstepIndex = GetLocalClientPlayer().GetPlayerNetInt( "characterSelectLockstepPlayerIndex" )
 
@@ -421,11 +421,6 @@ void function _OpenCharacterSelectNewMenu_AimTrainer( var menu )
 			}
 		}
 	}
-}
-
-void function DoIntroAimTrainer()
-{
-	wait ScreenCoverTransition( Time() + 1 )	
 }
 
 void function AddCallback_OnCharacterSelectMenuOpened( void functionref() callbackFunc )
