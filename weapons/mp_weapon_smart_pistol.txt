@@ -343,7 +343,7 @@ WeaponData
 	"smart_ammo_track_cloaked_targets"				"0"
 	"smart_ammo_targeting_time_modifier_projectile_owner"	"0.35"
 	"smart_ammo_target_max_locks_normal"			"-1"	// divide health by damage near
-	"smart_ammo_target_npc_lock_factor"				"2"		// smart pistol does head shots at 2x damage
+	"smart_ammo_target_npc_lock_factor"				"1"		// smart pistol does head shots at 2x damage
 	"smart_ammo_new_target_delay"					"0.1"
 	"smart_ammo_draw_acquisition_lines"				"1"
 	"smart_ammo_hud_lock_style"						"pilot_pistol"
