@@ -29,7 +29,7 @@ void function ClScreenfade_Init()
 	thread PlayerPainSoundThread()
 	thread PlayerDeathfieldSoundThread()
 
-	asset ruiAssetName = IsFallLTM() ? $"ui/screen_fade_shadow_fall.rpak" : $"ui/screen_fade.rpak"
+	asset ruiAssetName = UseFallBanners() ? $"ui/screen_fade_shadow_fall.rpak" : $"ui/screen_fade.rpak"
 
 	file.screenFade = RuiCreate( ruiAssetName, clGlobal.topoFullScreen, RUI_DRAW_POSTEFFECTS, RUI_SORT_SCREENFADE )
 	RuiSetResolutionToScreenSize( file.screenFade )

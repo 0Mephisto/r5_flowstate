@@ -23,6 +23,7 @@ playlists
 				replay_disabled									1 //For Survival modes
 				
 				enable_global_chat								1 //Enables global chat
+				use_fall_banners								1
 				
 				enable_grapple_recovers_banner						0
 				gibraltar_fast_revive								1

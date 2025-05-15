@@ -5710,6 +5710,10 @@ bool function IsLobbyFallLTM()
 	return GetCurrentPlaylistVarInt( "menu_fall_ltm", 0 ) == 1
 }
 
+bool function UseFallBanners()
+{
+	return IsFallLTM() || GetCurrentPlaylistVarInt( "use_fall_banners", 0 ) == 1
+}
 
 table<int, array<entity> > function ArrangePlayersByTeam( array<entity> players )
 {
