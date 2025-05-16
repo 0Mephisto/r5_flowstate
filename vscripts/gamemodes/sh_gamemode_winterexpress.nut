@@ -2629,7 +2629,7 @@ bool function WinterExpress_RespawnOnTrain( entity player, bool isGameStartLerp 
 		}
 	}
 	
-	print( "winter express: Failing a train spawn falling back to something else" ) //(mk): keep this for prod
+	printl( "winter express: Failing a train spawn falling back to something else" )
 	return false
 }
 
@@ -4824,7 +4824,8 @@ void function FS_UpdateScoreForTeam( int team, int score )
 
 	if( teamScoreElement == null )
 	{
-		print( "FS_UpdateScoreForTeam BUGTHIS; teamScoreElement == null" ) //(mk):keep this print in prod
+		// should not happen so this print needs to exist outside of devmode to help with debugging
+		printl( "FS_UpdateScoreForTeam BUGTHIS; teamScoreElement == null" )
 		return
 	}
 
