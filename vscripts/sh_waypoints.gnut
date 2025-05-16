@@ -574,14 +574,17 @@ bool function Waypoint_IsPOI( entity wp )
 	return wp.GetWaypointType() == eWaypoint.BASIC_POI
 }
 
-//(mk): this is convulted as fuck ( need to just write two Waypoint_FindPingByTicketID(), for client/server respectively )
 entity function Waypoint_FindPingByTicketID( entity owner, int ticketID )
 {
-#if SERVER
-	foreach ( entity wp in owner.p.pings.locations )
-#else
-	foreach ( entity wp in s_activeLocationPings )
-#endif
+	#if SERVER
+	array<entity> locationPings = owner.p.pings.locations
+	array<entity> lootPings = owner.p.pings.loots
+	#else
+	array<entity> locationPings = s_activeLocationPings
+	array<entity> lootPings = s_activeLootPings
+	#endif
+
+	foreach ( entity wp in locationPings )
 	{
 		if ( !IsValid( wp ) )
 			continue
@@ -591,11 +594,7 @@ entity function Waypoint_FindPingByTicketID( entity owner, int ticketID )
 			return wp
 	}
 
-#if SERVER
-	foreach ( entity wp in owner.p.pings.loots )
-#else
-	foreach ( entity wp in s_activeLootPings )
-#endif
+	foreach ( entity wp in lootPings )
 	{
 		if ( owner != wp.GetOwner() )
 			continue
