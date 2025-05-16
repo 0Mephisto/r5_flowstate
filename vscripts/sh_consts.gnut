@@ -16,7 +16,6 @@ global const bool HAS_TRACKER_DLL 			= false
 
 //
 global const bool MULTIPLAYER_DEBUG_PRINTS 	= false // Toggles print console message to all players where used (printm).
-global const bool MKOS						= false 
 global const bool ENTITYVAR_DEPRECATED		= false //Todo(mk): fully remove this deprecated system
 
 global const string DEFAULT_RATE_KEY 		= "default"
