@@ -1138,22 +1138,21 @@ void function DeployableMedic_PlayerOnDamage( entity player, var damageInfo )
 
 bool function DeployableMedic_ShouldAttemptHeal( entity player, entity droneMedic )
 {
-	//We can't heal titans
+	// We can't heal titans
 	if ( player.IsTitan() )
 	{
 		//printt( "DON'T HEAL: PLAYER " + player + " IS A TITAN." )
 		return false
 	}
 
-	//We can't heal phase shifted players
+	// We can't heal phase shifted players
 	if ( player.IsPhaseShifted() )
 	{
 		//printt( "DON'T HEAL: PLAYER " + player + " PHASE SHIFTED." )
 		return false
 	}
-	//We can't heal a player who is currently in a cloud of gas
-	
-	//todo(kral): Caustic Gas doesn't work for now so I will disable this (until a fix for daddy Caustic) //(mk): done.
+
+	// We can't heal a player who is currently in a cloud of gas
 	if ( IsGasCausingDamage( player ) )
 	{
 		#if DEVELOPER
@@ -1180,7 +1179,7 @@ bool function DeployableMedic_ShouldAttemptHeal( entity player, entity droneMedi
 		return false
 	}
 
-	//We can't heal players who have full health
+	// We can't heal players who have full health
 	if ( player.GetHealth() == player.GetMaxHealth() )
 	{
 		//printt( "DON'T HEAL: PLAYER " + player + " IS ALREADY IN MAX HEALTH." )
