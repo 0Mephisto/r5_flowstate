@@ -1120,18 +1120,19 @@ void function GiveInitialTeamToPlayer( entity player )
 	if( IsPlayerEliminated( player ) )
 	{
 		EliminatedPlayerData data = GetPlayerEliminatedData( player )
-		SetTeam( player, data.team ) //Give saved team. Cafe
+		SetTeam( player, data.team ) // Assign the player to their pre-death team.
 		
-		#if DEVELOPER && !MKOS
+		#if DEVELOPER
 			printw( "TEAMING - Player was eliminated, assigning old team", data.team )
 		#endif
+
 		return
 	}
 	
 	int maxTeamSize = GetCurrentPlaylistVarInt( "max_team_size", 1 )
 	int numTeams = GetCurrentPlaylistVarInt( "max_players", 0 ) / GetCurrentPlaylistVarInt( "max_team_size", 1 )
 	
-	#if DEVELOPER && !MKOS
+	#if DEVELOPER
 		printw( "TEAMING - Team Size:", maxTeamSize, " - Num Teams: ", numTeams )
 	#endif
 	
@@ -1188,74 +1189,87 @@ array<int> function GetTeamsForPlayersFlowstate( array<entity> playersToUse )
 
 void function UpdatePlayerCounts()
 {
-
-	//string currGameMode = GameRules_GetGameMode()
-	
 	int currGameMode = Gamemode()
 	
 	switch(currGameMode)
 	{
 		case eGamemodes.WINTEREXPRESS:
-		array<entity> playersAlive = GetPlayerArray_ConnectedNotSpectatorTeam()
-		SetGlobalNetInt( "livingPlayerCount", playersAlive.len() )
-		SetGlobalNetInt( "squadsRemainingCount", playersAlive.len() )		
-		break
-
-		case eGamemodes.fs_infected:
-		SetGlobalNetInt( "livingPlayerCount", GetPlayerArrayOfTeam_Alive(TEAM_IMC).len() )
-		SetGlobalNetInt( "livingShadowPlayerCount", GetPlayerArrayOfTeam_Alive(TEAM_MILITIA).len() )
-		SetGlobalNetInt( "squadsRemainingCount", 2 )
-		break
-		
-		case eGamemodes.fs_dm:
-		if( Playlist() == ePlaylists.fs_scenarios )
 		{
-			foreach( player in GetPlayerArray() )
-				Remote_CallFunction_NonReplay( player, "FS_Scenarios_ForceUpdatePlayerCount", player )
-		} else
+			array<entity> playersAlive = GetPlayerArray_ConnectedNotSpectatorTeam()
+			SetGlobalNetInt( "livingPlayerCount", playersAlive.len() )
+			SetGlobalNetInt( "squadsRemainingCount", playersAlive.len() )		
+			break
+		}
+		case eGamemodes.fs_infected:
+		{
+			SetGlobalNetInt( "livingPlayerCount", GetPlayerArrayOfTeam_Alive(TEAM_IMC).len() )
+			SetGlobalNetInt( "livingShadowPlayerCount", GetPlayerArrayOfTeam_Alive(TEAM_MILITIA).len() )
+			SetGlobalNetInt( "squadsRemainingCount", 2 )
+
+			break
+		}
+		case eGamemodes.fs_dm:
+		{
+			if( Playlist() == ePlaylists.fs_scenarios )
+			{
+				foreach( player in GetPlayerArray() )
+				{
+					Remote_CallFunction_NonReplay( player, "FS_Scenarios_ForceUpdatePlayerCount", player )
+				}
+			}
+			else
+			{
+				array<entity> connectedPlayers = GetPlayerArray_ConnectedNotSpectatorTeam()
+				SetGlobalNetInt( "livingPlayerCount", connectedPlayers.len() )
+				SetGlobalNetInt( "squadsRemainingCount", connectedPlayers.len() )
+			}
+			break
+		}
+		case eGamemodes.CUSTOM_CTF:
 		{
 			array<entity> connectedPlayers = GetPlayerArray_ConnectedNotSpectatorTeam()
 			SetGlobalNetInt( "livingPlayerCount", connectedPlayers.len() )
-			SetGlobalNetInt( "squadsRemainingCount", connectedPlayers.len() )
+			SetGlobalNetInt( "squadsRemainingCount", connectedPlayers.len() )		
+			break
 		}
-		break
-
-		case eGamemodes.CUSTOM_CTF:
-		array<entity> connectedPlayers = GetPlayerArray_ConnectedNotSpectatorTeam()
-		SetGlobalNetInt( "livingPlayerCount", connectedPlayers.len() )
-		SetGlobalNetInt( "squadsRemainingCount", connectedPlayers.len() )		
-		break
-		
 		case eGamemodes.fs_prophunt:
-		array<entity> propsAlive = GetPlayerArrayOfTeam_Alive( TEAM_MILITIA )
-		SetGlobalNetInt( "livingPlayerCount", propsAlive.len() )
-		SetGlobalNetInt( "squadsRemainingCount", propsAlive.len() )		
-		break
-
+		{
+			array<entity> propsAlive = GetPlayerArrayOfTeam_Alive( TEAM_MILITIA )
+			SetGlobalNetInt( "livingPlayerCount", propsAlive.len() )
+			SetGlobalNetInt( "squadsRemainingCount", propsAlive.len() )		
+			break
+		}
 		case eGamemodes.flowstate_pkknockback:
-		array<entity> playersAlive = GetPlayerArray_Alive()
-		SetGlobalNetInt( "livingPlayerCount", playersAlive.len() )
-		SetGlobalNetInt( "squadsRemainingCount", playersAlive.len() )		
-		break
-		
+		{
+			array<entity> playersAlive = GetPlayerArray_Alive()
+			SetGlobalNetInt( "livingPlayerCount", playersAlive.len() )
+			SetGlobalNetInt( "squadsRemainingCount", playersAlive.len() )		
+			break
+		}
 		case eGamemodes.fs_duckhunt:
-		array<entity> ducksAlive = GetPlayerArrayOfTeam_Alive( TEAM_MILITIA )
-		SetGlobalNetInt( "livingPlayerCount", ducksAlive.len() )
-		SetGlobalNetInt( "squadsRemainingCount", ducksAlive.len() )		
-		break
-		
+		{
+			array<entity> ducksAlive = GetPlayerArrayOfTeam_Alive( TEAM_MILITIA )
+			SetGlobalNetInt( "livingPlayerCount", ducksAlive.len() )
+			SetGlobalNetInt( "squadsRemainingCount", ducksAlive.len() )		
+			break
+		}
 		case eGamemodes.fs_snd:
-		foreach( player in GetPlayerArray() )
-			Remote_CallFunction_ByRef( player, "SND_ForceUpdatePlayerCount" )
-			//Remote_CallFunction_NonReplay( player, "SND_ForceUpdatePlayerCount")
-		break
-		
-		default:
-		SetGlobalNetInt( "livingPlayerCount", GetPlayerArray_AliveConnected().len() )
-		SetGlobalNetInt( "squadsRemainingCount", GetNumTeamsRemaining() )		
-		break
-	}
+		{
+			foreach( player in GetPlayerArray() )
+			{
+				Remote_CallFunction_ByRef( player, "SND_ForceUpdatePlayerCount" )
+				//Remote_CallFunction_NonReplay( player, "SND_ForceUpdatePlayerCount")
+			}
 
+			break
+		}
+		default:
+		{
+			SetGlobalNetInt( "livingPlayerCount", GetPlayerArray_AliveConnected().len() )
+			SetGlobalNetInt( "squadsRemainingCount", GetNumTeamsRemaining() )		
+			break
+		}
+	}
 }
 #endif
 
@@ -1369,17 +1383,17 @@ void function Flowstate_ApplyModifiedMovementToPlayer( entity player, bool reset
 	switch( file.flowstate_modified_movement )
 	{
 		case eMovementType.TRUE_TF2_SETTINGS: //1
-		
+		{
 			player.SetMoveSpeedScale( 0.87 )		
 			SetPlayerSettings( player, TRUE_TF2_SETTINGS )
 			
 			#if DEVELOPER
 				printw( "Player movement changed to Titanfall 2 " + player )
 			#endif
-		break
-		
+			break
+		}
 		case eMovementType.TRUE_TF2_SETTINGS_HIGH_AIRACCEL: //2
-		
+		{
 			player.SetMoveSpeedScale( 0.87 )
 			player.DisableMantle()
 			SetPlayerSettings( player, TRUE_TF2_SETTINGS_HIGH_AIRACCEL )
@@ -1387,20 +1401,20 @@ void function Flowstate_ApplyModifiedMovementToPlayer( entity player, bool reset
 			#if DEVELOPER
 				printw( "Player movement changed to Titanfall 2 High Air Accel " + player )
 			#endif
-		break
-		
+			break
+		}
 		case eMovementType.TRUE_TF2_SETTINGS_LOW_GRAV: //3
-		
+		{
 			player.SetMoveSpeedScale( 0.87 )	
 			SetPlayerSettings( player, TRUE_TF2_SETTINGS_LOW_GRAV )
 			
 			#if DEVELOPER
 				printw( "Player movement changed to Titanfall 2 Low Gravity " + player )
 			#endif
-		break
-		
+			break
+		}
 		case eMovementType.CSGO_MOVEMENT: //4
-		
+		{
 			StatusEffect_AddEndless( player, eStatusEffect.move_slow, 0.1 )
 			player.SetMoveSpeedScale( 1.38854974986041364747 )
 			player.DisableMantle()
@@ -1410,10 +1424,10 @@ void function Flowstate_ApplyModifiedMovementToPlayer( entity player, bool reset
 			#if DEVELOPER
 				printw( "Player movement changed to CSGO " + player )
 			#endif
-		break
-		
+			break
+		}
 		case eMovementType.CSGO_MOVEMENT_HIGH_AIRACCEL: //5
-		
+		{
 			StatusEffect_AddEndless( player, eStatusEffect.move_slow, 0.1 )
 			player.SetMoveSpeedScale( 1.38854974986041364747 )
 			player.DisableMantle()
@@ -1423,19 +1437,19 @@ void function Flowstate_ApplyModifiedMovementToPlayer( entity player, bool reset
 			#if DEVELOPER
 				printw( "Player movement changed to CSGO High Air Accel " + player )
 			#endif
-		break
-		
+			break
+		}
 		case eMovementType.SURF_SETTINGS: //6
-		
+		{
 			SetPlayerSettings( player, SURF_SETTINGS )
 			
 			#if DEVELOPER
 				printw( "Player movement changed to (Apex) Surf " + player )
 			#endif
-		break
-
+			break
+		}
 		case eMovementType.HL1_MOVEMENT: //7
-				
+		{	
 			StatusEffect_AddEndless( player, eStatusEffect.move_slow, 0.1 )
 			player.SetMoveSpeedScale( 1.77840093365762835808 )
 			player.DisableMantle()	
@@ -1444,10 +1458,10 @@ void function Flowstate_ApplyModifiedMovementToPlayer( entity player, bool reset
 			#if DEVELOPER
 				printw( "Player movement changed to Half-Life 1 " + player )
 			#endif
-		break
-
+			break
+		}
 		case eMovementType.HALO_MOVEMENT: //8
-			
+		{
 			StatusEffect_AddEndless( player, eStatusEffect.move_slow, 0.1 )
 			player.SetMoveSpeedScale( 1.1 )
 			player.DisableMantle()
@@ -1456,39 +1470,38 @@ void function Flowstate_ApplyModifiedMovementToPlayer( entity player, bool reset
 			#if DEVELOPER
 				printw( "Player movement changed to Halo " + player )
 			#endif
-		break
-		
+			break
+		}
 		case eMovementType.SUPERGLIDE_BOOST_SETTINGS: //9
-		
+		{
 			SetPlayerSettings( player, SUPERGLIDE_BOOST_SETTINGS )
 			
 			#if DEVELOPER
 				printw( "Superglide modified for all players " + player )
 			#endif
-		break
-		
+			break
+		}
 		case eMovementType.INSTAGIB_PLAYER_SETTINGS: //10
-		
+		{
 			SetPlayerSettings( player, INSTAGIB_PLAYER_SETTINGS )
 			//Disable players collision
 			player.kv.contents = CONTENTS_BULLETCLIP | CONTENTS_MONSTERCLIP | CONTENTS_HITBOX | CONTENTS_BLOCKLOS | CONTENTS_PHYSICSCLIP; //CONTENTS_PLAYERCLIP
 			#if DEVELOPER
 				printw( "Player movement changed to Insta-Gib " + player )
 			#endif
-		break
-		
+			break
+		}
 		case eMovementType.HAVEFUN_PLAYER_SETTINGS: //11
-		
+		{
 			SetPlayerSettings( player, HAVEFUN_PLAYER_SETTINGS )
 			
 			#if DEVELOPER
 				printt( "Player movement changed to Have Fun Settings " + player )
 			#endif
-		break
-	
-
+			break
+		}
 		case eMovementType.HALO_MOVEMENT_NEW: //HALO BETTER
-
+		{
 			SetPlayerSettings( player, HALO_MOVEMENT_NEW )
 			player.SetMoveSpeedScale( 1.1 )
 			player.DisableMantle()
@@ -1496,8 +1509,8 @@ void function Flowstate_ApplyModifiedMovementToPlayer( entity player, bool reset
 			#if DEVELOPER
 				printw( "Player movement changed to Halo New " + player )
 			#endif
-		break
-		
+			break
+		}
 	}
 }
 #endif
