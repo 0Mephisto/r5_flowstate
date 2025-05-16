@@ -15,10 +15,6 @@ void function ClientCommands_Init()
 	AddClientCommandCallback( "ToggleHUD", ClientCommand_ToggleHUD )
 
 	AddClientCommandCallback( "recharge", ClientCommand_recharge )
-
-	#if DEVELOPER
-	//AddClientCommandCallback( "script", ClientCommand_script ) //(mk): handled by native
-	#endif
 }
 
 bool function ClientCommand_noclip( entity player, array<string> args )
@@ -135,38 +131,3 @@ bool function ClientCommand_recharge( entity player, array<string> args )
 	
 	return true
 }
-
-#if DEVELOPER
-bool function ClientCommand_script( entity player, array<string> args )
-{
-	if( !IsValid( player ) )
-		return true
-	
-	if( GetConVarInt( "sv_cheats" ) != 1 )
-		return true
-
-	string func = ""
-
-	for ( int i = 0; i < args.len(); i++ )
-	{
-		func = (func + args[i])
-
-		if(args[i] == "'" || ((i+1) < args.len() && args[i+1] == "'")) {
-			// don't add spaces inside strings
-		} else {
-			func = (func + " ")
-		}
-	}
-	func = StringReplace( func, "'", "\"" )
-
-	try {
-		compilestring( "return "+func+"" )()
-	}
-	catch( error ) {
-		print("[ SCRIPT CMD ERROR ]:\n")
-		print("entity: " + player + "\n")
-		print("error:  " + error + "\n\n")
-	}
-	return true
-}
-#endif
