@@ -2947,7 +2947,7 @@ void function RemoveDamageEvents( int attacker_handle, int victim_handle ) //Tod
 				
 				if( IsValid( currentAttacker ) )
 				{
-					soloGroupStruct group = returnSoloGroupOfPlayer( currentAttacker )
+					soloGroupStruct group = Gamemode1v1_GetPlayerSoloGroup( currentAttacker )
 				
 					if ( IsValid( group ) )
 					{
@@ -3010,7 +3010,7 @@ void function RemoveDamageEvents( int attacker_handle, int victim_handle ) //Tod
 		bool bIsChal = false
 		if( file.gamemode_type_1v1 )
 		{
-			soloGroupStruct group = returnSoloGroupOfPlayer( victim )
+			soloGroupStruct group = Gamemode1v1_GetPlayerSoloGroup( victim )
 			
 			if( IsValid( group ) && group.IsKeep )
 			{
@@ -5223,7 +5223,7 @@ bool function CheckPlayerStartInRest( entity player )
 		if ( player.p.start_in_rest_setting )
 			Gamemode1v1_ForceRest( player )
 	
-		if ( isPlayerInRestingList( player ) )
+		if ( Gamemode1v1_IsPlayerResting( player ) )
 			return true 
 	}
 	

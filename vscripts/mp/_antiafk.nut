@@ -57,7 +57,7 @@ int function GetAfkState( entity player )
 
 	float lastmove = player.p.lastmoved
 	
-	if( bAfkToRest() && !isPlayerInRestingList( player ) )
+	if( bAfkToRest() && !Gamemode1v1_IsPlayerResting( player ) )
 	{
 		if ( Time() > lastmove + ( localgrace - warn ) )
 		{
@@ -121,7 +121,7 @@ void function CheckAfkKickThread(entity player)
 					
 					if( Gamemode1v1_IsRestEnabled()  )
 					{
-						if( isPlayerInRestingList( player ) )
+						if( Gamemode1v1_IsPlayerResting( player ) )
 						{
 							AfkThread_PlayerMoved( player )
 							continue

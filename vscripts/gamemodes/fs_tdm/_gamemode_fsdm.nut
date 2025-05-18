@@ -3619,7 +3619,7 @@ void function SimpleChampionUI()
 				catch (error)
 				{}
 				
-				if( !isPlayerInRestingList( eachPlayer ) ) //don't remove players who are in rest, only progress. 
+				if( !Gamemode1v1_IsPlayerResting( eachPlayer ) ) //don't remove players who are in rest, only progress. 
 					soloModePlayerToWaitingList( eachPlayer )
 					
 				if( !IsAlive( eachPlayer ) )
@@ -5327,14 +5327,14 @@ bool function ClientCommand_GiveWeapon(entity player, array<string> args)
 
 	if(args.len() < 2) return true
 
-	if( is1v1EnabledAndAllowed() && isPlayerInRestingList( player ) )
+	if( is1v1EnabledAndAllowed() && Gamemode1v1_IsPlayerResting( player ) )
 	{	
 		bRestFlag = true
 		//Message( player, "NOT ALLOWED IN RESTING MODE" )
 		//return false
 	}
 	
-	if( is1v1EnabledAndAllowed() && isPlayerInWaitingList( player ) )
+	if( is1v1EnabledAndAllowed() && Gamemode1v1_IsPlayerWaiting( player ) )
 	{
 		//Message( player, "NOT ALLOWED IN WAITING MODE" )
 		LocalMsg( player, "#FS_NotAllowedWaiting", "", uiType )
@@ -5565,7 +5565,7 @@ bool function ClientCommand_SaveCurrentWeapons(entity player, array<string> args
 		#endif
 	}
 	
-	if ( !isPlayerInRestingList( player ) )
+	if ( !Gamemode1v1_IsPlayerResting( player ) )
 	{
 		if( strip( weaponname1 ) == "" || strip( weaponname2 ) == "" )
 		{	
@@ -6859,7 +6859,7 @@ bool function ValidateWeaponTgiveSettings( entity player, string weaponRef )
 		return false
 	}
 	
-	if( is1v1EnabledAndAllowed() && isPlayerInWaitingList( player ) )
+	if( is1v1EnabledAndAllowed() && Gamemode1v1_IsPlayerWaiting( player ) )
 	{
 		LocalMsg( player, "#FS_NotAllowedWaiting", "", uiType )
 		return false

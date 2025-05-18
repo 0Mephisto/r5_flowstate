@@ -561,9 +561,9 @@ string function GetTeamInfo( CustomTeam team ) //✓ --todo remote func send to 
 	foreach( int idx, entity player in team.players )
 	{
 		string state = "Unknown"
-		if( isPlayerInWaitingList( player ) )
+		if( Gamemode1v1_IsPlayerWaiting( player ) )
 			state = "In-Queue"
-		else if( isPlayerInRestingList( player ) )
+		else if( Gamemode1v1_IsPlayerResting( player ) )
 			state = "Resting"
 		else 
 			state = "Playing"
