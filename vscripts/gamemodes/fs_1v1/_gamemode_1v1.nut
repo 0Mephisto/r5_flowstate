@@ -66,7 +66,7 @@ global function Gamemode1v1_SetRestEnabled
 global function Gamemode1v1_CreatePanels
 global function Gamemode1v1_GetRestEnabled
 global function Gamemode1v1_SetWeaponAmmoStackAmount
-global function IsCurrentState
+global function Gamemode1v1_IsPlayerInState
 global function ValidateBlacklistedWeapons
 
 global typedef PanelTable table<string, entity>
@@ -841,7 +841,7 @@ void function Gamemode1v1_SetPlayerGamestate( entity player, int state = 0 )
 			callbackFunc( player, state )
 	}
 	#if DEVELOPER && DEBUG_STATE
-		else if( !IsCurrentState( player, e1v1State.SEQUENCE ) )
+		else if( !Gamemode1v1_IsPlayerInState( player, e1v1State.SEQUENCE ) )
 		{
 			DumpStack()
 			mAssert( false, format( "State was already set to '%s' for %s", DEV_GetGamestateRef( state ), string( player ) ) )
@@ -854,7 +854,7 @@ int function Gamemode1v1_GetPlayerGamestate( entity player )
 	return player.e.gamemode1v1State
 }
 
-bool function IsCurrentState( entity player, int state )
+bool function Gamemode1v1_IsPlayerInState( entity player, int state )
 {
 	return player.e.gamemode1v1State == state
 }
@@ -1472,7 +1472,7 @@ void function Gamemode1v1_ForceRest( entity player )
 	if( !file.bRestEnabled )
 		return
 	
-	if( !IsValid( player ) ) // || IsCurrentState( player, e1v1State.SEQUENCE ) //potential fix in future.
+	if( !IsValid( player ) ) // || Gamemode1v1_IsPlayerInState( player, e1v1State.SEQUENCE ) //potential fix in future.
 		return
 
 	int playerHandle = player.p.handle
@@ -2352,12 +2352,12 @@ bool function endLock1v1( entity player, bool addmsg = true, bool revoke = false
 					entity player1 = group.player1
 					entity player2 = group.player2
 					
-					if( IsValid( player1 ) && !IsCurrentState( player1, e1v1State.RESTING ) )
+					if( IsValid( player1 ) && !Gamemode1v1_IsPlayerInState( player1, e1v1State.RESTING ) )
 						Gamemode1v1_ForceRest( player1 )
 					
 					WaitFrame()
 					
-					if( IsValid( player2 ) && !IsCurrentState( player2, e1v1State.RESTING ) )
+					if( IsValid( player2 ) && !Gamemode1v1_IsPlayerInState( player2, e1v1State.RESTING ) )
 						Gamemode1v1_ForceRest( player2 ) 
 				
 					AssignLegendToGroup( FlowState_ChosenCharacter(), [ group.player1, group.player2 ] )
@@ -2585,7 +2585,7 @@ bool function ClientCommand_Maki_SoloModeRest( entity player, array<string> args
 	if( !IsValid( player ) )
 		return false
 	
-	if( Time() < player.p.lastRestUsedTime + 3 || IsCurrentState( player, e1v1State.PREMATCH ) )
+	if( Time() < player.p.lastRestUsedTime + 3 || Gamemode1v1_IsPlayerInState( player, e1v1State.PREMATCH ) )
 	{
 		LocalEventMsg( player, "#FS_RESTCOOLDOWN" )
 		return false

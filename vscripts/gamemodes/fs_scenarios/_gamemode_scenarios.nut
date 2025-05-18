@@ -299,13 +299,13 @@ bool function FS_Scenarios_ClientCommand_Rest( entity player, array<string> args
 		return false
 	}
 	
-	if( IsCurrentState( player, e1v1State.CHARSELECT ) || IsCurrentState( player, e1v1State.PREMATCH ) )
+	if( Gamemode1v1_IsPlayerInState( player, e1v1State.CHARSELECT ) || Gamemode1v1_IsPlayerInState( player, e1v1State.PREMATCH ) )
 	{
 		LocalEventMsg( player, "#FS_NOT_AVAILABLE" )
 		return true 
 	}
 		
-	if( IsCurrentState( player, e1v1State.MATCHING ) )
+	if( Gamemode1v1_IsPlayerInState( player, e1v1State.MATCHING ) )
 	{
 		if( args.len() == 0 || !player.p.rest_request )
 		{
@@ -2320,7 +2320,7 @@ void function FS_Scenarios_HandleGroupIsFinished( entity player )
 	if( !IsValid( player ) )
 		return
 
-	if( !IsCurrentState( player, e1v1State.RESTING ) )
+	if( !Gamemode1v1_IsPlayerInState( player, e1v1State.RESTING ) )
 		Gamemode1v1_SetPlayerGamestate( player, e1v1State.WAITING )
 		
 	scenariosGroupStruct ornull group = FS_Scenarios_ReturnGroupForPlayer( player )
@@ -2997,7 +2997,7 @@ void function DefinePanelCallbacks( PanelTable panels )
 
 bool function FS_Scenarios_PlayerCanPing( entity player )
 {
-	if( !IsCurrentState( player, e1v1State.MATCHING ) )
+	if( !Gamemode1v1_IsPlayerInState( player, e1v1State.MATCHING ) )
 		return false 
 		
 	return true
