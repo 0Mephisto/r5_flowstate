@@ -1130,7 +1130,12 @@ void function GiveInitialTeamToPlayer( entity player )
 	}
 	
 	int maxTeamSize = GetCurrentPlaylistVarInt( "max_team_size", 1 )
-	int numTeams = GetCurrentPlaylistVarInt( "max_players", 0 ) / GetCurrentPlaylistVarInt( "max_team_size", 1 )
+	maxTeamSize = maxTeamSize > 0 ? maxTeamSize : 1
+
+	int maxPlayers = GetCurrentPlaylistVarInt( "max_players", 1 )
+	maxPlayers = maxPlayers > 0 ? maxPlayers : 1
+
+	int numTeams = maxPlayers / maxTeamSize
 	
 	#if DEVELOPER
 		printw( "TEAMING - Team Size:", maxTeamSize, " - Num Teams: ", numTeams )
