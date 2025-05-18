@@ -1392,12 +1392,12 @@ struct
 			
 			case "groups":
 			
-					Message( player, "\"groupsInProgress\"", getGroupsInProgress().len().tostring() )
+					Message( player, "\"groupsInProgress\"", Gamemode1v1_GetNumberOfGroupsInProgress().tostring() )
 					return true
 					
 			case "groupmap":
 			
-					Message( player, "\"playerToGroupMap\"", getPlayerToGroupMap().len().tostring() )
+					Message( player, "\"playerToGroupMap\"", Gamemode1v1_GetNumberOfPlayersInGroupMap().tostring() )
 					return true
 					
 			case "start_interval_thread":
