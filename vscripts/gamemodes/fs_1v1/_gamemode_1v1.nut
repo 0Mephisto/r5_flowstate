@@ -15,7 +15,6 @@ global function ClientCommand_Maki_SoloModeRest
 global function ClientCommand_mkos_challenge
 global function endSpectate
 global function Gamemode1v1_Init
-global function resetChallenges
 global function Gamemode1v1_IsPlayerWaiting
 global function getWaitingRoomLocation
 global function Gamemode1v1_TeleportPlayer
