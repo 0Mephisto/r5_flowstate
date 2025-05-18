@@ -2629,13 +2629,13 @@ bool function ClientCommand_Maki_SoloModeRest( entity player, array<string> args
 	{
 		if( IsPlayerInProgress( playerHandle ) )
 		{		
-			entity opponent
-			float timeNow
 			bool skip = false
-			soloGroupStruct group = returnSoloGroupOfPlayer( player )			
+			soloGroupStruct group = returnSoloGroupOfPlayer( player )
 			if( !group.isValid )
 				skip = true
 			
+			entity opponent
+			float timeNow
 			if( !skip )
 			{
 				opponent = player == group.player1 ? group.player2 : group.player1
@@ -2649,9 +2649,7 @@ bool function ClientCommand_Maki_SoloModeRest( entity player, array<string> args
 			{
 				DamageEvent event = Tracker_GetCurrentEventForAttackerOnVictim( opponent.p.handle, player.p.handle ) 
 				
-				float lastHitTime = event.lastHitTimestamp
-				
-				float difference = ( timeNow - lastHitTime )
+				float difference = ( timeNow - event.lastHitTimestamp )
 				
 				bool start_grace_exceeded = false
 				
@@ -2663,15 +2661,15 @@ bool function ClientCommand_Maki_SoloModeRest( entity player, array<string> args
 					float fTryAgainIn
 					
 					if( start_grace_exceeded )
-						fTryAgainIn = file.restGrace - ( timeNow - lastHitTime )
+						fTryAgainIn = file.restGrace - ( timeNow - event.lastHitTimestamp )
 					else 
 						fTryAgainIn = file.restGrace - ( timeNow - group.startTime )
 					
-					string sTryAgain = format( " %d", floor( fTryAgainIn.tointeger() ) )
 					#if DEVELOPER
-						sqprint(format( "Time was too soon: difference:  %d, file.restGrace: %d ", difference, file.restGrace ))
+						sqprint(format( "[1V1 REST] Tried to enter rest too soon. Time since last hit: %d, Rest grace period: %d", difference, file.restGrace ))
 					#endif
 					
+					string sTryAgain = format( " %d", floor( fTryAgainIn.tointeger() ) )
 					LocalMsg( player, "#FS_SendingToRestAfter", "#FS_TryRestAgainIn", eMsgUI.DEFAULT, 5, "", sTryAgain )
 					player.p.rest_request = true
 					return true
@@ -2679,7 +2677,7 @@ bool function ClientCommand_Maki_SoloModeRest( entity player, array<string> args
 				else
 				{
 					#if DEVELOPER
-						sqprint( format( "Time was good: difference: %d, file.restGrace: %d ", difference, file.restGrace ) )
+						sqprint( format( "[1V1 REST] Time was good: Time since last hit: %d, Rest grace period: %d", difference, file.restGrace ) )
 					#endif
 					
 					restText = "#FS_RestGrace"
