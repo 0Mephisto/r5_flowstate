@@ -1467,7 +1467,7 @@ void function FS_Scenarios_RespawnIn3v3Mode( entity player )
 		if (!IsValid(waitingRoomLocation)) return //why would it be invalid. 
 		
 		// GivePlayerCustomPlayerModel( player )
-		TeleportPlayer_1v1(player, waitingRoomLocation)
+		Gamemode1v1_TeleportPlayer(player, waitingRoomLocation)
 		player.MakeVisible()
 		player.ClearInvulnerable() // !FIXME
 		player.SetTakeDamageType( DAMAGE_YES )
@@ -1529,7 +1529,7 @@ void function FS_Scenarios_Main_Thread()
 
 			if( Distance( player.GetOrigin(), waitingRoomLocation.origin ) > settings.waitingRoomRadius ) //waiting player should be in waiting room,not battle area
 			{
-				TeleportPlayer_1v1( player, waitingRoomLocation ) //waiting player should be in waiting room,not battle area
+				Gamemode1v1_TeleportPlayer( player, waitingRoomLocation ) //waiting player should be in waiting room,not battle area
 				HolsterAndDisableWeapons( player )
 			}
 		}
