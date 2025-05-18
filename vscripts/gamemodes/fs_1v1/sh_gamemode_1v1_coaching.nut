@@ -349,7 +349,7 @@ bool function FS_1v1Coaching_PlaySelected(entity player, array<string> args )
 					if( !IsAlive( admin ) )
 						DecideRespawnPlayer( admin, false )
 					
-					maki_tp_player( admin, getWaitingRoomLocation() )
+					TeleportPlayer_1v1( admin, getWaitingRoomLocation() )
 				}
 				
 				if( IsValid( coachedPlayer ) )
@@ -360,7 +360,7 @@ bool function FS_1v1Coaching_PlaySelected(entity player, array<string> args )
 					if( !IsAlive( coachedPlayer ) )
 						DecideRespawnPlayer( coachedPlayer, false )
 					
-					maki_tp_player( coachedPlayer, getWaitingRoomLocation() )
+					TeleportPlayer_1v1( coachedPlayer, getWaitingRoomLocation() )
 				}
 			}
 		)

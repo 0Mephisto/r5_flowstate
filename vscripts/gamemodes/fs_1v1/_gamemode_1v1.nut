@@ -18,7 +18,7 @@ global function Gamemode1v1_Init
 global function resetChallenges
 global function isPlayerInWaitingList
 global function getWaitingRoomLocation
-global function maki_tp_player
+global function TeleportPlayer_1v1
 global function returnSoloGroupOfPlayer
 global function soloModePlayerToWaitingList
 global function ForceAllRoundsToFinish_solomode
@@ -3170,7 +3170,7 @@ void function forbiddenZone_leave(entity trigger , entity ent)
 	EntityBackInBounds( trigger, ent, null, null )
 }
 
-void function maki_tp_player( entity player, LocPair data )
+void function TeleportPlayer_1v1( entity player, LocPair data )
 {
 	if( !IsValid( player ) ) 
 		return
@@ -3265,7 +3265,7 @@ void function respawnInSoloMode( entity player, int respawnSlotIndex = -1 ) //�
 			return
 		
 		GivePlayerCustomPlayerModel( player )
-		maki_tp_player( player, waitingRoomLocation )
+		TeleportPlayer_1v1( player, waitingRoomLocation )
 		player.MakeVisible()
 		player.ClearInvulnerable()
 		player.SetTakeDamageType( DAMAGE_YES )
@@ -3304,7 +3304,7 @@ void function respawnInSoloMode( entity player, int respawnSlotIndex = -1 ) //�
 	GivePlayerCustomPlayerModel( player )
 	
 	soloLocStruct groupLocStruct = group.groupLocStruct
-	maki_tp_player( player, groupLocStruct.respawnLocations[ respawnSlotIndex ] )
+	TeleportPlayer_1v1( player, groupLocStruct.respawnLocations[ respawnSlotIndex ] )
 	
 	wait 0.2 //防攻击的伤害传递止上一条命被到下一条命的玩家上
 
@@ -3905,7 +3905,7 @@ void function FS_1v1_MainLoop_THREAD( LocPair waitingRoomLocation )
 			
 			if( Distance2D( player.GetOrigin(), waitingRoomLocation.origin ) > file.waitingRoomRadius )
 			{
-				maki_tp_player( player, g_randomWaitingSpawns.getrandom() )
+				TeleportPlayer_1v1( player, g_randomWaitingSpawns.getrandom() )
 				HolsterAndDisableWeapons_Raw( player ) //(mk): dirty fix I wanted to avoid.
 			}
 			
@@ -4711,7 +4711,7 @@ void function ForceAllRoundsToFinish_solomode()
 		if( isPlayerInWaitingList( player ) )
 			continue
 		
-		maki_tp_player( player, getWaitingRoomLocation() )
+		TeleportPlayer_1v1( player, getWaitingRoomLocation() )
 		soloModePlayerToWaitingList( player )
 		FS_ClearRealmsAndAddPlayerToAllRealms( player )
 	}
@@ -5467,7 +5467,7 @@ void function Gamemode1v1_OnPlayerKilled( entity victim, entity attacker, var da
 		}
 		
 		ClearInvincible( victim )
-		maki_tp_player( victim, waitingRoomLocation )
+		TeleportPlayer_1v1( victim, waitingRoomLocation )
 			
 		return
 	}
@@ -5511,7 +5511,7 @@ void function Gamemode1v1_OnSpawned( entity player )
 	player.SetShieldHealthMax( Equipment_GetDefaultShieldHP() )
 	Survival_SetInventoryEnabled( player, false )
 	
-	maki_tp_player( player, waitingRoomLocation )
+	TeleportPlayer_1v1( player, waitingRoomLocation )
 	player.UnfreezeControlsOnServer()
 }
 
