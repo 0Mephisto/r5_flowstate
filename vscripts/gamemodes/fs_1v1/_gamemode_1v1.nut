@@ -261,7 +261,7 @@ struct
 	
 } settings
 
-global array<LocPair> g_randomWaitingSpawns
+global array<LocPair> g_waitingRoomSpawnLocations
 const int MAX_CHALLENGERS = 12
 
 //TODO: unite this in a singular modular framework
@@ -444,7 +444,7 @@ void function Gamemode1v1_Init( int eMap )
 		}
 	}
 	
-	g_randomWaitingSpawns = SpawnSystem_GenerateRandomSpawns( getWaitingRoomLocation().origin, getWaitingRoomLocation().angles, file.waitingRoomRadius, .22, 60 ) //todo(mk): scenarios origin waiting area offset is not centered for polished effect
+	g_waitingRoomSpawnLocations = SpawnSystem_GenerateRandomSpawns( getWaitingRoomLocation().origin, getWaitingRoomLocation().angles, file.waitingRoomRadius, .22, 60 ) //todo(mk): scenarios origin waiting area offset is not centered for polished effect
 
 	if( settings.isScenariosMode )
 	{
@@ -676,8 +676,8 @@ void function INIT_PregameCallbacks()
 		
 	if ( f_wait > 0.0 && f_wait < 3.0 )
 	{
-		//this shouldn't be defined out, it lets the host know they have an invalid setting
-		sqerror( format( "Default IBMM wait time was set as '%.2f' ; must be either 0 or >= 3. Resetting to 3.", f_wait ) )
+		// This error message should be left in retail mode as it informs the server host of an invalid setting value.
+		sqerror( format( "[1v1 INIT] Default IBMM wait time was set as '%.2f' ; must be either 0 or >= 3. Resetting to 3.", f_wait ) )
 	}
 
 	//(mk):custom light for custom spawns
@@ -807,7 +807,7 @@ void function DEV_rest( entity player = null )
 }
 #endif
 
-void function resetChallenges()
+void function Reset1v1Challenges()
 {
 	foreach ( chalStruct in file.allChallenges )
 	{
@@ -3907,7 +3907,7 @@ void function FS_1v1_MainLoop_THREAD( LocPair waitingRoomLocation )
 			
 			if( Distance2D( player.GetOrigin(), waitingRoomLocation.origin ) > file.waitingRoomRadius )
 			{
-				Gamemode1v1_TeleportPlayer( player, g_randomWaitingSpawns.getrandom() )
+				Gamemode1v1_TeleportPlayer( player, g_waitingRoomSpawnLocations.getrandom() )
 				HolsterAndDisableWeapons_Raw( player ) //(mk): dirty fix I wanted to avoid.
 			}
 			
@@ -5503,7 +5503,7 @@ LocPairData function Init_DropoffPatchSpawns()
 
 void function OnMatchStart()
 {
-	resetChallenges()
+	Reset1v1Challenges()
 }
 
 void function Gamemode1v1_OnSpawned( entity player )
