@@ -130,7 +130,14 @@ void function PopulateRecordingsList()
 		SetButtonAndTextVisible( i, true )
 		
 		DisplayTime dt = SecondsToDHMS( int( file.coachingRecordingList[i].duration ) )
-		Hud_SetText( Hud_GetChild( file.contentPanel, "Text" + i ), ( i + 1 ).tostring() + ". " + EHI_GetName( file.coachingRecordingList[i].winnerHandle ) + " Win - Duration: " + format( "%.2d:%.2d", dt.minutes, dt.seconds ) )
+		string winnerName
+		try{
+			winnerName = EHI_GetName( file.coachingRecordingList[i].winnerHandle )
+		}catch(e420)
+		{
+			winnerName = "NoName"
+		}
+		Hud_SetText( Hud_GetChild( file.contentPanel, "Text" + i ), ( i + 1 ).tostring() + ". " + winnerName + " Win - Duration: " + format( "%.2d:%.2d", dt.minutes, dt.seconds ) )
 	}
 
 	for( int i = file.coachingRecordingList.len(); i < 50 ; i++ )

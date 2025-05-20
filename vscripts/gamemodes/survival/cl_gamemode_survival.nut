@@ -2944,11 +2944,12 @@ void function OnPropDynamicCreated( entity prop )
 
 void function OnPropCreated( entity prop )
 {
-	if ( prop.GetSurvivalInt() < 0 )
-	{
-		PROTO_OnContainerCreated( prop )
-		return
-	}
+	//(cafe) not used
+	// if ( prop.GetSurvivalInt() < 0 )
+	// {
+		// PROTO_OnContainerCreated( prop )
+		// return
+	// }
 }
 
 
@@ -3490,7 +3491,8 @@ void function WaitingForPlayersOverlay_Setup( entity player )
 
 void function WaitingForPlayersOverlay_Destroy()
 {
-	WaitingForPlayers_RemoveCustomCameras()
+	if( Gamemode() != eGamemodes.fs_aimtrainer )
+		WaitingForPlayers_RemoveCustomCameras()
 	
 	if ( s_overlayRui == null )
 		return

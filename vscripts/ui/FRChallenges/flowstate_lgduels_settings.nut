@@ -54,7 +54,7 @@ void function InitLGDuelsSettings( var newMenuArg )
 
 void function SupportTheDev(var button)
 {
-	LaunchExternalWebBrowser( "https://www.patreon.com/c/r5_CafeFPS", WEBBROWSER_FLAG_NONE )
+	LaunchExternalWebBrowser( "https://ko-fi.com/r5r_colombia", WEBBROWSER_FLAG_NONE )
 }
 
 void function BeamToModifyChanged_Local( var button )

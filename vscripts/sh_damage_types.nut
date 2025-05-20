@@ -364,6 +364,10 @@ global enum eDamageSourceId
 	mp_weapon_cover_wall
 	mp_ability_ground_slam
 	mp_ability_split_timeline
+	
+	mp_weapon_proximity_mine
+	mp_weapon_grenade_rev_shell
+	mp_ability_devices_jammer
 }
 
 //When adding new mods, they need to be added below and to persistent_player_data_version_N.pdef in r1/cfg/server.

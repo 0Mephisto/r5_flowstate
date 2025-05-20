@@ -1678,6 +1678,13 @@ void function InitMenus()
 	//Buy Menu
 	AddMenu( "FSSND_BuyMenu", $"scripts/resource/ui/menus/FlowstateSND/flowstate_snd_buy_menu.menu", Init_FSSND_BuyMenu )
 	
+	//FLOWSTATE SPIES LEGENDS
+	//Gadgets Selector
+	// var gadgetsselector = AddMenu( "Spies_GadgetsSelector", $"scripts/resource/ui/menus/SpiesLegends/gadgetsselector.menu", Init_GadgetsSelector )
+	
+	//FLOWSTATE 1v1
+	var fs1v1_SettingsMenu = AddMenu( "1v1_SetttingsMenu", $"scripts/resource/ui/menus/fs_1v1/settings.menu", Init_1v1_SettingsMenu )
+	
 	var lobbyMenu = AddMenu( "LobbyMenu", $"scripts/resource/ui/menus/lobby.menu", InitLobbyMenu )
 	AddPanel( lobbyMenu, "PlayPanel", InitPlayPanel )
 	AddPanel( lobbyMenu, "CharactersPanel", InitCharactersPanel )

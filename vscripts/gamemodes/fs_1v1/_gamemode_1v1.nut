@@ -1,8 +1,6 @@
 //Flowstate 1v1 gamemode -- made by __makimakima__
 //Gamemode redesigned and maintained by @CafeFPS & Mkos
 
-// Todo(mk): Needs core loop rewrote
-
 global function isPlayerInRestingList
 global function Gamemode1v1_ForceRest
 global function INIT_playerChallengesStruct
@@ -18,7 +16,7 @@ global function Gamemode1v1_Init
 global function resetChallenges
 global function isPlayerInWaitingList
 global function getWaitingRoomLocation
-global function TeleportPlayer_1v1
+global function TpPlayerToLocpair
 global function returnSoloGroupOfPlayer
 global function soloModePlayerToWaitingList
 global function ForceAllRoundsToFinish_solomode
@@ -68,6 +66,7 @@ global function Gamemode1v1_GetRestEnabled
 global function Gamemode1v1_SetWeaponAmmoStackAmount
 global function IsCurrentState
 global function ValidateBlacklistedWeapons
+global function FS1v1_OnEntitiesDidLoad
 
 global typedef PanelTable table<string, entity>
 const bool DEBUG_STATE		= false
@@ -149,22 +148,6 @@ global struct soloPlayerStruct
 	float victimPenaltyExpire
 }
 
-global enum e1v1State
-{
-	INVALID = -1,
-	CHARSELECT,
-	PREMATCH,
-	MATCH_START,
-	WAITING,
-	SEQUENCE,
-	MATCHING,
-	RESTING,
-	RECAP,
-	
-	//coaching mode
-	WATCHING_FIGHT_REPLAY
-}
-
 struct ChallengesStruct
 {
 	entity player 
@@ -234,8 +217,8 @@ struct
 	array<string> hostSetAttachments
 	array<string> Weapons = []
 	
-	int ibmm_wait_limit = 30
-	float default_ibmm_wait = 0
+	int ibmm_wait_limit = 30 //deprecate
+	float default_ibmm_wait = 0 //deprecate
 	bool enableChallenges = false
 	int groupID = 112250000
 	bool bGiveSameRandomLegendToBothPlayers = false
@@ -294,7 +277,6 @@ const array<string> LEGEND_INDEX_ARRAY =
 		"Pete", //21
 	];
 
-
 void function Gamemode1v1_Init( int eMap )
 {
 	#if DEVELOPER 
@@ -303,6 +285,9 @@ void function Gamemode1v1_Init( int eMap )
 	
 	RegisterSignal( "ChallengeStarted" )
 	RegisterSignal( "ChallengeEnded" )
+	
+	PrecacheOITCRoom()
+	AddCallback_EntitiesDidLoad( FS1v1_OnEntitiesDidLoad )
 	
 	#if DEVELOPER 
 		DEV_1v1Init()
@@ -318,11 +303,22 @@ void function Gamemode1v1_Init( int eMap )
 		
 	if( !isScenariosMode() && !bIsCoachingMode() ) //intertwined D:
 	{
-		AddClientCommandCallback( "start_in_rest", ClientCommand_mkos_start_in_rest_setting ) 
-		AddClientCommandCallback( "wait", ClientCommand_mkos_IBMM_wait )
-		AddClientCommandCallback( "lock1v1", ClientCommand_mkos_lock1v1_setting )
-		AddClientCommandCallback( "enable_input_banner", ClientCommand_enable_input_banner )
-		AddClientCommandCallback( "challenge", ClientCommand_mkos_challenge )
+		// AddClientCommandCallback( "start_in_rest", ClientCommand_mkos_start_in_rest_setting )  //deprecated as it was moved to UI
+		// AddClientCommandCallback( "wait", ClientCommand_mkos_IBMM_wait )  //deprecated as it was moved to UI
+		// AddClientCommandCallback( "lock1v1", ClientCommand_mkos_lock1v1_setting )  //deprecated as it was moved to UI
+		// AddClientCommandCallback( "enable_input_banner", ClientCommand_enable_input_banner )  //deprecated as it was moved to UI
+		AddClientCommandCallback( "challenge", ClientCommand_mkos_challenge ) //todo(cafe): create UI to challenge players and deprecate this
+
+		//1v1 settings
+		AddClientCommandCallback("CC_1v1_StartInRest", CC_1v1_StartInRest)
+		AddClientCommandCallback("CC_1v1_IBMM", CC_1v1_IBMM)
+		AddClientCommandCallback("CC_1v1_AcceptChallenges", CC_1v1_AcceptChallenges) 
+		AddClientCommandCallback("CC_1v1_ShowInputBanner", CC_1v1_ShowInputBanner)
+		AddClientCommandCallback("CC_1v1_ShowVsUI", CC_1v1_ShowVsUI)
+		AddClientCommandCallback("CC_1v1_CamoColor", CC_1v1_CamoColor)
+		AddClientCommandCallback("CC_1v1_Heirloom", CC_1v1_Heirloom)
+		AddClientCommandCallback("CC_1v1_MaxEnemyLatency", CC_1v1_MaxEnemyLatency)
+		AddClientCommandCallback("CC_1v1_MaxIBMMTime", CC_1v1_MaxIBMMTime)
 	}
 	else if( bIsCoachingMode() )
 	{
@@ -410,8 +406,74 @@ void function Gamemode1v1_Init( int eMap )
 	
 	if( Playlist() == ePlaylists.fs_vamp_1v1 ) //Todo(mk): This should be handled by the mode's script file using AddCallback_SpawnsSettings
 		SpawnSystem_SetCustomPlaylist( "fs_1v1" )
+}
 
-	FlagWait( "EntitiesDidLoad" )
+void function INIT_WeaponsMenu()
+{
+	AddClientCommandCallback( "CC_MenuGiveAimTrainerWeapon", CC_MenuGiveAimTrainerWeapon ) 
+	AddClientCommandCallback( "CC_AimTrainer_SelectWeaponSlot", CC_AimTrainer_SelectWeaponSlot )
+	AddClientCommandCallback( "CC_AimTrainer_WeaponSelectorClose", CC_AimTrainer_CloseWeaponSelector )
+}
+
+void function INIT_WeaponsMenu_Disabled()
+{
+	AddClientCommandCallback( "CC_MenuGiveAimTrainerWeapon", MessagePlayer_Disabled ) 
+	AddClientCommandCallback( "CC_AimTrainer_SelectWeaponSlot", MessagePlayer_Disabled )
+	AddClientCommandCallback( "CC_AimTrainer_WeaponSelectorClose", MessagePlayer_Disabled )
+}
+
+void function FS1v1_OnEntitiesDidLoad()
+{
+	switch( MapName() )
+	{
+		case eMaps.mp_rr_canyonlands_staging:
+	
+			break
+	
+		case eMaps.mp_rr_arena_composite:
+			Gamemode1v1_SetWaitingRoomRadius( 2500 )
+			SpawnOITCRoom( <0,0,20000> )
+			break
+			
+		case eMaps.mp_rr_arena_phase_runner:
+			Gamemode1v1_SetWaitingRoomRadius( 2500 )
+			SpawnOITCRoom( <0,0,20000> )
+			break
+		case eMaps.mp_rr_olympus:
+		case eMaps.mp_rr_olympus_tt:
+			Gamemode1v1_SetWaitingRoomRadius( 2500 )
+			SpawnOITCRoom( <0,0,50000> )
+		break
+		case eMaps.mp_rr_aqueduct:
+			Gamemode1v1_SetWaitingRoomRadius( 2500 )
+			SpawnOITCRoom( <0,0,20000> )
+		break
+				
+		case eMaps.mp_rr_party_crasher:
+			Gamemode1v1_SetWaitingRoomRadius( 2500 )
+			SpawnOITCRoom( <0,0,20000> )
+		break
+		
+		case eMaps.mp_rr_arena_skygarden:
+			
+		break
+				
+			break
+		case eMaps.mp_rr_arena_empty:
+		
+		break
+		
+		case eMaps.mp_rr_canyonlands_64k_x_64k:
+			Gamemode1v1_SetWaitingRoomRadius( 2500 )
+			SpawnOITCRoom( <0,0,50000> )
+		break
+		
+		case eMaps.mp_rr_desertlands_64k_x_64k:
+			Gamemode1v1_SetWaitingRoomRadius( 2500 )
+			SpawnOITCRoom( <0,0,50000> )
+		break
+    }
+	
 	array<SpawnData> allSoloLocations = SpawnSystem_ReturnAllSpawnLocations()
 	
 	file.notificationPanel_Coordinates = Gamemode1v1_GetNotificationPanel_Coordinates()
@@ -504,7 +566,6 @@ void function Gamemode1v1_Init( int eMap )
 
 	if( settings.isScenariosMode )
 	{
-		forbiddenZoneInit( GetMapName() )
 		FS_Scenarios_SetupPanels()
 		thread FS_Scenarios_Main_Thread()
 		return
@@ -529,14 +590,6 @@ void function Gamemode1v1_Init( int eMap )
 		//["add another"] = null,
 	};
 	
-	if( !bIsCoachingMode() )
-	{
-		Gamemode1v1_CreatePanels( g_waitingRoomPanelLocation.origin, g_waitingRoomPanelLocation.angles, panels )
-		DefinePanelCallbacks( panels )
-	}
-
-	forbiddenZoneInit( GetMapName() )
-	
 	AddCallback_OnClientConnected
 	( 
 		void function( entity player )
@@ -555,6 +608,20 @@ void function Gamemode1v1_Init( int eMap )
 				
 				player.p.playerisready = false
 			}
+			
+			// Waiting Room Lights
+			switch( MapName() )
+			{
+				case eMaps.mp_rr_party_crasher:
+				case eMaps.mp_rr_arena_composite:
+					Remote_CallFunction_NonReplay( player, "ServerCallback_SpawnOrModifyClientSideDynamicLight", <-131.638657, -928.141907, 20401.8008>, < 0, 0, 0 >, 0, 1024, 2.0, 0 )
+					Remote_CallFunction_NonReplay( player, "ServerCallback_SpawnOrModifyClientSideDynamicLight", <-172.030136, -23.6625957, 20289.2266>, < 0, 0, 0 >, 0, 1024, 2.0, 1 )
+					Remote_CallFunction_NonReplay( player, "ServerCallback_SpawnOrModifyClientSideDynamicLight", <-1601.14001, -890.200745, 21468.5039>, < 0, 0, 0 >, 1, 1024, 2.0, 2 )//jumppads area
+					Remote_CallFunction_NonReplay( player, "ServerCallback_SpawnOrModifyClientSideDynamicLight", <918.127991, -1166.38794, 20793.8203>, < 0, 0, 0 >, 0, 1024, 2.0, 3 ) //çourse
+					Remote_CallFunction_NonReplay( player, "ServerCallback_SpawnOrModifyClientSideDynamicLight", <-51.4564667, -2055.91406, 20776.9473>, < 0, 0, 0 >, 0, 1024, 2.0, 4 ) //çourse
+				break
+			
+			}
 		}
 	)
 	
@@ -564,6 +631,7 @@ void function Gamemode1v1_Init( int eMap )
 	{
 		Gamemode1v1_SetRestEnabled()
 		AddClientCommandCallback( "rest", ClientCommand_Maki_SoloModeRest )
+		AddClientCommandCallback( "spectate_1v1", ClientCommand_SpectateNew )
 	}
 	else
 		Gamemode1v1_SetRestEnabled( false )
@@ -571,18 +639,139 @@ void function Gamemode1v1_Init( int eMap )
 	thread FS_1v1_StartGame_THREAD( getWaitingRoomLocation() )
 }
 
-void function INIT_WeaponsMenu()
+//1v1 Settings Client Commands
+bool function CC_1v1_StartInRest( entity player, array<string> args )
 {
-	AddClientCommandCallback( "CC_MenuGiveAimTrainerWeapon", CC_MenuGiveAimTrainerWeapon ) 
-	AddClientCommandCallback( "CC_AimTrainer_SelectWeaponSlot", CC_AimTrainer_SelectWeaponSlot )
-	AddClientCommandCallback( "CC_AimTrainer_WeaponSelectorClose", CC_AimTrainer_CloseWeaponSelector )
+	if( !IsValid( player ) || !IsStringNumeric( args[0] ) )
+		return false
+	
+	if(args[0] == "0")
+	{
+		player.p.start_in_rest_setting = false
+	}
+	else if(args[0] == "1")
+	{
+		player.p.start_in_rest_setting = true
+	}
+
+	return true
 }
 
-void function INIT_WeaponsMenu_Disabled()
+bool function CC_1v1_AcceptChallenges( entity player, array<string> args )
 {
-	AddClientCommandCallback( "CC_MenuGiveAimTrainerWeapon", MessagePlayer_Disabled ) 
-	AddClientCommandCallback( "CC_AimTrainer_SelectWeaponSlot", MessagePlayer_Disabled )
-	AddClientCommandCallback( "CC_AimTrainer_WeaponSelectorClose", MessagePlayer_Disabled )
+	if( !IsValid( player ) || !IsStringNumeric( args[0] ) )
+		return false
+	
+	if(args[0] == "0")
+		player.p.lock1v1_setting = false
+	else if(args[0] == "1")
+		player.p.lock1v1_setting = true
+
+	return true
+}
+
+bool function CC_1v1_ShowInputBanner( entity player, array<string> args )
+{
+	if( !IsValid( player ) || !IsStringNumeric( args[0] ) )
+		return false
+	
+	if(args[0] == "0")
+		player.p.enable_input_banner = false
+	else if(args[0] == "1")
+		player.p.enable_input_banner = true
+
+	return true
+}
+
+bool function CC_1v1_ShowVsUI( entity player, array<string> args )
+{
+	if( !IsValid( player ) || !IsStringNumeric( args[0] ) )
+		return false
+	
+	if(args[0] == "0")
+		player.p.showvsui = false
+	else if(args[0] == "1")
+		player.p.showvsui = true
+
+	return true
+}
+
+bool function CC_1v1_CamoColor( entity player, array<string> args )
+{
+	if( !IsValid( player ) || !IsStringNumeric( args[0] ) )
+		return false
+	
+	player.p.playerCamo = ClampInt( args[0].tointeger(), 0, 9 )
+	
+	if( IsAlive( player ) && IsCurrentState( player, e1v1State.RESTING ) )
+	{
+		if( args[0].tointeger() == 0 )
+		{
+			player.SetSkin( 1 )
+			player.SetCamo( 0 )
+		} else if( args[0].tointeger() > 0 && args[0].tointeger() <= 9 ) 
+		{
+			player.SetSkin( 2 )
+			player.SetCamo( player.p.playerCamo == 9 ? RandomIntRangeInclusive( 0, 15 ) : player.p.playerCamo )
+		}
+	}
+	
+	return true
+}
+
+bool function CC_1v1_Heirloom( entity player, array<string> args )
+{
+	if( !IsValid( player ) || !IsStringNumeric( args[0] ) )
+		return false
+	
+	player.p.chosenHeirloom = ClampInt( args[0].tointeger(), 0, 5 )
+	
+	if( IsAlive( player ) && IsCurrentState( player, e1v1State.RESTING ) )
+		FS_GiveRandomMelee( player, true )
+	
+	return true
+}
+
+bool function CC_1v1_MaxEnemyLatency( entity player, array<string> args )
+{
+	if( !IsValid( player ) || !IsStringNumeric( args[0] ) )
+		return false
+	
+	player.p.max_enemy_ping = Clamp( args[0].tofloat(), 5.0, 999.0 )
+	
+	return true
+}
+
+bool function CC_1v1_IBMM( entity player, array<string> args )
+{
+	if( !IsValid( player ) || !IsStringNumeric( args[0] ) )
+		return false
+	
+	if(args[0] == "0")
+	{
+		player.p.IBMM_grace_period = 0
+	}
+	else if(args[0] == "1")
+	{
+		player.p.IBMM_grace_period = 3
+	}
+
+	return true
+}
+
+bool function CC_1v1_MaxIBMMTime( entity player, array<string> args )
+{
+	if( !IsValid( player ) || !IsStringNumeric( args[0] ) )
+		return false
+	
+	// if( args[0].tofloat() <= 0 )
+		// player.SetConVarInt( "fs_1v1_ibmm", 0 )
+	// else
+		// player.SetConVarInt( "fs_1v1_ibmm", 1 )
+	
+	player.p.IBMM_grace_period = Clamp( args[0].tofloat(), 0.0, 30.0 )
+	
+	return true
 }
 
 bool function MessagePlayer_Disabled( entity player, array<string> args )
@@ -721,7 +910,7 @@ void function INIT_PregameCallbacks()
 			CharacterSelect_AssignCharacter( ToEHI( player ), select_character )
 	
 			player.SetSkin(2)
-			player.SetCamo(player.p.playerCamo) //todo(cafe):allow player to choose his color
+			player.SetCamo(player.p.playerCamo)
 		}
 		else
 		{
@@ -793,7 +982,7 @@ void function INIT_PregameCallbacks()
 		
 		foreach( player in GetPlayerArray() )
 		{
-			int state = player.e.gamemode1v1State
+			int state = player.GetPlayerNetInt( "FS_1v1_PlayerState" )
 			printmsg += string( player ) + " State: " + state + " : " + DEV_GetGamestateRef( state ) + " \n"
 		}
 		
@@ -835,13 +1024,22 @@ void function RemoveEntityCalllback_OnPlayerGamestateChange_1v1( entity player, 
 
 void function Gamemode1v1_SetPlayerGamestate( entity player, int state = 0 )
 {
-	if( player.e.gamemode1v1State != state )
-	{
-		player.e.gamemode1v1State = state
-
+	// #if DEVELOPER
+	// DumpStack()
+	// #endif
+	
+	// if( player.GetPlayerNetInt( "FS_1v1_PlayerState" ) != state )
+	// {
+		#if DEVELOPER
+		if( player == gp()[0] )
+			printw( "[SERVER] SERVER PLAYER STATE CHANGED TO:", DEV_GetEnumStringSafe( "e1v1State", state ), player )
+		#endif
+		
+		player.SetPlayerNetInt( "FS_1v1_PlayerState", state )
+		
 		foreach( callbackFunc in player.e.onPlayerGamestateChangedCallbacks )
 			callbackFunc( player, state )
-	}
+	// }
 	#if DEVELOPER && DEBUG_STATE
 		else if( !IsCurrentState( player, e1v1State.SEQUENCE ) )
 		{
@@ -853,12 +1051,12 @@ void function Gamemode1v1_SetPlayerGamestate( entity player, int state = 0 )
 
 int function Gamemode1v1_GetPlayerGamestate( entity player )
 {
-	return player.e.gamemode1v1State
+	return player.GetPlayerNetInt( "FS_1v1_PlayerState" )
 }
 
 bool function IsCurrentState( entity player, int state )
 {
-	return player.e.gamemode1v1State == state
+	return player.GetPlayerNetInt( "FS_1v1_PlayerState" ) == state
 }
 
 table<int, soloGroupStruct> function getGroupsInProgress()
@@ -1397,7 +1595,7 @@ void function removeGroup( soloGroupStruct groupToRemove )
 	if( groupHandle in file.groupsInProgress )
 	{
 		#if DEVELOPER
-			printt( format( "removeGroup SUCCESS - removing group %d for players with handles %d %d", groupHandle, handle1, handle2 ) )
+			printt( format( " SS - removing group %d for players with handles %d %d", groupHandle, handle1, handle2 ) )
 		#endif
 		delete file.groupsInProgress[ groupHandle ]
 	}
@@ -1414,17 +1612,18 @@ void function endSpectate(entity player)
 	player.SetSpecReplayDelay( 0 )
 	player.SetObserverTarget( null )
 	player.StopObserverMode()
-	Remote_CallFunction_ByRef( player, "ServerCallback_KillReplayHud_Deactivate" )
+	// Remote_CallFunction_ByRef( player, "ServerCallback_KillReplayHud_Deactivate" ) //(cafe)not used atm revisit
     player.MakeVisible()
-    player.ClearInvulnerable()
-	player.SetTakeDamageType( DAMAGE_YES )
+	
 	try
 	{
 		player.Die( null, null, { damageSourceId = eDamageSourceId.damagedef_despawn } )
 	}
 	catch (error)
 	{}
+	
     RemoveButtonPressedPlayerInputCallback(player, IN_JUMP,endSpectate)
+	Gamemode1v1_SetPlayerGamestate( player, e1v1State.RESTING )
 }
 
 
@@ -1460,6 +1659,10 @@ void function addSoloPlayerResting( int playerHandle )
 
 void function deleteWaitingPlayer( int handle )
 {
+	// #if DEVELOPER
+	// printt( "player removed from waiting list", handle )
+	// #endif
+	
 	if ( handle in file.soloPlayersWaiting )
 		delete file.soloPlayersWaiting[ handle ]
 }
@@ -1497,17 +1700,16 @@ void function Gamemode1v1_ForceRest( entity player )
 			deleteWaitingPlayer( playerHandle )
 		
 		player.p.lastRestUsedTime = Time()
-		
-		soloModePlayerToRestingList( player )
-		
+
 		try
 		{
 			player.Die( null, null, { damageSourceId = eDamageSourceId.damagedef_despawn } )
 		}
 		catch (error){}
 		
-		HolsterAndDisableWeapons_Raw( player )//✓
-		//TakeAllWeapons( player )
+		soloModePlayerToRestingList( player )
+		
+		thread respawnInSoloMode( player )
 	}
 }
 
@@ -1928,7 +2130,7 @@ bool function ClientCommand_mkos_challenge(entity player, array<string> args)
 				CharacterSelect_AssignCharacter( ToEHI( player ), select_character )
 
 				player.SetSkin(2)
-				player.SetCamo(player.p.playerCamo) //todo(cafe):allow player to choose his color
+				player.SetCamo(player.p.playerCamo)
 				
 				if( !settings.bAllowAbilities )
 					player.TakeOffhandWeapon( OFFHAND_TACTICAL )
@@ -2583,10 +2785,75 @@ bool function isPlayerInChallenge( entity player )
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
+bool function ClientCommand_SpectateNew( entity user, array<string> args )
+{
+    if ( !IsValid( user ) ) 
+		return false
+	
+	if ( !isPlayerInRestingList( user ) )
+    {
+        LocalMsg( user, "#FS_MustBeInRest", "#FS_MustBeInRest_SUBSTR" )
+        return false
+    }
+	
+	if( user.GetPlayerNetInt( "FS_1v1_PlayerState" ) != e1v1State.RESTING )
+		return false
+	
+	if ( GetTDMState() != eTDMState.IN_PROGRESS )
+    {
+        LocalMsg( user, "#FS_GameNotPlaying" )
+        return false
+    }
+
+    try
+    {
+        array<entity> enemiesArray = GetPlayerArray_AliveConnected()
+        enemiesArray.fastremovebyvalue( user )
+        
+        #if TRACKER
+			entity messageBot = GetMessageBotEnt()
+			if ( bBotEnabled() && IsValid( messageBot ) && IsAlive( messageBot ) )
+				enemiesArray.fastremovebyvalue( messageBot )
+        #endif
+		
+		if ( enemiesArray.len() == 0 )
+		{
+			LocalMsg( user, "#FS_NO_PLAYERS_TO_SPEC" )
+			return false
+		}
+        
+        entity specTarget = enemiesArray.getrandom()
+
+        user.p.isSpectating = true
+        user.SetPlayerNetInt( "spectatorTargetCount", GetPlayerArray().len() )
+        user.SetObserverTarget( specTarget )
+        user.SetSpecReplayDelay( 0.5 )
+        user.StartObserverMode( OBS_MODE_IN_EYE )
+        user.p.lastTimeSpectateUsed = Time()
+		
+		Gamemode1v1_SetPlayerGamestate( user, e1v1State.SPECTATING )
+		
+        // LocalMsg( user, "#FS_JumpToStopSpec" )
+
+        user.MakeInvisible()
+    }
+    catch ( e )
+    {
+		#if DEVELOPER 
+			printw( "Error:", e )
+		#endif
+	}
+    
+    AddButtonPressedPlayerInputCallback( user, IN_JUMP, endSpectate )
+	return true
+}
 
 bool function ClientCommand_Maki_SoloModeRest( entity player, array<string> args )
 {
 	if( !IsValid( player ) )
+		return false
+	
+	if( GetTDMState() != eTDMState.IN_PROGRESS ) //(cafe) new
 		return false
 	
 	if( Time() < player.p.lastRestUsedTime + 3 || IsCurrentState( player, e1v1State.PREMATCH ) )
@@ -2597,33 +2864,19 @@ bool function ClientCommand_Maki_SoloModeRest( entity player, array<string> args
 	
 	player.p.lastRestUsedTime = Time()
 	
-	string restText = "#FS_BASE_RestText";
+	string restText = "You can change settings now."//"#FS_BASE_RestText";
 	string restFlag = ""
 	int playerHandle = player.p.handle
 
 	if( playerHandle in file.soloPlayersResting )
 	{
-		if( player.IsObserver() || IsValid( player.GetObserverTarget() ) )
+		if( player.IsObserver() || player.p.isSpectating )
 		{
-			player.SetSpecReplayDelay( 0 )
-			player.SetObserverTarget( null )
-			player.StopObserverMode()
-			//Remote_CallFunction_NonReplay(player, "ServerCallback_KillReplayHud_Deactivate")
-			Remote_CallFunction_ByRef( player, "ServerCallback_KillReplayHud_Deactivate" )
-			player.MakeVisible()
-			player.ClearInvulnerable()
-			player.SetTakeDamageType( DAMAGE_YES )
+			endSpectate( player )
 		}
 
-		LocalMsg( player, "#FS_MATCHING" )	
-		soloModePlayerToWaitingList( player )
-		
-		// try
-		// {
-			// player.Die( null, null, { damageSourceId = eDamageSourceId.damagedef_despawn } )
-		// }
-		// catch (error)
-		// {}
+		// LocalMsg( player, "#FS_MATCHING" )	
+		soloModePlayerToWaitingList( player, false, true )
 	}
 	else
 	{
@@ -2686,10 +2939,10 @@ bool function ClientCommand_Maki_SoloModeRest( entity player, array<string> args
 			}
 		}
 			
-		if ( restFlag == "" )		
-			LocalMsg( player, "#FS_YouAreResting", restText )
-		else 
-			LocalMsg( player, "#FS_YouAreResting", restText, eMsgUI.DEFAULT, 5, "", restFlag )
+		// if ( restFlag == "" )		
+			// LocalMsg( player, "#FS_YouAreResting", restText )
+		// else 
+			// LocalMsg( player, "#FS_YouAreResting", restText, eMsgUI.DEFAULT, 5, "", restFlag )
 		
 		try
 		{
@@ -2702,9 +2955,7 @@ bool function ClientCommand_Maki_SoloModeRest( entity player, array<string> args
 		
 		soloModePlayerToRestingList( player )
 		
-		HolsterAndDisableWeapons_Raw( player ) //✓
 		thread respawnInSoloMode( player )
-		//TakeAllWeapons( player )
 	}
 
 	return true
@@ -2744,7 +2995,8 @@ entity function getRandomOpponentOfPlayer( entity player )
 		
         if ( IsValid( playerWaiting.player ) && player != playerWaiting.player && !playerWaiting.player.p.waitingFor1v1 )
 		{
-            if ( playerWaiting.player.p.input == player.p.input || ( playerWaiting.IBMM_Timeout_Reached == true && Fetch_IBMM_Timeout_For_Player( player ) == true ) )
+            if ( playerWaiting.player.GetLatency() * 1000 < player.p.max_enemy_ping && ( player.GetLatency() * 1000 < playerWaiting.player.p.max_enemy_ping ) &&
+				( playerWaiting.player.p.input == player.p.input || ( playerWaiting.IBMM_Timeout_Reached == true && Fetch_IBMM_Timeout_For_Player( player ) == true ) ) )
                 eligible.append(playerWaiting.player)
 		}
     }
@@ -2783,77 +3035,176 @@ entity function returnOpponentOfPlayer( entity player )
 }
 
 
-void function soloModePlayerToWaitingList( entity player, bool isWinner = false )
+void function soloModePlayerToWaitingList( entity player, bool isWinner = false, bool fromResting = false )
+{
+	// DumpStack()
+	if( settings.isScenariosMode && !bIsCoachingMode() )
+	{
+		scenarios_soloModePlayerToWaitingList( player, isWinner )
+		return
+	}
+	
+	if( !IsValid( player ) || isPlayerInWaitingList( player ) || IsBotEnt( player ) ) 	
+		return
+	
+	if( !IsAlive( player ) ) //(cafe)This try catch shouldn't be necessary?
+	{
+		DecideRespawnPlayer( player, false )
+	}
+	
+	if( !IsInvincible(player ) ) // (cafe) fix invincible stack bug
+		MakeInvincible(player)
+	
+	Gamemode1v1_SetPlayerGamestate( player, e1v1State.WAITING )
+	
+	if( !fromResting )
+		TpPlayerToLocpair( player, getWaitingRoomLocation() ) //new
+	
+	player.SetMinimapZoomScale( 0.75, 3.0 ) // (cafe) There should be a better place for this call
+
+	SetPlayerInventory( player, [] ) //clear inventory.
+	
+	// Clear all equipment slots
+	foreach ( slot, slotData in EquipmentSlot_GetAllEquipmentSlots() )
+		Inventory_SetPlayerEquipment( player, "", slot )
+	
+	player.SetPlayerNetEnt( "FSDM_1v1_Enemy", null )
+
+	soloPlayerStruct playerStruct	
+	playerStruct.player = player
+	playerStruct.handle = player.p.handle
+	
+	if( !settings.isScenariosMode && !bIsCoachingMode() )
+	{
+		if( !isWinner ) 
+			playerStruct.victimPenaltyExpire = Time() + penaltyDuration
+		else
+			playerStruct.victimPenaltyExpire = Time()
+		
+		playerStruct.waitingTime = playerStruct.victimPenaltyExpire + 3.0
+		
+		if( player.p.IBMM_grace_period > 0 )
+			playerStruct.waitingTime += player.p.IBMM_grace_period
+	}
+
+	float season_kd
+	float current_kd
+	
+	// weighted scoring
+	season_kd = getkd( ( player.GetPlayerNetInt( "kills" ) + player.p.season_kills), ( player.GetPlayerNetInt( "deaths" ) + player.p.season_deaths ) )
+	current_kd = getkd( player.GetPlayerNetInt( "kills" ), player.GetPlayerNetInt( "deaths" )  )	
+	playerStruct.kd = ( ( season_kd * file.season_kd_weight ) + ( current_kd * file.current_kd_weight ) )
+
+	playerStruct.lastOpponent = player.p.lastKiller
+
+	playerStruct.queue_time = Time()
+	
+	deleteSoloPlayerResting( player )
+	AddPlayerToWaitingList( playerStruct )
+	
+	ResetIBMM( player ) //must be after adding to waiting list.
+	
+	//sqprint(format("Queue time set for %s AT: %f ", playerStruct.player.GetPlayerName(), playerStruct.queue_time ))
+	//sqprint(format("Setting player %s inputmode to: %s", player.GetPlayerName(), player.p.inputmode ))
+	
+	TakeAllWeapons( player )
+	// printw( "FS_GiveRandomMelee" )
+	FS_GiveRandomMelee( player, true ) //give melee in waiting room
+	
+	player.SetSkin(2)
+	player.SetCamo(player.p.playerCamo)
+	
+	//set realms for resting player
+	FS_ClearRealmsAndAddPlayerToAllRealms( player )
+	
+	if( !bIsCoachingMode() )
+		LocalMsg( player, "#FS_IN_QUEUE", "", eMsgUI.EVENT, settings.roundTime )
+
+	if( bIsCoachingMode() )
+	{
+		if( !IsAlive( player ) )
+			DecideRespawnPlayer( player, false )
+
+		if( GetPlayerArray().len() == 2 )
+		{
+			Message_New( player, "Welcome to District's 1v1 Faceoff\n\n Waiting For Admin To Start", 300 )
+			Remote_CallFunction_NonReplay(player, "Flowstate_OpenCoachingMenu")
+		}
+		else
+			Message_New( player, "Welcome to District's 1v1 Faceoff\n\n Waiting Another Player To Start", 9999 )
+	}
+}
+
+void function scenarios_soloModePlayerToWaitingList( entity player, bool isWinner = false )
 {
 	if( !IsValid( player ) || isPlayerInWaitingList( player ) || IsBotEnt( player ) ) 	
 		return
-		
-	Gamemode1v1_SetPlayerGamestate( player, e1v1State.WAITING )
-	player.SetMinimapZoomScale( 0.75, 3.0 ) // (cafe) There should be a better place for this call
 	
-	if( settings.isScenariosMode )
+	Gamemode1v1_SetPlayerGamestate( player, e1v1State.WAITING )
+	TpPlayerToLocpair( player, getWaitingRoomLocation() ) //new
+	
+	player.SetMinimapZoomScale( 0.75, 3.0 ) // (cafe) There should be a better place for this call
+
+	Remote_CallFunction_NonReplay( player, "FS_Scenarios_TogglePlayersCardsVisibility", false, true )
+
+	if( player.Player_IsFreefalling() )
+		Signal( player, "PlayerSkyDive" )
+
+	_CleanupPlayerEntities( player )
+	SetTeam( player, TEAM_IMC )
+
+	scenariosGroupStruct ornull playerGroup = FS_Scenarios_ReturnGroupForPlayer( player )	
+	if( playerGroup != null )
 	{
-		Remote_CallFunction_NonReplay( player, "FS_Scenarios_TogglePlayersCardsVisibility", false, true )
-
-		if( player.Player_IsFreefalling() )
-			Signal( player, "PlayerSkyDive" )
-
-		_CleanupPlayerEntities( player )
-		SetTeam( player, TEAM_IMC )
-
-		scenariosGroupStruct ornull playerGroup = FS_Scenarios_ReturnGroupForPlayer( player )	
-		if( playerGroup != null )
+		expect scenariosGroupStruct( playerGroup )
+	
+		if( playerGroup.isValid )
 		{
-			expect scenariosGroupStruct( playerGroup )
-		
-			if( playerGroup.isValid )
+			foreach( scenariosTeamStruct team in playerGroup.teams )
 			{
-				foreach( scenariosTeamStruct team in playerGroup.teams )
-				{
-					int maxIter = team.players.len() - 1
-					
-					for( int i = maxIter; i >= 0; i-- )
-					{
-						entity splayer = team.players[i]
-						
-						if( !IsValid( splayer ) || splayer == player )
-							team.players.remove( i )
-					}
-				}
-
-				if( player.p.handle in FS_Scenarios_GetPlayerToGroupMap() )
-					delete FS_Scenarios_GetPlayerToGroupMap()[ player.p.handle ]
+				int maxIter = team.players.len() - 1
 				
-				player.SetShieldHealth( 0 )
-				player.SetShieldHealthMax( 0 )
-				Inventory_SetPlayerEquipment(player, "", "armor")
-				Inventory_SetPlayerEquipment(player, "", "backpack")
-				Inventory_SetPlayerEquipment(player, "", "incapshield")
-				Inventory_SetPlayerEquipment(player, "", "helmet")
-				if( IsAlive( player ) )
-					player.SetHealth( player.GetMaxHealth() )
+				for( int i = maxIter; i >= 0; i-- )
+				{
+					entity splayer = team.players[i]
+					
+					if( !IsValid( splayer ) || splayer == player )
+						team.players.remove( i )
+				}
 			}
+
+			if( player.p.handle in FS_Scenarios_GetPlayerToGroupMap() )
+				delete FS_Scenarios_GetPlayerToGroupMap()[ player.p.handle ]
+			
+			player.SetShieldHealth( 0 )
+			player.SetShieldHealthMax( 0 )
+			Inventory_SetPlayerEquipment(player, "", "armor")
+			Inventory_SetPlayerEquipment(player, "", "backpack")
+			Inventory_SetPlayerEquipment(player, "", "incapshield")
+			Inventory_SetPlayerEquipment(player, "", "helmet")
+			if( IsAlive( player ) )
+				player.SetHealth( player.GetMaxHealth() )
 		}
-
-		//Remote_CallFunction_NonReplay(player, "Minimap_DisableDraw_Internal")
-		Remote_CallFunction_ByRef( player, "Minimap_DisableDraw_Internal" )
-		
-		ClearRecentDamageHistory( player )
-		ClearLastAttacker( player )
-		
-		TakeAllPassives( player )
-		player.SetPlayerNetTime( "FS_Scenarios_currentDeathfieldRadius", 0 )
-		player.SetPlayerNetTime( "FS_Scenarios_currentDistanceFromCenter", -1 )
-		player.SetPlayerNetTime( "FS_Scenarios_gameStartTime", -1 )
-
-		if( Bleedout_IsBleedingOut( player ) )
-			Signal( player, "BleedOut_OnRevive" )
-
-		Signal(player, "InterruptSyncedMelee")
-		
-		player.SetPlayerNetTime( "FS_Scenarios_timePlayerEnteredInLobby", Time() )
-		Remote_CallFunction_ByRef( player, "FS_DestroyCompass" )
 	}
+
+	//Remote_CallFunction_NonReplay(player, "Minimap_DisableDraw_Internal")
+	// Remote_CallFunction_ByRef( player, "Minimap_DisableDraw_Internal" )
+	
+	ClearRecentDamageHistory( player )
+	ClearLastAttacker( player )
+	
+	TakeAllPassives( player )
+	player.SetPlayerNetTime( "FS_Scenarios_currentDeathfieldRadius", 0 )
+	player.SetPlayerNetTime( "FS_Scenarios_currentDistanceFromCenter", -1 )
+	player.SetPlayerNetTime( "FS_Scenarios_gameStartTime", -1 )
+
+	if( Bleedout_IsBleedingOut( player ) )
+		Signal( player, "BleedOut_OnRevive" )
+
+	Signal(player, "InterruptSyncedMelee")
+	
+	player.SetPlayerNetTime( "FS_Scenarios_timePlayerEnteredInLobby", Time() )
+	Remote_CallFunction_ByRef( player, "FS_DestroyCompass" )
 
 	SetPlayerInventory( player, [] ) //clear inventory.
 	
@@ -2892,48 +3243,21 @@ void function soloModePlayerToWaitingList( entity player, bool isWinner = false 
 	playerStruct.lastOpponent = player.p.lastKiller
 
 	playerStruct.queue_time = Time()
+	
+	deleteSoloPlayerResting( player )
 	AddPlayerToWaitingList( playerStruct )
+	
 	ResetIBMM( player ) //must be after adding to waiting list.
 	
 	//sqprint(format("Queue time set for %s AT: %f ", playerStruct.player.GetPlayerName(), playerStruct.queue_time ))
 	//sqprint(format("Setting player %s inputmode to: %s", player.GetPlayerName(), player.p.inputmode ))
 	
 	TakeAllWeapons( player )
-
+	
 	//set realms for resting player
 	FS_ClearRealmsAndAddPlayerToAllRealms( player )
-	
-	if( !isScenariosMode() && !bIsCoachingMode() && GetTDMState() == eTDMState.IN_PROGRESS )
-		Remote_CallFunction_ByRef( player, "ForceScoreboardFocus" )
 
-	// Check opponent -- (mk):cannot do this here, it will simply result in double calls for both players.
-	// entity opponent = returnOpponentOfPlayer( player )
-	// if( IsValid( opponent ) )
-		// soloModePlayerToWaitingList( opponent )
-	
-	//检查resting list 是否有该玩家
-	deleteSoloPlayerResting( player )
-
-	// if( isScenariosMode() && FS_Scenarios_GetMatchIsEnding() ) (mk): why was this removed..?
-		// LocalMsg( player, "#FS_Scenarios_WaitingForRoundEnd", "", eMsgUI.EVENT, max( 1, g_fCurrentRoundEndTime - Time() ) )
-	// else 
-	
-	if( !bIsCoachingMode() )
-		LocalMsg( player, "#FS_IN_QUEUE", "", eMsgUI.EVENT, settings.roundTime )
-
-	if( bIsCoachingMode() )
-	{
-		if( !IsAlive( player ) )
-			DecideRespawnPlayer( player, false )
-
-		if( GetPlayerArray().len() == 2 )
-		{
-			Message_New( player, "Welcome to District's 1v1 Faceoff\n\n Waiting For Admin To Start", 300 )
-			Remote_CallFunction_NonReplay(player, "Flowstate_OpenCoachingMenu")
-		}
-		else
-			Message_New( player, "Welcome to District's 1v1 Faceoff\n\n Waiting Another Player To Start", 9999 )
-	}
+	LocalMsg( player, "#FS_IN_QUEUE", "", eMsgUI.EVENT, settings.roundTime )
 }
 
 void function soloModePlayerToInProgressList( soloGroupStruct newGroup ) 
@@ -3011,7 +3335,22 @@ void function soloModePlayerToRestingList( entity player ) //handles opponent to
 	if( !IsValid( player ) )
 		return
 	
-	player.TakeOffhandWeapon( OFFHAND_MELEE )
+	if( !IsAlive( player ) )
+	{
+		DecideRespawnPlayer( player, false )
+	}
+	
+	player.SetSkin(2)
+	player.SetCamo(player.p.playerCamo)
+	
+	if( !IsInvincible(player ) )
+		MakeInvincible(player)
+	
+	Gamemode1v1_SetPlayerGamestate( player, e1v1State.RESTING )
+	
+	TakeAllWeapons( player )
+	FS_GiveRandomMelee( player, true ) //give melee in waiting room
+	
 	ClearNotifications( player )
 	
 	player.SetPlayerNetEnt( "FSDM_1v1_Enemy", null )
@@ -3048,7 +3387,6 @@ void function soloModePlayerToRestingList( entity player ) //handles opponent to
 	LocalMsg( player, "#FS_RESTING", "", eMsgUI.EVENT, settings.roundTime )
 	
 	DecideToggleCollision_Rest( player, false )
-	Gamemode1v1_SetPlayerGamestate( player, e1v1State.RESTING )
 	player.p.rest_request = false
 }
 
@@ -3113,69 +3451,26 @@ entity function CreateSmallRingBoundary( vector Center )
 	return smallcircle
 }
 
-entity function createForbiddenZone( vector zoneOrigin, float radius,float AboveHeight = 50,float BelowHeight = 15 )
+void function TpPlayerToLocpair( entity player, LocPair data )
 {
-	entity trigger = CreateEntity( "trigger_cylinder" )
-	trigger.SetRadius( radius )
-	trigger.SetAboveHeight( AboveHeight )
-	trigger.SetBelowHeight( BelowHeight )
-	trigger.SetOrigin( zoneOrigin )
-	trigger.SetEnterCallback(  forbiddenZone_enter )
-	trigger.SetLeaveCallback(  forbiddenZone_leave )
-	trigger.SearchForNewTouchingEntity()
-	// DebugDrawCylinder( trigger.GetOrigin() , < -90, 0, 0 >, radius, trigger.GetAboveHeight(), 0, 165, 255, true, 9999.9 )
-	// DebugDrawCylinder( trigger.GetOrigin() , < -90, 0, 0 >, radius, -trigger.GetBelowHeight(), 255, 90, 0, true, 9999.9 )
-	DispatchSpawn( trigger )
-	return trigger
-}
+	// #if DEVELOPER
+	// if( player == gp()[0] )
+	// {
+		// DumpStack()
+		// printw( "PLAYER TELEPORTED TO", data.origin, data.angles )
+	// }
+	// #endif
 
-void function forbiddenZoneInit( string mapName )
-{
-	array<vector> triggerList
-	if( mapName == "mp_rr_aqueduct" )
-	{
-		triggerList = 
-		[
-			<8693.24,-1103.93,571.29>,
-			<-4805,-2543.85,553.75>,
-		]
-	}
-	else
-	{
-		return
-	}
-	
-	foreach( origin in triggerList )	
-		createForbiddenZone( origin,600 )
-}
-
-void function forbiddenZone_enter(entity trigger , entity ent)
-{
-	if( !IsValid( ent ) || !ent.IsPlayer() ) 
-		return
-		
-	HolsterAndDisableWeapons( ent ) //✓
-	EntityOutOfBounds( trigger, ent, null, null )
-}
-
-void function forbiddenZone_leave(entity trigger , entity ent)
-{
-	if( !IsValid(ent) || !ent.IsPlayer() ) 
-		return
-		
-	EnableOffhandWeapons( ent )
-	DeployAndEnableWeapons( ent ) //✓
-	EntityBackInBounds( trigger, ent, null, null )
-}
-
-void function TeleportPlayer_1v1( entity player, LocPair data )
-{
 	if( !IsValid( player ) ) 
 		return
 		
 	player.SetVelocity( Vector( 0,0,0 ) )
-	player.SetAngles( data.angles )
+	
 	player.SetOrigin( data.origin )
+	player.SetAngles( data.angles )
+	
+	player.SnapEyeAngles( data.angles )
+	player.SnapFeetToEyes()
 }
 
 void function PlayerRestoreHP_1v1( entity player, float health, float shields )
@@ -3224,55 +3519,29 @@ void function respawnInSoloMode( entity player, int respawnSlotIndex = -1 ) //�
 	if ( !player.p.isConnected ) 
 		return
 	
-	// printt("respawnInSoloMode!")
-	// Warning("respawn player: " + player.GetPlayerName())
-
-   	if( player.p.isSpectating )
-    {
-		player.SetPlayerNetInt( "spectatorTargetCount", 0 )
-		player.p.isSpectating = false
-		player.SetSpecReplayDelay( 0 )
-		player.SetObserverTarget( null )
-		player.StopObserverMode()
-        //Remote_CallFunction_NonReplay(player, "ServerCallback_KillReplayHud_Deactivate")
-		Remote_CallFunction_ByRef( player, "ServerCallback_KillReplayHud_Deactivate" )
-        player.MakeVisible()
-		player.ClearInvulnerable()
-		player.SetTakeDamageType( DAMAGE_YES )
-    }//disable replay mode
-
 	Remote_CallFunction_ByRef( player, "ForceScoreboardLoseFocus" )
 
-   	if( isPlayerInRestingList( player ) )
+	//(cafe) new
+   	if( isPlayerInRestingList( player ) ) //should be a spectator
 	{
-		// Warning("resting respawn")
-		try
+		if( !IsAlive( player ) )
 		{
-			Gamemode1v1_SetPlayerGamestate( player, e1v1State.SEQUENCE )
 			DecideRespawnPlayer( player, false )
+			
+			player.SetSkin(2)
+			player.SetCamo(player.p.playerCamo)
+			
+			if( !IsInvincible(player ) )
+				MakeInvincible(player)
 		}
-		catch( erroree )
-		{	
-			#if DEVELOPER
-				sqprint("Caught an error that would crash the server" + erroree)
-			#endif
-		}
-		
-		LocPair waitingRoomLocation = getWaitingRoomLocation()
-		if ( !IsValid( waitingRoomLocation ) ) 
-			return
-		
-		GivePlayerCustomPlayerModel( player )
-		TeleportPlayer_1v1( player, waitingRoomLocation )
-		player.MakeVisible()
-		player.ClearInvulnerable()
-		player.SetTakeDamageType( DAMAGE_YES )
 
-		//set realms for resting player
+		TpPlayerToLocpair( player, getWaitingRoomLocation() )
 		FS_ClearRealmsAndAddPlayerToAllRealms( player )
 
+		TakeAllWeapons( player )
+		FS_GiveRandomMelee( player, true )
 		return
-	}//玩家在休息模式
+	}
 
 	if ( respawnSlotIndex == -1 ) 
 		return
@@ -3287,7 +3556,6 @@ void function respawnInSoloMode( entity player, int respawnSlotIndex = -1 ) //�
 		#if DEVELOPER
 			sqprint("Caught an error that would crash the server")
 		#endif
-		// Warning("fail to respawn")
 	}
 	
 	soloGroupStruct group = returnSoloGroupOfPlayer( player )
@@ -3302,9 +3570,10 @@ void function respawnInSoloMode( entity player, int respawnSlotIndex = -1 ) //�
 	GivePlayerCustomPlayerModel( player )
 	
 	soloLocStruct groupLocStruct = group.groupLocStruct
-	TeleportPlayer_1v1( player, groupLocStruct.respawnLocations[ respawnSlotIndex ] )
+	TpPlayerToLocpair( player, groupLocStruct.respawnLocations[ respawnSlotIndex ] )
+	ClearInvincible( player )
 	
-	wait 0.2 //防攻击的伤害传递止上一条命被到下一条命的玩家上
+	wait 0.2
 
 	if( !IsValid( player ) ) 
 		return
@@ -3324,9 +3593,6 @@ void function respawnInSoloMode( entity player, int respawnSlotIndex = -1 ) //�
 	{
 		FS_Coaching_StartRecording( player )
 	}
-	
-	wait 0.1
-	ReCheckGodMode( player ) //Todo(mk): fix and remove the need for this.
 }
 
 void function _decideLegend( soloGroupStruct group )
@@ -3344,7 +3610,7 @@ void function _decideLegend( soloGroupStruct group )
 			CharacterSelect_AssignCharacter( ToEHI( group.player1 ), select_character )
 
 			group.player1.SetSkin(2)
-			group.player1.SetCamo(group.player1.p.playerCamo) //todo(cafe):allow player to choose his color
+			group.player1.SetCamo(group.player1.p.playerCamo)
 		}
 		else 
 		{
@@ -3360,7 +3626,7 @@ void function _decideLegend( soloGroupStruct group )
 			CharacterSelect_AssignCharacter( ToEHI( group.player2 ), select_character )
 
 			group.player2.SetSkin(2)
-			group.player2.SetCamo(group.player2.p.playerCamo) //todo(cafe):allow player to choose his color
+			group.player2.SetCamo(group.player2.p.playerCamo)
 		}
 		else 
 		{
@@ -3479,192 +3745,6 @@ void function Gamemode1v1_CreatePanels( vector origin, vector angles, table<stri
 	}
 }
 
-void function DefinePanelCallbacks( PanelTable panels )
-{
-    // Resting room panel
-    AddCallback_OnUseEntity( panels["#FS_START_SPEC"], void function( entity panel, entity user, int input )
-    {
-        if ( !IsValid( user ) ) 
-			return
-			
-		if( !CheckRate( user ) )
-			return 
-        
-		if ( !isPlayerInRestingList( user ) )
-        {
-            LocalMsg( user, "#FS_MustBeInRest", "#FS_MustBeInRest_SUBSTR" )
-            return
-        }
-        
-		if ( GetTDMState() != eTDMState.IN_PROGRESS )
-        {
-            LocalMsg( user, "#FS_GameNotPlaying" )
-            return
-        }
-
-        try
-        {
-            array<entity> enemiesArray = GetPlayerArray_AliveConnected()
-            enemiesArray.fastremovebyvalue( user )
-            
-            #if TRACKER
-				entity messageBot = GetMessageBotEnt()
-				if ( bBotEnabled() && IsValid( messageBot ) && IsAlive( messageBot ) )
-					enemiesArray.fastremovebyvalue( messageBot )
-            #endif
-			
-			if ( enemiesArray.len() == 0 )
-			{
-				LocalMsg( user, "#FS_NO_PLAYERS_TO_SPEC" )
-				return
-			}
-            
-            entity specTarget = enemiesArray.getrandom()
-
-            user.p.isSpectating = true
-            user.SetPlayerNetInt( "spectatorTargetCount", GetPlayerArray().len() )
-            user.SetObserverTarget( specTarget )
-            user.SetSpecReplayDelay( 0.5 )
-            user.StartObserverMode( OBS_MODE_IN_EYE )
-            thread CheckForObservedTarget( user )
-            user.p.lastTimeSpectateUsed = Time()
-
-            LocalMsg( user, "#FS_JumpToStopSpec" )
-
-            user.MakeInvisible()
-        }
-        catch ( e )
-        {
-			#if DEVELOPER 
-				printw( "Error:", e )
-			#endif
-		}
-        
-        AddButtonPressedPlayerInputCallback( user, IN_JUMP, endSpectate )
-    })
-
-    // IBMM button
-    AddCallback_OnUseEntity( panels["#FS_IBMM_TOGGLE"], void function( entity panel, entity user, int input )
-    {			
-        if ( !IsValid( user ) ) 
-			return
-		
-		if( !CheckRate( user ) )
-			return 
-        
-        if ( user.p.IBMM_grace_period > 0 )
-        {
-            user.p.IBMM_grace_period = 0
-            SavePlayerData( user, "wait_time", 0.0 )
-            LocalMsg( user, "#FS_IBMM_Any" )
-        }
-        else
-        {   
-            if ( settings.ibmm_wait_limit >= 3 )
-            {   
-                if ( settings.default_ibmm_wait == 0 )
-                {
-                    user.p.IBMM_grace_period = 3
-                    SavePlayerData( user, "wait_time", 3.0 )
-                }
-                else
-                {
-                    SetDefaultIBMM( user )
-                }
-                
-                LocalMsg( user, "#FS_IBMM_SAME" )
-            }
-            else 
-            {
-                LocalMsg( user, "#FS_SettingNotAllowed" )
-            }
-        }
-    })
-
-    // Lock 1v1 button
-    AddCallback_OnUseEntity( panels["#FS_CHAL_TOGGLE"], void function( entity panel, entity user, int input )
-    {
-        if ( !IsValid( user ) ) 
-			return
-			
-		if( !CheckRate( user ) )
-			return 
-        
-        if ( user.p.lock1v1_setting == true )
-        {
-            user.p.lock1v1_setting = false
-            SavePlayerData( user, "lock1v1_setting", false )
-            LocalMsg( user, "#FS_ChalDisabled" )
-        }
-        else
-        {   
-            user.p.lock1v1_setting = true
-            SavePlayerData( user, "lock1v1_setting", true )
-            LocalMsg( user, "#FS_ChalEnabled" )
-        }
-    })
-
-    // Start in rest setting button
-    AddCallback_OnUseEntity( panels["#FS_START_REST_TOGGLE"], void function( entity panel, entity user, int input )
-    {
-        if ( !IsValid( user ) ) 
-			return
-			
-		if( !CheckRate( user ) )
-			return 
-        
-        if ( user.p.start_in_rest_setting == true )
-        {
-            user.p.start_in_rest_setting = false
-            SavePlayerData( user, "start_in_rest_setting", false )
-            LocalMsg( user, "#FS_StartInRestDisabled" )
-        }
-        else
-        {   
-            user.p.start_in_rest_setting = true
-            SavePlayerData( user, "start_in_rest_setting", true )
-            LocalMsg( user, "#FS_StartInRestEnabled" )
-        }
-    })
-
-    // Toggle input banner button
-    AddCallback_OnUseEntity( panels["#FS_INPUT_BANNER"], void function( entity panel, entity user, int input )
-    {
-        if ( !IsValid( user ) ) 
-			return
-			
-		if( !CheckRate( user ) )
-			return 
-        
-        if ( user.p.enable_input_banner == true )
-        {
-            user.p.enable_input_banner = false
-            SavePlayerData( user, "enable_input_banner", false )
-            LocalMsg( user, "#FS_InputBannerDisabled" )
-        }
-        else
-        {   
-            user.p.enable_input_banner = true
-            SavePlayerData( user, "enable_input_banner", true )
-            LocalMsg( user, "#FS_InputBannerEnabled" )
-        }
-    })
-
-    // Rest button
-    AddCallback_OnUseEntity( panels["#FS_REST_TOGGLE"], void function(entity panel, entity user, int input )
-    {
-        if ( !IsValid( user ) ) 
-			return     
-			
-        ClientCommand_Maki_SoloModeRest( user, [] )
-    })
-	
-	
-	//(mk):Designers: Define your custom panel behavior here
-	//...
-	
-}
-
 void function Gamemode1v1_OnSelectedLegend( ItemFlavor character )
 {
 	
@@ -3746,14 +3826,14 @@ void function FS_1v1_MainLoop_THREAD( LocPair waitingRoomLocation )
 					destroyRingsForGroup( group )
 					
 					bool player1Rested = false
-					if ( IsValid( group.player1 ) )
+					if ( IsValid( group.player1 ) && !IsCurrentState( group.player1, e1v1State.RECAP ) )
 					{
 						player1Rested = TryProcessRestRequest( group.player1 )
 						if( !player1Rested )
 							soloModePlayerToWaitingList( group.player1, group.player1 == group.winner )		
 					}
 						
-					if ( IsValid( group.player2 ) )
+					if ( IsValid( group.player2 ) && !IsCurrentState( group.player2, e1v1State.RECAP ) )
 					{
 						if( !TryProcessRestRequest( group.player2 ) && !player1Rested )
 							soloModePlayerToWaitingList( group.player2, group.player2 == group.winner )
@@ -3872,7 +3952,7 @@ void function FS_1v1_MainLoop_THREAD( LocPair waitingRoomLocation )
 		////////////////////////////////////////
 		// CHECK IF A RESTING PLAYER HAS DIED //
 		////////////////////////////////////////
-		//(cafe)shouldn't happen, remove if not needed
+		//Actually needed for spectators
 		foreach ( restingPlayerHandle, playerResting in file.soloPlayersResting )
 		{
 			if( !restingPlayerHandle )
@@ -3890,9 +3970,9 @@ void function FS_1v1_MainLoop_THREAD( LocPair waitingRoomLocation )
 				thread respawnInSoloMode( restingPlayerEntity )
 		}
 		
-		///////////////////////////////////////////
-		// PLAYERS SHOULDN'T GET OT WAITING ROOM //
-		///////////////////////////////////////////
+		///////////////////////////////////////////////
+		// PLAYERS SHOULDN'T GET OUT OF WAITING ROOM //
+		///////////////////////////////////////////////
 		foreach ( player in GetPlayerArray() )
 		{
 			if( !IsValid( player ) ) 
@@ -3901,23 +3981,38 @@ void function FS_1v1_MainLoop_THREAD( LocPair waitingRoomLocation )
 			if( IsPlayerInSoloMode( player ) )
 				continue
 			
-			if( Distance2D( player.GetOrigin(), waitingRoomLocation.origin ) > file.waitingRoomRadius )
+			if( Distance2D( player.GetOrigin(), waitingRoomLocation.origin ) > file.waitingRoomRadius && player.GetPhysics() != MOVETYPE_NOCLIP )
 			{
-				TeleportPlayer_1v1( player, g_randomWaitingSpawns.getrandom() )
-				HolsterAndDisableWeapons_Raw( player ) //(mk): dirty fix I wanted to avoid.
+				TpPlayerToLocpair( player, g_randomWaitingSpawns.getrandom() )
 			}
 			
 			//IF IT'S NOT IN RESTING LIST, WAITING LIST OR IN SOLO MODE MEANS PLAYER JUST CONNECTED
-			//MOVE THIS TO A CALLBACK AFTER AUDIT
-			//(cafe)
-			if( !isPlayerInRestingList( player ) && !isPlayerInWaitingList( player ) )
-				soloModePlayerToWaitingList( player ) //(mk): dirty patch
+			//(cafe) This should be using OnPlayerConnected callback or something, but we need to make sure there is time for player to send start_in_rest_setting setting via client command so this way may ensure the required time for that
+			if( !isPlayerInRestingList( player ) && !isPlayerInWaitingList( player ) && GetTDMState() == eTDMState.IN_PROGRESS )
+			{
+				if( !player.p.start_in_rest_setting )
+				{
+					// #if DEVELOPER
+					// printw( "[1v1 THREAD] PLAYER CONNECTED, SENDING TO WAITING LIST" )
+					// #endif
+					soloModePlayerToWaitingList( player )
+				}
+				else
+				{
+					// #if DEVELOPER
+					// printw( "[1v1 THREAD] PLAYER CONNECTED, SENDING TO RESTING LIST DUE TO PLAYER CHOICE" )
+					// #endif
+					
+					soloModePlayerToRestingList( player )
+					thread respawnInSoloMode( player )
+				}
+			}
 		}
 		
 		/////////////////////////
 		// NOTIFICATIONS PANEL //
 		/////////////////////////
-		if( file.soloPlayersWaiting.len() < 2 ) //等待队列人数不足,无法开始匹配
+		if( file.soloPlayersWaiting.len() < 2 )
 		{
 			foreach ( playerHandle, solostruct in file.soloPlayersWaiting )
 			{						
@@ -3987,7 +4082,7 @@ void function FS_1v1_MainLoop_THREAD( LocPair waitingRoomLocation )
 		//////////////////////////////////////
 		// CONDITIONS THAT STOP MATCHMAKING //
 		//////////////////////////////////////
-		if( GetScoreboardShowingState() || GetChampionShowingState() || GetTDMState() != eTDMState.IN_PROGRESS)
+		if( GetScoreboardShowingState() || GetChampionShowingState() || GetTDMState() != eTDMState.IN_PROGRESS )
 			continue
 		
 		////////////////////////
@@ -4155,7 +4250,13 @@ void function FS_1v1_MainLoop_THREAD( LocPair waitingRoomLocation )
 						//(mk): this makes sure we don't compare same player as opponent during matchmaking
 						if( !IsValid( eachOpponent ) || playerSelf == eachOpponent )
 							continue
-							
+						
+						if ( eachOpponent.GetLatency() * 1000 > playerSelf.p.max_enemy_ping )
+							continue
+
+						if ( playerSelf.GetLatency() * 1000 > eachOpponent.p.max_enemy_ping )
+							continue
+						
 						// still dying, skip for MM until penalty expires
 						if (eachOpponentPlayerStruct.victimPenaltyExpire > Time())
 							continue
@@ -4492,7 +4593,7 @@ void function GiveWeaponsToGroup( array<entity> players, soloGroupStruct groupRe
 				CharacterSelect_AssignCharacter( ToEHI( player ), random_character )
 			
 			player.SetSkin(2)
-			player.SetCamo(player.p.playerCamo) //todo(cafe):allow player to choose his color
+			player.SetCamo(player.p.playerCamo)
 			
 			DeployAndEnableWeapons_Raw( player )//✓
 			
@@ -4522,7 +4623,7 @@ void function GiveWeaponsToGroup( array<entity> players, soloGroupStruct groupRe
 			
 			if ( !Flowstate_IsLGDuels() ) //TODO: set bool during init based on array of game modes where melee is allowed, repeat for more. 
 			{
-				FS_GiveRandomMelee(player)
+				FS_GiveRandomMelee( player, true )
 			}
 		}
 		
@@ -4667,31 +4768,24 @@ string function ReturnRandomSecondaryMetagame_1v1()
 
 void function ForceAllRoundsToFinish_solomode()
 {
-	#if DEVELOPER
-	printw( "ForceAllRoundsToFinish_solomode" )
-	#endif
+	// #if DEVELOPER
+	// printw( "ForceAllRoundsToFinish_solomode" )
+	// #endif
 	
 	foreach( player in GetPlayerArray() )
 	{
 		if( !IsValid( player ) ) 
 			continue
 		
-		Gamemode1v1_SetPlayerGamestate( player, e1v1State.SEQUENCE )
+		TakeAllWeapons( player )
+		Gamemode1v1_SetPlayerGamestate( player, e1v1State.RECAP )
 		player.SetPlayerNetEnt( "FSDM_1v1_Enemy", null )
 		
-		try
+		try //(cafe) is this necessary? the try catch
 		{
-			if( player.p.isSpectating )
+			if( player.IsObserver() || player.p.isSpectating )
 			{
-				player.SetPlayerNetInt( "spectatorTargetCount", 0 )
-				player.p.isSpectating = false
-				player.SetSpecReplayDelay( 0 )
-				player.SetObserverTarget( null )
-				player.StopObserverMode()
-				Remote_CallFunction_ByRef( player, "ServerCallback_KillReplayHud_Deactivate" )
-				player.MakeVisible()
-				player.ClearInvulnerable()
-				player.SetTakeDamageType( DAMAGE_YES )
+				endSpectate( player )
 			}
 		}
 		catch(e420){}
@@ -4709,8 +4803,8 @@ void function ForceAllRoundsToFinish_solomode()
 		if( isPlayerInWaitingList( player ) )
 			continue
 		
-		TeleportPlayer_1v1( player, getWaitingRoomLocation() )
-		soloModePlayerToWaitingList( player )
+		TpPlayerToLocpair( player, getWaitingRoomLocation() )
+		// soloModePlayerToWaitingList( player )
 		FS_ClearRealmsAndAddPlayerToAllRealms( player )
 	}
 	
@@ -5055,8 +5149,8 @@ void function Init_IBMM( entity player )
 		
 	thread NotificationThread( player )
 	
-	if( player.p.IBMM_grace_period == -1 )
-		SetDefaultIBMM( player )
+	// if( player.p.IBMM_grace_period == -1 )
+		// SetDefaultIBMM( player )
 }
 
 
@@ -5449,7 +5543,7 @@ void function Gamemode1v1_OnPlayerKilled( entity victim, entity attacker, var da
 	if( !isScenariosMode() )
 		HandleGroupIsFinished( victim, attacker ) //, damageInfo )
 		
-	if( isPlayerInWaitingList( victim ) )
+	if( isPlayerInWaitingList( victim ) ) //Shouldn't happen, but just in case
 	{
 		if( !IsAlive( victim ) )
 		{
@@ -5463,14 +5557,11 @@ void function Gamemode1v1_OnPlayerKilled( entity victim, entity attacker, var da
 			mAssert( 0, "Waiting room location was invalid." )
 			return
 		}
-		
-		ClearInvincible( victim )
-		TeleportPlayer_1v1( victim, waitingRoomLocation )
-			
+
+		// ClearInvincible( victim ) 
+		TpPlayerToLocpair( victim, waitingRoomLocation )
 		return
 	}
-		
-	ClearInvincible( victim ) //(mk): why? MakeInvincible is never called, however raw entity method SetInvulerable is called in fsdm _HandleRespawn() [1v1 is separate] and StartRound(). Leaving for now
 	return
 }
 LocPairData function Init_DropoffPatchSpawns()
@@ -5508,8 +5599,8 @@ void function Gamemode1v1_OnSpawned( entity player )
 	
 	player.SetShieldHealthMax( Equipment_GetDefaultShieldHP() )
 	Survival_SetInventoryEnabled( player, false )
-	
-	TeleportPlayer_1v1( player, waitingRoomLocation )
+
+	TpPlayerToLocpair( player, waitingRoomLocation )
 	player.UnfreezeControlsOnServer()
 }
 
@@ -5623,10 +5714,10 @@ void function Gamemode1v1_TakeAll( entity player )
 	if( !IsValid( player ) ) //(mk):this can fire after a player has quit, delayed.
 		return
 	
-	#if DEVELOPER
-	if( player == gp()[0] )
-		printw( "Gamemode1v1_TakeAll" )
-	#endif
+	// #if DEVELOPER
+	// if( player == gp()[0] )
+		// printw( "Gamemode1v1_TakeAll" )
+	// #endif
 	
 	TakeUltimate( player )
 	player.TakeOffhandWeapon( OFFHAND_MELEE )
@@ -5650,7 +5741,7 @@ void function AssignLegendToGroup( int index, array<entity> players )
 			TakeAllPassives( player )
 			
 			player.SetSkin(2)
-			player.SetCamo(player.p.playerCamo) //todo(cafe):allow player to choose his color
+			player.SetCamo(player.p.playerCamo)
 		}
 		else
 		{

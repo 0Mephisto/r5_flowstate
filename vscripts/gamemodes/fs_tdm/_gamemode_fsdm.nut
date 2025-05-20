@@ -281,8 +281,6 @@ void function InitializePlaylistSettings()
 	flowstateSettings.flowstate_1v1mode 					= GetCurrentPlaylistVarBool( "flowstate_1v1mode", false )
 	flowstateSettings.enable_oddball_gamemode 				= GetCurrentPlaylistVarBool( "enable_oddball_gamemode", false )
 	flowstateSettings.default_ibmm_wait 					= GetCurrentPlaylistVarFloat( "default_ibmm_wait", 0 )
-	//flowstateSettings.patch_for_dropoff 					= GetCurrentPlaylistVarBool( "patch_for_dropoff", false )
-	flowstateSettings.patch_waiting_area 					= GetCurrentPlaylistVarBool( "patch_waiting_area", false )
 	flowstateSettings.ReloadTacticalOnRespawn 				= GetCurrentPlaylistVarBool( "flowstateReloadTacticalOnRespawn", false )
 	flowstateSettings.ReloadUltimateOnRespawn 				= GetCurrentPlaylistVarBool( "flowstateReloadUltimateOnRespawn", false )
 	flowstateSettings.RandomHaloGuns 						= GetCurrentPlaylistVarBool( "flowstateRandomHaloGuns", false )
@@ -509,15 +507,15 @@ void function _CustomTDM_Init()
 	{
 		FsOddballInit()
 	}
-	
-	if( is1v1EnabledAndAllowed() )
-		thread Gamemode1v1_Init( MapName() )
-	
+
 	if( !isScenariosMode() )
 		AddSpawnCallback( "prop_survival", Common_DissolveDropable )
 			
 	if( Flowstate_IsRealisticMode() )
 		RealisticMode_Init()
+	
+	if( is1v1EnabledAndAllowed() )
+		Gamemode1v1_Init( MapName() )
 }
 
 void function __OnEntitiesDidLoadCTF()
@@ -553,27 +551,16 @@ void function DM__OnEntitiesDidLoad()
     		break
 
     	case eMaps.mp_rr_arena_composite:
-		
-			// if( flowstateSettings.patch_for_dropoff && is1v1EnabledAndAllowed() ) //disabled for now - prop based extra rooms. ( not good )
-				// Patch_Dropoff()
 			
-			if( flowstateSettings.patch_waiting_area )
-				Patch_Barrier_Dropoff()
-
-			// array<entity> badMovers = GetEntArrayByClass_Expensive( "script_mover" )  //(mk): movers fixed by kral
-			// foreach(mover in badMovers)
-				// if( IsValid(mover) ) mover.Destroy()
 			break
 		case eMaps.mp_rr_olympus:
 		case eMaps.mp_rr_olympus_tt:
 		case eMaps.mp_rr_aqueduct:
-			if( flowstateSettings.patch_waiting_area )
-				Patch_Barrier_Overflow()
+		
 		break
 				
 		case eMaps.mp_rr_party_crasher:
-			if( flowstateSettings.patch_waiting_area )
-				Patch_Partycrasher_Restarea()
+		
 		break
 		
 		/*case eMaps.mp_rr_arena_skygarden:
@@ -713,6 +700,7 @@ const array<int> IGNORE_FSDM_GAMESTATE =
 
 void function SetTdmStateToNextRound()
 {
+	SetGlobalNetTime( "flowstate_DMRoundEndTime", -1 )
 	file.tdmState = eTDMState.NEXT_ROUND_NOW
 
 	if( !IGNORE_FSDM_GAMESTATE.contains( Gamemode() )  )
@@ -1845,8 +1833,8 @@ void function _HandleRespawn( entity player, bool isDroppodSpawn = false )
 		if( Flowstate_IsFastInstaGib() )
 			FS_Instagib_PlayerSpawn( player )
 			
-		if( is1v1EnabledAndAllowed() ) //(mk): handle respawn is only fired for newjoins in 1v1 type gamemodes.
-			Gamemode1v1_TakeAll( player )
+		// if( is1v1EnabledAndAllowed() ) //(mk): handle respawn is only fired for newjoins in 1v1 type gamemodes.
+			// Gamemode1v1_TakeAll( player )
 	}()
 	// #if DEVELOPER
 		// printt( "End of _HandleRespawn function" )//Cafe debugging halo mod stuff
@@ -3216,6 +3204,24 @@ void function SimpleChampionUI()
 			} catch(e3){}
 		}
 	}
+	else if( is1v1EnabledAndAllowed() ) //(cafe) new
+	{
+		foreach( entity player in GetPlayerArray() )
+		{
+			if( !IsValid( player ) ) 
+				continue
+			
+			Remote_CallFunction_Replay(player, "ServerCallback_FSDM_OpenVotingPhase", false)
+			player.SetThirdPersonShoulderModeOff()
+			player.UnfreezeControlsOnServer()
+			player.UnforceStand()
+			
+			deleteWaitingPlayer( player.p.handle )
+			
+			player.Server_TurnOffhandWeaponsDisabledOff()
+			player.DeployWeapon()
+		}
+	}
 	else
 	{
 		foreach( entity player in GetPlayerArray() )
@@ -3611,19 +3617,8 @@ void function SimpleChampionUI()
 			{
 				ResetPlayerStats( eachPlayer )
 				
-				try
-				{
-					eachPlayer.p.lastKiller = null
-					eachPlayer.Die( null, null, { damageSourceId = eDamageSourceId.damagedef_despawn } )
-				}
-				catch (error)
-				{}
-				
-				if( !isPlayerInRestingList( eachPlayer ) ) //don't remove players who are in rest, only progress. 
-					soloModePlayerToWaitingList( eachPlayer )
-					
-				if( !IsAlive( eachPlayer ) )
-					DecideRespawnPlayer( eachPlayer, false )
+				eachPlayer.p.lastKiller = null
+				//(cafe) new
 			}
 		}
 		
@@ -3768,8 +3763,7 @@ void function SimpleChampionUI()
 			SetBallCarrier( null )
 		}
 	}
-
-	SetGlobalNetTime( "flowstate_DMRoundEndTime", -1 )
+	
 	SetTdmStateToNextRound()
 	
 	if( isScenariosMode() )
@@ -3794,7 +3788,8 @@ void function SimpleChampionUI()
 		if( !IsAlive(player) && !player.p.isSpectating )
 		{
 			_HandleRespawn(player)
-			ClearInvincible(player)
+			if( !is1v1EnabledAndAllowed() )
+				ClearInvincible(player)
 		}
 
 		if( FlowState_RandomGunsEverydie() && FlowState_FIESTAShieldsStreak() )
@@ -3813,7 +3808,7 @@ void function SimpleChampionUI()
 		player.HolsterWeapon()
 		player.Server_TurnOffhandWeaponsDisabledOn()
 		
-		if( isScenariosMode() )
+		if( isScenariosMode() || is1v1EnabledAndAllowed() )
 		{
 			LocalMsg( player, "#FS_NULL", "", eMsgUI.EVENT, 1 )
 		}
@@ -7559,13 +7554,12 @@ void function FS_InitCommunityHeirlooms()
 {
 	// Disabled until we figure out which one crash the client
 	
-	// file.heirlooms.append( CreateHeirloom( "melee_bolo_sword", "mp_weapon_bolo_sword_primary" ) )
-	// file.heirlooms.append( CreateHeirloom( "melee_karambit", "mp_weapon_karambit_primary" ) )
-	// file.heirlooms.append( CreateHeirloom( "melee_mc_sword", "mp_weapon_mc_sword_primary" ) )
-	// file.heirlooms.append( CreateHeirloom( "melee_mjolnir", "mp_weapon_mjolnir_primary" ) )
-	// file.heirlooms.append( CreateHeirloom( "melee_macks_knife", "mp_weapon_macks_knife_primary" ) )
-	
 	file.heirlooms.append( CreateHeirloom( "melee_pilot_emptyhanded", "mp_weapon_melee_survival" ) )
+	file.heirlooms.append( CreateHeirloom( "melee_bolo_sword", "mp_weapon_bolo_sword_primary" ) )
+	file.heirlooms.append( CreateHeirloom( "melee_karambit", "mp_weapon_karambit_primary" ) )
+	file.heirlooms.append( CreateHeirloom( "melee_mc_sword", "mp_weapon_mc_sword_primary" ) )
+	file.heirlooms.append( CreateHeirloom( "melee_mjolnir", "mp_weapon_mjolnir_primary" ) )
+	file.heirlooms.append( CreateHeirloom( "melee_macks_knife", "mp_weapon_macks_knife_primary" ) )
 }
 
 Heirloom function CreateHeirloom( string melee, string primary )
@@ -7582,7 +7576,7 @@ array<Heirloom> function GetCommunityHeirlooms()
 	return file.heirlooms
 }
 
-void function FS_GiveRandomMelee(entity player)
+void function FS_GiveRandomMelee(entity player, bool is1v1 = false )
 {
 	// #if DEVELOPER
 	// DumpStack()
@@ -7590,7 +7584,10 @@ void function FS_GiveRandomMelee(entity player)
 	// #endif
 	
 	Heirloom randomMelee = GetCommunityHeirlooms().getrandom() //todo(cafe): allow players to choose heirloom? possibly a new menu for "cosmetics" where players can choose the heirloom and camo color with persistence
-
+	
+	if( is1v1 )
+		randomMelee = GetCommunityHeirlooms()[player.p.chosenHeirloom]
+	
 	player.TakeNormalWeaponByIndexNow( WEAPON_INVENTORY_SLOT_PRIMARY_2 )
 	player.TakeOffhandWeapon( OFFHAND_MELEE )	
 	player.GiveWeapon( randomMelee.primary, WEAPON_INVENTORY_SLOT_PRIMARY_2, [] )

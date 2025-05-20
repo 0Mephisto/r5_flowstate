@@ -7,7 +7,6 @@ global function ServerCallback_SendScoreboardToClient
 global function ServerCallback_SendProphuntPropsScoreboardToClient
 global function ServerCallback_SendProphuntHuntersScoreboardToClient
 global function ServerCallback_ClearScoreboardOnClient
-global function NotifyRingTimer
 	
 //Statistics
 global function ServerCallback_OpenStatisticsUI
@@ -81,6 +80,9 @@ global function HaloBrIntroSequence
 global function Flowstate_RespawnTimer_Thread
 global function SelfShowChampion
 
+global function SetShow1v1Scoreboard
+global function FS_1v1_DisplayHints
+
 const string CIRCLE_CLOSING_IN_SOUND = "UI_InGame_RingMoveWarning" //"survival_circle_close_alarm_01"
 
 struct {
@@ -93,6 +95,7 @@ struct {
 	bool forceShowSelectedLocation = false
 
 	var activeQuickHint
+	var activeQuickHint2
 	var countdownRui
 
 	float currentX_Offset = 0
@@ -120,7 +123,6 @@ struct {
 	
 	bool muted = false
 	bool hideendtimeui = false
-	
 } file
 
 struct VictoryCameraPackage
@@ -139,7 +141,7 @@ array<entity> cleanupEnts
 
 void function Cl_CustomTDM_Init()
 {
-    AddCallback_EntitiesDidLoad( NotifyRingTimer )
+    AddCallback_EntitiesDidLoad( FS_DM_OnEntitiesDidLoad )
 	AddClientCallback_OnResolutionChanged( Cl_OnResolutionChanged )
 
 	RegisterButtonPressedCallback(KEY_ENTER, ClientReportChat)
@@ -153,6 +155,7 @@ void function Cl_CustomTDM_Init()
 	RegisterSignal("FS_CloseNewMsgBox")
 	RegisterSignal("FS_1v1Banner")
 	RegisterSignal("StopCurrentEnemyThread")
+	RegisterSignal("Destroy1v1SettingsHint")
 	
 	if( GetCurrentPlaylistVarBool( "enable_oddball_gamemode", false ) )
 		Cl_FsOddballInit()
@@ -167,6 +170,12 @@ void function Cl_CustomTDM_Init()
 		case ePlaylists.fs_1v1:
 			AddCallback_CharacterSelectMenu_OnCharacterLocked( Gamemode1v1_OnSelectedLegend )
 			AddCallback_OnCharacterSelectMenuClosed( Gamemode1v1_OnLegendSelector_Close )
+		case ePlaylists.fs_vamp_1v1:
+		case ePlaylists.fs_1v1_headshotsonly:
+		case ePlaylists.fs_lgduels_1v1:
+			RegisterConCommandTriggeredCallback( "+scriptCommand5", FS_RestButton )
+			RegisterConCommandTriggeredCallback( "+scriptCommand3", FS_SettingsButton )
+			RegisterConCommandTriggeredCallback( "+scriptCommand4", FS_SpectateButton )
 		break 
 		
 		case ePlaylists.fs_haloMod:
@@ -276,7 +285,11 @@ void function CL_FSDM_RegisterNetworkFunctions()
 
 	RegisterNetworkedVariableChangeCallback_time( "flowstate_DMStartTime", Flowstate_StartTimeChanged )
 	RegisterNetworkedVariableChangeCallback_time( "flowstate_DMRoundEndTime", Flowstate_RoundEndTimeChanged )
-	RegisterNetworkedVariableChangeCallback_ent( "FSDM_1v1_Enemy", Flowstate_1v1EnemyChanged )
+	if( Playlist() == ePlaylists.fs_1v1 || Playlist() == ePlaylists.fs_vamp_1v1 || Playlist() == ePlaylists.fs_1v1_headshots_only || Playlist() == ePlaylists.fs_lgduels_1v1 )
+	{
+		RegisterNetworkedVariableChangeCallback_ent( "FSDM_1v1_Enemy", Flowstate_1v1EnemyChanged )
+		RegisterNetworkedVariableChangeCallback_int( "FS_1v1_PlayerState", FS_1v1_PlayerStateChanged )
+	}
 }
 
 void function FS_SetHideEndTimeUI( bool show )
@@ -313,6 +326,115 @@ void function FS_Scenarios_OnGroupCharacterSelectReady( entity player, bool old,
 		RunUIScript( "UI_CloseCharacterSelect" )
 		FS_SetHideEndTimeUI( false )
 	}
+}
+
+void function FS_1v1_PlayerStateChanged( entity player, int oldValue, int newValue, bool actuallyChanged )
+{
+	if ( newValue == e1v1State.CHARSELECT ) //not called
+		return
+
+	var text = HudElement( "FS_DMCountDown_Text" )
+	var frame = HudElement( "FS_DMCountDown_Frame" )
+
+	if ( player != GetLocalClientPlayer() )
+	{
+		newValue = e1v1State.SPECTATING // (cafe) handles weird bug where newValue is sent as CHARSELECT) when it has to be SPECTATING based on server netvar choice
+	} else
+	{
+		UIPos basepos = REPLACEHud_GetBasePos( frame )
+		UIPos baseposText = REPLACEHud_GetBasePos( text )
+		UISize screenSize = GetScreenSize()
+		
+		if( newValue != e1v1State.MATCHING )
+		{
+			Hud_SetPos( text, baseposText.x -70	 * screenSize.width / 1920.0, baseposText.y + 12 * screenSize.height / 1080.0 ) //text is parented to the frame so not need to change text pos
+			Hud_SetPos( frame, basepos.x -15 * screenSize.width / 1920.0, basepos.y + 250 * screenSize.height / 1080.0 ) //text is parented to the frame so not need to change text pos
+		} else
+		{
+			Hud_SetPos( text, baseposText.x -70	 * screenSize.width / 1920.0, baseposText.y + 12 * screenSize.height / 1080.0 ) //text is parented to the frame so not need to change text pos
+			Hud_SetPos( frame, basepos.x -15 * screenSize.width / 1920.0, basepos.y + 0 * screenSize.height / 1080.0 ) //text is parented to the frame so not need to change text pos
+		}
+	}
+		
+	#if DEVELOPER
+		printw( "[CLIENT] 1v1 LOCAL PLAYER STATE CHANGED TO:",newValue,  DEV_GetEnumStringSafe( "e1v1State", newValue ) )
+	#endif
+	switch( newValue )
+	{
+		case e1v1State.MATCH_START:
+		SetWaitingRoomLightningTest()
+		break
+		
+		case e1v1State.SPECTATING:
+		FS_1v1_DisplayHints(e1v1State.SPECTATING)
+		break
+		
+		case e1v1State.RESTING:
+		Minimap_DisableDraw_Internal()
+		FS_1v1_DisplayHints(e1v1State.RESTING)
+		SetWaitingRoomLightningTest()
+		Minimap_DisableDraw_Internal()
+		// RunUIScript("FS_1v1_SettingsMenu_Open")
+		break
+
+		case e1v1State.WAITING:
+		Minimap_DisableDraw_Internal()
+		RunUIScript("FS_1v1_SettingsMenu_Close")
+		FS_1v1_DisplayHints(e1v1State.WAITING)
+		SetWaitingRoomLightningTest()
+		Minimap_DisableDraw_Internal()
+		break
+		
+		case e1v1State.MATCHING:
+		RunUIScript("FS_1v1_SettingsMenu_Close")
+		Signal( player, "Destroy1v1SettingsHint" )
+		SetDefaultLightning()
+		Minimap_EnableDraw_Internal()
+		break
+		
+		default:
+		RunUIScript("FS_1v1_SettingsMenu_Close")
+		Signal( player, "Destroy1v1SettingsHint" )
+		// SetDefaultLightning()
+		break
+	}
+}
+
+void function SetWaitingRoomLightningTest()
+{
+	// switch( GetMapName() )
+	// {
+		// case "mp_rr_arena_composite":
+			// SetConVarFloat( "mat_autoexposure_force_value", 0.8 )
+			// SetConVarFloat( "mat_bloom_max_lighting_value", 0.03 )
+			
+			// // SetConVarFloat( "mat_autoexposure_max", 0.3 )
+			// // SetConVarFloat( "mat_autoexposure_max_multiplier", 0.4 )
+			// // SetConVarFloat( "mat_autoexposure_min", 0.2 )
+			// // SetConVarFloat( "mat_autoexposure_min_multiplier", 1.0 )
+
+			// SetConVarFloat( "mat_sky_scale", 2.0 )
+			// SetConVarString( "mat_sky_color", "1.0 1.0 1.0 1.0" )
+			// SetConVarFloat( "mat_sun_scale", 0.0 )
+			// SetConVarString( "mat_sun_color", "1.0 1.5 2.0 1.0" )
+		// break
+	// }
+}
+
+void function SetDefaultLightning()
+{
+	// SetConVarToDefault( "mat_autoexposure_force_value" )
+	// SetConVarToDefault( "mat_bloom_max_lighting_value" )
+	
+	// SetConVarToDefault( "mat_autoexposure_max" )
+	// SetConVarToDefault( "mat_autoexposure_max_multiplier" )
+	// SetConVarToDefault( "mat_autoexposure_min" )
+	// SetConVarToDefault( "mat_autoexposure_min_multiplier" )
+
+	// SetConVarToDefault( "mat_sky_scale" )
+	// SetConVarToDefault( "mat_sky_color" )
+	// SetConVarToDefault( "mat_sun_scale" )
+	// SetConVarToDefault( "mat_sun_color" )
 }
 
 void function Flowstate_1v1EnemyChanged( entity player, entity oldEnt, entity newEnt, bool actuallyChanged )
@@ -414,6 +536,15 @@ void function FS_1v1_StartUpdatingValues( entity newEnt )
 	}
 }
 
+void function SetShow1v1Scoreboard( string show )
+{
+	bool bShow = show == "0" ? false : true
+	
+	file.show1v1Scoreboard = bShow
+	
+	// Toggle1v1Scoreboard()
+}
+
 void function Toggle1v1Scoreboard() 
 {
 	entity player = GetLocalClientPlayer()
@@ -482,6 +613,11 @@ void function Cl_OnResolutionChanged()
 		TopologyCreateData tcd = BuildTopologyCreateData( true, false )
 		RuiTopology_UpdatePos( FS_GetScoreEventTopo(), tcd.org + <0,screenSize.height * -0.618,0>, tcd.right, tcd.down)
 	}
+
+	UISize screenSize = GetScreenSize()
+	Hud_SetSize( HudElement( "FS_DMCountDown_Frame" ), 248 * screenSize.width / 1920.0, 88 * screenSize.height / 1080.0 )
+	if( IsValid( GetLocalViewPlayer() ) )
+	FS_1v1_PlayerStateChanged( GetLocalViewPlayer(), 0, GetLocalViewPlayer().GetPlayerNetInt( "FS_1v1_PlayerState" ) , false )
 	
 	if( GetGlobalNetInt( "FSDM_GameState" ) != eTDMState.IN_PROGRESS )
 	{
@@ -546,8 +682,17 @@ void function Flowstate_ShowRoundEndTimeUI( float new )
 		Hud_SetVisible( HudElement( "FS_DMCountDown_Frame" ), false )
 		return
 	}
-
-	RuiSetImage( Hud_GetRui( HudElement( "FS_DMCountDown_Frame" ) ), "basicImage", $"rui/flowstate_custom/dm_countdown" )
+	
+	if( Playlist() == ePlaylists.fs_1v1 || Playlist() == ePlaylists.fs_vamp_1v1 || Playlist() == ePlaylists.fs_1v1_headshots_only || Playlist() == ePlaylists.fs_lgduels_1v1 )
+	{
+		// UISize screenSize = GetScreenSize()
+		// Hud_SetPos( text, baseposText.x -70	 * screenSize.width / 1920.0, baseposText.y + 12 * screenSize.height / 1080.0 )
+		UISize screenSize = GetScreenSize()
+		Hud_SetSize( HudElement( "FS_DMCountDown_Frame" ), 248 * screenSize.width / 1920.0, 88 * screenSize.height / 1080.0 )
+		RuiSetImage( Hud_GetRui( HudElement( "FS_DMCountDown_Frame" ) ), "basicImage", $"rui/flowstate_custom/1v1_timeremaining" )
+	}
+	else
+		RuiSetImage( Hud_GetRui( HudElement( "FS_DMCountDown_Frame" ) ), "basicImage", $"rui/flowstate_custom/dm_countdown" )
 	
 	thread Flowstate_DMTimer_Thread( new )
 }
@@ -562,10 +707,13 @@ void function Flowstate_DMTimer_Thread( float endtime )
 	var frame = HudElement( "FS_DMCountDown_Frame" )
 	
 	OnThreadEnd(
-		function() : ( text, frame )
+		function() : ( player, text, frame )
 		{
 			Hud_SetVisible( text, false )
 			Hud_SetVisible( frame, false )
+			RunUIScript("FS_1v1_SettingsMenu_Close")
+			if( IsValid( player ) )
+				Signal( player, "Destroy1v1SettingsHint" )
 		}
 	)
 
@@ -576,16 +724,30 @@ void function Flowstate_DMTimer_Thread( float endtime )
 	
 	string main = "Time Remaining: "
 	
+	if( Playlist() == ePlaylists.fs_1v1 || Playlist() == ePlaylists.fs_vamp_1v1 || Playlist() == ePlaylists.fs_1v1_headshots_only || Playlist() == ePlaylists.fs_lgduels_1v1 )
+		main = ""
+
+	UIPos basepos = REPLACEHud_GetBasePos( frame )	
+	UISize screenSize = GetScreenSize()
+	
 	switch( Playlist() )
 	{
 		case ePlaylists.fs_scenarios:
 		
 		if( GetServerVar( "tracker_enabled" ) )
 			main = "Stats shipping in: "
-
-		UIPos basepos = REPLACEHud_GetBasePos( frame )	
-		UISize screenSize = GetScreenSize()
+		
 		Hud_SetPos( frame, basepos.x - 5 * screenSize.width / 1920.0, basepos.y - 50 * screenSize.height / 1080.0 ) //text is parented to the frame so not need to change text pos
+		break
+		
+		case ePlaylists.fs_1v1:
+		case ePlaylists.fs_vamp_1v1:
+		case ePlaylists.fs_1v1_headshots_only:
+		case ePlaylists.fs_lgduels_1v1:
+		
+		UIPos baseposText = REPLACEHud_GetBasePos( text )
+		Hud_SetPos( text, baseposText.x -70	 * screenSize.width / 1920.0, baseposText.y + 12 * screenSize.height / 1080.0 ) //text is parented to the frame so not need to change text pos
+		Hud_SetPos( frame, basepos.x -15 * screenSize.width / 1920.0, basepos.y + 0 * screenSize.height / 1080.0 ) //text is parented to the frame so not need to change text pos
 		break
 	}
 
@@ -1050,69 +1212,17 @@ LocPair function GetUbicacionMasLejana(LocPair random)
     return file.selectedLocation.spawns[bestpos]
 }
 
-void function NotifyRingTimer()
+void function FS_DM_OnEntitiesDidLoad()
 {
-    if( GetGlobalNetTime( "flowstate_DMRoundEndTime" ) < Time() || GetGameState() != eGameState.Playing || GetGlobalNetTime( "flowstate_DMRoundEndTime" ) == -1 )
+	if( Playlist() == ePlaylists.fs_1v1 )
+	{
+		Send1v1SettingsToServer()
+	}
+	
+    if( GetGlobalNetTime( "flowstate_DMRoundEndTime" ) < Time() || GetGameState() != eGameState.Playing || GetGlobalNetTime( "flowstate_DMRoundEndTime" ) == -1 ) // Updates round end time for players connected mid game
         return
 
     Flowstate_ShowRoundEndTimeUI( GetGlobalNetTime( "flowstate_DMRoundEndTime" ) )
-
-    // UpdateFullmapRuiTracks()
-
-    // float new = GetGlobalNetTime( "nextCircleStartTime" )
-
-    // var gamestateRui = ClGameState_GetRui()
-	// array<var> ruis = [gamestateRui]
-	// var cameraRui = GetCameraCircleStatusRui()
-	// if ( IsValid( cameraRui ) )
-		// ruis.append( cameraRui )
-
-	// int roundNumber = ( minint( SURVIVAL_GetCurrentDeathFieldStage() + 1, 6 ) )
-	// string roundString = Localize( "#SURVIVAL_CIRCLE_STATUS_ROUND_CLOSING", roundNumber )
-	// if ( SURVIVAL_IsFinalDeathFieldStage() )
-		// roundString = Localize( "#SURVIVAL_CIRCLE_STATUS_ROUND_CLOSING_FINAL" )
-	// DeathFieldStageData data = GetDeathFieldStage( SURVIVAL_GetCurrentDeathFieldStage() )
-	// float currentRadius      = SURVIVAL_GetDeathFieldCurrentRadius()
-	// float endRadius          = data.endRadius
-
-	// foreach( rui in ruis )
-	// {
-		// RuiSetGameTime( rui, "circleStartTime", new )
-		// RuiSetInt( rui, "roundNumber", roundNumber )
-		// RuiSetString( rui, "roundClosingString", roundString )
-
-		// entity localViewPlayer = GetLocalViewPlayer()
-		// if ( IsValid( localViewPlayer ) )
-		// {
-			// RuiSetFloat( rui, "deathfieldStartRadius", currentRadius )
-			// RuiSetFloat( rui, "deathfieldEndRadius", endRadius )
-			// RuiTrackFloat3( rui, "playerOrigin", localViewPlayer, RUI_TRACK_ABSORIGIN_FOLLOW )
-
-			// #if(true)
-				// RuiTrackInt( rui, "teamMemberIndex", localViewPlayer, RUI_TRACK_PLAYER_TEAM_MEMBER_INDEX )
-			// #endif
-		// }
-	// }
-
-    // if ( SURVIVAL_IsFinalDeathFieldStage() )
-        // roundString = "#SURVIVAL_CIRCLE_ROUND_FINAL"
-    // else
-        // roundString = Localize( "#SURVIVAL_CIRCLE_ROUND", SURVIVAL_GetCurrentRoundString() )
-
-    // float duration = 7.0
-
-    // AnnouncementData announcement
-    // announcement = Announcement_Create( "" )
-    // Announcement_SetSubText( announcement, roundString )
-    // Announcement_SetHeaderText( announcement, "#SURVIVAL_CIRCLE_WARNING" )
-    // Announcement_SetDisplayEndTime( announcement, new )
-    // Announcement_SetStyle( announcement, ANNOUNCEMENT_STYLE_CIRCLE_WARNING )
-    // Announcement_SetSoundAlias( announcement, CIRCLE_CLOSING_IN_SOUND )
-    // Announcement_SetPurge( announcement, true )
-    // Announcement_SetPriority( announcement, 200 ) //
-    // Announcement_SetDuration( announcement, duration )
-
-    // AnnouncementFromClass( GetLocalViewPlayer(), announcement )
 }
 
 void function OpenTDMWeaponSelectorUI()
@@ -1804,7 +1914,7 @@ void function DM_HintCatalog( int index, entity otherPlayer )
 			
 			case ePlaylists.fs_1v1:
 			Obituary_Print_Localized( "R5Reloaded by @AmosModz", GetChatTitleColorForPlayer( GetLocalViewPlayer() ), BURN_COLOR )
-			Obituary_Print_Localized( "FS 1V1 - Made by __makimakima__ - Maintained by @CafeFPS and mkos.", GetChatTitleColorForPlayer( GetLocalViewPlayer() ), BURN_COLOR )
+			Obituary_Print_Localized( "R5 1V1 by Flowstate", GetChatTitleColorForPlayer( GetLocalViewPlayer() ), BURN_COLOR )
 			break
 		}
 		break
@@ -2589,4 +2699,156 @@ void function HaloBrIntroSequence()
 		}
 		RuiDestroy( rui )
 	}()
+}
+
+//(cafe) FS 1v1 Settings
+void function Send1v1SettingsToServer()
+{
+	entity player = GetLocalClientPlayer()
+	
+	player.ClientCommand("CC_1v1_StartInRest " + GetConVarInt("fs_1v1_startinrest").tostring())	
+	player.ClientCommand("CC_1v1_IBMM " + GetConVarInt("fs_1v1_ibmm").tostring())
+	player.ClientCommand("CC_1v1_AcceptChallenges " + GetConVarInt("fs_1v1_acceptchallenges").tostring())
+	player.ClientCommand("CC_1v1_ShowInputBanner " + GetConVarInt("fs_1v1_showinputbanner").tostring())		
+	player.ClientCommand("CC_1v1_ShowVsUI " + GetConVarInt("fs_1v1_showvsui").tostring())
+	SetShow1v1Scoreboard( GetConVarInt("fs_1v1_showvsui").tostring() )
+	
+	player.ClientCommand("CC_1v1_CamoColor " + GetConVarInt("fs_1v1_camo").tostring())
+	player.ClientCommand("CC_1v1_Heirloom " + GetConVarInt("fs_1v1_heirloom").tostring())
+	
+	player.ClientCommand("CC_1v1_MaxEnemyLatency " + GetConVarInt("fs_1v1_maxenemylatency").tostring())
+	player.ClientCommand("CC_1v1_MaxIBMMTime " + GetConVarInt("fs_1v1_maxibmmtime").tostring())
+}
+
+void function FS_RestButton( entity player )
+{
+	if ( player != GetLocalViewPlayer() )
+		return
+	
+	if ( player != GetLocalClientPlayer() )
+		return
+	
+	if( player.GetPlayerNetInt( "FS_1v1_PlayerState" ) != e1v1State.WAITING && player.GetPlayerNetInt( "FS_1v1_PlayerState" ) != e1v1State.RESTING )
+		return
+	
+	if ( IsControllerModeActive() )
+	{
+		if ( TryPingBlockingFunction( player, "quickchat" ) )
+			return
+	}
+	
+	RunUIScript("FS_1v1_SettingsMenu_Close")
+	player.ClientCommand( "rest" )
+	return
+}
+
+
+void function FS_SettingsButton( entity player )
+{
+	if ( player != GetLocalViewPlayer() )
+		return
+	
+	if ( player != GetLocalClientPlayer() )
+		return
+
+	if( player.GetPlayerNetInt( "FS_1v1_PlayerState" ) != e1v1State.RESTING )
+		return
+	
+	RunUIScript("FS_1v1_SettingsMenu_Open")
+	Signal( player, "Destroy1v1SettingsHint" )
+}
+
+void function FS_SpectateButton( entity player )
+{
+	if ( player != GetLocalViewPlayer() )
+		return
+	
+	if ( player != GetLocalClientPlayer() )
+		return
+
+	if( player.GetPlayerNetInt( "FS_1v1_PlayerState" ) != e1v1State.RESTING )
+		return
+	
+	RunUIScript("FS_1v1_SettingsMenu_Close")
+	player.ClientCommand( "spectate_1v1" )
+}
+
+void function FS_1v1_DisplayHints( int state )
+{
+	thread function () : (state)
+	{
+		entity player = GetLocalClientPlayer()
+
+		if ( !IsValid( player ) )
+			return
+		
+		int actualState = state
+		if( state == -1 )
+			actualState = player.GetPlayerNetInt( "FS_1v1_PlayerState" )
+		
+		string text = ""
+		
+		switch( actualState )
+		{
+			case e1v1State.RESTING:
+			text = "%scriptCommand5% STOP RESTING\n%scriptCommand3% SETTINGS\n%scriptCommand4% SPECTATE\n%toggle_map% SCOREBOARD"
+			break
+
+			case e1v1State.WAITING:
+			text = "%scriptCommand5% REST\n%toggle_map% SCOREBOARD"
+			break
+			
+			case e1v1State.SPECTATING:
+			text = "%jump% STOP SPECTATING"
+			break
+			
+			
+			default:
+			text = "BUG THIS"
+			break
+		}
+		
+		// if( player.GetPlayerNetInt( "FS_1v1_PlayerState" ) != e1v1State.RESTING )
+			// return
+			
+		player.EndSignal( "OnDestroy" )
+		player.Signal( "Destroy1v1SettingsHint" )
+		player.EndSignal( "Destroy1v1SettingsHint" )
+
+		// AddPlayerHint( 420.0, 0.15, $"", text )
+		Gamemode1v1_PermaHint( text )
+		
+		printw( "FS_1v1_DisplayHints", player )
+		
+		OnThreadEnd(
+			function() : (text)
+			{
+				// RunUIScript("FS_1v1_SettingsMenu_Close")
+				// HidePlayerHint( text )
+				if(file.activeQuickHint2 != null)
+				{
+					RuiDestroyIfAlive( file.activeQuickHint2 )
+					file.activeQuickHint2 = null
+				}
+			}
+		)
+
+		WaitForever()
+	}()
+}
+
+void function Gamemode1v1_PermaHint( string hintText )
+{
+	if(file.activeQuickHint2 != null)
+	{
+		RuiDestroyIfAlive( file.activeQuickHint2 )
+		file.activeQuickHint2 = null
+	}
+
+	file.activeQuickHint2 = CreateFullscreenRui( $"ui/wraith_comms_hint.rpak" )
+
+	RuiSetGameTime( file.activeQuickHint2, "startTime", Time() )
+	RuiSetGameTime( file.activeQuickHint2, "endTime", 9999999 )
+	RuiSetBool( file.activeQuickHint2, "commsMenuOpen", false )
+	RuiSetString( file.activeQuickHint2, "msg", hintText )
 }
