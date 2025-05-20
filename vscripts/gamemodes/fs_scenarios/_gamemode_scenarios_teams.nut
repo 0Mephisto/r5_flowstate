@@ -273,7 +273,7 @@ bool function FS_Scenarios_IsPlayerWaitingForTeamates( entity player ) //✓
 				
 	foreach( entity tPlayer in playerTeam )
 	{
-		if( !Gamemode1v1_IsPlayerInState( tPlayer, e1v1State.WAITING ) )
+		if( !IsCurrentState( tPlayer, e1v1State.WAITING ) )
 		{
 			//printf( "[Scenarios] Not all players of team are in queue: %s", string( tPlayer ) )
 			return true

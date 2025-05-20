@@ -102,7 +102,7 @@ void function CheckAfkKickThread(entity player)
 		if ( player.p.isSpectating )
 			continue
 			
-		if ( bAfkToRest() && Gamemode1v1_IsRestEnabled() && Gamemode1v1_IsPlayerInState( player, e1v1State.RESTING ) )
+		if ( bAfkToRest() && Gamemode1v1_IsRestEnabled() && IsCurrentState( player, e1v1State.RESTING ) )
 			continue
 		
 		switch ( GetAfkState( player ) )
