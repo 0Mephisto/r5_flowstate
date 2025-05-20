@@ -1022,8 +1022,6 @@ Scripts:
 
 	//Snd Buy menu
 	ui/FlowstateSND/flowstate_snd_buy_menu.nut
-	
-	ui/fs_1v1/settingsmenu.nut
 ]
 
 When: "SERVER || UI "
