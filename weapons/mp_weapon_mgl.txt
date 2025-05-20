@@ -2,7 +2,7 @@ WeaponData
 {
 	// General
 	"printname"   									"MGL Mag Launcher" //MGL
-	"shortprintname"								"MGL Mag Launcher" //MGL
+	"shortprintname"								"Mag Launcher" //MGL
 	"description" 									"Magnetic grenade launcher."
 	"longdesc"										"Magnetic grenade launcher."
 
