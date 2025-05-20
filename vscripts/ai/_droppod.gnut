@@ -80,8 +80,8 @@ void function AirdropItems( vector origin, vector angles, array<string> contents
 		}
 	)
 
-    thread DropPodBeamWaitForUse(dropPod, origin, angles)
-    thread WaitForDropFX(dropPod, animationName, origin, angles)
+    thread DropPodBeamWaitForUse( dropPod, origin, angles )
+    thread WaitForDropFX( dropPod, animationName, origin, angles, false )
 	
 	waitthread LaunchAnimDropPod( dropPod, animationName, OriginToGround( origin ), angles )
 
@@ -117,7 +117,7 @@ void function AirdropItems_Lifeline( vector origin, vector angles, array<string>
     dropPod.SetScriptName( "lifeline_care_package" )
 
     thread DropPodBeamWaitForUse(dropPod, origin, angles)
-    thread WaitForDropFX(dropPod, animationName, origin, angles)
+    thread WaitForDropFX( dropPod, animationName, origin, angles, true )
 	
 	waitthread LaunchAnimDropPod( dropPod, animationName, OriginToGround( origin ), angles )
 
@@ -146,11 +146,13 @@ void function AirDropFireteam( vector origin, vector angles, string animationNam
 	}
 }
 
-void function WaitForDropFX(entity dropPod, string animationName, vector origin, vector angles)
+void function WaitForDropFX( entity dropPod, string animationName, vector origin, vector angles, bool isLifeLine )
 { 
 	EndSignal( dropPod, "OnDestroy" )
 
-    float scaledTime = dropPod.GetSequenceDuration( animationName ) * 0.95
+	float scalar = isLifeLine ? 0.945 : 0.965 // todo(kawe): rework this entire thing with AddAnimEvent( "OnImpact" ).
+    float scaledTime = dropPod.GetSequenceDuration( animationName ) * scalar
+
 	wait scaledTime 
 	
 	if( !IsValid( dropPod ) )
