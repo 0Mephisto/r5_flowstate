@@ -62,6 +62,16 @@ var function SpawnBeacon( entity ownerPlayer, vector origin, vector angles )
 	OnMobileRespawnChamberSpawned(respawn)
 }
 
+void function AirDropPingMinimap( entity dropPod, vector origin, string animationName )
+{
+	// Show up for twice as long so there's enough time for everyone to find
+	// it on the minimap after it has landed.
+	float pingDuration = dropPod.GetSequenceDuration( animationName ) * 2
+
+	foreach( entity player in GetPlayerArray_Alive() )
+		Remote_CallFunction_NonReplay( player, "ServerCallback_SUR_PingMinimap", origin, pingDuration, 500.0, 50.0, 0 )
+}
+
 void function AirdropItems( vector origin, vector angles, array<string> contents, entity fxToStop, string animationName, entity owner, int skin, string sourceWeaponClassName )
 {
 	entity dropPod = CreateDropPod( origin, angles, sourceWeaponClassName )
@@ -79,6 +89,8 @@ void function AirdropItems( vector origin, vector angles, array<string> contents
 				fxToStop.Destroy()
 		}
 	)
+
+	AirDropPingMinimap( dropPod, origin, animationName )
 
     thread DropPodBeamWaitForUse( dropPod, origin, angles )
     thread WaitForDropFX( dropPod, animationName, origin, angles, false )
