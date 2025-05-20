@@ -257,7 +257,7 @@ playlists
 				//// AirDrops (a.k.a. Care Packages)										///////
 				///////////////////////////////////////////////////////////////////////////////////
 				
-				//"type:dropCount:preWait:contentsLeft:contentsRight:contentsCenter"
+				//"dropCount:preWait:contentsLeft:contentsRight:contentsCenter"
 				// contents can be expanded with: "contentsL1,contentsL2,contentsL3 ...:contentsR1:contentsC1" using "," as a delimiter
 				// multiple airdrops can be added per round using " " as a delimiter
 				//=====================================================================================================================
