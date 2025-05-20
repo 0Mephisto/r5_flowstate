@@ -102,7 +102,9 @@ int function SetupRemoteFuncAliases()
 			FS_ForceCompass,
 			FS_DestroyCompass,
 			FS4DIntroSequence,
-			ServerCallback_ShowWinningSquadSequence
+			ServerCallback_ShowWinningSquadSequence,
+			FS_ShowRoundStartTimeUI,
+			FS_ShowRoundStartSelectingTeamTimeUI
 			// HaloBrIntroSequence,
 			// ServerCallback_ShotgunKickNoAmmoMessage
 		]
@@ -163,7 +165,9 @@ int function SetupRemoteFuncAliases()
 			"FS_ForceCompass",
 			"FS_DestroyCompass",
 			"FS4DIntroSequence",
-			"ServerCallback_ShowWinningSquadSequence"
+			"ServerCallback_ShowWinningSquadSequence",
+			"FS_ShowRoundStartTimeUI",
+			"FS_ShowRoundStartSelectingTeamTimeUI"
 			// "HaloBrIntroSequence",
 			// "ServerCallback_ShotgunKickNoAmmoMessage"
 		]
@@ -376,9 +380,34 @@ void function RemoteFunctions_Init_Begin()
 	if( Flowstate_IsHaloMode() )
 		ScriptRegisterNetworkedVariable( "fs_haloMod_assignedMasterChief", SNDC_PLAYER_GLOBAL, SNVT_INT, -1 )
 	
+	ScriptRemote_RegisterClientFunction( "ServerCallback_AddGunfireEvent", "entity", "vector", -32000.0, 32000.0, 32 )
+	
 	//Custom gamemodes
 	switch ( Gamemode() )
 	{
+		case eGamemodes.fs_spieslegends:
+			Remote_RegisterClientFunction( "FS_Spies_Center_Msg", "int", -1, 8, "int", -1, 15, "int", -1, 99, "int", INT_MIN, INT_MAX )
+			Remote_RegisterClientFunction( "ServerToClient_UpdateHackingHUD", "float", 0.0, 1.1, 8, "int", 0, 6,"int", EHANDLE_MIN, EHANDLE_MAX, "int", -1, 4 )
+			Remote_RegisterClientFunction( "ServerToClient_RoundWinnerScreen", "int", 1, 4, "int", 1, 4 )
+			Remote_RegisterClientFunction( "ServerToClient_UpdateScoreHUD", "int", -1, 4, "int", 0, 4 )
+			
+			RegisterNetworkedVariable( "FS_SpiesRoundEndTime", SNDC_GLOBAL, SNVT_TIME, -1 )
+			RegisterNetworkedVariable( "FS_SpiesRoundNumber", SNDC_GLOBAL, SNVT_INT, -1 )
+			
+			RegisterNetworkedVariable( "FS_SpiesIsRoundExtended", SNDC_GLOBAL, SNVT_BOOL, false )
+
+			ScriptRemote_RegisterUIFunction("Open_FSSND_BuyMenu", "float", -1.0, 99999.0, 32 )
+			ScriptRemote_RegisterUIFunction("SND_UpdateVotesForTeam", "int", 0, 4, "int", INT_MIN, INT_MAX)
+			ScriptRemote_RegisterUIFunction("SND_UpdateMaxVotesForTeam", "int", 0, 4, "int", INT_MIN, INT_MAX)
+			ScriptRemote_RegisterUIFunction("Close_FSSND_BuyMenu")
+			ScriptRemote_RegisterUIFunction("SND_Disable_IMCButton")
+			ScriptRemote_RegisterUIFunction("SND_Disable_MILITIAButton")
+			
+			ScriptRemote_RegisterUIFunction( "GadgetsSelector_Open", "int", 0, 2 )
+			
+			ScriptRemote_RegisterClientFunction( "ServerCallback_SpawnOrModifyClientSideDynamicLight", "vector", -32000.0, 32000.0, 32, "vector", -32000.0, 32000.0, 32, "int", 0, 10, "float", 0.0, 32000.0, 12, "float", 0.0, 32000.0, 12, "int", 0, 100 )
+		break
+		
 		case eGamemodes.WINTEREXPRESS:
 			ScriptRemote_RegisterClientFunction( "OpenFRChallengesSettingsWpnSelector" )
 			ScriptRemote_RegisterClientFunction( "CloseFRChallengesSettingsWpnSelector" )	
@@ -560,6 +589,7 @@ void function RemoteFunctions_Init_Begin()
 			ScriptRemote_RegisterClientFunction("SND_ToggleMoneyUI", "bool")
 			ScriptRemote_RegisterUIFunction("Open_FSSND_BuyMenu", "float", -1.0, 99999.0, 32 )
 			ScriptRemote_RegisterUIFunction("SND_UpdateVotesForTeam", "int", 0, 2, "int", INT_MIN, INT_MAX)
+			ScriptRemote_RegisterUIFunction("SND_UpdateMaxVotesForTeam", "int", 0, 4, "int", INT_MIN, INT_MAX)
 			ScriptRemote_RegisterUIFunction("Close_FSSND_BuyMenu")
 			ScriptRemote_RegisterUIFunction("SND_Disable_IMCButton")
 			ScriptRemote_RegisterUIFunction("SND_Disable_MILITIAButton")
@@ -959,6 +989,10 @@ void function RemoteFunctions_Init_Begin()
 
 		switch ( Gamemode() )
 		{
+			case eGamemodes.fs_spieslegends:
+				CL_Spies_RegisterNetworkFunctions()
+			break
+			
 			case eGamemodes.fs_dm:
 				CL_FSDM_RegisterNetworkFunctions()
 			break
