@@ -304,15 +304,15 @@ bool function FS_1v1Coaching_PlaySelected(entity player, array<string> args )
 		admin = adminData.player
 	}
 	
-	if( isPlayerInWaitingList( admin ) )
+	if( Gamemode1v1_IsPlayerWaiting( admin ) )
 	{
-		deleteWaitingPlayer( admin.p.handle )
+		Gamemode1v1_RemovePlayerFromWaitingList( admin.p.handle )
 		RemovePlayerFromGroup( admin )
 	}
 	
-	if( isPlayerInWaitingList( coachedPlayer ) )
+	if( Gamemode1v1_IsPlayerWaiting( coachedPlayer ) )
 	{
-		deleteWaitingPlayer( coachedPlayer.p.handle )
+		Gamemode1v1_RemovePlayerFromWaitingList( coachedPlayer.p.handle )
 		RemovePlayerFromGroup( coachedPlayer )
 	}
 	
@@ -385,7 +385,7 @@ bool function FS_1v1Coaching_PlaySelected(entity player, array<string> args )
 					if( !IsAlive( admin ) )
 						DecideRespawnPlayer( admin, false )
 					
-					TpPlayerToLocpair( admin, getWaitingRoomLocation() )
+					Gamemode1v1_TeleportPlayer( admin, getWaitingRoomLocation() )
 				}
 				
 				if( IsValid( coachedPlayer ) )
@@ -396,7 +396,7 @@ bool function FS_1v1Coaching_PlaySelected(entity player, array<string> args )
 					if( !IsAlive( coachedPlayer ) )
 						DecideRespawnPlayer( coachedPlayer, false )
 					
-					TpPlayerToLocpair( coachedPlayer, getWaitingRoomLocation() )
+					Gamemode1v1_TeleportPlayer( coachedPlayer, getWaitingRoomLocation() )
 				}
 			}
 		)

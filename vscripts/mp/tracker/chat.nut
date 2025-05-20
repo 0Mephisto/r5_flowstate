@@ -206,7 +206,7 @@ void function cmd_wait( string tag, array<string> args, entity activator )
 
 void function cmd_rest( string tag, array<string> args, entity activator )
 {
-	if( !g_bRestEnabled() )
+	if( !Gamemode1v1_IsRestEnabled() )
 		return
 		
 	switch( Playlist() )// only two varients use rest, as it was a 1v1 feature originally.

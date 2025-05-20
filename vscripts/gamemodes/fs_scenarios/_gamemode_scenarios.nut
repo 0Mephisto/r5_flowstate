@@ -272,7 +272,7 @@ void function FS_Scenarios_ForceRest( entity player )
 			FS_Scenarios_UpdatePlayerScore( player, FS_ScoreType.PENALTY_DESERTER )	
 	}
 	
-	if( !isPlayerInWaitingList( player ) )
+	if( !Gamemode1v1_IsPlayerWaiting( player ) )
 		soloModePlayerToWaitingList( player ) //logic that cleans up a player is contained here.
 	
 	_3v3ModePlayerToRestingList( player ) // Manually assign
@@ -299,13 +299,13 @@ bool function FS_Scenarios_ClientCommand_Rest( entity player, array<string> args
 		return false
 	}
 	
-	if( IsCurrentState( player, e1v1State.CHARSELECT ) || IsCurrentState( player, e1v1State.PREMATCH ) )
+	if( Gamemode1v1_IsPlayerInState( player, e1v1State.CHARSELECT ) || Gamemode1v1_IsPlayerInState( player, e1v1State.PREMATCH ) )
 	{
 		LocalEventMsg( player, "#FS_NOT_AVAILABLE" )
 		return true 
 	}
 		
-	if( IsCurrentState( player, e1v1State.MATCHING ) )
+	if( Gamemode1v1_IsPlayerInState( player, e1v1State.MATCHING ) )
 	{
 		if( args.len() == 0 || !player.p.rest_request )
 		{
@@ -343,7 +343,7 @@ bool function FS_Scenarios_ClientCommand_Rest( entity player, array<string> args
 	
 	string restText = "#FS_BASE_RestText";
 
-	if( isPlayerInRestingList( player ) )
+	if( Gamemode1v1_IsPlayerResting( player ) )
 	{
 		if( player.IsObserver() || IsValid( player.GetObserverTarget() ) )
 		{
@@ -560,7 +560,7 @@ void function FS_Scenarios_OnPlayerConnected( entity player )
 		while( IsDisconnected( player ) )
 			WaitFrame()
 		
-		if( !isPlayerInWaitingList( player) && !isPlayerInRestingList( player ) && !FS_Scenarios_IsPlayerIn3v3Mode( player ) )
+		if( !Gamemode1v1_IsPlayerWaiting( player) && !Gamemode1v1_IsPlayerResting( player ) && !FS_Scenarios_IsPlayerIn3v3Mode( player ) )
 		{
 			soloModePlayerToWaitingList(player)
 		}
@@ -646,7 +646,7 @@ void function FS_Scenarios_OnPlayerDisconnected( entity player )
 		
 		if ( playerInWaitingStruct.handle == player.p.handle )
 		{
-			deleteWaitingPlayer( player.p.handle )
+			Gamemode1v1_RemovePlayerFromWaitingList( player.p.handle )
 			break
 		}
 	}
@@ -1308,8 +1308,8 @@ bool function FS_Scenarios_GroupToInProgressList( scenariosGroupStruct newGroup,
 		
 		player.SetPlayerNetTime( "FS_Scenarios_timePlayerEnteredInLobby", -1 )
 		
-		deleteWaitingPlayer( player.p.handle )
-		deleteSoloPlayerResting( player )
+		Gamemode1v1_RemovePlayerFromWaitingList( player.p.handle )
+		Gamemode1v1_RemovePlayerFromRestingList( player )
 		LocalMsg( player, "#FS_NULL", "", eMsgUI.EVENT, 1 )
 
 		if( Bleedout_IsBleedingOut( player ) )
@@ -1364,7 +1364,7 @@ bool function FS_Scenarios_GroupToInProgressList( scenariosGroupStruct newGroup,
 	catch(e)
 	{
 		#if DEVELOPER
-			sqprint("[Scenarios] addGroup crash: " + e)
+			sqprint("[Scenarios] RegisterSoloGroup crash: " + e)
 		#endif
 		return false
 	}
@@ -1450,7 +1450,7 @@ void function FS_Scenarios_RespawnIn3v3Mode( entity player )
 
 	Remote_CallFunction_ByRef( player, "ForceScoreboardLoseFocus" )
 
-   	if( isPlayerInRestingList( player ) )
+   	if( Gamemode1v1_IsPlayerResting( player ) )
 	{	
 		try
 		{
@@ -1468,7 +1468,7 @@ void function FS_Scenarios_RespawnIn3v3Mode( entity player )
 		
 		// GivePlayerCustomPlayerModel( player )
 
-		TpPlayerToLocpair(player, waitingRoomLocation)
+		Gamemode1v1_TeleportPlayer(player, waitingRoomLocation)
 		player.MakeVisible()
 		player.ClearInvulnerable() // !FIXME
 		player.SetTakeDamageType( DAMAGE_YES )
@@ -1530,7 +1530,7 @@ void function FS_Scenarios_Main_Thread()
 
 			if( Distance( player.GetOrigin(), waitingRoomLocation.origin ) > settings.waitingRoomRadius ) //waiting player should be in waiting room,not battle area
 			{
-				TpPlayerToLocpair( player, waitingRoomLocation ) //waiting player should be in waiting room,not battle area
+				Gamemode1v1_TeleportPlayer( player, waitingRoomLocation ) //waiting player should be in waiting room,not battle area
 				HolsterAndDisableWeapons( player )
 			}
 		}
@@ -2321,7 +2321,7 @@ void function FS_Scenarios_HandleGroupIsFinished( entity player )
 	if( !IsValid( player ) )
 		return
 
-	if( !IsCurrentState( player, e1v1State.RESTING ) )
+	if( !Gamemode1v1_IsPlayerInState( player, e1v1State.RESTING ) )
 		Gamemode1v1_SetPlayerGamestate( player, e1v1State.WAITING )
 		
 	scenariosGroupStruct ornull group = FS_Scenarios_ReturnGroupForPlayer( player )
@@ -2741,7 +2741,7 @@ void function FS_Scenarios_ForceAllRoundsToFinish()
 			}
 		}catch(e420){}
 		
-		if(isPlayerInWaitingList(player))
+		if(Gamemode1v1_IsPlayerWaiting(player))
 		{
 			continue
 		}
@@ -2998,7 +2998,7 @@ void function DefinePanelCallbacks( PanelTable panels )
 
 bool function FS_Scenarios_PlayerCanPing( entity player )
 {
-	if( !IsCurrentState( player, e1v1State.MATCHING ) )
+	if( !Gamemode1v1_IsPlayerInState( player, e1v1State.MATCHING ) )
 		return false 
 		
 	return true
