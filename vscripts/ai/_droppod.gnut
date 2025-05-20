@@ -68,21 +68,25 @@ void function AirdropItems( vector origin, vector angles, array<string> contents
 	dropPod.SetSkin( skin )
     
     entity threatProxy = CreateDropPodThreatIndicator(origin, angles)
+
+	OnThreadEnd(
+	function() : ( threatProxy, fxToStop )
+		{
+			if( IsValid( threatProxy ) )
+				threatProxy.Destroy()
+
+			if( IsValid( fxToStop ) )
+				fxToStop.Destroy()
+		}
+	)
+
     thread DropPodBeamWaitForUse(dropPod, origin, angles)
-	
     thread WaitForDropFX(dropPod, animationName, origin, angles)
 	
 	waitthread LaunchAnimDropPod( dropPod, animationName, OriginToGround( origin ), angles )
-	    if(IsValid(threatProxy))
-        threatProxy.Destroy()
 
 	InitDropPod( dropPod )
-    
-    if(IsValid(fxToStop))
-        fxToStop.Destroy()
-	
 	AddMultipleLootItemsToDropPod(dropPod, contents)
-
 }
 
 void function AirdropItems_Lifeline( vector origin, vector angles, array<string> contents, entity fxToStop, string animationName, entity owner, int skin, string sourceWeaponClassName )
@@ -104,7 +108,7 @@ void function AirdropItems_Lifeline( vector origin, vector angles, array<string>
 				if( IsValid( threatProxy ) )
 					threatProxy.Destroy()
 
-				if( IsValid(fxToStop) )
+				if( IsValid( fxToStop ) )
 					fxToStop.Destroy()
 			}
 	)
@@ -113,15 +117,12 @@ void function AirdropItems_Lifeline( vector origin, vector angles, array<string>
     dropPod.SetScriptName( "lifeline_care_package" )
 
     thread DropPodBeamWaitForUse(dropPod, origin, angles)
-	
     thread WaitForDropFX(dropPod, animationName, origin, angles)
 	
 	waitthread LaunchAnimDropPod( dropPod, animationName, OriginToGround( origin ), angles )
 
 	InitDropPod( dropPod )
-   
 	AddMultipleLootItemsToDropPod_Lifeline(dropPod, contents)
-
 }
 
 void function AirDropFireteam( vector origin, vector angles, string animationName, int skin, string sourceWeaponClassName, entity player )
@@ -149,7 +150,7 @@ void function WaitForDropFX(entity dropPod, string animationName, vector origin,
 { 
 	EndSignal( dropPod, "OnDestroy" )
 
-    float scaledTime = dropPod.GetSequenceDuration(animationName) * 0.95
+    float scaledTime = dropPod.GetSequenceDuration( animationName ) * 0.95
 	wait scaledTime 
 	
 	if( !IsValid( dropPod ) )
