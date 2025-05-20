@@ -102,7 +102,7 @@ void function CheckAfkKickThread(entity player)
 		if ( player.p.isSpectating )
 			continue
 			
-		if ( bAfkToRest() && Gamemode1v1_IsRestEnabled() && IsCurrentState( player, e1v1State.RESTING ) )
+		if ( bAfkToRest() && g_bRestEnabled() && IsCurrentState( player, e1v1State.RESTING ) )
 			continue
 		
 		switch ( GetAfkState( player ) )
@@ -119,7 +119,7 @@ void function CheckAfkKickThread(entity player)
 				{
 					player.p.lastmoved = Time()
 					
-					if( Gamemode1v1_IsRestEnabled()  )
+					if( g_bRestEnabled()  )
 					{
 						if( isPlayerInRestingList( player ) )
 						{

@@ -18,7 +18,7 @@ global function Gamemode1v1_Init
 global function resetChallenges
 global function isPlayerInWaitingList
 global function getWaitingRoomLocation
-global function Gamemode1v1_TeleportPlayer
+global function TeleportPlayer_1v1
 global function returnSoloGroupOfPlayer
 global function soloModePlayerToWaitingList
 global function ForceAllRoundsToFinish_solomode
@@ -30,7 +30,7 @@ global function Gamemode1v1_SetWaitingRoomRadius
 global function Gamemode1v1_FetchNotificationPanelCoordinates
 global function Gamemode1v1_FetchNotificationPanelAngles
 global function ClientCommand_mkos_IBMM_wait
-global function Gamemode1v1_IsRestEnabled
+global function g_bRestEnabled
 global function AddEntityCalllback_OnPlayerGamestateChange_1v1
 global function RemoveEntityCalllback_OnPlayerGamestateChange_1v1
 global function Gamemode1v1_GiveWeapon
@@ -2725,7 +2725,7 @@ bool function TryProcessRestRequest( entity player )
 	return false
 }
 
-entity function GetNewRandomOpponentForPlayer_1v1( entity player )
+entity function getRandomOpponentOfPlayer( entity player )
 {
     entity p
 	
@@ -3168,7 +3168,7 @@ void function forbiddenZone_leave(entity trigger , entity ent)
 	EntityBackInBounds( trigger, ent, null, null )
 }
 
-void function Gamemode1v1_TeleportPlayer( entity player, LocPair data )
+void function TeleportPlayer_1v1( entity player, LocPair data )
 {
 	if( !IsValid( player ) ) 
 		return
@@ -3243,7 +3243,6 @@ void function respawnInSoloMode( entity player, int respawnSlotIndex = -1 ) //�
 
 	Remote_CallFunction_ByRef( player, "ForceScoreboardLoseFocus" )
 
-	// Is player in rest mode?
    	if( isPlayerInRestingList( player ) )
 	{
 		// Warning("resting respawn")
@@ -3264,7 +3263,7 @@ void function respawnInSoloMode( entity player, int respawnSlotIndex = -1 ) //�
 			return
 		
 		GivePlayerCustomPlayerModel( player )
-		Gamemode1v1_TeleportPlayer( player, waitingRoomLocation )
+		TeleportPlayer_1v1( player, waitingRoomLocation )
 		player.MakeVisible()
 		player.ClearInvulnerable()
 		player.SetTakeDamageType( DAMAGE_YES )
@@ -3273,7 +3272,7 @@ void function respawnInSoloMode( entity player, int respawnSlotIndex = -1 ) //�
 		FS_ClearRealmsAndAddPlayerToAllRealms( player )
 
 		return
-	}
+	}//玩家在休息模式
 
 	if ( respawnSlotIndex == -1 ) 
 		return
@@ -3303,7 +3302,7 @@ void function respawnInSoloMode( entity player, int respawnSlotIndex = -1 ) //�
 	GivePlayerCustomPlayerModel( player )
 	
 	soloLocStruct groupLocStruct = group.groupLocStruct
-	Gamemode1v1_TeleportPlayer( player, groupLocStruct.respawnLocations[ respawnSlotIndex ] )
+	TeleportPlayer_1v1( player, groupLocStruct.respawnLocations[ respawnSlotIndex ] )
 	
 	wait 0.2 //防攻击的伤害传递止上一条命被到下一条命的玩家上
 
@@ -3429,7 +3428,7 @@ void function OnWeaponAttachmentChanged( entity player, entity weapon, string mo
 	ClientCommand_SaveCurrentWeapons( player, [] )
 }
 
-bool function Gamemode1v1_IsRestEnabled()
+bool function g_bRestEnabled()
 {
 	return file.bRestEnabled
 }
@@ -3904,7 +3903,7 @@ void function FS_1v1_MainLoop_THREAD( LocPair waitingRoomLocation )
 			
 			if( Distance2D( player.GetOrigin(), waitingRoomLocation.origin ) > file.waitingRoomRadius )
 			{
-				Gamemode1v1_TeleportPlayer( player, g_randomWaitingSpawns.getrandom() )
+				TeleportPlayer_1v1( player, g_randomWaitingSpawns.getrandom() )
 				HolsterAndDisableWeapons_Raw( player ) //(mk): dirty fix I wanted to avoid.
 			}
 			
@@ -4110,7 +4109,7 @@ void function FS_1v1_MainLoop_THREAD( LocPair waitingRoomLocation )
 				if( IsValid( newGroup.player1 ) )
 				{
 					//sqprint("Player 1 found: " + newGroup.player1.GetPlayerName() + " waiting for same input or IBMM grace period time out")
-					opponent = GetNewRandomOpponentForPlayer_1v1( newGroup.player1 )
+					opponent = getRandomOpponentOfPlayer( newGroup.player1 )
 					
 					if( IsValid( opponent ) )
 					{
@@ -4710,7 +4709,7 @@ void function ForceAllRoundsToFinish_solomode()
 		if( isPlayerInWaitingList( player ) )
 			continue
 		
-		Gamemode1v1_TeleportPlayer( player, getWaitingRoomLocation() )
+		TeleportPlayer_1v1( player, getWaitingRoomLocation() )
 		soloModePlayerToWaitingList( player )
 		FS_ClearRealmsAndAddPlayerToAllRealms( player )
 	}
@@ -5466,7 +5465,7 @@ void function Gamemode1v1_OnPlayerKilled( entity victim, entity attacker, var da
 		}
 		
 		ClearInvincible( victim )
-		Gamemode1v1_TeleportPlayer( victim, waitingRoomLocation )
+		TeleportPlayer_1v1( victim, waitingRoomLocation )
 			
 		return
 	}
@@ -5510,7 +5509,7 @@ void function Gamemode1v1_OnSpawned( entity player )
 	player.SetShieldHealthMax( Equipment_GetDefaultShieldHP() )
 	Survival_SetInventoryEnabled( player, false )
 	
-	Gamemode1v1_TeleportPlayer( player, waitingRoomLocation )
+	TeleportPlayer_1v1( player, waitingRoomLocation )
 	player.UnfreezeControlsOnServer()
 }
 

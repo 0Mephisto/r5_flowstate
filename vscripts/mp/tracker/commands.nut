@@ -129,7 +129,7 @@ struct
 	
 		void function cmd_rest( string tag, array<string> args, entity activator )
 		{
-			if( !Gamemode1v1_IsRestEnabled() )
+			if( !g_bRestEnabled() )
 				return
 				
 			switch( Playlist() )
