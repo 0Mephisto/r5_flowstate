@@ -69,7 +69,7 @@ void function AirDropPingMinimap( entity dropPod, vector origin, string animatio
 	float pingDuration = dropPod.GetSequenceDuration( animationName ) * 2
 
 	foreach( entity player in GetPlayerArray_Alive() )
-		Remote_CallFunction_NonReplay( player, "ServerCallback_SUR_PingMinimap", origin, pingDuration, 500.0, 50.0, 0 )
+		Remote_CallFunction_NonReplay( player, "ServerCallback_SUR_PingMinimap", origin, pingDuration, 500.0, 50.0, 2 )
 }
 
 void function AirdropItems( vector origin, vector angles, array<string> contents, entity fxToStop, string animationName, entity owner, int skin, string sourceWeaponClassName )
