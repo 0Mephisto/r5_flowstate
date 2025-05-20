@@ -9,8 +9,8 @@ global function INIT_playerChallengesStruct
 global function GetScore
 global function getSbmmSetting
 global function setSbmmSetting
-global function Gamemode1v1_GetNumberOfGroupsInProgress
-global function Gamemode1v1_GetNumberOfPlayersInGroupMap
+global function getGroupsInProgress
+global function getPlayerToGroupMap
 global function ClientCommand_Maki_SoloModeRest
 global function ClientCommand_mkos_challenge
 global function endSpectate
@@ -859,14 +859,14 @@ bool function IsCurrentState( entity player, int state )
 	return player.e.gamemode1v1State == state
 }
 
-int function Gamemode1v1_GetNumberOfGroupsInProgress()
+table<int, soloGroupStruct> function getGroupsInProgress()
 {
-	return file.groupsInProgress.len()
+	return file.groupsInProgress
 }
 
-int function Gamemode1v1_GetNumberOfPlayersInGroupMap()
+table<int, soloGroupStruct> function getPlayerToGroupMap()
 {
-	return file.playerToGroupMap.len()
+	return file.playerToGroupMap
 }
 
 table<int, soloPlayerStruct> function FS_1v1_GetPlayersWaiting()
