@@ -268,15 +268,15 @@ bool function FS_1v1Coaching_PlaySelected(entity player, array<string> args )
 		return false
 	}
 	
-	if( Gamemode1v1_IsPlayerWaiting( admin ) )
+	if( isPlayerInWaitingList( admin ) )
 	{
-		Gamemode1v1_RemovePlayerFromWaitingList( admin.p.handle )
+		deleteWaitingPlayer( admin.p.handle )
 		RemovePlayerFromGroup( admin )
 	}
 	
-	if( Gamemode1v1_IsPlayerWaiting( coachedPlayer ) )
+	if( isPlayerInWaitingList( coachedPlayer ) )
 	{
-		Gamemode1v1_RemovePlayerFromWaitingList( coachedPlayer.p.handle )
+		deleteWaitingPlayer( coachedPlayer.p.handle )
 		RemovePlayerFromGroup( coachedPlayer )
 	}
 	

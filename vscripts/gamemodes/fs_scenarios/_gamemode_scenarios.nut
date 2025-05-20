@@ -272,7 +272,7 @@ void function FS_Scenarios_ForceRest( entity player )
 			FS_Scenarios_UpdatePlayerScore( player, FS_ScoreType.PENALTY_DESERTER )	
 	}
 	
-	if( !Gamemode1v1_IsPlayerWaiting( player ) )
+	if( !isPlayerInWaitingList( player ) )
 		soloModePlayerToWaitingList( player ) //logic that cleans up a player is contained here.
 	
 	_3v3ModePlayerToRestingList( player ) // Manually assign
@@ -343,7 +343,7 @@ bool function FS_Scenarios_ClientCommand_Rest( entity player, array<string> args
 	
 	string restText = "#FS_BASE_RestText";
 
-	if( Gamemode1v1_IsPlayerResting( player ) )
+	if( isPlayerInRestingList( player ) )
 	{
 		if( player.IsObserver() || IsValid( player.GetObserverTarget() ) )
 		{
@@ -560,7 +560,7 @@ void function FS_Scenarios_OnPlayerConnected( entity player )
 		while( IsDisconnected( player ) )
 			WaitFrame()
 		
-		if( !Gamemode1v1_IsPlayerWaiting( player) && !Gamemode1v1_IsPlayerResting( player ) && !FS_Scenarios_IsPlayerIn3v3Mode( player ) )
+		if( !isPlayerInWaitingList( player) && !isPlayerInRestingList( player ) && !FS_Scenarios_IsPlayerIn3v3Mode( player ) )
 		{
 			soloModePlayerToWaitingList(player)
 		}
@@ -646,7 +646,7 @@ void function FS_Scenarios_OnPlayerDisconnected( entity player )
 		
 		if ( playerInWaitingStruct.handle == player.p.handle )
 		{
-			Gamemode1v1_RemovePlayerFromWaitingList( player.p.handle )
+			deleteWaitingPlayer( player.p.handle )
 			break
 		}
 	}
@@ -1308,8 +1308,8 @@ bool function FS_Scenarios_GroupToInProgressList( scenariosGroupStruct newGroup,
 		
 		player.SetPlayerNetTime( "FS_Scenarios_timePlayerEnteredInLobby", -1 )
 		
-		Gamemode1v1_RemovePlayerFromWaitingList( player.p.handle )
-		Gamemode1v1_RemovePlayerFromRestingList( player )
+		deleteWaitingPlayer( player.p.handle )
+		deleteSoloPlayerResting( player )
 		LocalMsg( player, "#FS_NULL", "", eMsgUI.EVENT, 1 )
 
 		if( Bleedout_IsBleedingOut( player ) )
@@ -1450,7 +1450,7 @@ void function FS_Scenarios_RespawnIn3v3Mode( entity player )
 
 	Remote_CallFunction_ByRef( player, "ForceScoreboardLoseFocus" )
 
-   	if( Gamemode1v1_IsPlayerResting( player ) )
+   	if( isPlayerInRestingList( player ) )
 	{	
 		try
 		{
@@ -2740,7 +2740,7 @@ void function FS_Scenarios_ForceAllRoundsToFinish()
 			}
 		}catch(e420){}
 		
-		if(Gamemode1v1_IsPlayerWaiting(player))
+		if(isPlayerInWaitingList(player))
 		{
 			continue
 		}
