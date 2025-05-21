@@ -426,7 +426,8 @@ void function FS1v1_OnEntitiesDidLoad()
 	switch( MapName() )
 	{
 		case eMaps.mp_rr_canyonlands_staging:
-	
+			Gamemode1v1_SetWaitingRoomRadius( 2500 )
+			SpawnOITCRoom( <31897.502, -5671.05029, -17916.1934> )
 			break
 	
 		case eMaps.mp_rr_arena_composite:
@@ -456,8 +457,7 @@ void function FS1v1_OnEntitiesDidLoad()
 		case eMaps.mp_rr_arena_skygarden:
 			
 		break
-				
-			break
+		
 		case eMaps.mp_rr_arena_empty:
 		
 		break
@@ -793,7 +793,7 @@ vector function Gamemode1v1_FetchNotificationPanelAngles()
 void function BannerImages_1v1Init()
 {
 	LocPair main_banner__Coordinates = NewLocPair( Gamemode1v1_FetchNotificationPanelCoordinates(), Gamemode1v1_FetchNotificationPanelAngles() )
-	main_banner__Coordinates.origin = main_banner__Coordinates.origin + < 0,0,267 >
+	main_banner__Coordinates.origin = main_banner__Coordinates.origin + < 0,0,220 >
 	
 	vector testOrigin 	= main_banner__Coordinates.origin + <0,0,16> //height offset for player eyes.
 	vector testAngles 	= main_banner__Coordinates.angles
@@ -2946,13 +2946,16 @@ bool function ClientCommand_Maki_SoloModeRest( entity player, array<string> args
 		// else 
 			// LocalMsg( player, "#FS_YouAreResting", restText, eMsgUI.DEFAULT, 5, "", restFlag )
 		
-		try
+		if( !Gamemode1v1_IsPlayerInState( player, e1v1State.WAITING ) )
 		{
-			player.Die( null, null, { damageSourceId = eDamageSourceId.damagedef_despawn } )
-		}
-		catch (error)
-		{
+			try
+			{
+				player.Die( null, null, { damageSourceId = eDamageSourceId.damagedef_despawn } )
+			}
+			catch (error)
+			{
 
+			}
 		}
 		
 		soloModePlayerToRestingList( player )
@@ -3056,12 +3059,12 @@ void function soloModePlayerToWaitingList( entity player, bool isWinner = false,
 	
 	if( !IsInvincible(player ) ) // (cafe) fix invincible stack bug
 		MakeInvincible(player)
+
+	if( !fromResting && !(Gamemode1v1_GetPlayerGamestate( player ) == e1v1State.INVALID) )
+		Gamemode1v1_TeleportPlayer( player, g_waitingRoomSpawnLocations.getrandom() ) //new
 	
 	Gamemode1v1_SetPlayerGamestate( player, e1v1State.WAITING )
-	
-	if( !fromResting )
-		Gamemode1v1_TeleportPlayer( player, getWaitingRoomLocation() ) //new
-	
+		
 	player.SetMinimapZoomScale( 0.75, 3.0 ) // (cafe) There should be a better place for this call
 
 	SetPlayerInventory( player, [] ) //clear inventory.
@@ -3527,7 +3530,7 @@ void function respawnInSoloMode( entity player, int respawnSlotIndex = -1 ) //å¤
 	Remote_CallFunction_ByRef( player, "ForceScoreboardLoseFocus" )
 
 	//(cafe) new
-   	if( Gamemode1v1_IsPlayerResting( player ) ) //should be a spectator
+   	if( Gamemode1v1_IsPlayerResting( player ) ) //should be a spectator, or a player that was waiting
 	{
 		if( !IsAlive( player ) )
 		{
@@ -3540,7 +3543,9 @@ void function respawnInSoloMode( entity player, int respawnSlotIndex = -1 ) //å¤
 				MakeInvincible(player)
 		}
 
-		Gamemode1v1_TeleportPlayer( player, getWaitingRoomLocation() )
+		if( !Gamemode1v1_IsPlayerInState( player, e1v1State.RESTING ) ) // if it's from waiting don't teleport it again, player is already in the room
+			Gamemode1v1_TeleportPlayer( player, g_waitingRoomSpawnLocations.getrandom() )
+		
 		FS_ClearRealmsAndAddPlayerToAllRealms( player )
 
 		TakeAllWeapons( player )
@@ -4808,7 +4813,7 @@ void function ForceAllRoundsToFinish_solomode()
 		if( Gamemode1v1_IsPlayerWaiting( player ) )
 			continue
 		
-		Gamemode1v1_TeleportPlayer( player, getWaitingRoomLocation() )
+		Gamemode1v1_TeleportPlayer( player, g_waitingRoomSpawnLocations.getrandom() )
 		// soloModePlayerToWaitingList( player )
 		FS_ClearRealmsAndAddPlayerToAllRealms( player )
 	}
@@ -5564,7 +5569,7 @@ void function Gamemode1v1_OnPlayerKilled( entity victim, entity attacker, var da
 		}
 
 		// ClearInvincible( victim ) 
-		Gamemode1v1_TeleportPlayer( victim, waitingRoomLocation )
+		Gamemode1v1_TeleportPlayer( victim, g_waitingRoomSpawnLocations.getrandom() )
 		return
 	}
 	return
@@ -5605,6 +5610,7 @@ void function Gamemode1v1_OnSpawned( entity player )
 	player.SetShieldHealthMax( Equipment_GetDefaultShieldHP() )
 	Survival_SetInventoryEnabled( player, false )
 
+	Gamemode1v1_SetPlayerGamestate( player, e1v1State.INVALID )
 	Gamemode1v1_TeleportPlayer( player, waitingRoomLocation )
 	player.UnfreezeControlsOnServer()
 }

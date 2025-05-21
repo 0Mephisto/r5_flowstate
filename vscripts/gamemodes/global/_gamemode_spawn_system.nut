@@ -753,14 +753,7 @@ array<SpawnData> function GenerateCustomSpawns( int eMap, int coreSpawnsLen = -1
 		//////////////////////////////////////////////////////////////////////////////////
 		case eMaps.mp_rr_canyonlands_64k_x_64k:
 		
-			defaultWaitingRoom = NewLocPair( <-167.997238, -720.783752, 50000.0625>, <0, 87.8704834, 0> )
-			g_waitingRoomPanelLocation = SetWaitingRoomAndGeneratePanelLocs( defaultWaitingRoom )
-		
-		break ////////////////////////////////////////////////////////////////////////////
-		//////////////////////////////////////////////////////////////////////////////////
-		case eMaps.mp_rr_canyonlands_staging: 
-		
-			defaultWaitingRoom = NewLocPair( < 3477.69, -8364.02, -10252 >, < 356.203, 269.459, 0 > )
+			defaultWaitingRoom = NewLocPair( <-167.997238, -720.783752, 50000.0625>, <0, 87.8704834, 0>  )
 			g_waitingRoomPanelLocation = SetWaitingRoomAndGeneratePanelLocs( defaultWaitingRoom )
 		
 		break ////////////////////////////////////////////////////////////////////////////
@@ -803,6 +796,10 @@ array<SpawnData> function GenerateCustomSpawns( int eMap, int coreSpawnsLen = -1
 		break ////////////////////////////////////////////////////////////////////////////
 		//////////////////////////////////////////////////////////////////////////////////
 		
+		case eMaps.mp_rr_canyonlands_staging:
+			defaultWaitingRoom = NewLocPair( <31759.0918, -6222.6582, -17916.1309>, <0, 90.052124, 0> )
+			g_waitingRoomPanelLocation = SetWaitingRoomAndGeneratePanelLocs( defaultWaitingRoom )
+		break
 		default:
 		
 			entity spawnstart = GetEnt( "info_player_start" )
