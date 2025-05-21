@@ -663,8 +663,8 @@ void function Cl_OnResolutionChanged()
 
 void function Flowstate_RoundEndTimeChanged( entity player, float old, float new, bool actuallyChanged )
 {
-	if ( !actuallyChanged  )
-		return
+	// if ( !actuallyChanged  )
+		// return
 
 	thread Flowstate_ShowRoundEndTimeUI( new )
 	

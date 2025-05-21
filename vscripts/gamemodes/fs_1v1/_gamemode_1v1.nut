@@ -3061,7 +3061,7 @@ void function soloModePlayerToWaitingList( entity player, bool isWinner = false,
 		MakeInvincible(player)
 
 	if( !fromResting && !(Gamemode1v1_GetPlayerGamestate( player ) == e1v1State.INVALID) )
-		Gamemode1v1_TeleportPlayer( player, g_waitingRoomSpawnLocations.getrandom() ) //new
+		Gamemode1v1_TeleportPlayer( player, getWaitingRoomLocation() ) //new
 	
 	Gamemode1v1_SetPlayerGamestate( player, e1v1State.WAITING )
 		
@@ -4813,8 +4813,11 @@ void function ForceAllRoundsToFinish_solomode()
 		if( Gamemode1v1_IsPlayerWaiting( player ) )
 			continue
 		
-		Gamemode1v1_TeleportPlayer( player, g_waitingRoomSpawnLocations.getrandom() )
+		Gamemode1v1_TeleportPlayer( player, getWaitingRoomLocation() )
 		// soloModePlayerToWaitingList( player )
+		if( Gamemode1v1_IsPlayerResting( player ) )
+			Gamemode1v1_RemovePlayerFromRestingList( player )
+		
 		FS_ClearRealmsAndAddPlayerToAllRealms( player )
 	}
 	
@@ -5569,7 +5572,7 @@ void function Gamemode1v1_OnPlayerKilled( entity victim, entity attacker, var da
 		}
 
 		// ClearInvincible( victim ) 
-		Gamemode1v1_TeleportPlayer( victim, g_waitingRoomSpawnLocations.getrandom() )
+		Gamemode1v1_TeleportPlayer( victim, getWaitingRoomLocation() )
 		return
 	}
 	return
@@ -5605,13 +5608,13 @@ void function OnMatchStart()
 
 void function Gamemode1v1_OnSpawned( entity player )
 {
-	LocPair waitingRoomLocation = getWaitingRoomLocation()
-	
 	player.SetShieldHealthMax( Equipment_GetDefaultShieldHP() )
 	Survival_SetInventoryEnabled( player, false )
 
-	Gamemode1v1_SetPlayerGamestate( player, e1v1State.INVALID )
-	Gamemode1v1_TeleportPlayer( player, waitingRoomLocation )
+	if( GetTDMState() != eTDMState.IN_PROGRESS )
+		Gamemode1v1_SetPlayerGamestate( player, e1v1State.INVALID )
+	
+	Gamemode1v1_TeleportPlayer( player, getWaitingRoomLocation() )
 	player.UnfreezeControlsOnServer()
 }
 
