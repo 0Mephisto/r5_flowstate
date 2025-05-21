@@ -466,940 +466,930 @@ struct
 		
 		switch( command.tolower() )
 		{  	
-			case "help":	
-						try 
-						{
-							Message( player, "Commands:", "A command is entered as: \n\n cc command #param #param2.  \n\n cc kick #name/oid   - Kicks a player by name/oid \n cc afk #0/1   - disabled or enables afk to rest mode \n cc playself #audiofile   - Plays audiofile to self \n cc playall #audiofile    - Plays audiofile to all player \n cc sayall '#title' '#message' #duration   - says to all \n cc ban #name/oid #reason    - Bans a player \n cc unban #oid   - attempts to unban a player by OID \n cc map #name #mode   - reloads map \n cc playerinput #name/oid   - shows players input \n cc playerinfo  - some stats", 20 )
-						}
-						catch ( err ) 
-						{
-							return false 
-						}
-				
-						return true
-				
-				
-			case "kick":	
-						if ( args.len() < 2 )
-						{
-							Message( player, "Failed", "kick requires name/id for 1st param of command" )
-							return false
-						}
+			case "help":
+			{
+				try 
+				{
+					Message( player, "Commands:", "A command is entered as: \n\n cc command #param #param2.  \n\n cc kick #name/oid   - Kicks a player by name/oid \n cc afk #0/1   - disabled or enables afk to rest mode \n cc playself #audiofile   - Plays audiofile to self \n cc playall #audiofile    - Plays audiofile to all player \n cc sayall '#title' '#message' #duration   - says to all \n cc ban #name/oid #reason    - Bans a player \n cc unban #oid   - attempts to unban a player by OID \n cc map #name #mode   - reloads map \n cc playerinput #name/oid   - shows players input \n cc playerinfo  - some stats", 20 )
+				}
+				catch ( err ) 
+				{
+					return false 
+				}
 		
-						try 
-						{		
-							entity k_player
-							string k_playeroid
-							string k_playername
-							string reason = param2
-							
-							k_player = GetPlayer( param )
-							
-							if ( !IsValid( k_player ) )
-							{
-								Message( player, "Failed", "Player: " + param + " - is invalid. " )
-								return true
-							}
-								
-							k_playeroid = k_player.GetPlatformUID()	
-							k_playername = k_player.GetPlayerName()
-							
-							if ( IsServerAdmin( k_playeroid ) )
-							{
-								Message( player, "Cannot kick admin")
-								return true
-							}
-						
-							KickPlayerById( k_playeroid, reason )
-							UpdatePlayerCounts()
-							
-							Message( player, "Kicked player", "PUID: " + k_playeroid + "\nName: " + k_playername )
-							return true	
-						}
-						catch ( erraaarg )
-						{
-							Message( player, "Error", "Invalid player or argument missing" )
-							return true
-						}
-						
-						return true	
-						
-			case "afk":
+				return true
+			}
+			case "kick":
+			{
+				if ( args.len() < 2 )
+				{
+					Message( player, "Failed", "kick requires name/id for 1st param of command" )
+					return false
+				}
+
+				try 
+				{		
+					entity k_player
+					string k_playeroid
+					string k_playername
+					string reason = param2
 					
-						try 
-						{					
-							if ( args[1] == "1" )
-							{
-								SetAfkToRest( true )
-								Message( player, "Command sent", "Afk to rest was ENABLED" )
-								return true
-							} 
-							else if ( args[1] == "0" )
-							{
-								SetAfkToRest( false )
-								Message( player, "Command sent", "Afk to rest was disabled" )
-								return true
-							} 
-						} 
-						catch( erroreo )
-						{		
-							Message( player, "Error", "argument missing" )
-							return false
-						}
-						
+					k_player = GetPlayer( param )
+					
+					if ( !IsValid( k_player ) )
+					{
+						Message( player, "Failed", "Player: " + param + " - is invalid. " )
 						return true
-							
-			case "restricted":
-			
-							try 
-							{
-
-								if ( args[1] == "1" )
-								{
-									Tracker_SetRestrictedServer( true )
-									Message( player, "Command sent", "restricted_server was ENABLED" )
-									return true
-								} 
-								else if ( args[1] == "0" )
-								{
-									Tracker_SetRestrictedServer( false )
-									Message( player, "Command sent", "restricted_server was disabled" )
-									return true
-								} 
-							} 
-							catch( errorres )
-							{
-								Message( player, "Error", "argument missing" )
-								return false
-							}
-
-							return true
-							
-			case "playonself": 
-			
-								
-							if ( args.len() < 2 )
-							{
-								Message( player, "Failed", "playself requires param of audiofile as string" )
-								return false
-							} 
-								
-							try 
-							{
-								EmitSoundOnEntity( player, args[1] )	
-							} 
-							catch ( erra )
-							{
-								Message(player, "Failed", "Command failed because of: \n\n " + erra )
-								return false	
-							}
-							
-							return true
-				
-				
-			case "playself": 
-			
-								
-							if ( args.len() < 2 )
-							{
-								Message( player, "Failed", "Command 'playself' requires param of audiofile as string" )
-								return false
-							} 
-								
-							try 
-							{
-								EmitSoundOnEntityOnlyToPlayer( player, player, args[1] )	
-							} 
-							catch ( erra )
-							{			
-								Message(player, "Failed", "Command failed because of: \n\n " + erra )
-								return false	
-							}
-							
-							return true
-							
-							
-			case "playall":
-												
-							foreach ( connected_player in GetPlayerArray() )
-							{
-								try 
-								{
-									EmitSoundOnEntityOnlyToPlayer( connected_player, connected_player, args[1] )
-									return true		
-								} 
-								catch ( errb )
-								{	
-									Message(player, "Failed", "Command failed because of: \n\n " + errb )
-									return false	
-								}
-							
-							}
-
-							return true
-								
-							
-			case "stopplayall":
+					}
 						
-							
-							foreach ( connected_player in GetPlayerArray() )
-							{					
-								try 
-								{
-									StopSoundOnEntity( connected_player, args[1] )
-									return true	
-								} 
-								catch ( errb )
-								{	
-									Message(player, "Failed", "Command failed because of: \n\n " + errb )
-									return false
-								}
-							}
-
-							return true
-										
-			case "sayall": 
+					k_playeroid = k_player.GetPlatformUID()	
+					k_playername = k_player.GetPlayerName()
 					
-							if ( args.len() < 4 )
-							{	
-								Message( player, "Failed", "Command 'sayall' requires duration for third param of command as float" )
-								return false
-							} 
-							
-							foreach ( say_to_player in GetPlayerArray())
-							{
-								try	
-								{	
-									Message( say_to_player, param, param2, param3.tofloat() )	
-								} 
-								catch ( errc )
-								{		
-									Message( player, "Failed", "Command failed because of: \n\n " + errc )
-									return true
-								}
-							}
-							
+					if ( IsServerAdmin( k_playeroid ) )
+					{
+						Message( player, "Cannot kick admin")
+						return true
+					}
+				
+					KickPlayerById( k_playeroid, reason )
+					UpdatePlayerCounts()
+					
+					Message( player, "Kicked player", "PUID: " + k_playeroid + "\nName: " + k_playername )
+					return true	
+				}
+				catch ( erraaarg )
+				{
+					Message( player, "Error", "Invalid player or argument missing" )
 					return true
-							
-			case "sayto": 
-		
-							if ( param4 == "" || !IsStringNumeric( param4 ) )		
-								param4 = "3"		
-								
-							if( param3 != "" && param2 == "" )
-								param2 = " "
-								
-								try
-								{
-									entity to_player = GetPlayer(param)	
-									
-									if( IsValid( to_player ) )
-										Message( to_player, param2, param3, param4.tofloat() )
-									else 
-										Message( player, "INVALID PLAYER")
-																	
-								} 
-								catch ( errst )
-								{	
-									Message( player, "Failed", "Command failed because of: \n\n " + errst )			
-								}
-
-							return true
-			case "ban":
-									
-							if ( args.len() < 2 )
-							{		
-								Message( player, "Failed", "Command 'ban' requires name/id for 1st param of command" )
-								return false
-							}			
-							
-							try 
-							{
-								entity b_player
-								string b_playeroid
-								string b_reason = param2	
-								
-								b_player = GetPlayer( param )
-							
-								if ( !IsValid( b_player ) )
-								{
-									Message( player, "Failed", "Player: " + param + " - is invalid. " )
-									return true
-								}
-								
-								b_playeroid = b_player.GetPlatformUID()	
-									
-								
-								if ( IsServerAdmin( b_playeroid ) )
-								{
-									Message( player, "Cannot ban admin" )
-									return true
-								}
-							
-								BanPlayerById( b_playeroid, b_reason )
-								UpdatePlayerCounts()
-								
-								Message( player, "Success", "Player: " + param + "\n\n was banned for: \n\n" + b_reason )
-								return true		
-							} 
-							catch ( erre )
-							{
-								Message(player, "Failed", "Command failed because of: \n\n " + erre )
-								return false
-							}
-							
-						return true;
-			
-			case "bansay":
-			
-						if ( args.len() < 2 )
-						{
-							Message( player, "Failed", "Command 'bansay' requires player for 1st param of command" )
-							return false
-						}
-						
-						args[0] = "ban"	
-						ResetRate( player )
-						entity target = GetPlayer( param )
-						
-						if( IsValid( target ) )
-						{
-							string targetName = target.GetPlayerName()
-							bool result = ClientCommand_mkos_admin( player, args )
-
-							if( result )
-							{
-								string msgHeader = format( "%s was BANNED for: ", targetName )
-								SendServerMessage( msgHeader + param2 )
-								foreach( s_player in GetPlayerArray() )
-									Message( s_player, msgHeader, param2, 10.0 )
-							}
-						}
-						else 
-						{
-							Message( player, "Invalid player: " + param )
-						}
-				break
+				}
 				
-			case "kicksay":
-			
-						if ( args.len() < 2 )
-						{
-							Message( player, "Failed", "Command 'kicksay' requires player for 1st param of command" )
-							return false
-						}
-						
-						args[ 0 ] = "kick"
-						ResetRate( player )
-						entity target = GetPlayer( param )
-						
-						if( IsValid( target ) )
-						{
-							string targetName = target.GetPlayerName()
-							bool result = ClientCommand_mkos_admin( player, args )
+				return true	
+			}	
+			case "afk":
+			{
+				try 
+				{					
+					if ( args[1] == "1" )
+					{
+						SetAfkToRest( true )
+						Message( player, "Command sent", "Afk to rest was ENABLED" )
+						return true
+					} 
+					else if ( args[1] == "0" )
+					{
+						SetAfkToRest( false )
+						Message( player, "Command sent", "Afk to rest was disabled" )
+						return true
+					} 
+				} 
+				catch( erroreo )
+				{		
+					Message( player, "Error", "argument missing" )
+					return false
+				}
+				
+				return true
+			}		
+			case "restricted":
+			{
+				try 
+				{
+					if ( args[1] == "1" )
+					{
+						Tracker_SetRestrictedServer( true )
+						Message( player, "Command sent", "restricted_server was ENABLED" )
+						return true
+					} 
+					else if ( args[1] == "0" )
+					{
+						Tracker_SetRestrictedServer( false )
+						Message( player, "Command sent", "restricted_server was disabled" )
+						return true
+					} 
+				} 
+				catch( errorres )
+				{
+					Message( player, "Error", "argument missing" )
+					return false
+				}
 
-							if( result )
-							{
-								string msgHeader = format( "%s was kicked for: ", targetName )
-								SendServerMessage( msgHeader + param2 )
-								foreach( s_player in GetPlayerArray() )
-									Message( s_player, msgHeader, param2 )
-							}
-						}
-						else 
-						{
-							Message( player, "Invalid player: " + param )
-						}
+				return true
+			}
+			case "playonself": 
+			{
+				if ( args.len() < 2 )
+				{
+					Message( player, "Failed", "playself requires param of audiofile as string" )
+					return false
+				} 
+					
+				try 
+				{
+					EmitSoundOnEntity( player, args[1] )	
+				} 
+				catch ( erra )
+				{
+					Message(player, "Failed", "Command failed because of: \n\n " + erra )
+					return false	
+				}
+				
+				return true
+			}
+			case "playself": 
+			{
+				if ( args.len() < 2 )
+				{
+					Message( player, "Failed", "Command 'playself' requires param of audiofile as string" )
+					return false
+				} 
+					
+				try 
+				{
+					EmitSoundOnEntityOnlyToPlayer( player, player, args[1] )	
+				} 
+				catch ( erra )
+				{			
+					Message(player, "Failed", "Command failed because of: \n\n " + erra )
+					return false	
+				}
+				
+				return true
+			}		
+			case "playall":
+			{						
+				foreach ( connected_player in GetPlayerArray() )
+				{
+					try 
+					{
+						EmitSoundOnEntityOnlyToPlayer( connected_player, connected_player, args[1] )
+						return true		
+					} 
+					catch ( errb )
+					{	
+						Message(player, "Failed", "Command failed because of: \n\n " + errb )
+						return false	
+					}
+				
+				}
+
+				return true
+			}			
+			case "stopplayall":
+			{		
+				foreach ( connected_player in GetPlayerArray() )
+				{					
+					try 
+					{
+						StopSoundOnEntity( connected_player, args[1] )
+						return true	
+					} 
+					catch ( errb )
+					{	
+						Message(player, "Failed", "Command failed because of: \n\n " + errb )
+						return false
+					}
+				}
+
+				return true
+			}				
+			case "sayall": 
+			{	
+				if ( args.len() < 4 )
+				{	
+					Message( player, "Failed", "Command 'sayall' requires duration for third param of command as float" )
+					return false
+				} 
+				
+				foreach ( say_to_player in GetPlayerArray())
+				{
+					try	
+					{	
+						Message( say_to_player, param, param2, param3.tofloat() )	
+					} 
+					catch ( errc )
+					{		
+						Message( player, "Failed", "Command failed because of: \n\n " + errc )
+						return true
+					}
+				}
+							
+				return true
+			}		
+			case "sayto": 
+			{
+				if ( param4 == "" || !IsStringNumeric( param4 ) )		
+					param4 = "3"		
+					
+				if( param3 != "" && param2 == "" )
+					param2 = " "
+					
+				try
+				{
+					entity to_player = GetPlayer(param)	
+					
+					if( IsValid( to_player ) )
+						Message( to_player, param2, param3, param4.tofloat() )
+					else 
+						Message( player, "INVALID PLAYER")
+													
+				} 
+				catch ( errst )
+				{	
+					Message( player, "Failed", "Command failed because of: \n\n " + errst )			
+				}
+
+				return true
+			}
+			case "ban":
+			{				
+				if ( args.len() < 2 )
+				{		
+					Message( player, "Failed", "Command 'ban' requires name/id for 1st param of command" )
+					return false
+				}			
+				
+				try 
+				{
+					entity b_player
+					string b_playeroid
+					string b_reason = param2	
+					
+					b_player = GetPlayer( param )
+				
+					if ( !IsValid( b_player ) )
+					{
+						Message( player, "Failed", "Player: " + param + " - is invalid. " )
+						return true
+					}
+					
+					b_playeroid = b_player.GetPlatformUID()	
+						
+					
+					if ( IsServerAdmin( b_playeroid ) )
+					{
+						Message( player, "Cannot ban admin" )
+						return true
+					}
+				
+					BanPlayerById( b_playeroid, b_reason )
+					UpdatePlayerCounts()
+					
+					Message( player, "Success", "Player: " + param + "\n\n was banned for: \n\n" + b_reason )
+					return true		
+				} 
+				catch ( erre )
+				{
+					Message(player, "Failed", "Command failed because of: \n\n " + erre )
+					return false
+				}
+					
+				return true
+			}
+			case "bansay":
+			{
+				if ( args.len() < 2 )
+				{
+					Message( player, "Failed", "Command 'bansay' requires player for 1st param of command" )
+					return false
+				}
+				
+				args[0] = "ban"	
+				ResetRate( player )
+				entity target = GetPlayer( param )
+				
+				if( IsValid( target ) )
+				{
+					string targetName = target.GetPlayerName()
+					bool result = ClientCommand_mkos_admin( player, args )
+
+					if( result )
+					{
+						string msgHeader = format( "%s was BANNED for: ", targetName )
+						SendServerMessage( msgHeader + param2 )
+						foreach( s_player in GetPlayerArray() )
+							Message( s_player, msgHeader, param2, 10.0 )
+					}
+				}
+				else 
+				{
+					Message( player, "Invalid player: " + param )
+				}
 				break
+			}
+			case "kicksay":
+			{
+				if ( args.len() < 2 )
+				{
+					Message( player, "Failed", "Command 'kicksay' requires player for 1st param of command" )
+					return false
+				}
+				
+				args[ 0 ] = "kick"
+				ResetRate( player )
+				entity target = GetPlayer( param )
+				
+				if( IsValid( target ) )
+				{
+					string targetName = target.GetPlayerName()
+					bool result = ClientCommand_mkos_admin( player, args )
+
+					if( result )
+					{
+						string msgHeader = format( "%s was kicked for: ", targetName )
+						SendServerMessage( msgHeader + param2 )
+						foreach( s_player in GetPlayerArray() )
+							Message( s_player, msgHeader, param2 )
+					}
+				}
+				else 
+				{
+					Message( player, "Invalid player: " + param )
+				}
+				break
+			}
 			
 			case "banid":
-			
+			{
 				#if TRACKER && HAS_TRACKER_DLL
-				
-						if ( args.len() < 2 )
-						{
-							Message( player, "Failed", "Command 'banid' requires oid for 1st param of command")
-							return false
-						}	
+		
+				if ( args.len() < 2 )
+				{
+					Message( player, "Failed", "Command 'banid' requires oid for 1st param of command")
+					return false
+				}	
 
-							try 
-							{
-								if ( IsServerAdmin( param ) )
-								{
-									Message( player, "Failed", param + " is an admin. Ban rejected.", 10 )
-									return false		
-								}
-								
-								if ( !IsStringNumber( param ) )
-								{			
-									Message( player, "Failed", param + " is not a valid oid format.", 10 )
-									return false	
-								}
-								
-								if ( param2 == "" )
-								{		
-									param2 = "0";							
-								}
-								
-								entity playerToBan = GetPlayerEntityByUID( param )
-								
-								if( IsValid( playerToBan ) )
-								{
-									BanPlayerById( param, param3 )
-									Message( player, "Success", param + " was added to the banlist and removed from the server.", 10 )
-									
-									return true
-								}
-								
-								if ( AddBanByID( param2, param ) )
-								{					
-									Message( player, "Success", param + " was added to the banlist.", 10 )
-									return true	
-								}
-								else 
-								{	
-									Message( player, "Failed", "Failed to add player oid: " + param + " to the banlist.", 10 )
-									return true		
-								}
-								
-							} 
-							catch ( errbanid )
-							{
-								Message(player, "Failed", "Command failed because of: \n\n " + errbanid )
-								return false
-							}
-							
-					#endif 
+				try 
+				{
+					if ( IsServerAdmin( param ) )
+					{
+						Message( player, "Failed", param + " is an admin. Ban rejected.", 10 )
+						return false		
+					}
+					
+					if ( !IsStringNumber( param ) )
+					{			
+						Message( player, "Failed", param + " is not a valid oid format.", 10 )
+						return false	
+					}
+					
+					if ( param2 == "" )
+					{		
+						param2 = "0";							
+					}
+					
+					entity playerToBan = GetPlayerEntityByUID( param )
+					
+					if( IsValid( playerToBan ) )
+					{
+						BanPlayerById( param, param3 )
+						Message( player, "Success", param + " was added to the banlist and removed from the server.", 10 )
+						
 						return true
+					}
 					
+					if ( AddBanByID( param2, param ) )
+					{					
+						Message( player, "Success", param + " was added to the banlist.", 10 )
+						return true	
+					}
+					else 
+					{	
+						Message( player, "Failed", "Failed to add player oid: " + param + " to the banlist.", 10 )
+						return true		
+					}
+					
+				} 
+				catch ( errbanid )
+				{
+					Message(player, "Failed", "Command failed because of: \n\n " + errbanid )
+					return false
+				}
+				#endif 
+				return true
+			}
 			case "unban":				
-					
-						if ( args.len() < 2 )
-						{		
-							Message( player, "Failed", "Command 'unban' requires id for 1st param of command as string" )
-							return false	
-						}
+			{
+				if ( args.len() < 2 )
+				{		
+					Message( player, "Failed", "Command 'unban' requires id for 1st param of command as string" )
+					return false	
+				}
+				
+				try 
+				{
+					UnbanPlayer( args[1] )					
+					Message( player, "Success", "ID: " + args[1] + " was supposedly unbanned" )				
+					return true
 						
-						try 
-						{
-							UnbanPlayer( args[1] )					
-							Message( player, "Success", "ID: " + args[1] + " was supposedly unbanned" )				
-							return true
-								
-						} 
-						catch ( erre )
-						{	
-							Message(player, "Failed", "Command failed because of: \n\n " + erre )
-							return false
-						}
-						
-						return true;
-								
+				} 
+				catch ( erre )
+				{	
+					Message(player, "Failed", "Command failed because of: \n\n " + erre )
+					return false
+				}
+				
+				return true
+			}				
 			case "playerinfo":
-			
-						try 
-						{				
-							string nputmsg = "Current Stats:"
-							
-							string info = Tracker_BuildAllPlayerMetrics( true )
-							
-							if( ( nputmsg.len() + info.len()) > 2800 )
-							{
-								Message( player, "Failed", "Cannot execute this command currently due to return data resulting in overflow" )
-								return true
-							}
-							
-							Message( player, nputmsg, LineBreak( info ), 20 )
-							return true	
-						} 
-						catch ( errf )
-						{	
-							Message( player, "Failed", "Command failed because of: \n\n " + errf )
-							return false
-						}
-						
+			{
+				try 
+				{				
+					string nputmsg = "Current Stats:"
+					
+					string info = Tracker_BuildAllPlayerMetrics( true )
+					
+					if( ( nputmsg.len() + info.len()) > 2800 )
+					{
+						Message( player, "Failed", "Cannot execute this command currently due to return data resulting in overflow" )
+						return true
+					}
+					
+					Message( player, nputmsg, LineBreak( info ), 20 )
+					return true	
+				} 
+				catch ( errf )
+				{	
+					Message( player, "Failed", "Command failed because of: \n\n " + errf )
+					return false
+				}
+			}
 			//for testing
 			case "playerinput":
+			{		
+				if ( args.len() < 1)
+				{	
+					Message( player, "Failed", "Param 1 of command 'playerinput' requires player name/oid." )
+					return true		
+				}
+				
+				try
+				{		
+					entity a_player
+					string mode
+					
+					a_player = GetPlayer( param )
+					
+					if ( !IsValid( a_player ) )
+					{	
+						Message( player, "Failed", "Player: " + param + " -- is invalid" );
+						return true
+					}
+					
+					mode = a_player.p.input == 0 ? "Mouse and keyboard" : "Controller";
+					
+					Message( player, "Success: ", "Current inputmode: " + mode )
+					return true
+					
+				} 
+				catch ( errh ) 
+				{		
+					Message( player, "Failed", "Command failed because of: \n\n " + errh )
+					return true		
+				}
+			
+				return true
+			}		
+			case "input":	
+			{
+#if DEVELOPER			
+				if ( args.len() < 1)
+				{		
+					Message( player, "Failed", "Param 1 of command 'input' requires player name/oid.")
+					return true		
+				}
+				
+				
+				if ( args.len() < 2)
+				{	
+					Message( player, "Failed", "Param 2 of command 'input' requires type 0/1.")
+					return true		
+				}
 						
-						if ( args.len() < 1)
-						{	
-							Message( player, "Failed", "Param 1 of command 'playerinput' requires player name/oid." )
-							return true		
-						}
+				try 
+				{	
+					string str = args[2]
+					string a_str = str
+					
+					if ( str == "mnk" ){ a_str = "0" }
+					if ( str == "controller" ){ a_str = "1" }
+					
+					if ( !IsStringBool( a_str ) )
+					{	
+						Message( player, "Failed", "Incorrect usage, setting input using: " + a_str )
+						return false	
+					}
+					
+					bool newInputBool = StringToBool( a_str )
+					entity selectPlayer =  GetPlayer( param )
+					
+					if ( !IsValid( selectPlayer ) )
+					{
+						Message( player, "Failed", "Player: " + param + " - is invalid. " )
+						return true
+					}
+					
+					const array<string> inputs = [ "MnK", "Controller" ]
+					int currentInput = selectPlayer.p.input
+					int newInput = newInputBool.tointeger()
+					string sayInput = newInput > 0 ? inputs[ 1 ] : inputs [ 0 ] 
+					
+					if( newInput != currentInput )
+					{
+						selectPlayer.p.input = newInput							
+						selectPlayer.Signal( "InputChanged" )						
+						Message( player, "Success", "Player " + selectPlayer.GetPlayerName() + "  was changed to input: " + sayInput  )
+						return true
+					}
+					else 
+					{
+						Message( player, "Failed", "Player is already input type: " + sayInput )
+					}
+				
+				} 
+				catch( errj ) 
+				{		
+					Message( player, "Failed", "Command failed because of: \n\n " + errj )
+					return false
+				}
+#endif 
+				return true
+			}		
+			case "listhandles":
+			{
+				try 
+				{
+					string statement = "\n "
+					
+					foreach ( list_player in GetPlayerArray() )
+					{
+						int handle = list_player.GetEncodedEHandle()
+						string p_name = list_player.GetPlayerName()
 						
-						try
-						{		
-							entity a_player
-							string mode
-							
-							a_player = GetPlayer( param )
-							
-							if ( !IsValid( a_player ) )
-							{	
-								Message( player, "Failed", "Player: " + param + " -- is invalid" );
-								return true
-							}
-							
-							mode = a_player.p.input == 0 ? "Mouse and keyboard" : "Controller";
-							
-							Message( player, "Success: ", "Current inputmode: " + mode )
-							return true
-							
-						} 
-						catch ( errh ) 
-						{		
-							Message( player, "Failed", "Command failed because of: \n\n " + errh )
-							return true		
-						}
+						statement += " Player: " + p_name + "   Handle: " + handle + "\n"
+					}
+					
+					sqprint( statement )
+					Message( player, "Handles:", statement, 20 )
 					
 					return true
-		
+				
+				} 
+				catch ( errk ) 
+				{
+					Message( player, "Failed", "Command failed because of: \n\n " + errk )
+					return true		
+				}
+				
+				return true
+			}		
+			case "map":
+			{
+				string map
+				
+				if( param == "" )
+					map = GetMapName()
+				else 
+					map = GetMap( param )
+				
+				if( map == "" )
+				{
+					Message( player, "Map not found:", format( "Could not find map with \"%s\" in it`s name", param ) )
+					sqerror( "Map not found:", param )
+					return true
+				}
+				
+				if( !GetPlaylistMaps( GetCurrentPlaylistName() ).contains( map ) )
+				{
+					Message( player, "MAP NOT IN PLAYLIST" )
+					sqerror( "Map not in playlist - rejecting load" )
+					return true
+				}
+				
+				GameRules_ChangeMap( map, GetMode( param2 ) )
+					
+				return true
+			}
+			case "score":
+			{
+				if ( args.len() < 1)
+				{		
+					Message( player, "Info", "Param 1 of command 'score' requires player name/oid/*/current/season/difference. \n\n Usage: score player | score * | score current")
+					return true			
+				}
+				
+				if ( param == "current" )
+				{	
+					Message( player, "Success", "'Current KD' server weight setting is:   " + getSbmmSetting( "current_kd_weight" ) )
+					return true		
+				}
+				else if ( param == "season" )
+				{	
+					Message( player, "Success", "'season KD' server weight setting is:   " + getSbmmSetting( "season_kd_weight" ) )
+					return true
+				}
+				else if ( param == "difference" )
+				{	
+					Message( player, "Success", "'KD matchmaking difference' server setting is:   " + getSbmmSetting( "SBMM_kd_difference" ) )
+					return true
+				}
+			
+				if ( param == "*" )
+				{			
+					try 
+					{
+						string putmsg = "Success"
+						string s_data
 						
-			case "input":	
-
-#if DEVELOPER			
-						if ( args.len() < 1)
-						{		
-							Message( player, "Failed", "Param 1 of command 'input' requires player name/oid.")
-							return true		
+						foreach ( score_player in GetPlayerArray() )
+						{
+							if ( !IsValid( score_player ) ) continue
+							
+							s_data += GetScore( score_player ) + "\n"
 						}
 						
-						
-						if ( args.len() < 2)
-						{	
-							Message( player, "Failed", "Param 2 of command 'input' requires type 0/1.")
-							return true		
+						if( ( putmsg.len() + s_data.len() ) > 2800 )
+						{
+							Message( player, "Failed", "Cannot execute this command currently due to return data resulting in overflow" )
+							return true
 						}
-								
-						try 
-						{	
-							string str = args[2]
-							string a_str = str
+					
+						Message( player, putmsg, s_data, 20 )
+					
+					}
+					catch ( errallscore ) 
+					{
+						Message( player, "Failed", "Command failed because of: \n\n " + errallscore )
+						return true
+					}
+				
+				}
+				else
+				{
+					entity s_player;
 							
-							if ( str == "mnk" ){ a_str = "0" }
-							if ( str == "controller" ){ a_str = "1" }
+					s_player = GetPlayer( param )
+					
+					if ( !IsValid( s_player ) )
+					{	
+						Message( player, "Failed", "Player: " + param + " -- is invalid" );
+						return true
+					}
+					
+					try 
+					{
+						Message( player, "Success", GetScore( s_player ) );		
+					} 
+					catch (errscore) 
+					{
+						Message( player, "Failed", "Command failed because of: \n\n " + errscore )
+						return true;			
+					}
+				
+				}
+				
+				return true
+			}
+			case "scoreconfig":
+			{
+				if ( args.len() < 2)
+				{
+					Message( player, "Failed", "Param 1 of command 'scoreconfig' requires type: current/season/difference.")
+					return true
+				}
+				
+				if ( args.len() < 3)
+				{	
+					Message( player, "Failed", "Param 2 of command 'scoreconfig' requires float")
+					return true	
+				}
+				
+				try 
+				{			
+					if ( !IsFloat( param2 ) )
+					{
+						Message( player, "Failed", "param 3 of command 'scoreconfig' must be numeric type float, \n\n example: 0.8 --            '" + param2 + "' was provided" )
+						return true
+					}
+					
+					if ( param == "current" )
+					{	
+						setSbmmSetting( "current_kd_weight", param2.tofloat() )		
+					}
+					else if ( param == "season" )
+					{		
+						setSbmmSetting( "season_kd_weight", param2.tofloat() )				
+					}
+					else if ( param == "difference" )
+					{	
+						setSbmmSetting( "SBMM_kd_difference", param2.tofloat() )	
+					}
+					else
+					{
+						Message( player, "Failed", "Invalid scoreconfig type: " + param )
+						return true
+					}	
+					
+					Message( player, "Success", "Weight for " + param + " KD -- was set to: " + param2 , 5 );
+				
+				} 
+				catch (errsetweight) 
+				{
+					Message( player, "Failed", "Command failed because of: \n\n " + errsetweight )
+					return true;			
+				}
+				
+				return true
+			}
+			case "cleanuplogs":
+			{
+				#if TRACKER && HAS_TRACKER_DLL	
+					TrackerCleanupLogs__internal()
+				#endif
+						
+				return true
+			}
+			case "reload_config":
+			{
+				#if TRACKER && HAS_TRACKER_DLL	
+					TrackerReloadConfig__internal()
+				#endif
+						
+				return true
+			}	
+			case "setting":
+			{		
+				#if TRACKER && HAS_TRACKER_DLL	
+				
+					if ( args.len() < 2)
+					{
+						Message( player, "Failed", "Param 1 of command 'setting' requires key name")
+						return true
+					}
+					
+					
+					try 
+					{	
+						string return_str = ""
+						return_str = TrackerGetSetting__internal( param )	
+						
+						Message( player, param + ":", return_str )
+						return true
+					} 
+					catch ( errset ) 
+					{
+						
+						Message( player, "Failed", "Command failed because of: \n\n " + errset )
+						return true		
+					}
+				
+				#endif
+						
+				break
+			}	
+			case "spamupdate":
+			case "spam":
+			{
+				file.bStopUpdateMsg = false
+				thread RunUpdateMsg()
+				sqprint( "Update spam messages started" )
+				
+				break
+			}
+			case "spamstop":
+			case "stopspam":
+			{
+				file.bStopUpdateMsg = true
+				sqprint( "Update spam messages stopped" )
+				
+				break
+			}
+			case "msg":
+			{
+				if ( args.len() < 2)
+				{
+					Message( player, "Failed", "Param 1 of command 'serversay' requires string")
+					return true
+				}
+				
+				
+				try 
+				{	
+					if( !SendServerMessage( param ) )
+					{
+						Message( player, "Error", "Message was truncated")
+					}
+					
+					return true
+				} 
+				catch ( errservermsg ) 
+				{		
+					Message( player, "Failed", "Command failed because of: \n\n " + errservermsg )
+					return true		
+				}
+					
+				break
+			}		
+			case "vc":
+			
+				if ( args.len() < 2)
+				{
+					Message( player, "Failed", "Param 1 of command 'vc' requires bool: 1/0 true/false on/off enabled/disabled")
+					return true
+				}
+					
+					
+				try 
+				{	
+					switch( param )
+					{	
+						case "1":
+						case "true":
+						case "on":
+						case "enabled":
+							SetConVarBool( "sv_voiceenable", true )
+							SetConVarBool( "sv_alltalk", true )
 							
-							if ( !IsStringBool( a_str ) )
-							{	
-								Message( player, "Failed", "Incorrect usage, setting input using: " + a_str )
-								return false	
-							}
-							
-							bool newInputBool = StringToBool( a_str )
-							entity selectPlayer =  GetPlayer( param )
-							
-							if ( !IsValid( selectPlayer ) )
+							if ( GetConVarBool( "sv_voiceenable" ) || GetConVarBool( "sv_alltalk" ) )
 							{
-								Message( player, "Failed", "Player: " + param + " - is invalid. " )
-								return true
-							}
-							
-							const array<string> inputs = [ "MnK", "Controller" ]
-							int currentInput = selectPlayer.p.input
-							int newInput = newInputBool.tointeger()
-							string sayInput = newInput > 0 ? inputs[ 1 ] : inputs [ 0 ] 
-							
-							if( newInput != currentInput )
-							{
-								selectPlayer.p.input = newInput							
-								selectPlayer.Signal( "InputChanged" )						
-								Message( player, "Success", "Player " + selectPlayer.GetPlayerName() + "  was changed to input: " + sayInput  )
-								return true
+								foreach ( active_player in GetPlayerArray() )
+								{	
+									Message( active_player, "VOICE CHAT ENABLED" )
+								}
 							}
 							else 
 							{
-								Message( player, "Failed", "Player is already input type: " + sayInput )
+								Message( player, "FAILED" )
 							}
-						
-						} 
-						catch( errj ) 
-						{		
-							Message( player, "Failed", "Command failed because of: \n\n " + errj )
-							return false
-						}
-#endif 
-				return true
-						
-			case "listhandles":
-						
-						try 
-						{
-							string statement = "\n "
-							
-							foreach ( list_player in GetPlayerArray() )
-							{
-								int handle = list_player.GetEncodedEHandle()
-								string p_name = list_player.GetPlayerName()
-								
-								statement += " Player: " + p_name + "   Handle: " + handle + "\n"
-							}
-							
-							sqprint( statement )
-							Message( player, "Handles:", statement, 20 )
-							
+
 							return true
-						
-						} 
-						catch ( errk ) 
-						{
-							Message( player, "Failed", "Command failed because of: \n\n " + errk )
-							return true		
-						}
-						
-					return true
-						
-			case "map":
-					
-						string map
-						
-						if( param == "" )
-							map = GetMapName()
-						else 
-							map = GetMap( param )
-						
-						if( map == "" )
-						{
-							Message( player, "Map not found:", format( "Could not find map with \"%s\" in it`s name", param ) )
-							sqerror( "Map not found:", param )
-							return true
-						}
-						
-						if( !GetPlaylistMaps( GetCurrentPlaylistName() ).contains( map ) )
-						{
-							Message( player, "MAP NOT IN PLAYLIST" )
-							sqerror( "Map not in playlist - rejecting load" )
-							return true
-						}
-						
-						GameRules_ChangeMap( map, GetMode( param2 ) )
-						
-					return true
-					
-			case "score":
-			
-						if ( args.len() < 1)
-						{		
-							Message( player, "Info", "Param 1 of command 'score' requires player name/oid/*/current/season/difference. \n\n Usage: score player | score * | score current")
-							return true			
-						}
-						
-						if ( param == "current" )
-						{	
-							Message( player, "Success", "'Current KD' server weight setting is:   " + getSbmmSetting( "current_kd_weight" ) )
-							return true		
-						}
-						else if ( param == "season" )
-						{	
-							Message( player, "Success", "'season KD' server weight setting is:   " + getSbmmSetting( "season_kd_weight" ) )
-							return true
-						}
-						else if ( param == "difference" )
-						{	
-							Message( player, "Success", "'KD matchmaking difference' server setting is:   " + getSbmmSetting( "SBMM_kd_difference" ) )
-							return true
-						}
-					
-						if ( param == "*" )
-						{			
-							try 
-							{
-								string putmsg = "Success"
-								string s_data
-								
-								foreach ( score_player in GetPlayerArray() )
-								{
-									if ( !IsValid( score_player ) ) continue
-									
-									s_data += GetScore( score_player ) + "\n"
-								}
-								
-								if( ( putmsg.len() + s_data.len() ) > 2800 )
-								{
-									Message( player, "Failed", "Cannot execute this command currently due to return data resulting in overflow" )
-									return true
-								}
 							
-								Message( player, putmsg, s_data, 20 )
+						case "0":
+						case "false":
+						case "off":
+						case "disabled":
+							SetConVarBool( "sv_voiceenable", false )
+							SetConVarBool( "sv_alltalk", false )
 							
-							}
-							catch ( errallscore ) 
-							{
-								Message( player, "Failed", "Command failed because of: \n\n " + errallscore )
-								return true
-							}
-						
-						}
-						else
-						{
-							entity s_player;
-									
-							s_player = GetPlayer( param )
-							
-							if ( !IsValid( s_player ) )
+							if ( !GetConVarBool( "sv_voiceenable" ) || !GetConVarBool( "sv_alltalk" ) )
 							{	
-								Message( player, "Failed", "Player: " + param + " -- is invalid" );
-								return true
-							}
-							
-							try 
-							{
-								Message( player, "Success", GetScore( s_player ) );		
-							} 
-							catch (errscore) 
-							{
-								Message( player, "Failed", "Command failed because of: \n\n " + errscore )
-								return true;			
-							}
-						
-						}
-						
-					return true
-					
-			case "scoreconfig":
-			
-						if ( args.len() < 2)
-						{
-							Message( player, "Failed", "Param 1 of command 'scoreconfig' requires type: current/season/difference.")
-							return true
-						}
-						
-						if ( args.len() < 3)
-						{	
-							Message( player, "Failed", "Param 2 of command 'scoreconfig' requires float")
-							return true	
-						}
-						
-						
-						
-						try 
-						{			
-							if ( !IsFloat( param2 ) )
-							{
-								Message( player, "Failed", "param 3 of command 'scoreconfig' must be numeric type float, \n\n example: 0.8 --            '" + param2 + "' was provided" )
-								return true
-							}
-							
-							if ( param == "current" )
-							{	
-								setSbmmSetting( "current_kd_weight", param2.tofloat() )		
-							}
-							else if ( param == "season" )
-							{		
-								setSbmmSetting( "season_kd_weight", param2.tofloat() )				
-							}
-							else if ( param == "difference" )
-							{	
-								setSbmmSetting( "SBMM_kd_difference", param2.tofloat() )	
-							}
-							else
-							{
-								Message( player, "Failed", "Invalid scoreconfig type: " + param )
-								return true
-							}	
-							
-							Message( player, "Success", "Weight for " + param + " KD -- was set to: " + param2 , 5 );
-						
-						} 
-						catch (errsetweight) 
-						{
-							Message( player, "Failed", "Command failed because of: \n\n " + errsetweight )
-							return true;			
-						}
-						
-					return true
-					
-			case "cleanuplogs":
-				
-					#if TRACKER && HAS_TRACKER_DLL	
-						TrackerCleanupLogs__internal()
-					#endif
-							
-						return true
-			
-			case "reload_config":
-			
-					#if TRACKER && HAS_TRACKER_DLL	
-						TrackerReloadConfig__internal()
-					#endif
-						
-						return true
-						
-			case "setting":
-						
-					#if TRACKER && HAS_TRACKER_DLL	
-					
-						if ( args.len() < 2)
-						{
-							Message( player, "Failed", "Param 1 of command 'setting' requires key name")
-							return true
-						}
-						
-						
-						try 
-						{	
-							string return_str = ""
-							return_str = TrackerGetSetting__internal( param )	
-							
-							Message( player, param + ":", return_str )
-							return true
-						} 
-						catch ( errset ) 
-						{
-							
-							Message( player, "Failed", "Command failed because of: \n\n " + errset )
-							return true		
-						}
-					
-					#endif
-						
-					break
-					
-			case "spamupdate":
-			case "spam":
-					
-					file.bStopUpdateMsg = false
-					thread RunUpdateMsg()
-					sqprint( "Update spam messages started" )
-				
-				break
-			
-			case "spamstop":
-			case "stopspam":
-			
-					file.bStopUpdateMsg = true
-					sqprint( "Update spam messages stopped" )
-				
-				break
-				
-			case "msg":
-			
-					if ( args.len() < 2)
-					{
-						Message( player, "Failed", "Param 1 of command 'serversay' requires string")
-						return true
-					}
-					
-					
-					try 
-					{	
-						if( !SendServerMessage( param ) )
-						{
-							Message( player, "Error", "Message was truncated")
-						}
-						
-						return true
-					} 
-					catch ( errservermsg ) 
-					{		
-						Message( player, "Failed", "Command failed because of: \n\n " + errservermsg )
-						return true		
-					}
-					
-				break
-						
-			case "vc":
-				
-					if ( args.len() < 2)
-					{
-						Message( player, "Failed", "Param 1 of command 'vc' requires bool: 1/0 true/false on/off enabled/disabled")
-						return true
-					}
-						
-						
-					try 
-					{	
-						switch( param )
-						{	
-							case "1":
-							case "true":
-							case "on":
-							case "enabled":
-								SetConVarBool( "sv_voiceenable", true )
-								SetConVarBool( "sv_alltalk", true )
-								
-								if ( GetConVarBool( "sv_voiceenable" ) || GetConVarBool( "sv_alltalk" ) )
-								{
-									foreach ( active_player in GetPlayerArray() )
-									{	
-										Message( active_player, "VOICE CHAT ENABLED" )
-									}
-								}
-								else 
-								{
-									Message( player, "FAILED" )
-								}
-	
-								return true
-								
-							case "0":
-							case "false":
-							case "off":
-							case "disabled":
-								SetConVarBool( "sv_voiceenable", false )
-								SetConVarBool( "sv_alltalk", false )
-								
-								if ( !GetConVarBool( "sv_voiceenable" ) || !GetConVarBool( "sv_alltalk" ) )
+								foreach ( active_player in GetPlayerArray() )
 								{	
-									foreach ( active_player in GetPlayerArray() )
-									{	
-										Message( active_player, "VOICE CHAT DISABLED" )
-									}
+									Message( active_player, "VOICE CHAT DISABLED" )
 								}
-								else 
-								{
-									Message( player, "FAILED" )
-								}
-								
-								return true		
-						}
-						
-						Message( player, "INVALID SETTING" )
-						return true
-					} 
-					catch ( errvc ) 
-					{		
-						Message( player, "Failed", "Command failed because of: \n\n " + errvc)
-						return true		
+							}
+							else 
+							{
+								Message( player, "FAILED" )
+							}
+							
+							return true		
 					}
-						
+					
+					Message( player, "INVALID SETTING" )
+					return true
+				} 
+				catch ( errvc ) 
+				{		
+					Message( player, "Failed", "Command failed because of: \n\n " + errvc)
+					return true		
+				}
+					
 				break	
 				
 			case "startbr":
 			
-					FlagSet( "MinPlayersReached" )	
-					return true
-					
+				FlagSet( "MinPlayersReached" )	
+				return true
+				
 			case "pos":
 				
-					#if DEVELOPER		
-						if ( args.len() < 2 )
-						{
-							Message( player, "NEED TO NAME THE SPAWN" );
-							return true
-						}
-						
-						try 
-						{
-							POS_CC( player, param )
-						}
-						catch( pos_error )
-						{
-							Message( player, "Error", "Failed: " + pos_error )
-						}
+				#if DEVELOPER		
+					if ( args.len() < 2 )
+					{
+						Message( player, "NEED TO NAME THE SPAWN" );
 						return true
-					#endif
-				return false
+					}
+					
+					try 
+					{
+						POS_CC( player, param )
+					}
+					catch( pos_error )
+					{
+						Message( player, "Error", "Failed: " + pos_error )
+					}
+
+					return true
+				#else
+					return false
+				#endif
 			
 			case "groups":
-			
-					Message( player, "\"groupsInProgress\"", Gamemode1v1_GetNumberOfGroupsInProgress().tostring() )
-					return true
-					
+				Message( player, "\"groupsInProgress\"", Gamemode1v1_GetNumberOfGroupsInProgress().tostring() )
+				return true
 			case "groupmap":
-			
-					Message( player, "\"playerToGroupMap\"", Gamemode1v1_GetNumberOfPlayersInGroupMap().tostring() )
-					return true
-					
+				Message( player, "\"playerToGroupMap\"", Gamemode1v1_GetNumberOfPlayersInGroupMap().tostring() )
+				return true
 			case "start_interval_thread":
 
 					#if TRACKER

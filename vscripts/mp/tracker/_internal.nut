@@ -116,46 +116,27 @@ array<string> function Stats__GetStatKeys()
 
 var function Stats__RawGetStat( UIDString player_oid, string statname, bool online = true )
 {
-	switch( online )
-	{
-		case true:
-		
-			if ( player_oid in file.onlineStatsTables && statname in file.onlineStatsTables[ player_oid ] ) 
-				return file.onlineStatsTables[ player_oid ][ statname ]
-				
-			break 
-			
-		case false: 
-		
-			if ( player_oid in file.localStatsTables && statname in file.localStatsTables[ player_oid ] ) 
-				return file.localStatsTables[ player_oid ][ statname ]
-			
-			break
-	}
-	
-	return null
+	table< UIDString, StatsTable > statsTable = online ? file.onlineStatsTables : file.localStatsTables
+
+	if (player_oid in statsTable && statname in statsTable[player_oid])
+		return statsTable[player_oid][statname]
+	else
+		return null
 }
 
-function Stats__RawSetStat( UIDString uid, string statKey, var value, bool online = true )
+void function Stats__RawSetStat( UIDString uid, string statKey, var value, bool online = true )
 {
-	switch( online )
+	// there is a better way of doing this.
+	if(online)
 	{
-		case true:
-		
-			if ( uid in file.onlineStatsTables && statKey in file.onlineStatsTables[ uid ] ) 
-				file.onlineStatsTables[ uid ][ statKey ] = value
-				
-			break 
-			
-		case false: 
-		
-			if ( uid in file.localStatsTables && statKey in file.localStatsTables[ uid ] ) 
-				file.localStatsTables[ uid ][ statKey ] = value
-			
-			break
+		if ( uid in file.onlineStatsTables && statKey in file.onlineStatsTables[ uid ] ) 
+			file.onlineStatsTables[ uid ][ statKey ] = value
 	}
-	
-	return null
+	else
+	{
+		if ( uid in file.localStatsTables && statKey in file.localStatsTables[ uid ] ) 
+			file.localStatsTables[ uid ][ statKey ] = value
+	}
 }
 
 array<string> function Stats__AddPlayerStatsTable( UIDString player_oid ) 
@@ -270,7 +251,7 @@ array<var> function GetPlayerStatArray( UIDString player_oid, string statname )
 				statArray.append( v )
 		}
 		else
-			printw( "Warning: Tried to return array<var> from type", typeCheck, "for statKey" + "'" + statname + "'" )
+			printw( "GetPlayerStatArray Warning: Tried to return array<var> from type", typeCheck, "for statKey" + "'" + statname + "'" )
 	}
 	
 	return statArray
@@ -344,7 +325,7 @@ void function SetPlayerStatInt( UIDString player_oid, string statname, int value
 void function SetPlayerStatString( UIDString player_oid, string statname, string value ) 
 {
 	#if DEVELOPER
-		//This will be thrown out in the backend if exceeded.
+		// This assert is only on dev as the string will be discarded later anyway f it exceeds the length
 		mAssert( value.len() <= 30, "Invalid string length for the value of statname \"" + statname + "\" value: \"" + value )
 	#endif
 	
@@ -539,16 +520,10 @@ void function __AggregateStat_internal( entity player, string statKey )
 			break
 		
 		case "bool":
-			Stats__RawSetStat( uid, statKey, data, false )
-			break
-
 		case "string":
-			Stats__RawSetStat( uid, statKey, data, false )
-			break
-			
 		case "array":
 			Stats__RawSetStat( uid, statKey, data, false )
-			break 
+			break
 			
 		case "table":
 		default:
