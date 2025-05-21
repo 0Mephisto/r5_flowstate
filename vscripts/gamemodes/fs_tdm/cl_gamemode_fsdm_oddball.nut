@@ -26,9 +26,8 @@ void function FSDM_GameStateChanged( entity player, int old, int new, bool actua
 		return
 
 	if( new == eTDMState.IN_PROGRESS )
-	{
 		Oddball_ToggleScoreboardVisibility( true )
-	} else if( new == eTDMState.NEXT_ROUND_NOW )
+	else if( new == eTDMState.NEXT_ROUND_NOW )
 	{
 		Oddball_ToggleScoreboardVisibility( false )
 		Flowstate_ShowRoundEndTimeUI( -1 )
