@@ -254,7 +254,7 @@ void function CodeCallback_MapSpawn() // original script entry point
 	
 	thread FS_RestartServerAfterSomeTimeWithoutPlayers()
 	
-	FS_ResetMapLightning()
+	FS_ResetMapLighting()
 }
 
 void function PrecacheFSEntities()

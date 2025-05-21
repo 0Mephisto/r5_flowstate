@@ -3,7 +3,7 @@ globalize_all_functions
 
 bool function IsIn4DTutorial( entity player )
 {
-	return "tutorial" in player.s
+	return "_in4dTutorial" in player.s
 }
 
 int curRealm = 0
@@ -18,14 +18,14 @@ void function SetIn4DTutorial( entity player, bool inTutorial )
             curRealm++
             if (curRealm >= 32)
                 curRealm = 0
-			player.s.tutorial <- true
-            player.s.tutorialPhase <- 1
+			player.s._in4dTutorial <- true
+            player.s._4dTutorialPhase <- 1
             EmitSoundOnEntityOnlyToPlayer( player, player, "Music_Training" )
         }
 		else
         {
-			delete player.s.tutorial
-            delete player.s.tutorialPhase
+			delete player.s._in4dTutorial
+            delete player.s._4dTutorialPhase
         }
 	}
 	catch (e419)
@@ -39,7 +39,7 @@ int function Get4DTutorialPhase( entity player )
     if (!IsIn4DTutorial(player))
         return -1
 
-    return expect int(player.s.tutorialPhase)
+    return expect int(player.s._4dTutorialPhase)
 }
 
 void function Set4DTutorialPhase( entity player, int phase )
@@ -47,8 +47,11 @@ void function Set4DTutorialPhase( entity player, int phase )
     if (!IsIn4DTutorial(player))
         return
 
-    printt("Set tutorial phase", phase)
-    player.s.tutorialPhase = phase
+    #if DEVELOPER
+    printt("[FSDM 4D] Set tutorial phase to:", phase)
+    #endif
+
+    player.s._4dTutorialPhase = phase
 }
 
 vector function GetOffsetForRealm( int realmId )
@@ -114,12 +117,12 @@ void function Tutorial4D_JumpPad( entity player )
 
 bool function Tutorial4D_HasCompletedTutorial(entity player)
 {
-    return "tutorialComplete" in player.s
+    return "_4dTutorialComplete" in player.s
 }
 
 void function Tutorial4D_CompletedTutorial(entity player)
 {
-    player.s.tutorialComplete <- true
+    player.s._4dTutorialComplete <- true
 }
 
 void function Tutorial4D_Phase2(entity player)

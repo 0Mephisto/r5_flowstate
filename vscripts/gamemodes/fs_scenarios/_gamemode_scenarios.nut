@@ -1318,7 +1318,7 @@ bool function FS_Scenarios_GroupToInProgressList( scenariosGroupStruct newGroup,
 
 	newGroup.slotIndex = slotIndex
     newGroup.groupLocStruct = soloLocations.getrandom()
-	int groupHandle = GetUniqueID()
+	int groupHandle = Gamemode1v1_GetNextAvailableGroupID()
 
 	newGroup.groupHandle = groupHandle
 	newGroup.dummyEnt = CreateEntity( "info_target" )

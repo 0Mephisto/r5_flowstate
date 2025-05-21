@@ -122,7 +122,7 @@ void function Initialize_SH_FlowstateSettings()
 	fsGlobal.Timer 									= GetCurrentPlaylistVarBool( "flowstateTimer", true )
 	fsGlobal.LockPOI 								= GetCurrentPlaylistVarBool( "flowstateLockPOI", false )
 	fsGlobal.LockedPOI 								= GetCurrentPlaylistVarInt( "flowstateLockeedPOI", 0)
-	fsGlobal.AdminTgive 							= GetCurrentPlaylistVarBool( "flowstateAdminTgive", true )
+	fsGlobal.AdminTgive 							= GetCurrentPlaylistVarBool( "flowstateAdminTgive", true ) // Is tgive admin-only? 
 	fsGlobal.TgiveDelay 							= GetCurrentPlaylistVarFloat( "flowstateTgiveDelay", 1.0 )
 	fsGlobal.ForceCharacter 						= GetCurrentPlaylistVarBool( "flowstateForceCharacter", true )
 	fsGlobal.ChosenCharacter 						= GetCurrentPlaylistVarInt( "flowstateChosenCharacter", 8 )

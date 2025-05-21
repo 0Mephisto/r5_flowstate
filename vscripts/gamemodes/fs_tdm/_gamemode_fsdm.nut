@@ -63,7 +63,7 @@ global function GetChampionShowingState
 global function SetChampionShowingState
 global function WaitForChampionToFinish
 global const float SHORT_CHAMPION_CARD_TIME = 7.0
-global function FS_ResetMapLightning
+global function FS_ResetMapLighting
 global function PrintKillHistoryFor
 global function _GetAppropriateSpawnLocation
 global function Flowstate_IsRealisticMode
@@ -5280,7 +5280,7 @@ array<string> function GetWhiteListedAbilities()
 	return file.blacklistedAbilities
 }
 
-bool function IsForcedlyDisabledWeapon( string weapon ) 
+bool function IsWeaponBlockedByRef( string weapon ) 
 {
 	switch( weapon )
 	{
@@ -5289,7 +5289,7 @@ bool function IsForcedlyDisabledWeapon( string weapon )
 		case "mp_weapon_pdw":
 		case "mp_weapon_lstar":
 		//case "mp_weapon_sniper":
-		return true
+			return true
 	}
 	
 	return false
@@ -5311,10 +5311,11 @@ bool function ClientCommand_GiveWeapon(entity player, array<string> args)
 	}
 	
 	#if DEVELOPER 
-		printl( "==ClientCommand_GiveWeapon==" )
+		printl( "== fsdm ClientCommand_GiveWeapon==" )
 		print_string_array( args )
 	#endif
 
+	// Is tgive admin-only and if so, does the player have the right permissions?
     if ( FlowState_AdminTgive() && !IsAdmin(player) )
 	{
 		//Message(player, "ERROR", "Admin has disabled TDM Weapons dev menu.")
@@ -5322,55 +5323,50 @@ bool function ClientCommand_GiveWeapon(entity player, array<string> args)
 		return true
 	}
 
-	if(args.len() < 2) return true
+	if (is1v1EnabledAndAllowed())
+	{
+		bRestFlag = Gamemode1v1_IsPlayerResting( player )
 
-	if( is1v1EnabledAndAllowed() && Gamemode1v1_IsPlayerResting( player ) )
-	{	
-		bRestFlag = true
-		//Message( player, "NOT ALLOWED IN RESTING MODE" )
-		//return false
-	}
-	
-	if( is1v1EnabledAndAllowed() && Gamemode1v1_IsPlayerWaiting( player ) )
-	{
-		//Message( player, "NOT ALLOWED IN WAITING MODE" )
-		LocalMsg( player, "#FS_NotAllowedWaiting", "", uiType )
-		return true
-	}
-	
-	if( is1v1EnabledAndAllowed() && !isCustomWeaponAllowed() && !isPlayerInChallenge( player ) )
-	{
-		LocalMsg( player, "#FS_CustomWepChalOnly", "", uiType )
-		return true
+		if (Gamemode1v1_IsPlayerWaiting(player))
+		{
+			LocalMsg( player, "#FS_NotAllowedWaiting", "", uiType )
+			return true
+		}
+
+		if (!Gamemode1v1_AreCustomWeaponsAllowedForPlayer( player ))
+		{
+			LocalMsg( player, "#FS_CustomWepChalOnly", "", uiType )
+			return true
+		}
+
+		if (args[0] != "p" && args[0] != "s")
+			return true
 	}
 
-	if( is1v1EnabledAndAllowed() && args[0] != "p" && args[0] != "s" )
-		return true
-
-	if( !SURVIVAL_Loot_IsRefValid( args[1] ) || IsForcedlyDisabledWeapon( args[1] ) )
+	// Check if the provided weapon ref is either invalid or disabled
+	if (!SURVIVAL_Loot_IsRefValid( args[1] ) || IsWeaponBlockedByRef( args[1] ))
 	{
-		//Message( player, "WEAPON NOT ALLOWED :(" )
 		LocalMsg( player, "#FS_WepNotAllowed", "", uiType )
 		return true
 	}
 
-    if(file.blacklistedWeapons.len() && file.blacklistedWeapons.find(args[1]) != -1)
+	// Check if the weapon ref is a blacklisted weapon
+    if (file.blacklistedWeapons.len() && file.blacklistedWeapons.find(args[1]) != -1)
 	{
-		//Message(player, "WEAPON BLACKLISTED")
 		LocalMsg( player, "#FS_WepBlacklisted", "", uiType )
 		return true
 	}
 
-	if( file.blacklistedAbilities.len() && file.blacklistedAbilities.find(args[1]) != -1 )
+	// Check if the weapon ref is a blacklisted ability
+	if (file.blacklistedAbilities.len() && file.blacklistedAbilities.find(args[1]) != -1)
 	{
-		//Message(player, "ABILITY BLACKLISTED")
-		LocalMsg( player, "FS_AbilityBlacklisted", "", uiType )
+		LocalMsg( player, "#FS_AbilityBlacklisted", "", uiType )
 		return true
 	}
 
-	if( Time() < player.p.lastTgiveUsedTime + FlowState_TgiveDelay() )
+	// Check if the player is within the tgive usage cooldown
+	if (Time() < player.p.lastTgiveUsedTime + FlowState_TgiveDelay())
 	{
-		//Message(player, "TGIVE COOLDOWN")
 		LocalMsg( player, "#FS_TgiveCooldown", "", uiType )
 		return true
 	}
@@ -5438,35 +5434,36 @@ bool function ClientCommand_GiveWeapon(entity player, array<string> args)
     {
 		for(int i = 2; i < args.len(); i++)
 		{
-			if( !IsValidAttachment( args[i] ) )
+			string attachmentToAdd = args[i]
+
+			if( !IsValidAttachment( attachmentToAdd ) )
 				continue
 
-			if( !SURVIVAL_Loot_IsRefValid( args[i] ) )
+			if( !SURVIVAL_Loot_IsRefValid( attachmentToAdd ) )
 				continue
 
-			string attachPoint = GetAttachPointForAttachmentOnWeapon( GetWeaponClassNameWithLockedSet( weapon ), args[i] )
+			string attachPoint = GetAttachPointForAttachmentOnWeapon( GetWeaponClassNameWithLockedSet( weapon ), attachmentToAdd )
 
 			if( attachPoint == "" )
 				continue
 
-			string installed = GetInstalledWeaponAttachmentForPoint( weapon, attachPoint )
-			LootData attachedData
+			string attachmentToRemove = GetInstalledWeaponAttachmentForPoint( weapon, attachPoint )
 
-			// revisar si hay un attachment en el puesto donde va a estar modToRemove ( que en este caso es el mod a agregar )
-			if ( SURVIVAL_Loot_IsRefValid( installed ) )
-			{
-				weapon.RemoveMod( installed )
-			}
+			// revisar si hay un attachment en el puesto donde va a estar attachmentToRemove ( que en este caso es el mod a agregar )
+			// Check if there is already an attachment on the attachment point that attachmentToAdd needs
+			if ( SURVIVAL_Loot_IsRefValid( attachmentToRemove ) )
+				weapon.RemoveMod( attachmentToRemove )
 
 			try {
-				weapon.AddMod(args[i])
+				weapon.AddMod(attachmentToAdd)
 			}
 			catch( e2 ) {
 				// printt( "Invalid mod. - ", args[i] )
-				weapon.RemoveMod( args[i] )
+				weapon.RemoveMod( attachmentToAdd )
 			}
 		}
     }
+	
     if( IsValid(weapon) && !weapon.IsWeaponOffhand() )
 	{
 		player.SetActiveWeaponBySlot(eActiveInventorySlot.mainHand, GetSlotForWeapon(player, weapon))
@@ -5475,19 +5472,20 @@ bool function ClientCommand_GiveWeapon(entity player, array<string> args)
 
 	player.p.lastTgiveUsedTime = Time()
 	
-		string subToken = ""
-		string sWepName = ""
+	string subToken = ""
+	string sWepName = ""
+
+	if( !Gamemode1v1_AreCustomWeaponsAllowedForPlayer( player ) )
+		subToken = "#FS_CUSTOM_WEAPON_CHAL_ONLY" // Host only allows custom weapons during a challenge
+
+	if( ClientCommand_SaveCurrentWeapons( player, ["1"] ) )
+		sWepName = weapon.GetWeaponSettingString( eWeaponVar.printname )		
 	
-		if( !isCustomWeaponAllowed() && !isPlayerInChallenge( player ) )
-			subToken = "#FS_CUSTOM_WEAPON_CHAL_ONLY"
-	
-		if( ClientCommand_SaveCurrentWeapons( player, ["1"] ) )
-			sWepName = weapon.GetWeaponSettingString( eWeaponVar.printname )		
+	LocalMsg( player, "#FS_WEAPONSAVED", subToken, uiType, 5, sWepName )
 		
-		LocalMsg( player, "#FS_WEAPONSAVED", subToken, uiType, 5, sWepName )
-			
-		if (bRestFlag)
-			HolsterAndDisableWeapons_Raw( player )
+	// If the player is currently resting, do not let them use the weapons until they enter a match
+	if (bRestFlag)
+		HolsterAndDisableWeapons_Raw( player )
 
     return true
 }
@@ -5497,12 +5495,7 @@ bool function ClientCommand_SaveCurrentWeapons(entity player, array<string> args
 {	
 	if ( !IsValid( player ) ) return false
 	
-	bool single_save = false 
-	
-	if( args.len() > 0 )
-	{
-		single_save = true
-	}
+	bool single_save = ( args.len() > 0 ) 
 	
 	entity weapon1
 	entity weapon2
@@ -5527,7 +5520,7 @@ bool function ClientCommand_SaveCurrentWeapons(entity player, array<string> args
 			optics2 = mod + " " + optics2
 
 		
-		if(IsValid(weapon1))
+		if (IsValid(weapon1))
 		{
 			weaponname1 = weapon1.GetWeaponClassName()+" " + optics1;	
 		}
@@ -5540,7 +5533,7 @@ bool function ClientCommand_SaveCurrentWeapons(entity player, array<string> args
 			weaponname1 = " ";
 		}
 		
-		if(IsValid(weapon2))
+		if (IsValid(weapon2))
 		{
 			weaponname2 = weapon2.GetWeaponClassName()+" " + optics2
 		}
@@ -5591,7 +5584,7 @@ bool function ClientCommand_SaveCurrentWeapons(entity player, array<string> args
 	else if ( !single_save )
 	{
 		string subToken = "";
-		if( !isCustomWeaponAllowed() && !isPlayerInChallenge( player ) )
+		if( !Gamemode1v1_AreCustomWeaponsAllowedForPlayer( player ) )
 		{
 			subToken = "#FS_CUSTOM_WEAPON_CHAL_ONLY"
 		}
@@ -6377,7 +6370,7 @@ void function SpawnCyberdyne() //Halo 3 The Pit
 			}
 		}
 		//Lightning.
-		FS_ResetMapLightning()
+		FS_ResetMapLighting()
 		SetConVarFloat( "mat_sky_scale", 1.5 )
 		SetConVarFloat( "mat_sun_scale", 1.5 )
 
@@ -6434,7 +6427,7 @@ void function SpawnLockout() //Halo 2 Encerrona
 		skyboxCamera.SetAngles( <0, 0, 0> ) //lockout
 		
 		//Lightning.
-		FS_ResetMapLightning()
+		FS_ResetMapLighting()
 		SetConVarFloat( "mat_autoexposure_max", 1.0 )
 		SetConVarFloat( "mat_autoexposure_max_multiplier", 0.3 )
 		SetConVarFloat( "mat_autoexposure_min", 0.7 )
@@ -6568,8 +6561,9 @@ void function SpawnChill()
 		
 		ForceSaveOgSkyboxOrigin()
 		#endif
-		//Lightning.
-		FS_ResetMapLightning()
+		
+		// Lighting.
+		FS_ResetMapLighting()
 		WaitFrame()
 
 		SetConVarFloat( "jump_graceperiod", 0 )
@@ -6632,7 +6626,7 @@ void function SpawnChill()
 
 void function SpawnBeavercreek()
 {
-	if( MapName() != eMaps.mp_rr_arena_empty )
+	if ( MapName() != eMaps.mp_rr_arena_empty )
 		return
 
 	vector startingpos = Vector(42000, -10000, -26000) //Vector( 0,0,2000 ) // 
@@ -6659,8 +6653,9 @@ void function SpawnBeavercreek()
 		
 		ForceSaveOgSkyboxOrigin()
 		#endif
-		//Lightning.
-		FS_ResetMapLightning()
+
+		// Lighting.
+		FS_ResetMapLighting()
 		WaitFrame()
 
 		SetConVarFloat( "jump_graceperiod", 0 )
@@ -6739,7 +6734,7 @@ void function FS_BuildBeaverCreekTeleporters()
 
 void function tp1_OnAreaEnter( entity trigger, entity player )
 {
-	if( !IsValid( player ) || !IsAlive( player ) || !IsValid( trigger ) )
+	if ( !IsValid( player ) || !IsAlive( player ) || !IsValid( trigger ) )
 		return
 		
 	player.SetVelocity(<0,0,0>)
@@ -6751,7 +6746,7 @@ void function tp1_OnAreaEnter( entity trigger, entity player )
 
 void function tp2_OnAreaEnter( entity trigger, entity player )
 {
-	if( !IsValid( player ) || !IsAlive( player ) || !IsValid( trigger ) )
+	if ( !IsValid( player ) || !IsAlive( player ) || !IsValid( trigger ) )
 		return
 		
 	player.SetVelocity(<0,0,0>)
@@ -6761,7 +6756,7 @@ void function tp2_OnAreaEnter( entity trigger, entity player )
 	EmitSoundOnEntityExceptToPlayer( player, player, "PhaseGate_Enter_3p" )
 }
 
-void function FS_ResetMapLightning()
+void function FS_ResetMapLighting()
 {
 	SetConVarToDefault( "mat_sun_color" )
 	SetConVarToDefault( "mat_sun_scale" )
@@ -6795,15 +6790,14 @@ array<string> function GetBlackListedWeapons()
 //Instagib
 void function FS_Instagib_PlayerSpawn( entity player )
 {
-	if( !IsValid( player ) )
+	if (!IsValid( player ))
 		return
 
 	SetPlayerSettings(player, INSTAGIB_PLAYER_SETTINGS)
 	
 	//if( player.p.assignedCustomModel != -1 )//Custom models cause engine issues, disabling for now til models are updated. - Kral
-	{
 		//Flowstate_SetAssignedCustomModelToPlayer( player, player.p.assignedCustomModel )
-	}
+
 	//Disable players collision
 	player.kv.contents = CONTENTS_BULLETCLIP | CONTENTS_MONSTERCLIP | CONTENTS_HITBOX | CONTENTS_BLOCKLOS | CONTENTS_PHYSICSCLIP; //CONTENTS_PLAYERCLIP
 }
@@ -6856,16 +6850,19 @@ bool function ValidateWeaponTgiveSettings( entity player, string weaponRef )
 		return false
 	}
 	
-	if( is1v1EnabledAndAllowed() && Gamemode1v1_IsPlayerWaiting( player ) )
+	if (is1v1EnabledAndAllowed())
 	{
-		LocalMsg( player, "#FS_NotAllowedWaiting", "", uiType )
-		return false
-	}
-	
-	if( is1v1EnabledAndAllowed() && !isCustomWeaponAllowed() && !isPlayerInChallenge( player ) )
-	{
-		LocalMsg( player, "#FS_CustomWepChalOnly", "#FS_CUSTOM_WEAPON_CHAL_ONLY", uiType )
-		return false
+		if (Gamemode1v1_IsPlayerWaiting(player))
+		{
+			LocalMsg( player, "#FS_NotAllowedWaiting", "", uiType )
+			return false
+		}
+
+		if (!Gamemode1v1_AreCustomWeaponsAllowedForPlayer(player))
+		{
+			LocalMsg( player, "#FS_CustomWepChalOnly", "#FS_CUSTOM_WEAPON_CHAL_ONLY", uiType )
+			return false
+		}
 	}
 
 	if( Time() < player.p.lastTgiveUsedTime + FlowState_TgiveDelay() )
@@ -6874,7 +6871,7 @@ bool function ValidateWeaponTgiveSettings( entity player, string weaponRef )
 		return false
 	}
 	
-	if( !SURVIVAL_Loot_IsRefValid( weaponRef ) || IsForcedlyDisabledWeapon( weaponRef ) )
+	if( !SURVIVAL_Loot_IsRefValid( weaponRef ) || IsWeaponBlockedByRef( weaponRef ) )
 	{
 		LocalMsg( player, "#FS_WepNotAllowed", "", uiType )
 		return false
