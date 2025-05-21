@@ -234,5 +234,124 @@
 				"max"		"255"
 			}
 		}
+		
+		//1v1 Settings
+		"fs_1v1_startinrest"
+		{
+			"helpText" "Start In Rest"
+			"flags" 		"ARCHIVE|RELEASE"
+
+			"Values"
+			{
+				"default"	"0"
+				"min" 		"0"
+				"max"		"1"
+			}
+		}
+
+		"fs_1v1_ibmm"
+		{
+			"helpText" "IBMM enabled"
+			"flags" 		"ARCHIVE|RELEASE"
+
+			"Values"
+			{
+				"default"	"0"
+				"min" 		"0"
+				"max"		"1"
+			}
+		}
+
+		"fs_1v1_acceptchallenges"
+		{
+			"helpText" "Accept Challenges"
+			"flags" 		"ARCHIVE|RELEASE"
+
+			"Values"
+			{
+				"default"	"1"
+				"min" 		"0"
+				"max"		"1"
+			}
+		}
+
+		"fs_1v1_showinputbanner"
+		{
+			"helpText" "Show Input Banner"
+			"flags" 		"ARCHIVE|RELEASE"
+
+			"Values"
+			{
+				"default"	"1"
+				"min" 		"0"
+				"max"		"1"
+			}
+		}
+
+		"fs_1v1_showvsui"
+		{
+			"helpText" "Show Vs UI"
+			"flags" 		"ARCHIVE|RELEASE"
+
+			"Values"
+			{
+				"default"	"1"
+				"min" 		"0"
+				"max"		"1"
+			}
+		}
+
+		"fs_1v1_camo"
+		{
+			"helpText" "Camo Color"
+			"flags" 		"ARCHIVE|RELEASE"
+
+			"Values"
+			{
+				"default"	"0"
+				"min" 		"0"
+				"max"		"9"
+			}
+		}
+
+		"fs_1v1_heirloom"
+		{
+			"helpText" "Heirloom"
+			"flags" 		"ARCHIVE|RELEASE"
+
+			"Values"
+			{
+				"default"	"0"
+				"min" 		"0"
+				"max"		"5"
+			}
+		}
+		
+		"fs_1v1_maxenemylatency"
+		{
+			"helpText" "Max Enemy Latency"
+			"flags" 		"ARCHIVE|RELEASE"
+
+			"Values"
+			{
+				"default"	"999"
+				"min" 		"5"
+				"max"		"999"
+			}
+		}
+
+		"fs_1v1_maxibmmtime"
+		{
+			"helpText" "Max time player will wait for IBMM"
+			"flags" 		"ARCHIVE|RELEASE"
+
+			"Values"
+			{
+				"default"	"3"
+				"min" 		"0"
+				"max"		"30"
+			}
+		}
+		
 	}
 }
