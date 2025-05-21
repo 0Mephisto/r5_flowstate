@@ -397,8 +397,8 @@ void function FS_1v1_PlayerStateChanged( entity player, int oldValue, int newVal
 		if( oldValue == e1v1State.RESTING )
 		{
 			EmitSoundOnEntity( GetLocalClientPlayer(), "UI_InGame_FD_ReadyUp_1p" )
+			Gamemode1v1_PlayRestFX()
 		}
-		// Gamemode1v1_PlayRestFX()
 		Minimap_DisableDraw_Internal()
 		RunUIScript("FS_1v1_SettingsMenu_Close")
 		FS_1v1_DisplayHints(e1v1State.WAITING)
