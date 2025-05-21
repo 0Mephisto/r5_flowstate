@@ -155,9 +155,11 @@ void function PROPHUNT_CharSelect( entity player)
 
 void function _OnPlayerConnectedPROPHUNT(entity player)
 {
-	while(IsDisconnected( player )) WaitFrame()
+	while(IsDisconnected( player ))
+		WaitFrame()
 
-    if(!IsValid(player)) return
+    if(!IsValid(player))
+		return
 
 	CreatePanelText( player, "Flowstate", "", <-19766, 2111, 6541>, <0, 180, 0>, false, 2 )
 	
@@ -266,7 +268,7 @@ void function SetSpectatorAnotherTry(entity player)
 	}
 	
 	entity specTarget = playersON.getrandom()
-	try{
+	try {
 		if( IsValid( specTarget ) && IsValid(player) && ShouldSetObserverTarget( specTarget ) && specTarget != player)
 		{
 			player.SetPlayerNetInt( "spectatorTargetCount", GetPlayerArray_Alive().len() )
@@ -283,7 +285,7 @@ void function SetSpectatorAnotherTry(entity player)
 
 void function _OnPlayerDiedPROPHUNT(entity victim, entity attacker, var damageInfo)
 {
-	if(GetGameState() != eGameState.Playing) //FIXME!
+	if (GetGameState() != eGameState.Playing) //FIXME!
 	{	
 		array<entity> playersON = GetPlayerArray_Alive()
 		playersON.fastremovebyvalue( victim )
