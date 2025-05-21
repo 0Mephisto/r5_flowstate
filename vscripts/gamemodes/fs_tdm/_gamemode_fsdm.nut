@@ -441,14 +441,11 @@ void function _CustomTDM_Init()
 	)
 
 	if ( FlowState_SURF() )
-	{
 		AddClientCommandCallback("next_round", ClientCommand_NextRoundSURF)
-	} 
 	else
 	{
-		if( !Flowstate_IsMovementGym() && !Flowstate_IsFS1v1() && !Flowstate_IsLGDuels() ){
+		if( !Flowstate_IsMovementGym() && !Flowstate_IsFS1v1() && !Flowstate_IsLGDuels() )
 			AddClientCommandCallback("spectate", ClientCommand_SpectateEnemies)
-		}
 		
 		AddClientCommandCallback("teambal", ClientCommand_RebalanceTeams)
 		AddClientCommandCallback("circlenow", ClientCommand_CircleNow)
@@ -625,7 +622,7 @@ int function GetLocationSettingsIndexByName( string name )
 	if( name in file.locationSettingsMap )
 	{
 		#if DEVELOPER
-			printw( "resolved location:", name )
+			printw( "GetLocationSettingsIndexByName: resolved location:", name )
 		#endif 
 		
 		return file.locationSettingsMap[ name ].index
@@ -633,7 +630,7 @@ int function GetLocationSettingsIndexByName( string name )
 	else 
 	{
 		#if DEVELOPER
-			printw( "location by name not found:", name )
+			printw( "GetLocationSettingsIndexByName: location by name not found:", name )
 		#endif
 	}
 		

@@ -536,7 +536,13 @@ bool function ClientCommand_NextRoundSURF(entity player, array<string> args)
 		// If the map index is outside of the valid range (0 -> numLocations-1)
 		// then choose a random map index
 		if (mapIndex < 0 || mapIndex > surf.locationSettings.len()-1)
+		{
 			mapIndex = RandomIntRangeInclusive(0, surf.locationSettings.len()-1)
+
+			#if DEVELOPER
+			Warning("[SURF] Player " + player.GetPlayerName() + " ran command \"next_round\" with an invalid map index. A random map will be chosen instead.\n")
+			#endif
+		}
 
 		surf.nextMapIndex = mapIndex
 		surf.mapIndexChanged = true
