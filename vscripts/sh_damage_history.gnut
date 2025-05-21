@@ -598,13 +598,13 @@ void function SendDeathRecapDataToPlayer( entity player )
 	damageBlocks.extend( dealtDamageBlocks )
 	damageBlocks.sort( SortByBlockTime )
 
-	#if DEVELOPER
-		float gatheredTimeFrame = -1
-		if ( damageBlocks.len() > 0 )
-			gatheredTimeFrame = damageBlocks[0].blockTime - damageBlocks[ minint( 9, damageBlocks.len() - 1 ) ].blockTime
-		printf( "DR:\t Gathered Damage Blocks: Entries %d, Time Frame %.2f", damageBlocks.len(), gatheredTimeFrame )
-		printt( "DR:\t\tTime\tID\t\tType\tHits\tShield\tHealth\tDamage\tAttacker/Victim" )
-	#endif
+	// #if DEVELOPER
+		// float gatheredTimeFrame = -1
+		// if ( damageBlocks.len() > 0 )
+			// gatheredTimeFrame = damageBlocks[0].blockTime - damageBlocks[ minint( 9, damageBlocks.len() - 1 ) ].blockTime
+		// printf( "DR:\t Gathered Damage Blocks: Entries %d, Time Frame %.2f", damageBlocks.len(), gatheredTimeFrame )
+		// printt( "DR:\t\tTime\tID\t\tType\tHits\tShield\tHealth\tDamage\tAttacker/Victim" )
+	// #endif
 
 	int numSentBlock = damageBlocks.len()
 	// we can only handle 10 damage blocks
@@ -652,11 +652,11 @@ void function SendDeathRecapDataToPlayer( entity player )
 			// index,
 			// numSentBlock)
 
-		#if DEVELOPER
-			string v = string( GetEntityFromEncodedEHandle( block.victimEHandle ) )
-			string a = string( GetEntityFromEncodedEHandle( block.attackerEHandle ) )
-			printf( "DR:\t\t%.2f\t%d\t%8d\t%d\t\t%.2f\t%.2f\t%d\t\t%s\t%s", block.blockTime, block.damageSourceID, block.damageType, block.hitCount, block.shieldFrac, block.healthFrac, block.totalDamage, a, v )
-		#endif
+		// #if DEVELOPER
+			// string v = string( GetEntityFromEncodedEHandle( block.victimEHandle ) )
+			// string a = string( GetEntityFromEncodedEHandle( block.attackerEHandle ) )
+			// printf( "DR:\t\t%.2f\t%d\t%8d\t%d\t\t%.2f\t%.2f\t%d\t\t%s\t%s", block.blockTime, block.damageSourceID, block.damageType, block.hitCount, block.shieldFrac, block.healthFrac, block.totalDamage, a, v )
+		// #endif
 	}
 
 	Assert( damageBlocks.len() > 0 )
@@ -673,12 +673,12 @@ void function SendDeathRecapDataToPlayer( entity player )
 	Remote_CallFunction_NonReplay( player, "ServerCallback_DeathRecapDataUpdated", true, killerEHandle )
 
 	// TEMP DUMP OF DAMAGE HISTORY (TAKEN AND DEALT)
-	#if DEVELOPER
-		printt( "DR:\t\t------- Taken Damage -------" )
-		DumpDamageHistory( player.e.recentDamageHistory )
-		printt( "DR:\t\t------- Dealt Damage -------" )
-		DumpDamageHistory( player.e.recentDealtDamageHistory )
-	#endif
+	// #if DEVELOPER
+		// printt( "DR:\t\t------- Taken Damage -------" )
+		// DumpDamageHistory( player.e.recentDamageHistory )
+		// printt( "DR:\t\t------- Dealt Damage -------" )
+		// DumpDamageHistory( player.e.recentDealtDamageHistory )
+	// #endif
 }
 
 #if DEVELOPER

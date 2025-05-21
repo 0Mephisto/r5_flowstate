@@ -1022,6 +1022,8 @@ Scripts:
 
 	//Snd Buy menu
 	ui/FlowstateSND/flowstate_snd_buy_menu.nut
+	
+	ui/fs_1v1/settingsmenu.nut
 ]
 
 When: "SERVER || UI "
@@ -1214,7 +1216,7 @@ Scripts:
 	custom_maps/_custom_maps_6.nut
 	custom_maps/_custom_maps_7.nut
 	custom_maps/_custom_maps_8.nut
-	// custom_maps/_custom_maps_9.nut
+	custom_maps/_custom_maps_9.nut
 	custom_maps/_custom_deafps_maps.nut
 
 	// 4d specific

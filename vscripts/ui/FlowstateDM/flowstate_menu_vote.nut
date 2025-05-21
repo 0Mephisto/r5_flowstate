@@ -95,7 +95,7 @@ void function Open_FSDM_VotingPhase()
 			break
 			
 			case ePlaylists.flowstate_pkknockback:
-				Hud_SetText( Hud_GetChild( file.menu, "TextCredits2" ), "FS PK PUSHBACK" )
+				Hud_SetText( Hud_GetChild( file.menu, "TextCredits2" ), "FS KNOCKBACK KNOCKOUT" )
 				Hud_SetText( Hud_GetChild( file.menu, "TextCredits" ), "Made by @CafeFPS. Powered by R5Reloaded." )
 			break
 						
@@ -105,8 +105,8 @@ void function Open_FSDM_VotingPhase()
 			break
 
 			case ePlaylists.fs_1v1:
-				Hud_SetText( Hud_GetChild( file.menu, "TextCredits2" ), "FS 1v1" )
-				Hud_SetText( Hud_GetChild( file.menu, "TextCredits" ), "Made by __makimakima__, maintained by @CafeFPS & mkos" )
+				Hud_SetText( Hud_GetChild( file.menu, "TextCredits2" ), "FLOWSTATE 1v1" )
+				// Hud_SetText( Hud_GetChild( file.menu, "TextCredits" ), "Made by __makimakima__, maintained by @CafeFPS & mkos" )
 			break
 			
 			case ePlaylists.fs_lgduels_1v1:

@@ -1779,6 +1779,12 @@ bool function CommsMenu_CanUseMenu( entity player )
 	if( StatusEffect_GetSeverity( player, eStatusEffect.camera_view) > 0 )
 		return false
 	
+	if( Playlist() == ePlaylists.fs_1v1 || Playlist() == ePlaylists.fs_vamp_1v1 || Playlist() == ePlaylists.fs_1v1_headshots_only || Playlist() == ePlaylists.fs_lgduels_1v1 )
+	{
+		if( player.GetPlayerNetInt( "FS_1v1_PlayerState" ) == e1v1State.WAITING || player.GetPlayerNetInt( "FS_1v1_PlayerState" ) == e1v1State.RESTING )
+			return false
+	}
+	
 	return true
 }
 

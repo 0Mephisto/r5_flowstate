@@ -189,7 +189,7 @@ void function InitScoreboardMP()
 	
 	if( Playlist() == ePlaylists.fs_1v1 || Playlist() == ePlaylists.fs_lgduels_1v1 )
 	{
-		Hud_SetText( file.hintCustom, "%M% Close")
+		Hud_SetText( file.hintCustom, "%toggle_map% Close")
 	}
 	
 	string title = "SCOREBOARD"

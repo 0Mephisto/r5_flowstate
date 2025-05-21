@@ -22,6 +22,23 @@ global enum eTDMState
 	NEXT_ROUND_NOW = 1
 }
 
+global enum e1v1State
+{
+	INVALID = -1,
+	CHARSELECT,
+	PREMATCH,
+	MATCH_START,
+	WAITING,
+	SEQUENCE,
+	MATCHING,
+	RESTING,
+	RECAP,
+	SPECTATING,
+	
+	//coaching mode
+	WATCHING_FIGHT_REPLAY
+}
+
 global struct LocationSettings
 {
     string name

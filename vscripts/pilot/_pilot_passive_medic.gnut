@@ -613,9 +613,9 @@ bool function ClientCommand_CancelRevive( entity player, array<string> args )
 #if CLIENT
 void function AttemptCancelRevive( entity player )
 {
-	#if DEVELOPER
-	Warning( "AttemptCancelRevive " + player )
-	#endif
+	// #if DEVELOPER
+	// Warning( "AttemptCancelRevive " + player )
+	// #endif
 	if( !player.ContextAction_IsBeingRevived() )
 		return
 

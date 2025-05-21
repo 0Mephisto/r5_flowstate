@@ -325,7 +325,7 @@ void function RemoteFunctions_Init_Begin()
 	
 	//Dynamic client side lights spawn from server
 	//if( MapName() == eMaps.mp_rr_arena_composite ) //TEMP. To free up buffer space. Currently only used in composite. Cafe
-		//ScriptRemote_RegisterClientFunction( "ServerCallback_SpawnClientSideDynamicLight", "vector", -32000.0, 32000.0, 32, "vector", -32000.0, 32000.0, 32, "int", 0, 10, "float", 0.0, 32000.0, 12, "float", 0.0, 32000.0, 12 )
+		//ScriptRemote_RegisterClientFunction( "ServerCallback_SpawnOrModifyClientSideDynamicLight", "vector", -32000.0, 32000.0, 32, "vector", -32000.0, 32000.0, 32, "int", 0, 10, "float", 0.0, 32000.0, 12, "float", 0.0, 32000.0, 12 )
 
 	if( MapName() == eMaps.mp_rr_olympus_tt )
 		PathTT_OnNetworkRegistration()
@@ -366,7 +366,6 @@ void function RemoteFunctions_Init_Begin()
 	ScriptRemote_RegisterClientFunction( "Flowstate_SentinelChargeHUD", "float", 0.0, 4000.0, 16 ) //Audit 2-22-2025 (mk): 66 mins server time, charge end max
 	
 	ScriptRemote_RegisterClientFunction( "ServerCallback_ShouldExitDrone" )
-	ScriptRemote_RegisterClientFunction( "Gamemode1v1_ForceLegendSelector_Deprecated" ) //(mk): Todo clientsided ui activation
 	
 	
 	#if DEVELOPER
@@ -393,6 +392,7 @@ void function RemoteFunctions_Init_Begin()
 		
 		case eGamemodes.fs_dm:
 			
+			ScriptRemote_RegisterClientFunction( "ServerCallback_SpawnOrModifyClientSideDynamicLight", "vector", -32000.0, 32000.0, 32, "vector", -32000.0, 32000.0, 32, "int", 0, 10, "float", 0.0, 32000.0, 12, "float", 0.0, 32000.0, 12, "int", 0, 100 )
 			if( Playlist() == ePlaylists.fs_scenarios )
 			{
 				ScriptRemote_RegisterClientFunction( "FS_Scenarios_ChangeAliveStateForPlayer", "entity", "bool" )//Audit 2-22-2025
@@ -443,10 +443,13 @@ void function RemoteFunctions_Init_Begin()
 			ScriptRegisterNetworkedVariable( "flowstate_DMRoundEndTime", SNDC_GLOBAL, SNVT_TIME, -1 )
 			ScriptRegisterNetworkedVariable( "FSDM_GameState", SNDC_GLOBAL, SNVT_INT, -1 )
 			
-			if( Gamemode() == eGamemodes.fs_dm )
+			if( Playlist() == ePlaylists.fs_1v1 || Playlist() == ePlaylists.fs_vamp_1v1 || Playlist() == ePlaylists.fs_1v1_headshots_only || Playlist() == ePlaylists.fs_lgduels_1v1 )
 			{
 				ScriptRegisterNetworkedVariable( "FSDM_1v1_Enemy", SNDC_PLAYER_GLOBAL, SNVT_ENTITY )
 				ScriptRegisterNetworkedVariable( "FSDM_1v1_PositionInScoreboard", SNDC_PLAYER_GLOBAL, SNVT_INT, -1 )
+				ScriptRemote_RegisterClientFunction( "Gamemode1v1_ForceLegendSelector_Deprecated" ) //(mk): Todo clientsided ui activation
+				
+				ScriptRegisterNetworkedVariable( "FS_1v1_PlayerState", SNDC_PLAYER_EXCLUSIVE, SNVT_INT )
 			}
 			
 			ScriptRemote_RegisterClientFunction( "DM_HintCatalog", "int", -100, 101, "entity" )//Audit 2-22-2025
@@ -935,6 +938,7 @@ void function RemoteFunctions_Init_Begin()
 	{
 		ScriptRemote_RegisterClientFunction( "ServerCallback_Survival_PathfinderSurveyNotifications", "entity", "int", 0, 9 )
 		ScriptRemote_RegisterClientFunction( "ServerCallback_Survival_CreateBeaconWorldIcon", "entity", "entity" )
+		ScriptRemote_RegisterClientFunction( "ServerCallback_SUR_PingMinimap", "vector", -1.0, 1.0, 32, "float", 0.0, 300.0, 8, "float", 1.0, 5000.0, 8, "float", 1.0, 5000.0, 8, "int", 0, 2047 )
 	}
 	
 	ScriptRemote_RegisterClientFunction( "ServerCallback_PromptSayThanks", "entity" )

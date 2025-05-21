@@ -523,7 +523,6 @@ global struct ServerEntityStruct
 	int inSonarTriggerCount
 	
 	array<void functionref( entity player, int state )> onPlayerGamestateChangedCallbacks
-	int gamemode1v1State = -1
 	array<entity> myWaypoints
 	
 	//portal enter direction, eDirection.NONE = -1, eDirection.STARTTOEND, eDirection.ENDTOSTART
@@ -576,7 +575,19 @@ global struct CringeReport
 // This struct is hooked up to entity.p in code
 global struct ServerPlayerStruct
 {
-	int playerCamo
+	//1v1 settings
+	float IBMM_grace_period 	= -1 // <= 0 is disabled
+	bool lock1v1_setting 		= true
+	bool start_in_rest_setting 	= false
+	bool enable_input_banner = true
+	bool showvsui = true
+	int playerCamo = 15
+	int chosenHeirloom = 0
+	float max_enemy_ping = 999.0
+	//End 1v1 Settings
+	
+	bool isPlayerInVent = false
+	
 	bool canChangeGadgets
 	int selectedGadget1 = 0
 	int selectedGadget2 = 1
@@ -873,7 +884,6 @@ global struct ServerPlayerStruct
 	entity entLastChallenger
 	float lastInputChangeTime
 	//float last_input_time
-	float IBMM_grace_period 	= -1 // <= 0 is disabled
 	int movevalue 				= 0
 	int p_damage 				= 3 //for lgduel default dmg/heal ; BAD var name (TODO: DEPRECATE)
 	int season_kills 			= 0 //(TODO: DEPRECATE)
@@ -883,9 +893,6 @@ global struct ServerPlayerStruct
 	int season_gamesplayed 		= 0 //(TODO: DEPRECATE)
 	int season_score 			= 0 //(TODO: DEPRECATE)
 	string weapon_loadout 		= "NA"
-	bool lock1v1_setting 		= true
-	bool start_in_rest_setting 	= false
-	bool enable_input_banner 	= true
 	bool rest_request 			= false
 	bool waitingFor1v1			= false
 	bool ClientCommandsEnabled 	= true

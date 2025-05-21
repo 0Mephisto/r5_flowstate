@@ -61,6 +61,7 @@ void function FS_Init_1v1_Coaching()
 	AddClientCommandCallback( "coaching_startnew", FS_1v1Coaching_StartNew ) //Start new game
 	AddClientCommandCallback( "coaching_playselected", FS_1v1Coaching_PlaySelected ) //Play selected
 	AddClientCommandCallback( "coaching_timescale", FS_1v1Coaching_TimeScaleTest ) //Change hosttime scale
+	AddClientCommandCallback( "coaching_pause", FS_1v1Coaching_TimeScaleTestPause ) //Pause using time scale
 	AddClientCommandCallback( "coaching_stop", FS_1v1Coaching_StopRecording ) //Stop the current recording playing
 	AddClientCommandCallback( "coaching_startagain", FS_1v1Coaching_StartAgain ) //Start again the current recording
 
@@ -176,6 +177,21 @@ bool function FS_1v1Coaching_TimeScaleTest(entity player, array<string> args )
 	return true
 }
 
+bool function FS_1v1Coaching_TimeScaleTestPause(entity player, array<string> args )
+{
+	if( !IsValid(player) )
+		return false
+	
+	if( !IsAdmin(player) )
+	{
+		Message_New(player, "ONLY FOR ADMIN")
+		return false
+	}
+	
+	ServerCommand( "host_timescale 0.01" )
+	return true
+}
+
 bool function FS_1v1Coaching_StopRecording(entity player, array<string> args )
 {
 	if( !IsValid(player) )
@@ -264,8 +280,28 @@ bool function FS_1v1Coaching_PlaySelected(entity player, array<string> args )
 	
 	if( !IsValid( coachedPlayer ) )
 	{
-		Message_New( admin, "ERROR ASK CAFE TO DEBUG THIS 2" )
-		return false
+		foreach( sPlayer in GetPlayerArray() )
+		{
+			if( sPlayer == admin )
+				continue
+			else
+			{
+				coachedPlayerData.player = sPlayer
+				coachedPlayer = coachedPlayerData.player
+			}
+		}
+		
+		if( !IsValid( coachedPlayer ) && IsValid( admin ) )
+		{
+			Message_New( admin, "ERROR ASK CAFE TO DEBUG THIS 2" )
+			return false
+		}
+	}
+	
+	if( !IsValid( admin ) )
+	{
+		adminData.player = player
+		admin = adminData.player
 	}
 	
 	if( Gamemode1v1_IsPlayerWaiting( admin ) )
@@ -424,7 +460,7 @@ void function PlayPlayerShots( entity dummyPlayer, recordingInfo shotsData )
 
 		if( deltaTime > 0 )
 		{
-			wait deltaTime - (FrameTime() * 0.25) 
+			wait deltaTime - FrameTime()
 		}
 		
 		if( shot.weaponName != oldweapon )

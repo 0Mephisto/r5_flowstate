@@ -62,27 +62,43 @@ var function SpawnBeacon( entity ownerPlayer, vector origin, vector angles )
 	OnMobileRespawnChamberSpawned(respawn)
 }
 
+void function AirDropPingMinimap( entity dropPod, vector origin, string animationName )
+{
+	// Show up for twice as long so there's enough time for everyone to find
+	// it on the minimap after it has landed.
+	float pingDuration = dropPod.GetSequenceDuration( animationName ) * 2
+
+	foreach( entity player in GetPlayerArray_Alive() )
+		Remote_CallFunction_NonReplay( player, "ServerCallback_SUR_PingMinimap", origin, pingDuration, 500.0, 50.0, 2 )
+}
+
 void function AirdropItems( vector origin, vector angles, array<string> contents, entity fxToStop, string animationName, entity owner, int skin, string sourceWeaponClassName )
 {
 	entity dropPod = CreateDropPod( origin, angles, sourceWeaponClassName )
 	dropPod.SetSkin( skin )
     
     entity threatProxy = CreateDropPodThreatIndicator(origin, angles)
-    thread DropPodBeamWaitForUse(dropPod, origin, angles)
-	
-    thread WaitForDropFX(dropPod, animationName, origin, angles)
+
+	OnThreadEnd(
+	function() : ( threatProxy, fxToStop )
+		{
+			if( IsValid( threatProxy ) )
+				threatProxy.Destroy()
+
+			if( IsValid( fxToStop ) )
+				fxToStop.Destroy()
+		}
+	)
+
+	AirDropPingMinimap( dropPod, origin, animationName )
+
+    thread DropPodBeamWaitForUse( dropPod, origin, angles )
+    thread WaitForDropFX( dropPod, animationName, origin, angles, false )
 	
 	waitthread LaunchAnimDropPod( dropPod, animationName, OriginToGround( origin ), angles )
-	    if(IsValid(threatProxy))
-        threatProxy.Destroy()
 
 	InitDropPod( dropPod )
-    
-    if(IsValid(fxToStop))
-        fxToStop.Destroy()
-	
 	AddMultipleLootItemsToDropPod(dropPod, contents)
-
 }
 
 void function AirdropItems_Lifeline( vector origin, vector angles, array<string> contents, entity fxToStop, string animationName, entity owner, int skin, string sourceWeaponClassName )
@@ -104,7 +120,7 @@ void function AirdropItems_Lifeline( vector origin, vector angles, array<string>
 				if( IsValid( threatProxy ) )
 					threatProxy.Destroy()
 
-				if( IsValid(fxToStop) )
+				if( IsValid( fxToStop ) )
 					fxToStop.Destroy()
 			}
 	)
@@ -113,15 +129,12 @@ void function AirdropItems_Lifeline( vector origin, vector angles, array<string>
     dropPod.SetScriptName( "lifeline_care_package" )
 
     thread DropPodBeamWaitForUse(dropPod, origin, angles)
-	
-    thread WaitForDropFX(dropPod, animationName, origin, angles)
+    thread WaitForDropFX( dropPod, animationName, origin, angles, true )
 	
 	waitthread LaunchAnimDropPod( dropPod, animationName, OriginToGround( origin ), angles )
 
 	InitDropPod( dropPod )
-   
 	AddMultipleLootItemsToDropPod_Lifeline(dropPod, contents)
-
 }
 
 void function AirDropFireteam( vector origin, vector angles, string animationName, int skin, string sourceWeaponClassName, entity player )
@@ -145,11 +158,13 @@ void function AirDropFireteam( vector origin, vector angles, string animationNam
 	}
 }
 
-void function WaitForDropFX(entity dropPod, string animationName, vector origin, vector angles)
+void function WaitForDropFX( entity dropPod, string animationName, vector origin, vector angles, bool isLifeLine )
 { 
 	EndSignal( dropPod, "OnDestroy" )
 
-    float scaledTime = dropPod.GetSequenceDuration(animationName) * 0.95
+	float scalar = isLifeLine ? 0.945 : 0.965 // todo(kawe): rework this entire thing with AddAnimEvent( "OnImpact" ).
+    float scaledTime = dropPod.GetSequenceDuration( animationName ) * scalar
+
 	wait scaledTime 
 	
 	if( !IsValid( dropPod ) )

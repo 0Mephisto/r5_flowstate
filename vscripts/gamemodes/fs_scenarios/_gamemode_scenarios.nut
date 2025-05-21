@@ -1364,7 +1364,7 @@ bool function FS_Scenarios_GroupToInProgressList( scenariosGroupStruct newGroup,
 	catch(e)
 	{
 		#if DEVELOPER
-			sqprint("[Scenarios] addGroup crash: " + e)
+			sqprint("[Scenarios] RegisterSoloGroup crash: " + e)
 		#endif
 		return false
 	}
@@ -1467,6 +1467,7 @@ void function FS_Scenarios_RespawnIn3v3Mode( entity player )
 		if (!IsValid(waitingRoomLocation)) return //why would it be invalid. 
 		
 		// GivePlayerCustomPlayerModel( player )
+
 		Gamemode1v1_TeleportPlayer(player, waitingRoomLocation)
 		player.MakeVisible()
 		player.ClearInvulnerable() // !FIXME

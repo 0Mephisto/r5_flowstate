@@ -11,6 +11,7 @@ global function OpenMOTD
 global function OpenChampionCard
 
 global function ShouldDisplayOptInOptions
+global function OpenWeaponSelector
 
 struct ButtonData
 {
@@ -341,7 +342,7 @@ void function UpdateSystemPanel( var panel )
 
 		if( uiGlobal.is1v1GameType && Playlist() != ePlaylists.fs_1v1_coaching ) //initialized after level load
 		{
-			SetButtonData( panel, buttonIndex++, file.Toggle1v1ScoreboardFocus[ panel ] )
+			// SetButtonData( panel, buttonIndex++, file.Toggle1v1ScoreboardFocus[ panel ] )
 			SetButtonData( panel, buttonIndex++, file.ToggleRest[ panel ] )
 			SetButtonData( panel, buttonIndex++, file.OpenWeaponsMenu[ panel ] )
 		} else if( Playlist() == ePlaylists.fs_1v1_coaching )
@@ -364,8 +365,8 @@ void function UpdateSystemPanel( var panel )
 			SetButtonData( panel, buttonIndex++, file.ToggleRest[ panel ] )
 		}
 		
-		if( Flowstate_IsTrackerSupportedMode() )
-			SetButtonData( panel, buttonIndex++, file.OpenChampionCard[ panel ] )
+		// if( Flowstate_IsTrackerSupportedMode() ) // (cafe) it should check for tracker enabled as well, disabled for now
+			// SetButtonData( panel, buttonIndex++, file.OpenChampionCard[ panel ] )
 
 		if( Playlist() == ePlaylists.fs_lgduels_1v1 || Playlist() == ePlaylists.fs_dm_fast_instagib )		
 			SetButtonData( panel, buttonIndex++, file.OpenLGDuelsSettingsData[ panel ] )

@@ -739,21 +739,21 @@ array<SpawnData> function GenerateCustomSpawns( int eMap, int coreSpawnsLen = -1
 		//////////////////////////////////////////////////////////////////////////////////
 		case eMaps.mp_rr_aqueduct:
 			
-			defaultWaitingRoom = NewLocPair( < 705, -5895, 432 >, < 0, 90, 0 > )
+			defaultWaitingRoom = NewLocPair( <-186.34404, -449.446411, 19999.9492>, <0, 90.052124, 0> )
 			g_waitingRoomPanelLocation = SetWaitingRoomAndGeneratePanelLocs( defaultWaitingRoom )
 			
 		break ////////////////////////////////////////////////////////////////////////////
 		//////////////////////////////////////////////////////////////////////////////////
 		case eMaps.mp_rr_arena_composite:
 		
-			defaultWaitingRoom = NewLocPair( < -2.46021, 291.152, 129.574 >, < 0, 90, 0 > )
+			defaultWaitingRoom = NewLocPair( <-186.34404, -449.446411, 19999.9492>, <0, 90.052124, 0> )
 			g_waitingRoomPanelLocation = SetWaitingRoomAndGeneratePanelLocs( defaultWaitingRoom, <0,0,-5> )
 			
 		break ////////////////////////////////////////////////////////////////////////////
 		//////////////////////////////////////////////////////////////////////////////////
 		case eMaps.mp_rr_canyonlands_64k_x_64k:
 		
-			defaultWaitingRoom = NewLocPair( < -906.22, 20306.5, 4570.03 >, < 0, 45, 0 > )
+			defaultWaitingRoom = NewLocPair( <-167.997238, -720.783752, 50000.0625>, <0, 87.8704834, 0> )
 			g_waitingRoomPanelLocation = SetWaitingRoomAndGeneratePanelLocs( defaultWaitingRoom )
 		
 		break ////////////////////////////////////////////////////////////////////////////
@@ -767,14 +767,14 @@ array<SpawnData> function GenerateCustomSpawns( int eMap, int coreSpawnsLen = -1
 		//////////////////////////////////////////////////////////////////////////////////
 		case eMaps.mp_rr_party_crasher:
 		
-            defaultWaitingRoom = NewLocPair( < 1854.75, -4108.87, 648.106 >, < 359.047, 104.246, 0 > )
-            g_waitingRoomPanelLocation = SetWaitingRoomAndGeneratePanelLocs( defaultWaitingRoom, < 0, 0, -22 >, 200 )	
+            defaultWaitingRoom = NewLocPair( <-186.34404, -449.446411, 19999.9492>, <0, 90.052124, 0> )
+            g_waitingRoomPanelLocation = SetWaitingRoomAndGeneratePanelLocs( defaultWaitingRoom )	
 		
 		break ////////////////////////////////////////////////////////////////////////////
 		//////////////////////////////////////////////////////////////////////////////////	
 		case eMaps.mp_rr_arena_phase_runner:
 		
-			defaultWaitingRoom = NewLocPair( < 31969, 17534, -884 >, < 360, 178, 0 > )
+			defaultWaitingRoom = NewLocPair( <-186.34404, -449.446411, 19999.9492>, <0, 90.052124, 0> )
 			g_waitingRoomPanelLocation = SetWaitingRoomAndGeneratePanelLocs( defaultWaitingRoom )
 			
 		break ////////////////////////////////////////////////////////////////////////////
@@ -783,14 +783,14 @@ array<SpawnData> function GenerateCustomSpawns( int eMap, int coreSpawnsLen = -1
 		case eMaps.mp_rr_olympus:
 		case eMaps.mp_rr_olympus_tt:
 
-			defaultWaitingRoom = NewLocPair( <-28196.4355, -821.414124, -5379.09326> , < 0, 32.8506927, 0 > )
+			defaultWaitingRoom = NewLocPair( <-167.997238, -720.783752, 50000.0625>, <0, 87.8704834, 0> )
 			g_waitingRoomPanelLocation = SetWaitingRoomAndGeneratePanelLocs( defaultWaitingRoom )	
 		
 		break ////////////////////////////////////////////////////////////////////////////
 		//////////////////////////////////////////////////////////////////////////////////
 		case eMaps.mp_rr_desertlands_64k_x_64k:
 
-			defaultWaitingRoom = NewLocPair( < -19830.3633, 14081.7314, -3759.98901 >, < 0, -83.0441132, 0 > )
+			defaultWaitingRoom = NewLocPair( <-167.997238, -720.783752, 50000.0625>, <0, 87.8704834, 0> )
 			g_waitingRoomPanelLocation = SetWaitingRoomAndGeneratePanelLocs( defaultWaitingRoom )	
 		
 		break ////////////////////////////////////////////////////////////////////////////

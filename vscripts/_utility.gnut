@@ -19,6 +19,8 @@ global const C_PLAYFX_LOOP		= 2
 global const MUTEALLFADEIN 		= 2
 global const GAMEMODE_SP 		= "solo"
 
+global const string SIGNAL_TELEPORTED = "Teleported"
+
 global struct ZipLine
 {
 	entity start
@@ -54,6 +56,8 @@ struct
 	table< entity, ItemFlavor >    playerChargeValidation
 
 	bool isSkyboxView = false
+	
+	bool ignoreKillPlayersUnderMap = false
 } file
 
 enum eChargeStorageType
@@ -78,7 +82,8 @@ void function Utility_Init()
 	RegisterSignal( "PetTitanUpdated" )
 	RegisterSignal( "WaitDeadTimeOut" )
 	RegisterSignal( "InventoryChanged" )
-
+	RegisterSignal( SIGNAL_TELEPORTED )
+	
 	//AddClientCommandCallback( "OnDevnetBugScreenshot", ClientCommand_OnDevnetBugScreenshot )
 	#if DEVELOPER
 		FlagInit( "AimAssistSwitchTest_Enabled" )
@@ -4708,6 +4713,11 @@ void function KillPlayersUnderMap_Thread( float kill_depth )
 
 	while ( true )
 	{
+		wait 1.0
+		
+		if( file.ignoreKillPlayersUnderMap )
+			continue
+		
 		array<entity> players = GetPlayerArray_AliveConnected()
 		foreach ( entity player in players )
 		{
@@ -4728,15 +4738,18 @@ void function KillPlayersUnderMap_Thread( float kill_depth )
 				}
 			}
 		}
-		wait 1.0
 	}
 }
 
-bool function ShouldKillPlayersUnderMap ()
+bool function ShouldKillPlayersUnderMap()
 {
-	return GetCurrentPlaylistVarBool("kill_players_under_map",true)
+	return GetCurrentPlaylistVarBool("kill_players_under_map",true) // || file.ignoreKillPlayersUnderMap
 }
 
+void function SetIgnoreKillPlayersUnderMap( bool set = false )
+{
+	file.ignoreKillPlayersUnderMap = set
+}
 //////////////////////////////////////////////////////////
 void function TurretChangeTeam( entity turret, int team )
 {
