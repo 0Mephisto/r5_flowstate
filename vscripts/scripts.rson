@@ -664,18 +664,20 @@ Scripts:
 	gamemodes/survival/_gamemode_survival.nut
 	mp/_base_gametype_mp.gnut
 	mp/_playlist.gnut
-  mp/_bombardment_utility.gnut
-  mp/_bleedout.gnut
+	mp/_bombardment_utility.gnut
+	mp/_bleedout.gnut
 	mp/_staging_area.gnut
 	_sneak_peek.gnut
 
-  ai/_ai_mortar_spectres.gnut
+	ai/_ai_mortar_spectres.gnut
 	survival_loot.gnut
 	survival_ship.gnut
 	mp/_loot_ticks.nut
 	pilot/_pilot_tracking_vision.gnut
 	pilot/_pilot_passive_gas_gear.gnut
 	mp/_jump_pads.gnut
+
+	mp/flowstate/_fs_cannon.gnut
 ]
 
 When: "SERVER || CLIENT"
@@ -696,7 +698,7 @@ Scripts:
 When: "SERVER || UI"
 Scripts:
 [
-  mp/_match_preferences.gnut
+	mp/_match_preferences.gnut
 ]
 
 When: "CLIENT || UI"
