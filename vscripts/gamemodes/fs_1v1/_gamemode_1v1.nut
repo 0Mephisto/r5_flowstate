@@ -21,8 +21,8 @@ global function soloModePlayerToWaitingList
 global function ForceAllRoundsToFinish_solomode
 global function addStatsToGroup
 global function RechargePlayerAbilities
-global function isCustomWeaponAllowed
-global function isPlayerInChallenge
+global function Gamemode1v1_AreCustomWeaponsAllowedForPlayer
+global function Gamemode1v1_IsPlayerInChallenge
 global function Gamemode1v1_SetWaitingRoomRadius
 global function Gamemode1v1_FetchNotificationPanelCoordinates
 global function Gamemode1v1_FetchNotificationPanelAngles
@@ -40,7 +40,7 @@ global function HandleGroupIsFinished
 global function Gamemode1v1_RemovePlayerFromWaitingList
 global function Gamemode1v1_RemovePlayerFromRestingList
 global function getAvailableRealmSlotIndex
-global function GetUniqueID
+global function Gamemode1v1_GetNextAvailableGroupID
 global function GivePlayerCustomPlayerModel
 global function FS_ClearRealmsAndAddPlayerToAllRealms
 global function PlayerRestoreHP_1v1
@@ -224,7 +224,7 @@ struct
 	bool bAllowLegend = false
 	bool bAllowAbilities = false
 	bool bChalServerMsg = false
-	bool bNoCustomWeapons = false
+	bool customWeaponsChallengeOnly = false
 	bool isScenariosMode
 	float roundTime
 	bool bAllowWeaponsMenu	
@@ -1200,7 +1200,7 @@ void function INIT_PlaylistSettings()
 	settings.default_ibmm_wait 						= GetCurrentPlaylistVarFloat( "default_ibmm_wait", 3 )
 	settings.enableChallenges						= GetCurrentPlaylistVarBool( "enable_challenges", true )
 	settings.isScenariosMode						= Playlist() == ePlaylists.fs_scenarios
-	settings.bNoCustomWeapons						= GetCurrentPlaylistVarBool( "custom_weapons_challenge_only", false )
+	settings.customWeaponsChallengeOnly				= GetCurrentPlaylistVarBool( "custom_weapons_challenge_only", false )
 	settings.roundTime								= float ( FlowState_RoundTime() )
 	settings.bAllowWeaponsMenu						= !FlowState_AdminTgive()
 	settings.playerMaxFightDistance					= GetCurrentPlaylistVarInt( "player_max_fight_distance", 2000 )
@@ -1214,12 +1214,12 @@ void function INIT_PlaylistSettings()
 	settings.enableCosmetics 						= GetCurrentPlaylistVarBool( "flowstate_enable_cosmetics", false )
 }
 
-bool function isCustomWeaponAllowed()
+bool function Gamemode1v1_AreCustomWeaponsAllowedForPlayer( entity player )
 {
-	return !settings.bNoCustomWeapons
+	return !settings.customWeaponsChallengeOnly || Gamemode1v1_IsPlayerInChallenge( player )
 }
 
-int function GetUniqueID() 
+int function Gamemode1v1_GetNextAvailableGroupID() 
 {
     return ++settings.groupID
 }
@@ -1497,7 +1497,7 @@ soloGroupStruct function Gamemode1v1_GetPlayerSoloGroup( entity player )
 // Validate and register a new 1v1 pairing
 void function RegisterSoloGroup( soloGroupStruct newGroup ) 
 {
-	int groupHandle = GetUniqueID()
+	int groupHandle = Gamemode1v1_GetNextAvailableGroupID()
 	
 	newGroup.groupHandle = groupHandle
 	newGroup.startTime = Time()
@@ -1970,7 +1970,7 @@ bool function ClientCommand_mkos_challenge(entity player, array<string> args)
 			
 		case "cycle":
 		
-			if( !isPlayerInChallenge( player ) )
+			if( !Gamemode1v1_IsPlayerInChallenge( player ) )
 			{
 				LocalMsg( player, "#FS_NotInChal" )
 				return true
@@ -1999,7 +1999,7 @@ bool function ClientCommand_mkos_challenge(entity player, array<string> args)
 			
 		case "swap":
 			
-			if( !isPlayerInChallenge( player ) )
+			if( !Gamemode1v1_IsPlayerInChallenge( player ) )
 			{
 				LocalMsg( player, "#FS_NotInChal" )
 				return true
@@ -2095,7 +2095,7 @@ bool function ClientCommand_mkos_challenge(entity player, array<string> args)
 				return true
 			}
 			
-			if( !isPlayerInChallenge( player ) )
+			if( !Gamemode1v1_IsPlayerInChallenge( player ) )
 			{
 				if( settings.allow_legend_select )
 				{
@@ -2769,7 +2769,7 @@ void function groupRecapStats( entity player, float damage, int hits, int shots,
 		Message( player, "\n\n\n\n\n\n\n\n\n Recap vs: " + opponent, print_totals, 30 )
 }
 
-bool function isPlayerInChallenge( entity player )
+bool function Gamemode1v1_IsPlayerInChallenge( entity player )
 {
 	soloGroupStruct group = Gamemode1v1_GetPlayerSoloGroup( player )
 	
@@ -3693,7 +3693,7 @@ void function OnWeaponAttachmentChanged( entity player, entity weapon, string mo
 	//(mk):This callbackfunc is only registered when tgive is enabled by host.
 	
 	//(mk):make sure chal only flag isn't configured.
-	if( !isCustomWeaponAllowed() && !isPlayerInChallenge( player ) )
+	if( !Gamemode1v1_AreCustomWeaponsAllowedForPlayer( player ) )
 		return 
 		
 	ClientCommand_SaveCurrentWeapons( player, [] )
@@ -4608,7 +4608,7 @@ void function GiveWeaponsToGroup( array<entity> players, soloGroupStruct groupRe
 			EquipHostSetInventoryAttachments( player )
 			Inventory_SetPlayerEquipment( player, "backpack_pickup_lv3", "backpack")
 			
-			if ( ( settings.bNoCustomWeapons && !bInChallenge ) || !( player.p.name in weaponlist ) )//avoid give weapon twice if player saved his guns   //Todo(mk): change to eHandle
+			if ( ( settings.customWeaponsChallengeOnly && !bInChallenge ) || !( player.p.name in weaponlist ) )//avoid give weapon twice if player saved his guns   //Todo(mk): change to eHandle
 			{
 				TakeAllWeapons( player )
 
