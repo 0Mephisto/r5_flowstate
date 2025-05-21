@@ -546,7 +546,7 @@ void function DM__OnEntitiesDidLoad()
     {
     	case eMaps.mp_rr_canyonlands_staging:
 		
-    		if( !Flowstate_IsLGDuels() )
+    		if( !Flowstate_IsLGDuels() && !is1v1EnabledAndAllowed() )
     			SpawnMapPropsFR()
     		break
 
@@ -3581,11 +3581,13 @@ void function SimpleChampionUI()
 	//////// 	TIMER BEGIN 	////
 	////////////////////////////////
 
-	g_fCurrentRoundEndTime = Time() + FlowState_RoundTime() //set global for server
-
 	if( isScenariosMode() && ( !flowstateSettings.show_short_champion_screen || !GetChampion() && flowstateSettings.show_short_champion_screen ) )
 		FS_Scenarios_SetStopMatchmaking( false )
 
+	WaitForChampionToFinish()
+
+	g_fCurrentRoundEndTime = Time() + FlowState_RoundTime() //set global for server
+	
 	if( flowstateSettings.EndlessFFAorTDM )
 	{
 		WaitForever()

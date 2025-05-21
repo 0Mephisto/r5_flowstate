@@ -147,7 +147,8 @@ void function Cl_CustomTDM_Init()
 	RegisterButtonPressedCallback(KEY_ENTER, ClientReportChat)
 	PrecacheParticleSystem($"P_wpn_lasercannon_aim_short_blue")
 	PrecacheParticleSystem($"P_training_teleport_FP")
-
+	PrecacheParticleSystem( $"P_wrth_tt_portal_screen_flash" )
+	
 	RegisterSignal("ChallengeStartRemoveCameras")
 	RegisterSignal("ChangeCameraToSelectedLocation")
 	RegisterSignal("FSDM_EndTimer")
@@ -328,6 +329,15 @@ void function FS_Scenarios_OnGroupCharacterSelectReady( entity player, bool old,
 	}
 }
 
+void function Gamemode1v1_PlayRestFX()
+{
+	entity player = GetLocalClientPlayer()
+	int fxHandle = StartParticleEffectOnEntityWithPos( player, GetParticleSystemIndex( $"P_wrth_tt_portal_screen_flash" ), FX_PATTACH_ABSORIGIN_FOLLOW, -1, player.EyePosition(), <0,0,0> )
+	EffectSetIsWithCockpit( fxHandle, true )
+
+	EmitSoundOnEntity( player, "gruntcooper_wounded_loop_1p" )
+}
+
 void function FS_1v1_PlayerStateChanged( entity player, int oldValue, int newValue, bool actuallyChanged )
 {
 	if ( newValue == e1v1State.CHARSELECT ) //not called
@@ -361,6 +371,10 @@ void function FS_1v1_PlayerStateChanged( entity player, int oldValue, int newVal
 	#endif
 	switch( newValue )
 	{
+		case e1v1State.INVALID:
+		//
+		break
+		
 		case e1v1State.MATCH_START:
 		SetWaitingRoomLightningTest()
 		break
@@ -370,6 +384,8 @@ void function FS_1v1_PlayerStateChanged( entity player, int oldValue, int newVal
 		break
 		
 		case e1v1State.RESTING:
+		EmitSoundOnEntity( GetLocalClientPlayer(), "UI_InGame_FD_UnReadyUp_1p" )
+		Gamemode1v1_PlayRestFX()
 		Minimap_DisableDraw_Internal()
 		FS_1v1_DisplayHints(e1v1State.RESTING)
 		SetWaitingRoomLightningTest()
@@ -378,6 +394,11 @@ void function FS_1v1_PlayerStateChanged( entity player, int oldValue, int newVal
 		break
 
 		case e1v1State.WAITING:
+		if( oldValue == e1v1State.RESTING )
+		{
+			EmitSoundOnEntity( GetLocalClientPlayer(), "UI_InGame_FD_ReadyUp_1p" )
+		}
+		// Gamemode1v1_PlayRestFX()
 		Minimap_DisableDraw_Internal()
 		RunUIScript("FS_1v1_SettingsMenu_Close")
 		FS_1v1_DisplayHints(e1v1State.WAITING)
