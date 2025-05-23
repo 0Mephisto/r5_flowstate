@@ -24,13 +24,6 @@ struct
 	#endif
 } settings
 
-struct 
-{
-	#if CLIENT
-		var dashPassiveRui
-	#endif
-} file
-
 void function Dash_Init()
 {
 	settings.dodge_dash_enabled = GetCurrentPlaylistVarBool( "dodge_dash_enabled", false )
