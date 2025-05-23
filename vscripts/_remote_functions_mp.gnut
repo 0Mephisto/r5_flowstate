@@ -102,7 +102,9 @@ int function SetupRemoteFuncAliases()
 			FS_ForceCompass,
 			FS_DestroyCompass,
 			FS4DIntroSequence,
-			ServerCallback_ShowWinningSquadSequence
+			ServerCallback_ShowWinningSquadSequence,
+			ServerCallback_Ash_OnPlayerDash,
+			ServerCallback_Ash_OnPlayerLanded
 			// HaloBrIntroSequence,
 			// ServerCallback_ShotgunKickNoAmmoMessage
 		]
@@ -163,7 +165,9 @@ int function SetupRemoteFuncAliases()
 			"FS_ForceCompass",
 			"FS_DestroyCompass",
 			"FS4DIntroSequence",
-			"ServerCallback_ShowWinningSquadSequence"
+			"ServerCallback_ShowWinningSquadSequence",
+			"ServerCallback_Ash_OnPlayerDash",
+			"ServerCallback_Ash_OnPlayerLanded"
 			// "HaloBrIntroSequence",
 			// "ServerCallback_ShotgunKickNoAmmoMessage"
 		]
