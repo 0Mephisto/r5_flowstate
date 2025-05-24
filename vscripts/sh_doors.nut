@@ -54,7 +54,7 @@ struct DoorData
 
 struct
 {
-	#if SERVER && DEVELOPER
+	#if SERVER
 		table<entity, int> allDoors
 	#endif
 	array<entity> bigPropDoors
