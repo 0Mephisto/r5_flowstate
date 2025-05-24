@@ -400,9 +400,9 @@ global const int BURN_R = 246
 global const int BURN_G = 134
 global const int BURN_B = 40
 
-global const int AIRDROP_R = 10
-global const int AIRDROP_G = 224
-global const int AIRDROP_B = 233
+global const int AIRDROP_R = 255
+global const int AIRDROP_G = 215
+global const int AIRDROP_B = 0
 
 global const int CRAFTING_R = 0
 global const int CRAFTING_G = 255

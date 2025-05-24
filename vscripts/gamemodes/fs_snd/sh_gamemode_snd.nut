@@ -702,7 +702,7 @@ void function ServerCallback_SetBombState(int bombState)
 				bombStateText = "BOMB CARRIED"
 				if( SURVIVAL_CountItemsInInventory( player, "snd_bomb" ) == 1 )
 					bombStateText = "YOU HAVE THE BOMB"
-				Hud_ColorOverTime( elem, AIRDROP_R, AIRDROP_G, AIRDROP_B, 255, 0.35 )
+				Hud_ColorOverTime( elem, 10, 224, 233, 255, 0.35 )
 				EmitSoundOnEntity(GetLocalViewPlayer(), "HUD_Boost_Card_Earned_1P")
 			} else if(player.GetTeam() == Sh_GetDefenderTeam())
 			{
@@ -780,7 +780,7 @@ void function ServerCallback_SetBombStateFromfile()
 				bombStateText = "BOMB CARRIED"
 				if( SURVIVAL_CountItemsInInventory( player, "snd_bomb" ) == 1 )
 					bombStateText = "YOU HAVE THE BOMB"
-				Hud_ColorOverTime( elem, AIRDROP_R, AIRDROP_G, AIRDROP_B, 255, 0.35 )
+				Hud_ColorOverTime( elem, 10, 224, 233, 255, 0.35 )
 				EmitSoundOnEntity(GetLocalViewPlayer(), "HUD_Boost_Card_Earned_1P")
 			} else if(player.GetTeam() == Sh_GetDefenderTeam())
 			{
