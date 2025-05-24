@@ -5421,6 +5421,117 @@ entity function CreatePropDoor( asset model, vector pos, vector ang )
 	return CreatePropDynamic_NoDispatchSpawn( model, pos, ang )
 }
 
+void function AvoidBeingPutInsideDoorFromCrush( entity door, entity pushed )
+{
+	if ( IsValid( door ) )
+	{
+		int doorType = GetDoorType( door )
+
+		//Large sliding doors are classified as "PLAIN".  For those we want to move the pushed entity out of the way.
+		//Any other door type should be a swing door, in which case we won't bother moving and just let us ignore the crush kill as part of setting up SetDoOnBeingCrushedEntityCallback() and AddCallback_OnEntityBeingCrushed()
+		switch ( GetDoorType( door ) )
+		{
+			case eDoorType.PLAIN:
+				#if DEV
+				if ( AvoidCrushedByPlainDoorDebug )
+				{
+					DebugDrawMark( door.GetOrigin(), 15, COLOR_RED, true, 15.0 )
+					DebugDrawArrow( door.GetOrigin(), (door.GetOrigin() + (door.GetForwardVector() * 30)), 10, COLOR_BLUE, true, 15.0 )
+				}
+				#endif
+
+				vector doorToPushed = Normalize( pushed.GetOrigin() - door.GetOrigin() )
+				float doorToPushedDotDoorForward = DotProduct( door.GetForwardVector(), doorToPushed )
+
+				#if DEV
+				if ( AvoidCrushedByPlainDoorDebug )
+				{
+					printt( FUNC_NAME() + " entToDoorToForwardDot: " + doorToPushedDotDoorForward )
+				}
+				#endif
+
+				vector pushDir = ( doorToPushedDotDoorForward > 0.0 ) ? door.GetForwardVector() : -door.GetForwardVector()
+
+				//ensure its square or else the trace will fail.  Seer ult has a non square mins/maxs, tech art could maybe fix?
+				vector mins = pushed.GetBoundingMins()
+				vector maxs = pushed.GetBoundingMaxs()
+
+				float maxMinsXY = min( mins.x, mins.y )
+				float maxMaxsXY = max( maxs.x, maxs.y )
+
+				//half the bounding box since we're trying to get out of a tight position.
+				mins = <maxMinsXY, maxMinsXY, mins.z> * 0.5
+				maxs = <maxMaxsXY, maxMaxsXY, mins.z> * 0.5
+
+				float fabsZ = fabs( mins.z ) + fabs( maxs.z )
+				vector zOffSet = <0.0, 0.0, fabsZ>
+
+				vector startPos = pushed.GetOrigin()
+				vector targetPos = startPos + ( pushDir * maxMaxsXY )
+				array<entity> ignoreList = [pushed, door]
+
+				TraceResults trace = TraceHull( startPos, targetPos, mins, maxs, ignoreList, TRACE_MASK_SOLID_BRUSHONLY, TRACE_COLLISION_GROUP_NONE )
+
+				#if DEV
+				if ( AvoidCrushedByPlainDoorDebug )
+					DebugDrawArrow( startPos, targetPos, 10, COLOR_DARK_BLUE, false, 15.0)
+				#endif
+
+				int traceAttempts = 0
+
+				while ( ( trace.startSolid || trace.allSolid )  && traceAttempts <= 5 )
+				{
+					startPos = targetPos
+					targetPos = startPos + ( pushDir * maxMaxsXY )
+
+					#if DEV
+					if ( AvoidCrushedByPlainDoorDebug )
+						DebugDrawArrow( startPos, targetPos, 10, COLOR_DARK_BLUE, false, 15.0)
+					#endif
+
+					//check for ground so that our hullTrace doesn't just keep getting caught on the ground as we move along pushDir.
+					trace = TraceHull( startPos + zOffSet, targetPos, mins, maxs, ignoreList, TRACE_MASK_SOLID_BRUSHONLY, TRACE_COLLISION_GROUP_NONE )
+
+					#if DEV
+						if ( AvoidCrushedByPlainDoorDebug )
+						{
+							DebugDrawArrow( startPos, targetPos, 10, COLOR_DARK_BLUE, false, 15.0)
+							DebugDrawBoxSimple( startPos + zOffSet, mins, maxs, COLOR_LIGHT_BLUE, 25, 15.0 )
+							DebugDrawBoxSimple( targetPos, mins, maxs, COLOR_BLUE, 25, 15.0 )
+						}
+					#endif
+
+					if ( !trace.startSolid && !trace.allSolid )
+					{
+						startPos.z = trace.endPos.z
+						targetPos.z = trace.endPos.z
+
+						#if DEV
+						if ( AvoidCrushedByPlainDoorDebug )
+							DebugDrawMark( trace.endPos, 10, COLOR_GREEN, true, 15.0 )
+						#endif
+					}
+
+					trace = TraceHull( startPos, targetPos, mins, maxs, ignoreList, TRACE_MASK_SOLID_BRUSHONLY, TRACE_COLLISION_GROUP_NONE )
+					traceAttempts++
+				}
+
+				if ( !trace.startSolid && !trace.allSolid )
+					pushed.SetOrigin( trace.endPos )
+
+				break
+			case eDoorType.UNKNOWN:
+			case eDoorType.MODEL:
+			case eDoorType.MOVER:
+			case eDoorType.SLIDING:
+			case eDoorType.BLOCKABLE:
+			case eDoorType.CODE:
+			default:
+				break
+		}
+	}
+}
+
 void function summonplayers()
 {
 	entity player0 = GetPlayerArray()[0]

@@ -20,6 +20,7 @@ global function IsDoorLocked
 global function RemoveDoorFromManagedEntArray
 global function OpenDoor
 global function CloseDoor
+global function GetDoorType
 #endif
 
 #if SERVER && DEVELOPER
@@ -28,7 +29,7 @@ global function DEV_RestartAllDoorThinks
 
 global function CodeCallback_OnDoorInteraction
 
-enum eDoorType
+global enum eDoorType
 {
 	MODEL,
 	MOVER,
@@ -557,6 +558,16 @@ void function OnDoorSpawned( entity door )
 
 	ArrayRemoveInvalid( file.bigPropDoors )
 	file.bigPropDoors.append( door )
+}
+
+int function GetDoorType( entity door )
+{
+	if ( door in file.allDoors )
+		return file.allDoors[door]
+	else if ( IsCodeDoor( door ) )
+		return eDoorType.CODE
+
+	return eDoorType.UNKNOWN
 }
 #endif
 

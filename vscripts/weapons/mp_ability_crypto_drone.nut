@@ -1338,7 +1338,7 @@ bool function ShouldCryptoDroneBeCrushed( entity pusher, entity pushed )
 
 		if ( IsValid( doorEnt ) )
 		{
-			// AvoidBeingPutInsideDoorFromCrush( doorEnt, pushed )
+			AvoidBeingPutInsideDoorFromCrush( doorEnt, pushed )
 			return false
 		}
 	}
