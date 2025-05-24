@@ -1920,6 +1920,7 @@ void function ToggleFireSelect( entity player )
 void function ServerCallback_SUR_PingMinimap( vector origin, float duration, float spreadRadius, float ringRadius, int colorIndex )
 {
 	vector color = TEAM_COLOR_ENEMY
+	asset altIcon = $""
 	switch ( colorIndex )
 	{
 		case 0:
@@ -1933,8 +1934,13 @@ void function ServerCallback_SUR_PingMinimap( vector origin, float duration, flo
 		case 2:
 			color = COLOR_AIRDROP
 			break
+
+		case 3:
+			color = CRAFTING_COLOR
+			altIcon = $"rui/hud/ping/hex_pulse"
+			break
 	}
-	thread ServerCallback_SUR_PingMinimap_Internal( origin, duration, spreadRadius, ringRadius, color )
+	thread ServerCallback_SUR_PingMinimap_Internal( origin, duration, spreadRadius, ringRadius, color, altIcon )
 }
 
 

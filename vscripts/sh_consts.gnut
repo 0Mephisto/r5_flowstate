@@ -404,12 +404,17 @@ global const int AIRDROP_R = 10
 global const int AIRDROP_G = 224
 global const int AIRDROP_B = 233
 
+global const int CRAFTING_R = 0
+global const int CRAFTING_G = 255
+global const int CRAFTING_B = 204
+
 global const vector TEAM_COLOR_ENEMY = 		<ENEMY_R, ENEMY_G, ENEMY_B>
 global const vector TEAM_COLOR_FRIENDLY = 	<FRIENDLY_R, FRIENDLY_G, FRIENDLY_B>
 global const vector TEAM_COLOR_PARTY = 		<PARTY_R, PARTY_G, PARTY_B>
 global const vector TEAM_COLOR_YOU = 		<LOCAL_R, LOCAL_G, LOCAL_B>
 global const vector BURN_COLOR = 			<BURN_R, BURN_G, BURN_B>
 global const vector COLOR_AIRDROP = 		<AIRDROP_R, AIRDROP_G, AIRDROP_B>
+global const vector CRAFTING_COLOR = 		<CRAFTING_R, CRAFTING_G, CRAFTING_B>
 // END OFFICIAL
 
 global const TIME_ZOFFSET = 11520
