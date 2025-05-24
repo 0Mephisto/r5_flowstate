@@ -1938,7 +1938,7 @@ void function ServerCallback_SUR_PingMinimap( vector origin, float duration, flo
 }
 
 
-void function ServerCallback_SUR_PingMinimap_Internal( vector origin, float duration, float spreadRadius, float ringRadius, vector color )
+void function ServerCallback_SUR_PingMinimap_Internal( vector origin, float duration, float spreadRadius, float ringRadius, vector color, asset altIcon = $"" )
 {
 	entity player = GetLocalViewPlayer()
 	player.EndSignal( "OnDestroy" )
@@ -1958,8 +1958,8 @@ void function ServerCallback_SUR_PingMinimap_Internal( vector origin, float dura
 	{
 		vector newOrigin = origin + < RandomIntRange( randMin, randMax ), RandomIntRange( randMin, randMax ), 0 >  //
 
-		Minimap_RingPulseAtLocation( newOrigin, ringRadius, color / 255.0, pulseDuration, lifeTime, false )
-		FullMap_PingLocation( newOrigin, ringRadius, color / 255.0, pulseDuration, lifeTime, false )
+		Minimap_RingPulseAtLocation( newOrigin, ringRadius, color / 255.0, pulseDuration, lifeTime, false, altIcon )
+		FullMap_PingLocation( newOrigin, ringRadius, color / 255.0, pulseDuration, lifeTime, false, altIcon )
 
 		wait RandomFloatRange( minWait, maxWait )
 	}
@@ -4077,7 +4077,7 @@ void function FullMap_CommonTrackEntOrigin( var rui, entity ent, bool doTrackAng
 }
 
 
-var function FullMap_Ping_( float radius, vector color, float pulseDuration, float lifeTime, bool reverse )
+var function FullMap_Ping_( float radius, vector color, float pulseDuration, float lifeTime, bool reverse, asset customRing = $"" )
 {
 	var rui = FullMap_CommonAdd( $"ui/in_world_minimap_ping.rpak" )
 
@@ -4087,6 +4087,9 @@ var function FullMap_Ping_( float radius, vector color, float pulseDuration, flo
 	RuiSetFloat( rui, "pulseDuration", pulseDuration )
 	RuiSetBool( rui, "reverse", reverse )
 	RuiSetImage( rui, "marker", $"" )
+
+	if ( customRing != "" )
+		RuiSetImage( rui, "pulse", customRing )
 
 	Fullmap_AddRui( rui )
 
@@ -4100,12 +4103,12 @@ var function FullMap_Ping_( float radius, vector color, float pulseDuration, flo
 }
 
 
-var function FullMap_PingLocation( vector origin, float radius, vector color, float pulseDuration, float lifeTime = -1, bool reverse = false )
+var function FullMap_PingLocation( vector origin, float radius, vector color, float pulseDuration, float lifeTime = -1, bool reverse = false, asset altIcon = $"" )
 {
 	if ( !file.mapTopo )
 		return null
 
-	var rui = FullMap_Ping_( radius, color, pulseDuration, lifeTime, reverse )
+	var rui = FullMap_Ping_( radius, color, pulseDuration, lifeTime, reverse, altIcon )
 	RuiSetFloat3( rui, "objectPos", origin )
 	RuiSetFloat3( rui, "objectAngles", <0, 0, 0> )
 	return rui

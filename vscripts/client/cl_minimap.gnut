@@ -734,7 +734,7 @@ void function Minimap_CommonTrackEntOrigin( var rui, entity ent, bool doTrackAng
 }
 
 
-var function Minimap_RingPulse( float radius, vector color, float pulseDuration, float lifeTime, bool reverse )
+var function Minimap_RingPulse( float radius, vector color, float pulseDuration, float lifeTime, bool reverse, asset customRing = $"" )
 {
 	var rui = Minimap_CommonAdd( MINIMAP_RING_PULSE_RUI, MINIMAP_Z_OBJECTIVE )
 
@@ -748,8 +748,10 @@ var function Minimap_RingPulse( float radius, vector color, float pulseDuration,
 	RuiSetFloat( rui, "pulseDuration", pulseDuration )
 
 	RuiSetBool( rui, "reverse", reverse )
-
 	RuiSetImage( rui, "marker", $"" )
+
+	if ( customRing != $"" )
+		RuiSetImage( rui, "pulse", customRing )
 
 	if ( lifeTime > 0 )
 		thread Minimap_RingPulseCleanup( rui, lifeTime )
@@ -758,9 +760,9 @@ var function Minimap_RingPulse( float radius, vector color, float pulseDuration,
 }
 
 
-var function Minimap_RingPulseAtLocation( vector origin, float radius, vector color, float pulseDuration, float lifeTime = -1, bool reverse = false )
+var function Minimap_RingPulseAtLocation( vector origin, float radius, vector color, float pulseDuration, float lifeTime = -1, bool reverse = false, asset customRing = $"" )
 {
-	var rui = Minimap_RingPulse( radius, color, pulseDuration, lifeTime, reverse )
+	var rui = Minimap_RingPulse( radius, color, pulseDuration, lifeTime, reverse, customRing )
 	RuiSetFloat3( rui, "objectPos", origin )
 	RuiSetFloat3( rui, "objectAngles", <0, 0, 0> )
 	return rui
