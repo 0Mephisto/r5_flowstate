@@ -211,7 +211,7 @@ void function OnBtnFiltersClear()
 
 	SetConVarBool( "serverbrowser_hideEmptyServers", false )
 	SetConVarInt( "serverbrowser_mapFilter", 0 )
-	SetConVarInt( "serverbrowser_gamemodeFilter", 0 )
+	SetConVarInt( "serverbrowser_gameModeFilter", 0 )
 }
 
 void function ServerBrowser_SelectServer(int id)
@@ -323,7 +323,7 @@ void function ServerBrowser_FilterServerList()
 
 	ServerBrowser_UpdateFilterLists()
 
-	if(GetConVarInt( "serverbrowser_mapFilter" ) > (filterArguments.filterMaps.len() - 1) || GetConVarInt( "serverbrowser_gamemodeFilter" ) > (filterArguments.filterGamemodes.len() - 1))
+	if(GetConVarInt( "serverbrowser_mapFilter" ) > (filterArguments.filterMaps.len() - 1) || GetConVarInt( "serverbrowser_gameModeFilter" ) > (filterArguments.filterGamemodes.len() - 1))
 		OnBtnFiltersClear()
 	
 	//Must wait for convars to actually set
@@ -336,7 +336,7 @@ void function ServerBrowser_FilterServerList()
 
 	filterArguments.hideEmpty = GetConVarBool( "serverbrowser_hideEmptyServers" )
 	filterArguments.filterMap = filterArguments.filterMaps[GetConVarInt( "serverbrowser_mapFilter" )]
-	filterArguments.filterGamemode = filterArguments.filterGamemodes[GetConVarInt( "serverbrowser_gamemodeFilter" )]
+	filterArguments.filterGamemode = filterArguments.filterGamemodes[GetConVarInt( "serverbrowser_gameModeFilter" )]
 	filterArguments.searchTerm = Hud_GetUTF8Text( Hud_GetChild( file.panel, "BtnServerSearch" ) )
 	filterArguments.useSearch = filterArguments.searchTerm != ""
 

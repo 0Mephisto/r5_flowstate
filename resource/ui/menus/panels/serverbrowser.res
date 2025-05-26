@@ -128,7 +128,7 @@ scripts/resource/ui/menus/panels/serverbrowser.res
 		ControlName RuiButton
 		InheritProperties SwitchButton
 		style                   DialogListButton
-		ConVar "serverbrowser_gamemodeFilter"
+		ConVar "serverbrowser_gameModeFilter"
 		wide 670
 		ypos 15
 
