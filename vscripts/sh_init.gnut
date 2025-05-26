@@ -394,6 +394,8 @@ void function Server_Init()
 	LiveAPI_Init()
 	LootHelper_Init()
 
+	MOTD_Init()
+
     // ReMap Live
     if ( IsDevGamemode() )
         ReMapLive_Init()

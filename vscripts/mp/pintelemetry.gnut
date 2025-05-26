@@ -440,9 +440,6 @@ struct //Todo: move appropriate to tracker.var
 	string superglide_msg
 	string superglidetitle
 	
-	// Server MOTD
-	bool bMotdEnabled = false
-	
 	// Chatbot Messages
 	array<string> BotAllowedModes = [ "fs_1v1", "fs_lgduels_1v1", "fs_scenarios", "fs_dm", "fs_haloMod", "fs_movementrecorder", "fs_realistic_ttv" ]
 	bool bBotAllowed
@@ -1092,30 +1089,6 @@ void function DummyFunction_ProofOfConcept( string retData )
 	#endif
 }
 
-void function FireRemoteMotd( entity player )
-{	
-	thread
-	(
-		void function() : ( player )
-		{
-			if( !player.p.isConnected )
-				waitthread WaitSignalOrTimeout( player, 20, "OnConnected", "OnDestroy", "OnDisconnected" )
-			
-			if( IsValid( player ) && player.p.isConnected )
-			{
-				//run ui script for motd
-				Remote_CallFunction_UI( player, "UI_Callback_MOTD" )
-					
-				// wait 5	
-				// if( IsValid( player ) && player.p.isConnected )
-					// LocalMsg( player, "#FS_WELCOME", "", eMsgUI.QUICK, 10, player.p.name )//Extra welcome message
-			}
-		}
-	)()
-}
-
-
-
 void function Tracker_QueryInit()
 {
 	AddCallback_QueryString( "verified:SERVER" )
@@ -1126,9 +1099,6 @@ void function Tracker_QueryInit()
 		string queryString = "restricted_rank:" + GetCurrentPlaylistVarInt( "restricted_rank", 0 ).tostring()
 		AddCallback_QueryString( queryString, DummyFunction_ProofOfConcept )
 	}
-	
-	if( file.bMotdEnabled )
-		AddCallback_OnClientConnected( FireRemoteMotd )
 }
 
 ////////////////////////////////////////////
@@ -1688,9 +1658,6 @@ void function Tracker_SettingsInit()
 	file.restricted_whitelist_message 		= GetCurrentPlaylistVarString( "restricted_whitelist_message", "You are whitelisted to play on this restricted server." )
 	file.restricted_admin_message 			= GetCurrentPlaylistVarString( "restricted_admin_message", "You are an admin." )
 	file.restricted_whitelist_only			= GetCurrentPlaylistVarBool( "restricted_whitelist_only", false )
-
-	//motd
-	file.bMotdEnabled						= GetCurrentPlaylistVarBool( "enable_motd", false )
 
 	//wait for players to connect before querying batch player stats
 	file.maxWaitForBatchLoad				= GetCurrentPlaylistVarFloat( "tracker_max_wait", 7.0 )
@@ -5740,24 +5707,6 @@ void function PIN_Init()
 		AddClientCommandCallback( "cc", ClientCommand_mkos_admin ) 
 		AddCallback_OnClientConnected( CheckAdmin_OnConnect )
 	}
-	
-	if( GetCurrentPlaylistVarBool( "enable_motd", false ) )
-		AddCallback_OnClientConnected( FireRemoteMotd )
-}
-
-void function FireRemoteMotd( entity player )
-{	
-	thread
-	(
-		void function() : ( player )
-		{
-			if( !player.p.isConnected )
-				waitthread WaitSignalOrTimeout( player, 20, "OnConnected", "OnDestroy", "OnDisconnected" )
-			
-			if( IsValid( player ) && player.p.isConnected )
-				Remote_CallFunction_UI( player, "UI_Callback_MOTD" )
-		}
-	)()
 }
 
 void function PIN_GameStart(){}

@@ -454,7 +454,7 @@ playlists
 				// example: "15423978654235,620652652562,72462626522253"
 				admins_list										""
 				
-				enable_motd 									1		// Enables message of the day for server (defined at bottom of file in SECTION 4:  FS_PLAYLIST_MOTD )
+				enable_motd 									1		// Enables message of the day for server (defined at bottom of file in SECTION 4:  MOTD_TEXT )
 				
 				// global auto mute system 
 				opt_in_global_mute								1 		// Globally muted players on tracker will auto mute.
@@ -3823,7 +3823,7 @@ playlists
 				dodge_dash_enabled								0
 
 				custom_loot               						0
-				enable_motd										0
+				enable_motd										1
 				flowstate_mod_active							0
 				
 			}
@@ -3927,8 +3927,8 @@ playlists
 				//		TOKENS FOR SERVER HOSTS		//
 				//////////////////////////////////////
 				
-				"FS_PLAYLIST_MOTD" "An R5Reloaded Server" //set your servers message of the day. 1000 char max.  Use \n for newline.
-				"FS_PLAYLIST_MOTD_CONTINUE" "" // appends to first, 1000 char max.
+				"MOTD_TEXT" "An R5Reloaded Server" //set your servers message of the day. 1000 char max.  Use \n for newline.
+				"MOTD_TEXT_EXTENDED" "" // appends to first, 1000 char max.
 			
 				"BETA_BUILD_WATERMARK" "R5Reloaded - v2.6.01"
 

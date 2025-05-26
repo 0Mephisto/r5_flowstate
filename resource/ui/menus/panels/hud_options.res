@@ -479,7 +479,7 @@
         style					DialogListButton
         navUp					SwitchChatMessages [!$GAMECONSOLE]
 		navUp					SwchChatSpeechToText [$GAMECONSOLE]
-        ConVar					"show_motd_on_server_first_join"
+        ConVar					"motd_enable"
         list
         {
             "#SETTING_OFF"	0

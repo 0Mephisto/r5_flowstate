@@ -711,26 +711,24 @@ void function SetMotdText( string text )
 	
 	// auto-opening motd disabled as per amos request
 
-	if( !GetConVarInt( "show_motd_on_server_first_join" ) )
+	if( !GetConVarInt( "motd_enable" ) )
 		return
 
-	// note(amos): GetServerID() cannot be used on the client
-	// it is a server only function that was accidentally
-	// registered for client too. Calling this here returns
-	// the server ID of your own listen server, so it will
-	// only show the message once during the duration of the
-	// process. in the future we need to work on the ability
-	// to send the server id to the client. commented, and
-	// directly calling OpenMOTD() for now.
-	OpenMOTD()
-
-	// string server = GetServerID()
+	if ( GetConVarBool( "motd_once_per_server" ) )
+	{
+		string server = GetServerID()
 	
-	// if( !( server in file.seenMotdForServer ) )
-	// {
-	// 	OpenMOTD()
-	// 	file.seenMotdForServer[ server ] <- true
-	// }
+		if( !( server in file.seenMotdForServer ) )
+		{
+			OpenMOTD()
+			file.seenMotdForServer[ server ] <- true
+		}
+	}
+	else
+	{
+		// Just open it.
+		OpenMOTD()
+	}
 }
 
 void function OpenMOTD()
@@ -745,15 +743,15 @@ void function OpenMOTD()
 	}
 	
 	string motd = ""
-	string motdLocalized = Localize( "#FS_PLAYLIST_MOTD" )
-	string motdLocaliziedContinue = Localize( "#FS_PLAYLIST_MOTD_CONTINUE" )
+	string motdLocalized = Localize( "#MOTD_TEXT" )
 	
-	if( motdLocalized != "" && motdLocalized != "#FS_PLAYLIST_MOTD" )
+	if( motdLocalized != "" && motdLocalized != "#MOTD_TEXT" )
 	{
 		motd = motdLocalized
+		string motdLocaliziedExtended = Localize( "#MOTD_TEXT_EXTENDED" )
 		
-		if( motdLocaliziedContinue != "" && motdLocaliziedContinue != "#FS_PLAYLIST_MOTD_CONTINUE" )
-			motd = motd + motdLocaliziedContinue	
+		if( motdLocaliziedExtended != "" && motdLocaliziedExtended != "#MOTD_TEXT" )
+			motd = motd + motdLocaliziedExtended	
 		
 		file.motdText = motd //save for repeat opens
 	}

@@ -611,6 +611,7 @@ Scripts:
 	mp/_loot_drones.nut
 	mp/_loot_rollers.nut
 	mp/_vr.nut
+	mp/_motd.gnut
 	mp/player_cloak.nut
 	mp/_titan_tether.gnut
 	_hovertank.gnut
