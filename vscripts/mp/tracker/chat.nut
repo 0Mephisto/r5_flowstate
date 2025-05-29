@@ -349,6 +349,9 @@ void function cmd_team( string tag, array<string> args, entity activator )
 
 void function Chat_Init()
 {
+	if( !IsFlowstateActive() )
+		return
+	
 	if( GetCurrentPlaylistVarBool( "disable_chat_monitor", false ) )
 		return
 	
