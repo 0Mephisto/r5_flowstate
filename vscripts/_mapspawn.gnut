@@ -265,6 +265,14 @@ void function PrecacheFSEntities()
 	//Server only init for flowstate gamemodes
 	switch( GetCurrentPlaylistName() )
 	{
+		case "fs_onlyup":
+		OnlyUp_Init()
+		break
+
+		case "fs_nextbots":
+		MpNextBots_Init()
+		break
+		
 		case "fs_fallingforever":
 		InitFallingForever()
 		break
@@ -317,16 +325,16 @@ void function PrecacheFSEntities()
 		break
 	}
 
-	PrecacheWeapon( $"mp_ability_emote_projector" )
-	PrecacheWeapon( $"mp_weapon_vctblue_primary" )
-	PrecacheWeapon( $"melee_vctblue" )
-	PrecacheWeapon( $"mp_weapon_flamethrower" )
+	// PrecacheWeapon( $"mp_ability_emote_projector" )
+	// PrecacheWeapon( $"mp_weapon_vctblue_primary" )
+	// PrecacheWeapon( $"melee_vctblue" )
+	// PrecacheWeapon( $"mp_weapon_flamethrower" )
 	PrecacheWeapon( $"mp_ability_phase_chamber" )
 	PrecacheWeapon( $"mp_ability_phase_rewind" )
-	PrecacheWeapon( $"mp_ability_space_elevator_tac" )
+	// PrecacheWeapon( $"mp_ability_space_elevator_tac" )
 	PrecacheWeapon( $"mp_weapon_ringflare" )
-	PrecacheWeapon( $"mp_weapon_melee_halo" )
-	PrecacheWeapon( $"melee_pilot_emptyhanded_halo" )
+	// PrecacheWeapon( $"mp_weapon_melee_halo" )
+	// PrecacheWeapon( $"melee_pilot_emptyhanded_halo" )
 
 	switch( GameRules_GetGameMode() )
 	{
@@ -348,8 +356,8 @@ void function PrecacheFSEntities()
 	}
 
 	PrecacheWeapon( $"mp_weapon_turret" )
-	PrecacheWeapon( $"melee_titan_sword" )
-	PrecacheWeapon( $"mp_weapon_titan_sword" )
+	// PrecacheWeapon( $"melee_titan_sword" )
+	// PrecacheWeapon( $"mp_weapon_titan_sword" )
 	PrecacheWeapon( $"npc_weapon_turret_volt" )
 	
 	// PrecacheWeapon( $"mp_weapon_portalgun_first" )
@@ -398,21 +406,23 @@ void function PrecacheFSEntities()
 		PrecacheModel( $"mdl/flowstate_custom/ptpov_haloelite.rmdl" )
 	}
 
-	PrecacheModel( $"mdl/Humans/pilots/w_phantom.rmdl" )
-	PrecacheModel( $"mdl/Humans/pilots/ptpov_phantom.rmdl" )
+	// PrecacheModel( $"mdl/Humans/pilots/w_phantom.rmdl" )
+	// PrecacheModel( $"mdl/Humans/pilots/ptpov_phantom.rmdl" )
 
-	PrecacheModel( $"mdl/Humans/pilots/w_amogino.rmdl" )
+	// PrecacheModel( $"mdl/Humans/pilots/w_amogino.rmdl" )
 
-	PrecacheModel( $"mdl/Humans/pilots/w_rhapsody.rmdl" )
-	PrecacheModel( $"mdl/Humans/pilots/ptpov_rhapsody.rmdl" )
+	// PrecacheModel( $"mdl/Humans/pilots/w_rhapsody.rmdl" )
+	// PrecacheModel( $"mdl/Humans/pilots/ptpov_rhapsody.rmdl" )
 
-	PrecacheModel( $"mdl/Humans/pilots/ballistic_base_w.rmdl" )
-	PrecacheModel( $"mdl/Humans/pilots/ballistic_base_v.rmdl" )
+	// PrecacheModel( $"mdl/Humans/pilots/ballistic_base_w.rmdl" )
+	// PrecacheModel( $"mdl/Humans/pilots/ballistic_base_v.rmdl" )
 
-	PrecacheModel( $"mdl/flowstate_custom/w_marvin.rmdl" )
+	// PrecacheModel( $"mdl/flowstate_custom/w_marvin.rmdl" )
 
-	PrecacheModel( $"mdl/flowstate_custom/w_pete_mri.rmdl" )
-	PrecacheModel( $"mdl/flowstate_custom/ptpov_pete_mri.rmdl" )
+	// PrecacheModel( $"mdl/flowstate_custom/w_pete_mri.rmdl" )
+	// PrecacheModel( $"mdl/flowstate_custom/ptpov_pete_mri.rmdl" )
+	
+	// PrecacheModel( $"mdl/rocks/rock_lava_moss_desertlands_04.rmdl" )
 }
 
 void function PrecacheSDKWeapons()

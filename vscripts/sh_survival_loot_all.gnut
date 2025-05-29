@@ -285,11 +285,7 @@ void function SURVIVAL_Loot_All_InitShared()
 	file.disabledRefs.clear()
 	file.disabledRefs = split( GetCurrentPlaylistVarString( "survival_disabled_loot", " " ), " " )
 
-	if( Playlist() == ePlaylists.fs_haloMod_survival ) 
-	{
-		SURVIVAL_Loot_RegFromDataTable( GetDataTable( $"datatable/flowstate_all_new_halomod_survival_groundloot.rpak" ) )
-	} 
-	else if (Playlist() == ePlaylists.survival_firingrange || Playlist() == ePlaylists.survival_training)
+	if (Playlist() == ePlaylists.survival_firingrange || Playlist() == ePlaylists.survival_training)
 	{
 		SURVIVAL_Loot_RegFromDataTable( GetDataTable( $"datatable/survival_loot_sdk_firingrange.rpak" ) )
 	} 
@@ -299,9 +295,6 @@ void function SURVIVAL_Loot_All_InitShared()
 		
 		if (IsFlowstateActive())
 			SURVIVAL_Loot_RegFromDataTable( GetDataTable( $"datatable/flowstate_all_new.rpak" ) )
-		
-		if( GetCurrentPlaylistVarBool( "is_halo_gamemode", false ) )
-			SURVIVAL_Loot_RegFromDataTable( GetDataTable( $"datatable/flowstate_all_new_halomod.rpak" ) )
 		
 		if( Gamemode() == eGamemodes.fs_snd )
 			SURVIVAL_Loot_RegFromDataTable( GetDataTable( $"datatable/flowstate_all_new_snd.rpak" ) )

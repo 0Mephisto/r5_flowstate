@@ -54,7 +54,7 @@ array<entity> function GetLobbySpawnedProps()
 
 void function SpawnOITCRoom( vector startingorg = <0,0,0> )
 {
-	printw( "SpawnOITCRoom" )
+	// printw( "SpawnOITCRoom" )
 	
 	file.votingRoomEnts.append( MapEditor_CreateProp( $"mdl/props/octane_jump_pad/octane_jump_pad.rmdl", < -1716, -1383.8000, 0.0005 > + startingorg, < 0, 0, 0 >, true, 50000, -1, 1 ) )
     file.votingRoomEnts.append( MapEditor_CreateProp( $"mdl/props/octane_jump_pad/octane_jump_pad.rmdl", < -1213, -1509.8000, 0.0005 > + startingorg, < 0, 0, 0 >, true, 50000, -1, 1 ) )
