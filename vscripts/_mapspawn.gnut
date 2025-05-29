@@ -265,14 +265,6 @@ void function PrecacheFSEntities()
 	//Server only init for flowstate gamemodes
 	switch( GetCurrentPlaylistName() )
 	{
-		case "fs_onlyup":
-		// OnlyUp_Init()
-		break
-
-		case "fs_nextbots":
-		// MpNextBots_Init()
-		break
-		
 		case "fs_fallingforever":
 		InitFallingForever()
 		break
