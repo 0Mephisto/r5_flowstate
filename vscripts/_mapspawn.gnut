@@ -266,11 +266,11 @@ void function PrecacheFSEntities()
 	switch( GetCurrentPlaylistName() )
 	{
 		case "fs_onlyup":
-		OnlyUp_Init()
+		// OnlyUp_Init()
 		break
 
 		case "fs_nextbots":
-		MpNextBots_Init()
+		// MpNextBots_Init()
 		break
 		
 		case "fs_fallingforever":
