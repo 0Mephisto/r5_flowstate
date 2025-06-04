@@ -247,7 +247,7 @@ void function Sequence_WaitingForPlayers()
 
 void function Sequence_PickLoadout()
 {
-	if ( Playlist() == ePlaylists.fs_scenarios || !Survival_CharacterSelectEnabled() || Gamemode() != eGamemodes.SURVIVAL || Playlist() == ePlaylists.fs_haloMod_survival || Gamemode() == eGamemodes.fs_snd ) 
+	if ( Playlist() == ePlaylists.fs_scenarios || !Survival_CharacterSelectEnabled() || Gamemode() != eGamemodes.SURVIVAL || Playlist() == ePlaylists.fs_haloMod_survival || Gamemode() == eGamemodes.fs_snd || Gamemode() == eGamemodes.fs_spieslegends ) 
 	{
 		foreach ( player in GetPlayerArray() )
 		{
@@ -409,7 +409,7 @@ void function Sequence_Prematch()
 	if ( CharSelect_ChampionSquadIntroEnabled() )
 		wait CharSelect_GetOutroChampionPresentDuration()
 
-	if( Gamemode() == eGamemodes.fs_snd )
+	if( Gamemode() == eGamemodes.fs_snd || Gamemode() == eGamemodes.fs_spieslegends )
 		return
 	
 	// The gamemode handles everything past this point
@@ -584,14 +584,30 @@ void function RespawnBehavior_Init()
 	foreach ( playlistVar, modName in possibleMods )
 		if ( GetCurrentPlaylistVarBool( playlistVar, false ) || GetCurrentPlaylistVarInt( "flowstate_modified_movement", 0 ) == 1 )
 			enabledMods.append( modName )
-		
+	
+	// Enables zero g
+	if( GetCurrentPlaylistVarBool( "enable_zero_g", false ) )
+		enabledMods.append( "zero_g" )
+
+	// Enables ads hover
+	if( GetCurrentPlaylistVarBool( "enable_ads_hover", false ) )
+		enabledMods.append( "pas_ads_hover" )
+	
+	// Disable slides
+	if( GetCurrentPlaylistVarBool( "disable_slide", false ) )
+		enabledMods.append( "disable_slide" )
+	
+	// Removes teammates names
+	if( GetCurrentPlaylistVarBool( "disable_targetinfo", false ) )
+		enabledMods.append( "disable_targetinfo" )
+	
 	script_bRespawnInitComplete = true
 }
 
 void function DecideRespawnPlayer( entity player, bool giveLoadoutWeapons = true )
 {
 	#if DEVELOPER
-		Warning( "DecideRespawnPlayer: " + string( player ) )
+		// Warning( "DecideRespawnPlayer: " + string( player ) )
 		// DumpStack()
 		mAssert( script_bRespawnInitComplete, "RespawnBehavior_Init() --- wasn't ready in DecideRespawnPlayer()" )
 	#endif
@@ -893,7 +909,7 @@ void function OnPlayerKilled( entity victim, entity attacker, var damageInfo )
 	if ( !IsValid( victim ) || !IsValid( attacker ) )
 		return
 	
-	if( is1v1EnabledAndAllowed() )
+	if( is1v1EnabledAndAllowed() || Gamemode() == eGamemodes.fs_spieslegends )
 	{
 		int sourceId = DamageInfo_GetDamageSourceIdentifier( damageInfo )
 		
@@ -912,13 +928,13 @@ void function OnPlayerKilled( entity victim, entity attacker, var damageInfo )
 	victim.SetPlayerGameStat( PGS_DEATHS, victim.GetPlayerGameStat( PGS_DEATHS ) + 1 )
 	if( Gamemode() != eGamemodes.CUSTOM_CTF && Gamemode() != eGamemodes.fs_snd )
 		__IncrementPlayerNetInt( victim, "deaths" )
-	
-	victim.ClearParent()
+
+	victim.ClearParent()	
 	victim.FreezeControlsOnServer()
 	
 	victim.SetPredictionEnabled( false )
 	
-	if( Gamemode() == eGamemodes.fs_snd || Flowstate_IsHaloMode() && Playlist() != ePlaylists.fs_haloMod_survival ) //todo: init single bool conditional
+	if( Gamemode() == eGamemodes.fs_spieslegends || Gamemode() == eGamemodes.fs_snd || Flowstate_IsHaloMode() && Playlist() != ePlaylists.fs_haloMod_survival ) //todo: init single bool conditional
 		return
 	
 	victim.StartObserverMode( OBS_MODE_DEATHCAM )
@@ -979,6 +995,7 @@ void function OnClientConnected( entity player )
 		player.p.assignedCustomModel = RandomIntRangeInclusive(1,10)
 	else
 		player.p.assignedCustomModel = -1
+	
 	
 	if( is1v1EnabledAndAllowed() )
 		player.p.playerCamo = RandomIntRangeInclusive( 1, 10 )
@@ -1238,12 +1255,24 @@ void function UpdatePlayerCounts()
 			break
 		}
 		case eGamemodes.fs_prophunt:
-		{
-			array<entity> propsAlive = GetPlayerArrayOfTeam_Alive( TEAM_MILITIA )
-			SetGlobalNetInt( "livingPlayerCount", propsAlive.len() )
-			SetGlobalNetInt( "squadsRemainingCount", propsAlive.len() )		
-			break
-		}
+		
+		array<entity> propsAlive = GetPlayerArrayOfTeam_Alive( TEAM_MILITIA )
+		SetGlobalNetInt( "livingPlayerCount", propsAlive.len() )
+		SetGlobalNetInt( "squadsRemainingCount", propsAlive.len() )		
+		break
+
+		case eGamemodes.fs_prophunt:
+		array<entity> propsAlive = GetPlayerArrayOfTeam_Alive( TEAM_MILITIA )
+		SetGlobalNetInt( "livingPlayerCount", propsAlive.len() )
+		SetGlobalNetInt( "squadsRemainingCount", propsAlive.len() )		
+		break
+
+		case eGamemodes.fs_spieslegends:
+		array<entity> connectedPlayers = GetPlayerArray()
+		SetGlobalNetInt( "livingPlayerCount", connectedPlayers.len() )
+		SetGlobalNetInt( "squadsRemainingCount", connectedPlayers.len() )		
+		break
+		
 		case eGamemodes.flowstate_pkknockback:
 		{
 			array<entity> playersAlive = GetPlayerArray_Alive()

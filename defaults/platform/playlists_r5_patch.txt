@@ -23,7 +23,6 @@ playlists
 				replay_disabled									1 //For Survival modes
 				
 				enable_global_chat								1 //Enables global chat
-				use_fall_banners								1
 				
 				enable_grapple_recovers_banner						0
 				gibraltar_fast_revive								1
@@ -421,8 +420,15 @@ playlists
 				player_revive_enabled							1
 				match_ending_enabled							1
 				battlechatter_enabled							1
+				
+				// Player mods
 				survival_jumpkit_enabled						0
 				survival_wallrun_enabled						0
+				enable_zero_g									0
+				enable_ads_hover								0
+				disable_slide									0
+				disable_targetinfo								0
+				
 				survival_drop_item								1
 				survival_pickup_item							1
 				survival_swap_item								1
@@ -618,6 +624,13 @@ playlists
 				// General Gamemode Settings:
 				match_ending_enabled							0
 				
+				// Firing Range:
+				survival_firingrange							0
+				staging_ultimates_enabled						1
+				survival_staging_area_enabled					0
+				
+				
+				
 				firingrange_aimtrainerbycolombia				1
 				aimtrainer_enableSkins							1
 				r5reloaded_AnimatedCharacterSelect				1
@@ -716,67 +729,6 @@ playlists
 			} } }
 		}
 		
-		fs_snd
-		{
-			inherit survival
-			vars
-			{
-				visible											1
-
-				name											"Search & Destroy"
-				description										"Search & Destroy"
-				abbreviation									"Search & Destroy"
-				lobbytitle										"Search & Destroy"
-				
-				// match teams will not fill with more than one party, up to max_teams of size max_team_size (or less) -- not exceeding max_players
-				max_teams										2
-				max_players										6
-				min_players										6
-
-				// Skip intros:
-				waiting_for_players_spawning_enabled			1
-				waiting_for_players_countdown_seconds			0
-				waiting_for_players_timeout_seconds				1
-				character_select_time_max						0.0
-				character_select_time_min						0.0
-				survival_enable_gladiator_intros				0
-				jump_from_plane_enabled							0
-				match_ending_enabled							0
-
-				// No circle:
-				sur_circle_start_paused							0
-				
-				
-				bleedout_enabled								0
-				
-				SND_force_initial_map							6 // 0 dust2, 1 shoothouse, 2 de_cache, 3, nuketown, 4 dncanals, 5 killyard, 6 random
-				SND_change_to_next_map_when_game_finishes		1
-				SND_Round_LimitTime								150
-				second_scorebar_enabled							0
-				flowstateHoster 								"r5r_ColombiaFPS"
-				ground_loot_enable								0
-				
-				fs_stamina_mod									1
-				fp_sprint_fx									1
-				flowstate_disable_all_map_triggers				1 // fix arena cmposite spawn y dejar esto en 0
-				survival_infinite_ammo							1
-				flowstate_spectator_team_only					1
-				
-				flowstate_give_random_custom_models_toall		0
-				flowstate_seconds_to_wait_without_players_before_restarting		3600 // 3600 : 1 hour
-				
-				flowstate_modified_movement						0 // 0 = Apex || 1 = Titanfall 2 || 2 = Titanfall 2 High Air Accel || 3 = Titanfall 2 Low Grav || 4 = CSGO || 5 = CSGO High Air Accel || 6 = Surf || 7 = Half-Life 1 || 8 = Halo || 9 = Superglide Boost || 10 = Instagib || 11 = Fun Mode || 12 = Halo Movement NEW
-				drop_loot_on_death								1
-				deathbox_ondeath_enabled						0
-
-				flowstate_enable_weapons_locked_sets			1 //Enables predefined white, blue, purple weapons.
-			}
-			gamemodes { fs_snd { maps {
-				mp_rr_arena_empty								1
-			} } }
-		}
-
-
 		winterexpress
 		{
 			inherit survival
@@ -2293,7 +2245,6 @@ playlists
 				enable_afk_thread 								1 //0 disables afk thread for this mode
 				superglide_counter_msg							0 // Shows players superglide count
 				custom_superglide_msg							"Kewl beans" //shows custom msg under counter.
-				patch_waiting_area								1 //makes a barrier between waiting and fighting areas
 				
 				////////////////////////////////////////////////////////////////////////////////
 				// The following "custom_1v1..." vars can be used to create custom loadouts
@@ -2356,11 +2307,15 @@ playlists
 				spawnsets_mp_rr_desertlands_64k_x_64k			"1"
 				spawnsets_mp_rr_canyonlands_64k_x_64k			"1"
 				spawnsets_mp_rr_arena_phase_runner				"1"
+				spawnsets_mp_rr_canyonlands_staging				"1"
 				
 				spawnpaks_use_random							0	// bool, loads random configured pak on mapstart
 				spawnpaks_preferred_pak							0 	// integer, pak number, 0 to disable						
 				custom_spawnpak									""	// string, custom spawn.rpak override
 				custom_playlist_spawnpak						""  // string, custom playlist override (fs_1v1, fs_scenarios, etc. )  loads spawns for this gametype instead of game loaded gametype
+				
+				dodge_dash_enabled								0
+				super_dash_enabled								0
 			}
 			gamemodes { fs_dm { maps {
 				mp_rr_canyonlands_64k_x_64k 					1
@@ -2369,6 +2324,8 @@ playlists
 				mp_rr_arena_phase_runner 						1
 				mp_rr_party_crasher 							1
 				mp_rr_olympus_tt								1
+				mp_rr_desertlands_64k_x_64k						1
+				mp_rr_canyonlands_staging						1
 			} } }
 		}
 
@@ -2482,6 +2439,9 @@ playlists
 				mp_rr_arena_composite							1
 				mp_rr_arena_phase_runner						1
 				mp_rr_olympus_mu1								1
+				mp_rr_olympus_tt								1
+				mp_rr_desertlands_64k_x_64k						1
+				mp_rr_canyonlands_staging						1
 			} } }
 		}
 		
@@ -2573,7 +2533,6 @@ playlists
 				enable_afk_thread 								1 //0 disables afk thread for this mode
 				superglide_counter_msg							0 // Shows players superglide count
 				custom_superglide_msg							"Kewl beans" //shows custom msg under counter.
-				patch_waiting_area								1 //makes a barrier between waiting and fighting areas
 				
 				////////////////////////////////////////////////////////////////////////////////
 				// The following "custom_1v1..." vars can be used to create custom loadouts
