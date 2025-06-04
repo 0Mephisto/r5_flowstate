@@ -3488,24 +3488,35 @@ void function PlayerRestoreHP_1v1( entity player, float health, float shields )
 	
 	if( !IsAlive( player ) ) 
 		return
+	
+	string itemRef
 
+	if( shields == 0 )
+		itemRef = ""
+	else if(shields <= 50)
+		itemRef = "armor_pickup_lv1"
+	else if(shields <= 75)
+		itemRef = "armor_pickup_lv2"
+	else if(shields <= 100)
+		itemRef = "armor_pickup_lv3"
+	else if(shields <= 125 )
+		itemRef = "armor_pickup_lv5"
+	
+	if ( !SURVIVAL_Loot_IsRefValid( itemRef ) )
+		return
+
+	LootData data = SURVIVAL_Loot_GetLootDataByRef( itemRef )
+	int capacity = SURVIVAL_GetArmorShieldCapacity( data.tier )
+	
 	player.SetHealth( health )
 	
 	if( settings.enableHelmets )
 		Inventory_SetPlayerEquipment(player, "helmet_pickup_lv3", "helmet")
 		
-		if( shields == 0 )
-			Inventory_SetPlayerEquipment(player, "", "armor")
-		else if(shields <= 50)
-			Inventory_SetPlayerEquipment( player, "armor_pickup_lv1", "armor" )
-		else if(shields <= 75)
-			Inventory_SetPlayerEquipment( player, "armor_pickup_lv2", "armor" )
-		else if(shields <= 100)
-			Inventory_SetPlayerEquipment( player, "armor_pickup_lv3", "armor" )
-		else if(shields <= 125 )
-			Inventory_SetPlayerEquipment( player, "armor_pickup_lv5", "armor" )
-
-	player.SetShieldHealth( shields )
+	Inventory_SetPlayerEquipment( player, itemRef, "armor", capacity )
+	
+	if( shields != capacity )
+		player.SetShieldHealth( shields )
 }
 
 bool function isGroupValid( soloGroupStruct group )
@@ -3590,8 +3601,7 @@ void function respawnInSoloMode( entity player, int respawnSlotIndex = -1 ) //å¤
 
 	if( Equipment_GetDefaultShieldHP() > 0 && !Flowstate_IsLGDuels() )
 	{
-		player.SetShieldHealthMax( Equipment_GetDefaultShieldHP() )
-		PlayerRestoreHP_1v1( player, 100, player.GetShieldHealthMax().tofloat() )
+		PlayerRestoreHP_1v1( player, 100, Equipment_GetDefaultShieldHP() )
 	} 
 	else
 	{
