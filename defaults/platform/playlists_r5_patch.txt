@@ -3734,6 +3734,7 @@ playlists
 
 				survival_training 							1
 				flowstate_mod_active						0
+				enable_motd									0
 			}
 			gamemodes { survival { maps {
 				mp_rr_canyonlands_staging				   	1
@@ -3782,7 +3783,7 @@ playlists
 				dodge_dash_enabled								0
 
 				custom_loot               						0
-				enable_motd										1
+				enable_motd										0
 				flowstate_mod_active							0
 				
 			}
