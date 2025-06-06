@@ -4749,9 +4749,9 @@ void function GivePrimaryWeapon_1v1( entity player, string weapon, int slot ) //
 
 	entity weaponNew = player.GiveWeapon( weaponclass, slot, Mods, false )
 	
+	array<string> fsCharmsToUse = [ "SAID00701640565", "SAID01451752993", "SAID01334887835", "SAID01993399691", "SAID00095078608", "SAID01439033541", "SAID00510535756", "SAID00985605729" ]
 	if( player.p.chosenCharm > 0 )
 	{
-		array<string> fsCharmsToUse = [ "SAID00701640565", "SAID01451752993", "SAID01334887835", "SAID01993399691", "SAID00095078608", "SAID01439033541", "SAID00510535756", "SAID00985605729" ]
 		WeaponCosmetics_Apply( weaponNew, null, GetItemFlavorByGUID( ConvertItemFlavorGUIDStringToGUID( fsCharmsToUse[player.p.chosenCharm - 1] ) ) )
 	}
 	
