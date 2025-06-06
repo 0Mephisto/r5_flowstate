@@ -47,11 +47,11 @@ void function UpdateResultsData(string challengeName, int shotHits, int dummiesK
 	#endif
 
 	Hud_SetText(Hud_GetChild( file.menu, "Title"), challengeName)
-	Hud_SetText(Hud_GetChild( file.menu, "dummiesKilledResult"), dummiesKilled.tostring())
+	Hud_SetText(Hud_GetChild( file.menu, "DummiesKilledResult"), dummiesKilled.tostring())
 	Hud_SetText(Hud_GetChild( file.menu, "AccuracyResult"), accuracyShort + "%")
 	Hud_SetText(Hud_GetChild( file.menu, "ShotsHitResult"), shotHits.tostring())
-	Hud_SetText(Hud_GetChild( file.menu, "damageDealtResult"), damageDealt.tostring())
-	Hud_SetText(Hud_GetChild( file.menu, "criticalShotsResult"), criticalShots.tostring())
+	Hud_SetText(Hud_GetChild( file.menu, "DamageDoneResult"), damageDealt.tostring())
+	Hud_SetText(Hud_GetChild( file.menu, "CriticalShotsResult"), criticalShots.tostring())
 	Hud_SetText(Hud_GetChild( file.menu, "PersonalBestData"), "THIS SESSION BEST:  " + bestShotsHitRecord.tostring())
 	
 	if ( isNewRecord ) 
