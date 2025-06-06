@@ -3230,7 +3230,6 @@ void function scenarios_soloModePlayerToWaitingList( entity player, bool isWinne
 		Inventory_SetPlayerEquipment( player, "", slot )
 		
 	player.TakeOffhandWeapon( OFFHAND_MELEE )
-	player.SetPlayerNetEnt( "FSDM_1v1_Enemy", null )
 
 	soloPlayerStruct playerStruct	
 	playerStruct.player = player
@@ -5567,8 +5566,6 @@ bool function ClientCommand_enable_input_banner( entity player, array<string> ar
 
 void function Gamemode1v1_OnPlayerKilled( entity victim, entity attacker, var damageInfo )
 {
-	victim.SetPlayerNetEnt( "FSDM_1v1_Enemy", null )
-
 	if( IsValid( attacker ) )
 		victim.p.lastKiller = attacker
 	
@@ -5579,7 +5576,10 @@ void function Gamemode1v1_OnPlayerKilled( entity victim, entity attacker, var da
 	}
 	
 	if( !isScenariosMode() )
+	{
 		HandleGroupIsFinished( victim, attacker ) //, damageInfo )
+		victim.SetPlayerNetEnt( "FSDM_1v1_Enemy", null )
+	}
 		
 	if( Gamemode1v1_IsPlayerWaiting( victim ) ) //Shouldn't happen, but just in case
 	{
