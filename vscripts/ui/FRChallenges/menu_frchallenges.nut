@@ -47,6 +47,7 @@ void function UpdateResultsData(string challengeName, int shotHits, int dummiesK
 	#endif
 
 	Hud_SetText(Hud_GetChild( file.menu, "Title"), challengeName)
+	Hud_SetText(Hud_GetChild( file.menu, "ResultsText"), "DUMMIES KILLED") //Temp, add to localizations
 	Hud_SetText(Hud_GetChild( file.menu, "DummiesKilledResult"), dummiesKilled.tostring())
 	Hud_SetText(Hud_GetChild( file.menu, "AccuracyResult"), accuracyShort + "%")
 	Hud_SetText(Hud_GetChild( file.menu, "ShotsHitResult"), shotHits.tostring())
