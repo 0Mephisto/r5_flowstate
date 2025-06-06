@@ -223,9 +223,8 @@ void function InitWeaponScripts()
 	// MpAbilityAshDash_Init()
 	MpUltimatePhaseChamber_Init()
 	MpWeaponPortalGun_Init()
-	MpWeaponTitanSword_Init() //Flowstate Sword
+	// MpWeaponTitanSword_Init() //Flowstate Sword //Revisit, change model, audit remote functs
 	MpWeaponFlameThrower_Init()
-	MpNextBots_Init()
 	ChargePylons_Init()
 	MpWeaponRingFlare_Init()
 	if( Playlist() != ePlaylists.fs_1v1 && Playlist() != ePlaylists.fs_lgduels_1v1  && Playlist() != ePlaylists.fs_scenarios )
