@@ -44,6 +44,7 @@ void function Init_1v1_SettingsMenu( var newMenuArg )
 	AddButtonEventHandler( Hud_GetChild( file.menu, "VsUIButton"), UIE_CHANGE, ShowVsUIButtonChange )
 	AddButtonEventHandler( Hud_GetChild( file.menu, "CamoColorButton"), UIE_CHANGE, CamoColorButtonChange )
 	AddButtonEventHandler( Hud_GetChild( file.menu, "HeirloomButton"), UIE_CHANGE, HeirloomButtonChange )
+	AddButtonEventHandler( Hud_GetChild( file.menu, "CharmButton"), UIE_CHANGE, CharmButtonChange )
 	AddButtonEventHandler( Hud_GetChild( file.menu, "IBMMWaitTimeButton"), UIE_CHANGE, MaxIBMMTimeButtonChange )
 	AddButtonEventHandler( Hud_GetChild( file.menu, "MaxLatencyAllowedButton"), UIE_CHANGE, MaxEnemyLatencyButtonChange )
 	
@@ -150,6 +151,11 @@ void function CamoColorButtonChange(var button)
 void function HeirloomButtonChange(var button)
 {
 	ClientCommand( "CC_1v1_Heirloom " + GetConVarInt("fs_1v1_heirloom").tostring())
+}
+
+void function CharmButtonChange(var button)
+{
+	ClientCommand( "CC_1v1_Charm " + GetConVarInt("fs_1v1_charm").tostring())
 }
 
 void function MaxEnemyLatencyButtonChange(var button)

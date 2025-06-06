@@ -723,7 +723,7 @@ scripts/resource/ui/menus/fs_1v1/settings.menu
 			list{
 				"Empty Hands" 			0
 				"Bolo Sword"  				1
-				"Krambit" 			2
+				"Karambit" 			2
 				"Minecraft Sword"			3
 				"Mjolnir"				4
 				"Mack's Knife"				5
@@ -739,6 +739,61 @@ scripts/resource/ui/menus/fs_1v1/settings.menu
 			pin_to_sibling_corner   BOTTOM_LEFT
 		}
 		
+		CharmText
+		{
+				ControlName				Label
+				auto_wide_tocontents    1
+				labelText				"Weapon Charm"
+				visible                 1
+				zpos 2
+				xpos 210
+				tall					60
+				fontHeight				30
+				font					Default
+				fgcolor_override		"255 255 255 255"
+				"classname"					"SettingsBtn"	
+				
+				// ypos                    80
+				pin_to_sibling          CharmButton
+				pin_corner_to_sibling   LEFT
+				pin_to_sibling_corner   LEFT
+		}	
+		
+		CharmButton
+		{
+			ControlName				RuiButton
+			InheritProperties		SwitchButton
+			style					DialogListButton
+			classname					"SettingsBtn"
+				
+			// xpos 400
+			wide 360
+			ypos 55
+			tall 47
+			ConVar "fs_1v1_charm"
+			
+			list{
+				"Empty"				0
+				"Nessy" 			1
+				"Gas Canister"  				2
+				"Drone" 			3
+				"Crow"			4
+				"Jester"				5
+				"Nessy Ghost"				6
+				"Fireball" 7
+				"Yeti" 8
+			}
+	
+			navUp                   CamoColorButton
+			navDown					SupportFlowstate
+			
+			childGroupAlways        MultiChoiceButtonAlways
+			
+			pin_to_sibling          HeirloomButton
+			pin_corner_to_sibling   BOTTOM_LEFT
+			pin_to_sibling_corner   BOTTOM_LEFT
+		}
+		
 		SupportFlowstate
 		{
 			"ControlName" 			"RuiButton"
@@ -746,8 +801,8 @@ scripts/resource/ui/menus/fs_1v1/settings.menu
 			"wide" 					"210"
 			"tall" 					"40"
 			
-			ypos                    100
-			xpos					200
+			ypos                    80
+			xpos					130
 			
 			zpos 					10
 			sound_focus           "UI_Menu_Focus"
@@ -764,7 +819,7 @@ scripts/resource/ui/menus/fs_1v1/settings.menu
 			navUp                   HeirloomButton
 			navDown					SupportR5R
 			
-			pin_to_sibling          HeirloomText
+			pin_to_sibling          CharmText
 			pin_corner_to_sibling   BOTTOM_LEFT
 			pin_to_sibling_corner   BOTTOM_LEFT
 		}

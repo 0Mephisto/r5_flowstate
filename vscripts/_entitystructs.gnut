@@ -583,10 +583,14 @@ global struct ServerPlayerStruct
 	bool showvsui = true
 	int playerCamo = 15
 	int chosenHeirloom = 0
+	int chosenCharm = 0
 	float max_enemy_ping = 999.0
 	//End 1v1 Settings
 	
 	bool isPlayerInVent = false
+	asset lastGroundEntityName
+	bool isInLobby = false
+	bool isGameStart = false
 	
 	bool canChangeGadgets
 	int selectedGadget1 = 0

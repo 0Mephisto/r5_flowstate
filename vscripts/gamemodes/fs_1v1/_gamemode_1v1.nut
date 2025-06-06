@@ -316,6 +316,7 @@ void function Gamemode1v1_Init( int eMap )
 		AddClientCommandCallback("CC_1v1_ShowVsUI", CC_1v1_ShowVsUI)
 		AddClientCommandCallback("CC_1v1_CamoColor", CC_1v1_CamoColor)
 		AddClientCommandCallback("CC_1v1_Heirloom", CC_1v1_Heirloom)
+		AddClientCommandCallback("CC_1v1_Charm", CC_1v1_WeaponCharm)
 		AddClientCommandCallback("CC_1v1_MaxEnemyLatency", CC_1v1_MaxEnemyLatency)
 		AddClientCommandCallback("CC_1v1_MaxIBMMTime", CC_1v1_MaxIBMMTime)
 	}
@@ -718,6 +719,16 @@ bool function CC_1v1_CamoColor( entity player, array<string> args )
 	return true
 }
 
+bool function CC_1v1_WeaponCharm( entity player, array<string> args )
+{
+	if( !IsValid( player ) || !IsStringNumeric( args[0] ) )
+		return false
+	
+	player.p.chosenCharm = ClampInt( args[0].tointeger(), 0, 8 )
+	
+	return true
+}
+
 bool function CC_1v1_Heirloom( entity player, array<string> args )
 {
 	if( !IsValid( player ) || !IsStringNumeric( args[0] ) )
@@ -730,6 +741,7 @@ bool function CC_1v1_Heirloom( entity player, array<string> args )
 	
 	return true
 }
+
 
 bool function CC_1v1_MaxEnemyLatency( entity player, array<string> args )
 {
@@ -4736,9 +4748,12 @@ void function GivePrimaryWeapon_1v1( entity player, string weapon, int slot ) //
 	}
 
 	entity weaponNew = player.GiveWeapon( weaponclass, slot, Mods, false )
-
-	array<string> fsCharmsToUse = [ "SAID00701640565", "SAID01451752993", "SAID01334887835", "SAID01993399691", "SAID00095078608", "SAID01439033541", "SAID00510535756", "SAID00985605729" ]
-	WeaponCosmetics_Apply( weaponNew, null, GetItemFlavorByGUID( ConvertItemFlavorGUIDStringToGUID( fsCharmsToUse.getrandom() ) ) )
+	
+	if( player.p.chosenCharm > 0 )
+	{
+		array<string> fsCharmsToUse = [ "SAID00701640565", "SAID01451752993", "SAID01334887835", "SAID01993399691", "SAID00095078608", "SAID01439033541", "SAID00510535756", "SAID00985605729" ]
+		WeaponCosmetics_Apply( weaponNew, null, GetItemFlavorByGUID( ConvertItemFlavorGUIDStringToGUID( fsCharmsToUse[player.p.chosenCharm - 1] ) ) )
+	}
 	
 	int ammoType = weaponNew.GetWeaponAmmoPoolType()
 

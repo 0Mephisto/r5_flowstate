@@ -314,6 +314,19 @@
 			}
 		}
 
+		"fs_1v1_charm"
+		{
+			"helpText" "Weapon charm"
+			"flags" 		"ARCHIVE|RELEASE"
+
+			"Values"
+			{
+				"default"	"0"
+				"min" 		"0"
+				"max"		"8"
+			}
+		}
+		
 		"fs_1v1_heirloom"
 		{
 			"helpText" "Heirloom"
