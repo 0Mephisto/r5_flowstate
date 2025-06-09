@@ -1195,9 +1195,9 @@ function mantlemap_load() { // Props Array
                             float final_time = Time() - gen
                             float minutes = final_time / 60
                             float seconds = final_time % 60
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                         } else {
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
                         }
                     }
                 } else {
@@ -1248,9 +1248,9 @@ function mantlemap_load() { // Props Array
                             float final_time = Time() - gen
                             float minutes = final_time / 60
                             float seconds = final_time % 60
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                         } else {
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
                         }
                     }
                 } else {
@@ -1286,9 +1286,9 @@ function mantlemap_load() { // Props Array
                             float final_time = Time() - gen
                             float minutes = final_time / 60
                             float seconds = final_time % 60
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                         } else {
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
                         }
                     }
                 } else {
@@ -1309,9 +1309,9 @@ function mantlemap_load() { // Props Array
                             float final_time = Time() - gen
                             float minutes = final_time / 60
                             float seconds = final_time % 60
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                         } else {
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
                         }
                     }
                 } else {
@@ -1347,9 +1347,9 @@ function mantlemap_load() { // Props Array
                             float final_time = Time() - gen
                             float minutes = final_time / 60
                             float seconds = final_time % 60
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                         } else {
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
                         }
                     }
                 } else {
@@ -1400,9 +1400,9 @@ function mantlemap_load() { // Props Array
                             float final_time = Time() - gen
                             float minutes = final_time / 60
                             float seconds = final_time % 60
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                         } else {
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
                         }
                     }
                 } else {
@@ -1588,9 +1588,9 @@ function mantlemap_load() { // Props Array
                             float final_time = Time() - gen
                             float minutes = final_time / 60
                             float seconds = final_time % 60
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                         } else {
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
                         }
                     }
                 } else {
@@ -1778,9 +1778,9 @@ function mantlemap_load() { // Props Array
                             float final_time = Time() - gen
                             float minutes = final_time / 60
                             float seconds = final_time % 60
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                         } else {
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
                         }
                     }
                 } else {
@@ -1801,9 +1801,9 @@ function mantlemap_load() { // Props Array
                             float final_time = Time() - gen
                             float minutes = final_time / 60
                             float seconds = final_time % 60
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                         } else {
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
                         }
                     }
                 } else {
@@ -1916,9 +1916,9 @@ function mantlemap_load() { // Props Array
                             float final_time = Time() - gen
                             float minutes = final_time / 60
                             float seconds = final_time % 60
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                         } else {
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
                         }
                     }
                 } else {
@@ -1939,9 +1939,9 @@ function mantlemap_load() { // Props Array
                             float final_time = Time() - gen
                             float minutes = final_time / 60
                             float seconds = final_time % 60
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                         } else {
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
                         }
                     }
                 } else {
@@ -2008,9 +2008,9 @@ function mantlemap_load() { // Props Array
                             float final_time = Time() - gen
                             float minutes = final_time / 60
                             float seconds = final_time % 60
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                         } else {
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
                         }
                     }
                 } else {
@@ -2046,9 +2046,9 @@ function mantlemap_load() { // Props Array
                             float final_time = Time() - gen
                             float minutes = final_time / 60
                             float seconds = final_time % 60
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                         } else {
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
                         }
                     }
                 } else {
@@ -2084,9 +2084,9 @@ function mantlemap_load() { // Props Array
                             float final_time = Time() - gen
                             float minutes = final_time / 60
                             float seconds = final_time % 60
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                         } else {
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
                         }
                     }
                 } else {
@@ -2167,9 +2167,9 @@ function mantlemap_load() { // Props Array
                             float final_time = Time() - gen
                             float minutes = final_time / 60
                             float seconds = final_time % 60
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                         } else {
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
                         }
                     }
                 } else {
@@ -2358,9 +2358,9 @@ function mantlemap_load() { // Props Array
                             float final_time = Time() - gen
                             float minutes = final_time / 60
                             float seconds = final_time % 60
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                         } else {
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
                         }
                     }
                 } else {
@@ -2381,9 +2381,9 @@ function mantlemap_load() { // Props Array
                             float final_time = Time() - gen
                             float minutes = final_time / 60
                             float seconds = final_time % 60
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                         } else {
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
                         }
                     }
                 } else {
@@ -2464,9 +2464,9 @@ function mantlemap_load() { // Props Array
                             float final_time = Time() - gen
                             float minutes = final_time / 60
                             float seconds = final_time % 60
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                         } else {
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
                         }
                     }
                 } else {
@@ -2533,9 +2533,9 @@ function mantlemap_load() { // Props Array
                             float final_time = Time() - gen
                             float minutes = final_time / 60
                             float seconds = final_time % 60
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                         } else {
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
                         }
                     }
                 } else {
@@ -2571,9 +2571,9 @@ function mantlemap_load() { // Props Array
                             float final_time = Time() - gen
                             float minutes = final_time / 60
                             float seconds = final_time % 60
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                         } else {
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
                         }
                     }
                 } else {
@@ -2625,9 +2625,9 @@ function mantlemap_load() { // Props Array
                             float final_time = Time() - gen
                             float minutes = final_time / 60
                             float seconds = final_time % 60
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                         } else {
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
                         }
                     }
                 } else {
@@ -2783,9 +2783,9 @@ function mantlemap_load() { // Props Array
                             float final_time = Time() - gen
                             float minutes = final_time / 60
                             float seconds = final_time % 60
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                         } else {
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
                         }
                     }
                 } else {
@@ -2836,9 +2836,9 @@ function mantlemap_load() { // Props Array
                             float final_time = Time() - gen
                             float minutes = final_time / 60
                             float seconds = final_time % 60
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                         } else {
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
                         }
                     }
                 } else {
@@ -2874,9 +2874,9 @@ function mantlemap_load() { // Props Array
                             float final_time = Time() - gen
                             float minutes = final_time / 60
                             float seconds = final_time % 60
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                         } else {
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
                         }
                     }
                 } else {
@@ -2928,9 +2928,9 @@ function mantlemap_load() { // Props Array
                             float final_time = Time() - gen
                             float minutes = final_time / 60
                             float seconds = final_time % 60
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                         } else {
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
                         }
                     }
                 } else {
@@ -3042,9 +3042,9 @@ function mantlemap_load() { // Props Array
                             float final_time = Time() - gen
                             float minutes = final_time / 60
                             float seconds = final_time % 60
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                         } else {
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
                         }
                     }
                 } else {
@@ -3065,9 +3065,9 @@ function mantlemap_load() { // Props Array
                             float final_time = Time() - gen
                             float minutes = final_time / 60
                             float seconds = final_time % 60
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                         } else {
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
                         }
                     }
                 } else {
@@ -3103,9 +3103,9 @@ function mantlemap_load() { // Props Array
                             float final_time = Time() - gen
                             float minutes = final_time / 60
                             float seconds = final_time % 60
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                         } else {
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
                         }
                     }
                 } else {
@@ -3141,9 +3141,9 @@ function mantlemap_load() { // Props Array
                             float final_time = Time() - gen
                             float minutes = final_time / 60
                             float seconds = final_time % 60
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                         } else {
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
                         }
                     }
                 } else {
@@ -3164,9 +3164,9 @@ function mantlemap_load() { // Props Array
                             float final_time = Time() - gen
                             float minutes = final_time / 60
                             float seconds = final_time % 60
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                         } else {
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
                         }
                     }
                 } else {
@@ -3293,9 +3293,9 @@ function mantlemap_load() { // Props Array
                             float final_time = Time() - gen
                             float minutes = final_time / 60
                             float seconds = final_time % 60
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                         } else {
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
                         }
                     }
                 } else {
@@ -3316,9 +3316,9 @@ function mantlemap_load() { // Props Array
                             float final_time = Time() - gen
                             float minutes = final_time / 60
                             float seconds = final_time % 60
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                         } else {
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
                         }
                     }
                 } else {
@@ -3370,9 +3370,9 @@ function mantlemap_load() { // Props Array
                             float final_time = Time() - gen
                             float minutes = final_time / 60
                             float seconds = final_time % 60
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                         } else {
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
                         }
                     }
                 } else {
@@ -3408,9 +3408,9 @@ function mantlemap_load() { // Props Array
                             float final_time = Time() - gen
                             float minutes = final_time / 60
                             float seconds = final_time % 60
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                         } else {
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
                         }
                     }
                 } else {
@@ -3461,9 +3461,9 @@ function mantlemap_load() { // Props Array
                             float final_time = Time() - gen
                             float minutes = final_time / 60
                             float seconds = final_time % 60
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                         } else {
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
                         }
                     }
                 } else {
@@ -3531,9 +3531,9 @@ function mantlemap_load() { // Props Array
                             float final_time = Time() - gen
                             float minutes = final_time / 60
                             float seconds = final_time % 60
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                         } else {
-                            LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
+                            LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
                         }
                     }
                 } else {
@@ -3678,9 +3678,9 @@ function mantlemap_load() { // Props Array
                         float final_time = Time() - gen
                         float minutes = final_time / 60
                         float seconds = final_time % 60
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                     } else {
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
                     }
 
                     if (ent in file.cp_table) {
@@ -3898,10 +3898,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 1943.575, 14758.1, 31781.8 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "previous CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "previous CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -3916,10 +3916,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 3089.513, 11152, 16116.12 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "next CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "next CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -3934,10 +3934,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 2556.699, 10793.09, 17129.1 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "next CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "next CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -3952,10 +3952,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 2265.352, 10185, 18127.1 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "next CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "next CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -3970,10 +3970,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 1616.496, 10178.15, 19128.1 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "next CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "next CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -3988,10 +3988,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 1602.353, 9527.995, 20129.1 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "next CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "next CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -4006,10 +4006,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 1600.42, 10163.96, 21101.1 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "next CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "next CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -4024,10 +4024,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 1565.436, 10456.56, 22176.1 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "next CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "next CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -4042,10 +4042,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 1263.716, 10489.17, 23252.1 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "next CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "next CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -4060,10 +4060,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 1472.716, 10829.17, 24356.1 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "next CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "next CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -4078,10 +4078,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 1255.717, 11171.17, 25456.62 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "next CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "next CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -4096,10 +4096,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 1256.487, 11463, 26664.1 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "next CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "next CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -4114,10 +4114,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 1256.487, 12086, 27696.1 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "next CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "next CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -4132,10 +4132,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 1665.5, 12357.01, 28733.1 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "next CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "next CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -4150,10 +4150,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 1938.938, 12761.44, 29775.1 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "next CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "next CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -4168,10 +4168,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 1938.938, 12769.44, 30683.92 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "next CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "next CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -4186,10 +4186,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 1923.977, 13379.5, 31441.8 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "next CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "next CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -4204,10 +4204,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 1943.575, 14758.1, 31781.8 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "next CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "next CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -4222,10 +4222,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 3088.613, 12494.5, 14129.37 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "next CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "next CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -4240,10 +4240,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 3089.513, 11854, 15110.1 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "next CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "next CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -4258,10 +4258,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 3088.613, 12494.5, 14129.37 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "previous CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "previous CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -4276,10 +4276,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 3089.513, 11854, 15110.1 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "previous CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "previous CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -4294,10 +4294,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 3089.513, 11152, 16116.12 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "previous CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "previous CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -4312,10 +4312,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 2556.699, 10793.09, 17129.1 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "previous CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "previous CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -4330,10 +4330,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 2265.352, 10185, 18127.1 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "previous CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "previous CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -4348,10 +4348,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 1616.496, 10178.15, 19128.1 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "previous CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "previous CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -4366,10 +4366,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 1602.353, 9527.995, 20129.1 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "previous CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "previous CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -4384,10 +4384,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 1600.42, 10163.96, 21101.1 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "previous CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "previous CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -4402,10 +4402,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 1565.436, 10456.56, 22176.1 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "previous CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "previous CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -4420,10 +4420,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 1472.716, 10829.17, 24356.1 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "previous CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "previous CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -4438,10 +4438,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 1665.5, 12357.01, 28733.1 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "previous CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "previous CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -4456,10 +4456,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 1938.938, 12769.44, 30683.92 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "previous CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "previous CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -4474,10 +4474,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 1256.487, 11463, 26664.1 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "previous CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "previous CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -4492,10 +4492,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 1263.716, 10489.17, 23252.1 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "previous CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "previous CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -4510,10 +4510,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 1255.717, 11171.17, 25456.62 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "previous CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "previous CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -4528,10 +4528,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 1256.487, 12086, 27696.1 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "previous CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "previous CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -4546,10 +4546,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 1938.938, 12761.44, 29775.1 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "previous CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "previous CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -4564,10 +4564,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 1923.977, 13379.5, 31441.8 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "previous CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "previous CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -4582,10 +4582,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 921.6301, -19380.24, 16737 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "next CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "next CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -4600,10 +4600,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 921.8325, -19826.42, 17912.72 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "next CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "next CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -4618,10 +4618,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 922.5293, -21970.6, 17937.23 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "next CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "next CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -4636,10 +4636,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 1610.515, -22242.55, 19324.64 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "next CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "next CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -4654,10 +4654,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 1610.51, -23504.96, 19324.64 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "next CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "next CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -4672,10 +4672,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 1611.159, -24675.79, 19413.03 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "next CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "next CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -4690,10 +4690,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 1833.327, -25001.33, 20953.57 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "next CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "next CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -4708,10 +4708,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 1835.786, -26701.4, 21555.3 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "next CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "next CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -4726,10 +4726,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 3066.2, -27525, 21950.53 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "next CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "next CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -4744,10 +4744,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 4260.018, -28033.01, 23331.73 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "next CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "next CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -4762,10 +4762,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 2924.964, -28034.89, 23680.73 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "next CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "next CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -4780,10 +4780,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 3414.953, -28042.9, 25170.73 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "next CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "next CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -4798,10 +4798,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 4813.953, -28042.9, 25510.73 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "next CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "next CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -4816,10 +4816,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 5313.953, -29160.9, 27486.73 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "next CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "next CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -4834,10 +4834,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 423.458, -19409.2, 15129 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "next CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "next CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -4852,10 +4852,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 5313.955, -29160.9, 27486.73 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "previous CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "previous CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -4870,10 +4870,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 423.4578, -19409.2, 15129 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "previous CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "previous CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -4888,10 +4888,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 921.6299, -19380.24, 16737 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "previous CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "previous CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -4906,10 +4906,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 921.8325, -19826.42, 17912.72 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "previous CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "previous CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -4924,10 +4924,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 922.5293, -21970.6, 17937.23 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "previous CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "previous CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -4942,10 +4942,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 1610.515, -22242.55, 19324.64 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "previous CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "previous CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -4960,10 +4960,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 1610.51, -23504.96, 19324.64 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "previous CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "previous CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -4978,10 +4978,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 1611.159, -24675.79, 19413.03 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "previous CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "previous CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -4996,10 +4996,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 1833.327, -25001.33, 20953.57 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "previous CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "previous CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -5014,10 +5014,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 1835.787, -26701.4, 21555.3 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "previous CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "previous CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -5032,10 +5032,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 3066.2, -27525, 21950.53 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "previous CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "previous CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -5050,10 +5050,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 4260.018, -28033.01, 23331.73 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "previous CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "previous CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -5068,10 +5068,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 2924.964, -28034.89, 23680.73 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "previous CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "previous CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -5086,10 +5086,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 3414.953, -28042.9, 25170.73 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "previous CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "previous CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -5104,10 +5104,10 @@ function mantlemap_load() { // Props Array
                         ent.SetOrigin( < 4813.953, -28042.9, 25510.73 > )
 
                         ent.SetVelocity( < 0, 0, 0 > )
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "previous CP", "", "" )
+                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "previous CP", "", "" )
 
                     } else {
-                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 1, 5.0, "", "", "" )
+                        LocalMsg(ent, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }

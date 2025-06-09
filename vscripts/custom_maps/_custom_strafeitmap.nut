@@ -498,10 +498,10 @@ if (file.cp_table[ent] != < 7231.66, -24927.05, 46450.86 > )
         float final_time = Time() - gen
         float minutes = final_time / 60
         float seconds = final_time % 60
-        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
+        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
     } else
     {
-        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
+        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
     }
 }
 
@@ -525,10 +525,10 @@ if (file.cp_table[ent] != < 7799.05, -25086.63, 47184.26 > )
         float final_time = Time() - gen
         float minutes = final_time / 60
         float seconds = final_time % 60
-        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
+        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
     } else
     {
-        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
+        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
     }
 }
 
@@ -552,10 +552,10 @@ if (file.cp_table[ent] != < 10860.89, -24121.12, 47377.06 > )
         float final_time = Time() - gen
         float minutes = final_time / 60
         float seconds = final_time % 60
-        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
+        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
     } else
     {
-        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
+        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
     }
 }
 
@@ -641,10 +641,10 @@ if (file.cp_table[ent] != < 8900.5, -22729.6, 46210.16 > )
         float final_time = Time() - gen
         float minutes = final_time / 60
         float seconds = final_time % 60
-        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
+        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
     } else
     {
-        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
+        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
     }
 }
 
@@ -686,10 +686,10 @@ if (file.cp_table[ent] != < 13372.06, -22030.57, 51108.16 > )
         float final_time = Time() - gen
         float minutes = final_time / 60
         float seconds = final_time % 60
-        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
+        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
     } else
     {
-        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
+        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
     }
 }
 
@@ -714,10 +714,10 @@ if (file.cp_table[ent] != < 7717.81, -23410.44, 46202.76 > )
         float final_time = Time() - gen
         float minutes = final_time / 60
         float seconds = final_time % 60
-        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
+        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
     } else
     {
-        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
+        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
     }
 }
 
@@ -741,10 +741,10 @@ if (file.cp_table[ent] != < 9601.3, -22325.23, 46085.56 > )
         float final_time = Time() - gen
         float minutes = final_time / 60
         float seconds = final_time % 60
-        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
+        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
     } else
     {
-        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
+        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
     }
 }
 
@@ -779,10 +779,10 @@ if (file.cp_table[ent] != < 7799.05, -25086.63, 47184.26 > )
         float final_time = Time() - gen
         float minutes = final_time / 60
         float seconds = final_time % 60
-        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
+        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
     } else
     {
-        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
+        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
     }
 }
 
@@ -806,10 +806,10 @@ if (file.cp_table[ent] != < 10048.66, -22365.16, 48162.46 > )
         float final_time = Time() - gen
         float minutes = final_time / 60
         float seconds = final_time % 60
-        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
+        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
     } else
     {
-        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
+        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
     }
 }
 
@@ -833,10 +833,10 @@ if (file.cp_table[ent] != < 10048.66, -22365.16, 48162.46 > )
         float final_time = Time() - gen
         float minutes = final_time / 60
         float seconds = final_time % 60
-        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
+        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
     } else
     {
-        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
+        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
     }
 }
 
@@ -878,10 +878,10 @@ if (file.cp_table[ent] != < 8299.36, -23194.54, 47200.96 > )
         float final_time = Time() - gen
         float minutes = final_time / 60
         float seconds = final_time % 60
-        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
+        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
     } else
     {
-        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
+        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
     }
 }
 
@@ -905,10 +905,10 @@ if (file.cp_table[ent] != < 8556.94, -21963.44, 48162.46 > )
         float final_time = Time() - gen
         float minutes = final_time / 60
         float seconds = final_time % 60
-        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
+        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
     } else
     {
-        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
+        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
     }
 }
 
@@ -932,10 +932,10 @@ if (file.cp_table[ent] != < 7231.66, -24927.05, 46450.86 > )
         float final_time = Time() - gen
         float minutes = final_time / 60
         float seconds = final_time % 60
-        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "" )
+        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
     } else
     {
-        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "" )
+        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
     }
 }
 
