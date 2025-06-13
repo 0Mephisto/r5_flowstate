@@ -967,11 +967,6 @@ string function GetReviveAnimation_Victim( entity reviver, entity victim, bool e
 	bool canVRFastRevive 			= GetCurrentPlaylistVarBool( "heatshield_allow_fast_revive", VOID_RING_CAN_FAST_REVIVE)
 
 
-	if ( IsPlayerShadowZombie( reviver ) )
-	{
-		return "shadow_revive_summon_injured"
-	}
-
 	if ( Bleedout_IsPlayerSelfReviving( victim ) )
 	{
 		ItemFlavor victimCharacter = LoadoutSlot_GetItemFlavor( victim, Loadout_CharacterClass() )
@@ -983,14 +978,22 @@ string function GetReviveAnimation_Victim( entity reviver, entity victim, bool e
 
 		return format( "mp_pt_%s%s", rigWeight, (endCrouched ? "_self_revive_crouch" : "_self_revive_stand") )
 	}
-
-	else if ( PlayerHasPassive( reviver, ePassives.PAS_BATTERY_POWERED ) && !Flowstate_IsHaloMode() )
+	else if ( IsPlayerShadowZombie( reviver ) )
+	{
+		return "shadow_revive_summon_injured"
+	}else if ( PlayerHasPassive( reviver, ePassives.PAS_MEDIC ) )
+	{
+		if ( endCrouched )
+			return "Pilot_doomed_revive_crouch_drone_injured"
+		else
+			return "Pilot_doomed_revive_drone_injured"
+	}else if ( PlayerHasPassive( reviver, ePassives.PAS_BATTERY_POWERED ) )
 	{
 		if ( endCrouched )
 			return "Pilot_doomed_revive_crouch_shock_injured"
 		else
 			return "Pilot_doomed_revive_shock_injured"
-	}else if ( GibraltarIsInDome( reviver ) && GetCurrentPlaylistVarInt( "gibraltar_fast_revive", 1 ) == 1 && !Flowstate_IsHaloMode() )
+	}else if ( GibraltarIsInDome( reviver ) && GetCurrentPlaylistVarInt( "gibraltar_fast_revive", 1 ) == 1 )
 	{
 		if ( endCrouched )
 			return "Pilot_doomed_revive_crouch_slap_injured"
@@ -1296,6 +1299,9 @@ float function Bleedout_DetermineFirstAidTime( entity target, entity reviver )
 	// if self reviving, allow self revive time override
 	if ( isPlayerSelfReviving )
 		firstAidTime = GetCurrentPlaylistVarFloat( "self_revive_time_override", firstAidTime )
+
+	if ( PlayerHasPassive( reviver, ePassives.PAS_MEDIC ) )
+		firstAidTime = target.GetSequenceDuration( "Pilot_doomed_revive_drone_injured" )
 
 	return firstAidTime
 }

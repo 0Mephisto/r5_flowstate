@@ -421,8 +421,10 @@ void function DeployDroneMedic( entity drone, entity animRef, entity patientPlay
 		CreateDroneBeam( drone, shieldEnt )
 
 	drone.SetParent( animRef, "ref", false, 0.0 )
-
-	waitthread PlayAnimTeleport( drone, "lifeline_drone_revive", animRef )
+	if ( endCrouched )
+		waitthread PlayAnimTeleport( drone, "mp_drone_lifeline_handsfree_crouch_revive", animRef )
+	else
+		waitthread PlayAnimTeleport( drone, "mp_drone_lifeline_handsfree_revive", animRef )
 }
 
 const bool DEBUG_SHIELD_ANGLES = false
