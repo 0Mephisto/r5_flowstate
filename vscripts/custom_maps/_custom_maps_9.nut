@@ -8,9 +8,6 @@ struct {
 
 void function PrecacheOITCRoom()
 {
-	PrecacheModel( $"mdl/props/tablet/tablet_mini.rmdl" )
-    PrecacheModel( $"mdl/desertlands/industrial_window_frame_128x80x16_int.rmdl" )
-
     PrecacheModel( $"mdl/signs/street_sign_arrow.rmdl" )
     PrecacheModel( $"mdl/signs/sign_service_shaft_02.rmdl" )
     PrecacheModel( $"mdl/desertlands/highrise_square_block_03.rmdl" )
@@ -29,7 +26,6 @@ void function PrecacheOITCRoom()
     PrecacheModel( $"mdl/levels_terrain/mp_rr_desertlands/desertlands_space_elevator_gate_01.rmdl" )
     PrecacheModel( $"mdl/desertlands/research_station_stairs_big_building_01.rmdl" )
     PrecacheModel( $"mdl/industrial/vending_machine_04.rmdl" )
-    // PrecacheModel( $"mdl/domestic/picture_dog_yuki_memorial_03.rmdl" )
     PrecacheModel( $"mdl/desertlands/desertlands_cafeteria_table_01.rmdl" )
     PrecacheModel( $"mdl/beacon/beacon_server_wall_mount_01_off.rmdl" )
     PrecacheModel( $"mdl/desertlands/desertlands_apartments_rug_02.rmdl" )
@@ -40,11 +36,9 @@ void function PrecacheOITCRoom()
     PrecacheModel( $"mdl/industrial/vending_machine_03.rmdl" )
     PrecacheModel( $"mdl/desertlands/desertlands_lobby_desk_01.rmdl" )
     PrecacheModel( $"mdl/industrial/vending_machine_02.rmdl" )
-    // PrecacheModel( $"mdl/domestic/picture_dog_yuki_memorial_04.rmdl" )
     PrecacheModel( $"mdl/mendoko/mendoko_wire_ground_coils_02.rmdl" )
     PrecacheModel( $"mdl/domestic/display_fridge.rmdl" )
     PrecacheModel( $"mdl/industrial/glass_white_board_wall.rmdl" )
-    // PrecacheModel( $"mdl/domestic/picture_dog_yuki_memorial_02.rmdl" )
 }
 
 array<entity> function GetLobbySpawnedProps()
