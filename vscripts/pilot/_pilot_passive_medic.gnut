@@ -116,6 +116,9 @@ void function SelfRes_OnPassiveChanged( entity player, int passive, bool didHave
 
 void function PassiveMedic_OnPlayerStartGiveFirstAid( entity medicPlayer, entity patientPlayer, vector animRefAngles, bool endCrouched )
 {
+	if ( Bleedout_IsPlayerSelfReviving( patientPlayer ) )
+		return
+	
 	if ( PlayerHasPassive( medicPlayer, ePassives.PAS_MEDIC ) )
 	{
 		if ( !PassiveMedic_ShouldDoCombatRevive( medicPlayer ) )
@@ -130,6 +133,9 @@ void function PassiveMedic_OnPlayerStartGiveFirstAid( entity medicPlayer, entity
 //Used for Lifeline's Self-Revive Upgrade
 void function PassiveMedic_OnPlayerStartSelfRevive( entity medicPlayer, entity patientPlayer, vector animRefAngles, bool endCrouched )
 {
+	if ( Bleedout_IsPlayerSelfReviving( patientPlayer ) )
+		return
+	
 	if ( PlayerHasPassive( medicPlayer, ePassives.PAS_MEDIC ) )
 	{
 		if( medicPlayer != patientPlayer )
@@ -415,8 +421,10 @@ void function DeployDroneMedic( entity drone, entity animRef, entity patientPlay
 		CreateDroneBeam( drone, shieldEnt )
 
 	drone.SetParent( animRef, "ref", false, 0.0 )
-
-	waitthread PlayAnimTeleport( drone, "lifeline_drone_revive", animRef )
+	if ( endCrouched )
+		waitthread PlayAnimTeleport( drone, "mp_drone_lifeline_handsfree_crouch_revive", animRef )
+	else
+		waitthread PlayAnimTeleport( drone, "mp_drone_lifeline_handsfree_revive", animRef )
 }
 
 const bool DEBUG_SHIELD_ANGLES = false
