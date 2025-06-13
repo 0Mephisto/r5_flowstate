@@ -116,6 +116,9 @@ void function SelfRes_OnPassiveChanged( entity player, int passive, bool didHave
 
 void function PassiveMedic_OnPlayerStartGiveFirstAid( entity medicPlayer, entity patientPlayer, vector animRefAngles, bool endCrouched )
 {
+	if ( Bleedout_IsPlayerSelfReviving( patientPlayer ) )
+		return
+	
 	if ( PlayerHasPassive( medicPlayer, ePassives.PAS_MEDIC ) )
 	{
 		if ( !PassiveMedic_ShouldDoCombatRevive( medicPlayer ) )
@@ -130,6 +133,9 @@ void function PassiveMedic_OnPlayerStartGiveFirstAid( entity medicPlayer, entity
 //Used for Lifeline's Self-Revive Upgrade
 void function PassiveMedic_OnPlayerStartSelfRevive( entity medicPlayer, entity patientPlayer, vector animRefAngles, bool endCrouched )
 {
+	if ( Bleedout_IsPlayerSelfReviving( patientPlayer ) )
+		return
+	
 	if ( PlayerHasPassive( medicPlayer, ePassives.PAS_MEDIC ) )
 	{
 		if( medicPlayer != patientPlayer )

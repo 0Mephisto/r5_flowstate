@@ -722,6 +722,9 @@ void function ReviveThread_Reviver( entity reviver, entity target, string revive
 	if ( IsPlayerShadowZombie( reviver ) )
 		reviveAnim = "shadow_revive_summon_healthy"
 
+	if ( Bleedout_IsPlayerSelfReviving( target ) )
+		reviveAnim = format( "mp_pt_%s%s", GetGlobalSettingsString( target.GetPlayerSettings(), "bodyModelRigWeight" ), ("_self_revive_stand") )
+
 	reviver.EndSignal( "OnAnimationInterrupted" )
 	reviver.EndSignal( "OnDeath" )
 	reviver.EndSignal( "ScriptAnimStop" )
@@ -969,15 +972,6 @@ string function GetReviveAnimation_Victim( entity reviver, entity victim, bool e
 		return "shadow_revive_summon_injured"
 	}
 
-	// if self heal
-	if ( Bleedout_IsPlayerSelfReviving( victim ) && Bleedout_CanSelfResFromUpgrade( reviver ) && reviver.p.numSelfRevivesUsed == 0 )
-	{
-		if ( endCrouched )
-			return "Pilot_doomed_revive_crouch_injured"
-		else
-			return "Pilot_doomed_revive_injured"
-	}
-
 	if ( Bleedout_IsPlayerSelfReviving( victim ) )
 	{
 		ItemFlavor victimCharacter = LoadoutSlot_GetItemFlavor( victim, Loadout_CharacterClass() )
@@ -987,10 +981,6 @@ string function GetReviveAnimation_Victim( entity reviver, entity victim, bool e
 		setFile              = victim.GetPlayerSettings()
 		string rigWeight = GetGlobalSettingsString( setFile, "bodyModelRigWeight" )
 
-		// if ( (StatusEffect_GetSeverity( reviver, eStatusEffect.ring_immunity ) > 0.0) && heatShieldSelfReviveTime < REVIVE_PASSIVE_SELF_REVIVE && canVRFastRevive )
-		// {
-			// return format( "mp_pt_%s%s", rigWeight, (endCrouched ? "_self_revive_crouch_fast" : "_self_revive_stand_fast") ) //todo: for Devan "Let me know how much buffer we have here." Animation is 9.67seconds.  Right now it works at 9 seconds but it has an extra 20 frames if we need.
-		// }
 		return format( "mp_pt_%s%s", rigWeight, (endCrouched ? "_self_revive_crouch" : "_self_revive_stand") )
 	}
 
@@ -1298,11 +1288,6 @@ float function Bleedout_DetermineFirstAidTime( entity target, entity reviver )
 			hasSelfRevive = true
 
 		firstAidTime = hasSelfRevive ? REVIVE_PASSIVE_SELF_REVIVE : firstAidTime
-
-		if ( Bleedout_CanSelfResFromUpgrade( reviver ) && reviver.p.numSelfRevivesUsed == 0  )
-		{
-			return DEFAULT_FIRSTAID_TIME
-		}
 	}
 
 	// If defined, an override time is used
@@ -1525,9 +1510,9 @@ void function SetBodyGroupVisibilityForDragRevive( entity useTarget, bool visibl
 				// bodyGroup = "Shield"
 				// break
 
-			// case "character_rampart":
-				// bodyGroup = "turret"
-				// break
+			case "character_rampart":
+				bodyGroup = "turret"
+				break
 
 			// case "character_valkyrie":
 				// bodyGroup = "jetpack"
