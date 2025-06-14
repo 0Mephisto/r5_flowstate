@@ -255,19 +255,22 @@ void function Training_OnPlayerRespawned( entity player )
 
 	if ( player.IsBot() )
 		return
+		
+	ItemFlavor lifeLineCharacter = GetItemFlavorByAsset( CHARACTER_ASSET_LIFELINE )
+	SetItemFlavorLoadoutSlot( ToEHI( player ), Loadout_CharacterClass(), lifeLineCharacter )
 
 	printt( "Training: Training_OnPlayerRespawned", player )
 
 	RemoveStagingAreaEntsForRealm( GetPlayerStagingSquadRealm( player ) )
 	PlayerTrainingData data = file.playerTrainingData[ player ]
 	data.gun_range_enabled = false
-
+	DecideRespawnPlayer( player )
 	thread PlayerStartsTraining( player )
 }
 
 void function PlayerStartsTraining( entity player )
 {
-	wait 0.1
+	WaitFrame()
 	// Training player always spawns at the back of the center tunnel
 	player.SetOrigin( < 26328, -6235, -27540 > )
 	player.UnfreezeControlsOnServer()
@@ -290,8 +293,6 @@ void function PlayerStartsTraining( entity player )
 	//player.SetPersistentVar( "trainingCompleted", 1 )
 
 	PIN_Training( player, "start", "training_start" )
-
-	player.SetPlayerNetBool( "pingEnabled", false )
 
 	// Force player to be Lifeline for training
 	ItemFlavor lifeLineCharacter = GetItemFlavorByAsset( CHARACTER_ASSET_LIFELINE )

@@ -1233,12 +1233,6 @@ void function SetupRetailWeapons()
 	SetupDevCommand( "Marksman: 30-30 Repeater", "give mp_weapon_3030" )
 	SetupDevCommand( "", "give blank" )
 
-	// Rifles
-	SetupDevCommand( "Assault Rifle: Flatline", "give mp_weapon_vinson" )
-	SetupDevCommand( "Assault Rifle: Hemlok", "give mp_weapon_hemlok" )
-	SetupDevCommand( "Assault Rifle: R-301", "give mp_weapon_rspn101" )
-	SetupDevCommand( "", "give blank" )
-
 	// LMGs
 	SetupDevCommand( "Light Machine Gun: Devotion", "give mp_weapon_esaw" )
 	SetupDevCommand( "Light Machine Gun: L-Star", "give mp_weapon_lstar" )
@@ -1249,6 +1243,12 @@ void function SetupRetailWeapons()
 	SetupDevCommand( "Sniper: Charge Rifle", "give mp_weapon_defender" )
 	SetupDevCommand( "Sniper: Longbow", "give mp_weapon_dmr" )
 	SetupDevCommand( "Sniper: Sentinel", "give mp_weapon_sentinel" )
+	SetupDevCommand( "", "give blank" )
+
+	// Pistols
+	SetupDevCommand( "Pistol: P2020", "give mp_weapon_semipistol" )
+	SetupDevCommand( "Pistol: RE-45", "give mp_weapon_autopistol" )
+	SetupDevCommand( "Pistol: Wingman", "give mp_weapon_wingman" )
 	
 	// SMGs
 	SetupDevCommand( "Submachine Gun: Alternator", "give mp_weapon_alternator_smg" )
@@ -1257,23 +1257,24 @@ void function SetupRetailWeapons()
 	SetupDevCommand( "Submachine Gun: Volt SMG", "give mp_weapon_volt_smg" )
 	SetupDevCommand( "", "give blank" )
 
+	// Rifles
+	SetupDevCommand( "Assault Rifle: Flatline", "give mp_weapon_vinson" )
+	SetupDevCommand( "Assault Rifle: Hemlok", "give mp_weapon_hemlok" )
+	SetupDevCommand( "Assault Rifle: R-301", "give mp_weapon_rspn101" )
+	SetupDevCommand( "Assault Rifle:  Havoc AR", "give mp_weapon_energy_ar" )
+	SetupDevCommand( "", "give blank" )
+
 	// Shotguns
 	SetupDevCommand( "Shotgun: EVA-8 Auto", "give mp_weapon_shotgun" )
 	SetupDevCommand( "Shotgun: Mastiff", "give mp_weapon_mastiff" )
 	SetupDevCommand( "Shotgun: Mozambique", "give mp_weapon_shotgun_pistol" )
 	SetupDevCommand( "", "give blank" )
+	SetupDevCommand( "", "give blank" )
+	SetupDevCommand( "", "give blank" )
 
-	// Pistols
-	SetupDevCommand( "Pistol: P2020", "give mp_weapon_semipistol" )
-	SetupDevCommand( "Pistol: RE-45", "give mp_weapon_autopistol" )
-	SetupDevCommand( "Pistol: Wingman", "give mp_weapon_wingman" )
-	SetupDevCommand( "", "give blank" )
-	SetupDevCommand( "", "give blank" )
-	SetupDevCommand( "", "give blank" )
-	SetupDevCommand( "", "give blank" )
 
 	//Drop Weapons
-	SetupDevCommand( "Crate: Havoc AR", "give mp_weapon_energy_ar_crate crate hopup_selectfire optic_cq_hcog_bruiser" )
+	SetupDevCommand( "Crate: Triple Take", "give mp_weapon_doubletake_crate crate optic_ranged_aog_variable" )
 	SetupDevCommand( "Crate: Peacekeeper", "give mp_weapon_energy_shotgun_crate crate optic_cq_hcog_classic shotgun_bolt_l4" )
 	SetupDevCommand( "Crate: Kraber", "give mp_weapon_sniper" )
 	//SetupDevCommand( "Crate: Bocek Bow", "give mp_weapon_bow" )

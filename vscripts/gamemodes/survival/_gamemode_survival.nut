@@ -1828,8 +1828,6 @@ void function OnClientConnected( entity player )
 	} 
 	else if ( IsSurvivalTraining() )
 	{
-		DecideRespawnPlayer( player )
-		thread PlayerStartsTraining( player )
 		return
 	} 
 

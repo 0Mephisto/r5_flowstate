@@ -945,8 +945,6 @@ bool function PingIsAllowed( entity player )
 		return false
 	if ( GetGameState() == eGameState.PickLoadout )
 		return false
-	if ( GetGameState() == eGameState.WaitingForPlayers )
-		return false
 	if ( player.GetPlayerNetBool( "pingEnabled" ) == false )
 		return false
 

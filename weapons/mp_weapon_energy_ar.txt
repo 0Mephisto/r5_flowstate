@@ -292,17 +292,6 @@ WeaponData
 	"damage_very_far_distance"	"5000"
 	Mods
 	{
-		funny_selector
-		{
-			"projectile_ricochet_max_count"					"9999"
-			"bolt_bounce_frac" 								"1"
-			"projectile_damages_owner"						"1"
-		}
-
-		crate
-	    {
-	    }
-		
 		gold
         {
         }
