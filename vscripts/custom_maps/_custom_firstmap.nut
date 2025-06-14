@@ -773,7 +773,7 @@ function Firstmap_load() {
 
                     LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                 } else  if (file.cp_table[ent] != <3401.895, 6874.097, 19743.81>) {
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0,a "CHECKPOINT", "", "" )
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
                 }
                 file.cp_table[ent] <-  < 3401.895, 6874.097, 19743.81 >
                     file.cp_angle[ent] <-  < 0, 0.0005, 0 >
