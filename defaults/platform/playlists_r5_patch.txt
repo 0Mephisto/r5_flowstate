@@ -717,15 +717,25 @@ playlists
 			
 			}
 			gamemodes { survival { maps {
-				mp_rr_party_crasher								1
-				mp_rr_aqueduct									1
-				mp_rr_arena_composite 							1
-				mp_rr_canyonlands_64k_x_64k						1
-				mp_rr_canyonlands_mu1							1
-				mp_rr_canyonlands_mu1_night						1
 				mp_rr_desertlands_64k_x_64k						1
-				mp_rr_desertlands_64k_x_64k_nx					1
-				mp_rr_desertlands_64k_x_64k_tt					1
+				mp_rr_desertlands_64k_x_64k_nx				 	1
+				mp_rr_desertlands_64k_x_64k_tt				 	1
+				mp_rr_desertlands_64k_x_64k_mv				 	1
+				mp_rr_desertlands_mu1				 			1
+				mp_rr_desertlands_mu1_tt				 		1
+				mp_rr_desertlands_mu2					 		1
+				mp_rr_olympus						 			1
+				mp_rr_olympus_tt						 		1
+				mp_rr_canyonlands_staging					  	1
+				mp_rr_canyonlands_64k_x_64k						1
+				mp_rr_canyonlands_mu1						  	1
+				mp_rr_canyonlands_mu1_night						1
+				mp_rr_canyonlands_mu2							1
+				mp_rr_canyonlands_mu2_tt						1
+				mp_rr_party_crasher					 			1
+				mp_rr_aqueduct								 	1
+				mp_rr_arena_phase_runner						1
+				mp_rr_arena_composite							1
 			} } }
 		}
 		
