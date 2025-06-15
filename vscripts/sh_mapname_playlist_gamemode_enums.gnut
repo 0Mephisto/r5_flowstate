@@ -43,6 +43,7 @@ global enum eMaps
 	mp_rr_box, //0
 	mp_rr_canyonlands_staging, //1
 	mp_rr_canyonlands_64k_x_64k, //2
+	mp_rr_canyonlands_64k_x_64k_ps4, //2
 	mp_rr_canyonlands_mu1, //3
 	mp_rr_canyonlands_mu1_night, //4
 	mp_rr_canyonlands_mu2, //5
