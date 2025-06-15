@@ -175,10 +175,12 @@ void function Canyonlands_MapInit_Common()
 
         AddSpawnCallbackEditorClass( "prop_dynamic", "script_survival_pvpcurrency_container", OnPvpCurrencyContainerSpawned )
         AddSpawnCallbackEditorClass( "prop_dynamic", "script_survival_upgrade_station", OnSurvivalUpgradeStationSpawned )
-
-		AddCallback_GameStateEnter( eGameState.WaitingForPlayers, StagingArea_MoveSkybox )
-		AddCallback_GameStateEnter( eGameState.PickLoadout, StagingArea_ResetSkybox )
-		AddCallback_GameStateEnter( eGameState.Playing, StagingArea_MoveSkybox )
+		if (Playlist() == ePlaylists.survival_firingrange || Playlist() == ePlaylists.survival_training)
+		{
+			AddCallback_GameStateEnter( eGameState.WaitingForPlayers, StagingArea_MoveSkybox )
+			AddCallback_GameStateEnter( eGameState.PickLoadout, StagingArea_ResetSkybox )
+			AddCallback_GameStateEnter( eGameState.Playing, StagingArea_MoveSkybox )
+		}
 	#endif
 
 	#if CLIENT
@@ -1172,8 +1174,7 @@ void function TestCreateTooManyLinks()
 
 void function StagingArea_MoveSkybox()
 {
-	if (Playlist() == ePlaylists.survival_firingrange || Playlist() == ePlaylists.survival_training)
-		thread StagingArea_MoveSkybox_Thread()
+	thread StagingArea_MoveSkybox_Thread()
 }
 
 
