@@ -146,7 +146,9 @@ struct {
 
 void function FiringRangeGameMode_Init()
 {
-	if ( GetMapName() != "mp_rr_canyonlands_staging" )
+	if ( GetMapName() != "mp_rr_canyonlands_staging" &&
+		 GetMapName() != "mp_rr_canyonlands_64k_x_64k_ps4" &&
+		 GetMapName() != "mp_rr_canyonlands_64k_x_64k" )
 		return
 
 	PrecacheModel( FIRINGRANGE_BLUE_STAND_ASSET )

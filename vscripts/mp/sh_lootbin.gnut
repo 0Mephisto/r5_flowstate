@@ -340,6 +340,9 @@ void function InitLootBin( entity lootbin )
 
 	SetCallback_CanUseEntityCallback( lootbin, LootBin_CanUse )
 
+	if (Playlist() == ePlaylists.survival_firingrange || Playlist() == ePlaylists.survival_training)
+		return
+	
 	if ( SURVIVAL_DEBUG_LOOT_BINS )
 	{
 		DebugDrawLine( lootbin.GetOrigin(), lootbin.GetOrigin() + <0, 0, 1000>, 255, 255, 255, true, 100.0 )

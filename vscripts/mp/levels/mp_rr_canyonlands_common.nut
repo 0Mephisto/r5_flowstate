@@ -175,12 +175,10 @@ void function Canyonlands_MapInit_Common()
 
         AddSpawnCallbackEditorClass( "prop_dynamic", "script_survival_pvpcurrency_container", OnPvpCurrencyContainerSpawned )
         AddSpawnCallbackEditorClass( "prop_dynamic", "script_survival_upgrade_station", OnSurvivalUpgradeStationSpawned )
-		if ( MapName() == eMaps.mp_rr_canyonlands_staging )
-		{
-			// adjust skybox for staging area
-			AddCallback_GameStateEnter( eGameState.WaitingForPlayers, StagingArea_MoveSkybox )
-			AddCallback_GameStateEnter( eGameState.PickLoadout, StagingArea_ResetSkybox )
-		}
+
+		AddCallback_GameStateEnter( eGameState.WaitingForPlayers, StagingArea_MoveSkybox )
+		AddCallback_GameStateEnter( eGameState.PickLoadout, StagingArea_ResetSkybox )
+		AddCallback_GameStateEnter( eGameState.Playing, StagingArea_MoveSkybox )
 	#endif
 
 	#if CLIENT
@@ -1174,7 +1172,8 @@ void function TestCreateTooManyLinks()
 
 void function StagingArea_MoveSkybox()
 {
-	thread StagingArea_MoveSkybox_Thread()
+	if (Playlist() == ePlaylists.survival_firingrange || Playlist() == ePlaylists.survival_training)
+		thread StagingArea_MoveSkybox_Thread()
 }
 
 
@@ -1186,10 +1185,15 @@ void function StagingArea_MoveSkybox_Thread()
 
 	file.skyboxStartingOrigin = skyboxCamera.GetOrigin()
 	file.skyboxStartingAngles = skyboxCamera.GetAngles()
-	if (Playlist() == ePlaylists.survival_firingrange || Playlist() == ePlaylists.survival_training)
-		skyboxCamera.SetOrigin( skyboxCamera.GetOrigin() + <0, 0, 16> )
-	else
-		skyboxCamera.SetOrigin( skyboxCamera.GetOrigin() + <0, 0, SKYBOX_Z_OFFSET_STAGING_AREA> )
+
+	string mapName = GetMapName()
+	if ( mapName == "mp_rr_canyonlands_staging" ||
+	     mapName == "mp_rr_canyonlands_64k_x_64k_ps4" ||
+	     mapName == "mp_rr_canyonlands_64k_x_64k" )
+	{
+		skyboxCamera.SetOrigin( skyboxCamera.GetOrigin() + <0, 0, 10> )
+	}
+
 	skyboxCamera.SetAngles( SKYBOX_ANGLES_STAGING_AREA )
 }
 

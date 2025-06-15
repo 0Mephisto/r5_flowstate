@@ -199,10 +199,13 @@ void function Sh_ArenaDeathField_Init()
 //Moved to eGameState.Playing enter to modify preshrink and shrink speeds dynamically based on the amount of players connected.
 void function Deathfield_OnPlayingGameStateEnter()
 {
+	if (Playlist() == ePlaylists.survival_firingrange || Playlist() == ePlaylists.survival_training)
+		return
+
 	InitDeathFieldDataAndStageData()
+	
 	#if SERVER
 	EntitiesDidLoad_DeathField()
-	
 	FlagSet( "DeathCircleSetup" )
 	#endif
 }

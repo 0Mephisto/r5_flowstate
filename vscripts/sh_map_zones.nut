@@ -289,6 +289,9 @@ void function HotZone_MinimapThink()
 
 void function GenerateZoneTiers()
 {
+	if (Playlist() == ePlaylists.survival_firingrange || Playlist() == ePlaylists.survival_training)
+		return
+	
 	array<LootZone> lootZones = GetAllLootZones()
     LootZone hotZone = GetLootHotZone()
     
