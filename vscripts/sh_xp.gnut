@@ -135,8 +135,9 @@ void function ShXP_Init()
 		AddCallback_UpgradePlayerPersistentData( UpgradePlayerXPPersistentData )
 		AddCallback_OnUpdatingPlayerStryderCharDataArray( OnUpdatingPlayerStryderCharDataArray )
 	#endif
-
+	#if !UI
 	InitXPData()
+	#endif
 }
 
 
