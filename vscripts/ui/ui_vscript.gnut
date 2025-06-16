@@ -349,7 +349,6 @@ void function UICodeCallback_UIInit()
 	PassivesShared_Init()
 	//ChallengesShared_Init()
 	//ChallengesContent_Init()
-	ShXP_Init()
 
 	MenuGamepadLayout_Init()
 	//MenuChallenges_Init()

@@ -15,6 +15,7 @@ int lastGameRank
 int lastGamePlayers
 int lastGameSquads
 int lastAbandonTime
+string{32} characterForXP
 
 //#########################
 // GRX DATA
