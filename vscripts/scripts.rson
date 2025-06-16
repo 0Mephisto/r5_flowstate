@@ -644,6 +644,7 @@ Scripts:
 When: "SERVER"
 Scripts:
 [
+	_cache.gnut
 	lobby/_lobby.gnut
 	lobby/_private_lobby.gnut
 	lobby/sh_lobby.gnut

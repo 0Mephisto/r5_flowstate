@@ -407,6 +407,7 @@ void function AnimWindow_PlayFX_Precache( var settingsBlock )
 void function AnimWindow_PlayFX_Start( ScriptAnimWindow window, var settingsBlock )
 {
 	asset particleAsset     = GetSettingsBlockStringAsAsset( settingsBlock, "particleSystemName" )
+	PrecacheParticleSystem( particleAsset )
 	int particleSystemIndex = GetParticleSystemIndex( particleAsset )
 
 	bool shouldFollow = GetSettingsBlockBool( settingsBlock, "followAttach" )

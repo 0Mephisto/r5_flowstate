@@ -34,8 +34,7 @@ global const array<asset> CAL_EVENT_ASSET_LIST =
 	$"settings/itemflav/calevent/season03.rpak",
 	$"settings/itemflav/calevent/rankedperiod01.rpak",
 	$"settings/itemflav/calevent/rankedperiod02.rpak",
-
-	$"settings/itemflav/calevent/s03e01.rpak",
+	
 ]
 
 global const array<asset> LOADSCREEN_ASSET_LIST =

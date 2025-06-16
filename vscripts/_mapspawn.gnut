@@ -251,7 +251,7 @@ void function CodeCallback_MapSpawn() // original script entry point
 	SV_CL_Shared_Init()
 	ClientCommands_Init()
 	
-	
+	CacheCoreModelsInit()
 	thread FS_RestartServerAfterSomeTimeWithoutPlayers()
 	
 	FS_ResetMapLighting()
@@ -317,16 +317,9 @@ void function PrecacheFSEntities()
 		break
 	}
 
-	// PrecacheWeapon( $"mp_ability_emote_projector" )
-	// PrecacheWeapon( $"mp_weapon_vctblue_primary" )
-	// PrecacheWeapon( $"melee_vctblue" )
-	// PrecacheWeapon( $"mp_weapon_flamethrower" )
 	PrecacheWeapon( $"mp_ability_phase_chamber" )
 	PrecacheWeapon( $"mp_ability_phase_rewind" )
-	// PrecacheWeapon( $"mp_ability_space_elevator_tac" )
 	PrecacheWeapon( $"mp_weapon_ringflare" )
-	// PrecacheWeapon( $"mp_weapon_melee_halo" )
-	// PrecacheWeapon( $"melee_pilot_emptyhanded_halo" )
 
 	switch( GameRules_GetGameMode() )
 	{
@@ -348,73 +341,13 @@ void function PrecacheFSEntities()
 	}
 
 	PrecacheWeapon( $"mp_weapon_turret" )
-	// PrecacheWeapon( $"melee_titan_sword" )
-	// PrecacheWeapon( $"mp_weapon_titan_sword" )
 	PrecacheWeapon( $"npc_weapon_turret_volt" )
-	
-	// PrecacheWeapon( $"mp_weapon_portalgun_first" )
 
 	if( GetCurrentPlaylistVarBool( "enable_oddball_gamemode", false ) )
 	{
 		PrecacheWeapon( $"mp_weapon_oddball_primary" )
 		PrecacheWeapon( $"melee_oddball" )
 	}
-
-	if( GetCurrentPlaylistVarBool( "is_halo_gamemode", false ) )
-	{
-		PrecacheParticleSystem( $"P_snow_atmo_512" )
-		PrecacheWeapon( $"mp_ability_grapple_master_chief" )
-		PrecacheWeapon( $"mp_weapon_bubble_bunker_master_chief" )
-	
-		//TODO create a single model with different skins. Cafe
-		PrecacheModel( $"mdl/Humans/pilots/w_master_chief.rmdl" )
-		PrecacheModel( $"mdl/Humans/pilots/ptpov_master_chief.rmdl" )
-
-		PrecacheModel( $"mdl/Humans/pilots/w_master_chief.rmdl" )
-		PrecacheModel( $"mdl/Humans/pilots/ptpov_master_chief.rmdl" )
-		
-		PrecacheModel( $"mdl/Humans/pilots/w_master_chief_blue.rmdl" )
-		PrecacheModel( $"mdl/Humans/pilots/ptpov_master_chief_blue.rmdl" )
-		
-		PrecacheModel( $"mdl/Humans/pilots/w_master_chief_pink.rmdl" )
-		PrecacheModel( $"mdl/Humans/pilots/ptpov_master_chief_pink.rmdl" )
-		
-		PrecacheModel( $"mdl/Humans/pilots/w_master_chief_orange.rmdl" )
-		PrecacheModel( $"mdl/Humans/pilots/ptpov_master_chief_orange.rmdl" )
-		
-		PrecacheModel( $"mdl/Humans/pilots/w_master_chief_red.rmdl" )
-		PrecacheModel( $"mdl/Humans/pilots/ptpov_master_chief_red.rmdl" )
-		
-		PrecacheModel( $"mdl/Humans/pilots/w_master_chief_purple.rmdl" )
-		PrecacheModel( $"mdl/Humans/pilots/ptpov_master_chief_purple.rmdl" )
-		
-		PrecacheModel( $"mdl/Humans/pilots/w_master_chief_yellow.rmdl" )
-		PrecacheModel( $"mdl/Humans/pilots/ptpov_master_chief_yellow.rmdl" )
-
-		PrecacheModel( $"mdl/Humans/pilots/w_master_chief_white.rmdl" )
-		PrecacheModel( $"mdl/Humans/pilots/ptpov_master_chief_white.rmdl" )
-		
-		PrecacheModel( $"mdl/flowstate_custom/w_haloelite.rmdl" )
-		PrecacheModel( $"mdl/flowstate_custom/ptpov_haloelite.rmdl" )
-	}
-
-	// PrecacheModel( $"mdl/Humans/pilots/w_phantom.rmdl" )
-	// PrecacheModel( $"mdl/Humans/pilots/ptpov_phantom.rmdl" )
-
-	// PrecacheModel( $"mdl/Humans/pilots/w_amogino.rmdl" )
-
-	// PrecacheModel( $"mdl/Humans/pilots/w_rhapsody.rmdl" )
-	// PrecacheModel( $"mdl/Humans/pilots/ptpov_rhapsody.rmdl" )
-
-	// PrecacheModel( $"mdl/Humans/pilots/ballistic_base_w.rmdl" )
-	// PrecacheModel( $"mdl/Humans/pilots/ballistic_base_v.rmdl" )
-
-	// PrecacheModel( $"mdl/flowstate_custom/w_marvin.rmdl" )
-
-	// PrecacheModel( $"mdl/flowstate_custom/w_pete_mri.rmdl" )
-	// PrecacheModel( $"mdl/flowstate_custom/ptpov_pete_mri.rmdl" )
-	
-	// PrecacheModel( $"mdl/rocks/rock_lava_moss_desertlands_04.rmdl" )
 }
 
 void function PrecacheSDKWeapons()
@@ -520,27 +453,12 @@ void function PrecacheSDKEntities()
 	PrecacheModel( $"mdl/Humans/class/medium/combat_dummie_medium.rmdl" )
 	
 	///////////////////////mp_lobby///////////////////////
-	PrecacheModel( $"mdl/robots/drone_frag/drone_frag.rmdl" )
-	PrecacheModel( $"mdl/vehicle/droppod_fireteam/droppod_fireteam.rmdl" )
-	PrecacheModel( $"mdl/vehicle/droppod_loot/droppod_loot_LL_holo.rmdl" )
-	PrecacheModel( $"mdl/robots/marvin/marvin_gladcard.rmdl" )
-	PrecacheModel( $"mdl/menu/xp_badge.rmdl" )
-	PrecacheModel( $"mdl/menu/coin.rmdl" )
-	PrecacheModel( $"mdl/currency/crafting/currency_crafting_epic.rmdl" )
 	PrecacheModel( $"mdl/weapons_r5/loot/_master/w_loot_wep_ammo_sniper.rmdl" )
 	
 	///////////////////////engine///////////////////////
-	PrecacheModel( $"mdl/dev/editor_ref.rmdl" )
-	PrecacheModel( $"mdl/dev/empty_model.rmdl" )
-	PrecacheModel( $"mdl/error.rmdl" ) // model used when no model is provided
-	PrecacheModel( $"mdl/fx/ar_survival_radius_1x100.rmdl")
 	PrecacheModel( $"mdl/vehicle/olympus_hovercraft/olympus_hovercraft_v2.rmdl")
 	PrecacheModel( $"mdl/communication/terminal_usable_imc_01.rmdl" )
 	PrecacheModel( $"mdl/weapons/shellejects/shelleject_repeater3030.rmdl" )//DO NOT REMOVE!
-
-	///////////////////////delete///////////////////////
-	PrecacheModel( $"mdl/Weapons/pathfinder_gloves/w_pathfinder_glove_left.rmdl" )
-	PrecacheModel( $"mdl/Weapons/pathfinder_gloves/ptpov_pathfinder_gloves_gladcard.rmdl" )
 }
 
 const array<string> InvalidModesForTrackScoreBoard = //const values
