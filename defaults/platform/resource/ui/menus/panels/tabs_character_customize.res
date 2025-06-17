@@ -1,4 +1,4 @@
-resource/ui/menus/panels/tabs_character_customize.res
+scripts/resource/ui/menus/panels/tabs_character_customize.res
 {
     Anchor
     {

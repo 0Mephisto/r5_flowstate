@@ -1,4 +1,4 @@
-"resource/ui/menus/panels/character_quips.res"
+"scripts/resource/ui/menus/panels/character_quips.res"
 {
     PanelFrame
     {
@@ -67,7 +67,7 @@
         tall					840
         visible					1
         tabPosition             1
-        controlSettingsFile		"resource/ui/menus/panels/quips.res"
+        controlSettingsFile		"scripts/resource/ui/menus/panels/quips.res"
     }
 
     KillQuipsPanel
@@ -79,6 +79,6 @@
         tall					840
         visible					1
         tabPosition             1
-        controlSettingsFile		"resource/ui/menus/panels/quips.res"
+        controlSettingsFile		"scripts/resource/ui/menus/panels/quips.res"
     }
 }

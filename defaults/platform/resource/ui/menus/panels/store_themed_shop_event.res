@@ -1,4 +1,4 @@
-"resource/ui/menus/panels/store_themed_shop_event.res"
+"scripts/resource/ui/menus/panels/store_themed_shop_event.res"
 {
 	PanelFrame
 	{

@@ -1,4 +1,4 @@
-"resource/ui/menus/panels/play.res"
+"scripts/resource/ui/menus/panels/play.res"
 {
     Screen
     {
@@ -596,17 +596,18 @@
         ControlName				RuiButton
         wide                    308
         tall                    106
+        ypos                    -310
         rui                     "ui/mini_promo.rpak"
-        visible					0
+        visible					1
         cursorVelocityModifier  0.7
 
         proportionalToParent    1
 
         navLeft                 InviteFriendsButton1
 
-        pin_to_sibling          TopRightContentAnchor
-        pin_corner_to_sibling   TOP_LEFT
-        pin_to_sibling_corner   BOTTOM_LEFT
+        pin_to_sibling          PanelFrame
+        pin_corner_to_sibling   BOTTOM_RIGHT
+        pin_to_sibling_corner   BOTTOM_RIGHT
 
         sound_focus             "UI_Menu_Focus_Large"
         sound_accept            ""
@@ -621,7 +622,7 @@
     //    wide					%100
     //    tall					308
     //    visible					1
-    //    controlSettingsFile		"resource/ui/menus/panels/chatroom.res"
+    //    controlSettingsFile		"scripts/resource/ui/menus/panels/chatroom.res"
     //    proportionalToParent    1
     //    pin_to_sibling          PanelFrame
     //    pin_corner_to_sibling	BOTTOM_RIGHT
@@ -637,7 +638,7 @@
     //    wide					552
     //    tall					440
     //    visible					0
-    //    controlSettingsFile		"resource/ui/menus/panels/community_openinvites.res"
+    //    controlSettingsFile		"scripts/resource/ui/menus/panels/community_openinvites.res"
     //}
 
     //InviteNetworkButton
@@ -669,7 +670,7 @@
         zpos					5
         wide					%28
         visible					0
-        controlSettingsFile		"resource/ui/menus/panels/user_info.res"
+        controlSettingsFile		"scripts/resource/ui/menus/panels/user_info.res"
         pin_to_sibling          PanelFrame
         pin_corner_to_sibling	BOTTOM_RIGHT
         pin_to_sibling_corner	BOTTOM_RIGHT
@@ -683,7 +684,7 @@
         wide					780
         tall					470
         visible					0
-        controlSettingsFile		"resource/ui/menus/panels/match_info.res"
+        controlSettingsFile		"scripts/resource/ui/menus/panels/match_info.res"
     }
 
     PopupMessage

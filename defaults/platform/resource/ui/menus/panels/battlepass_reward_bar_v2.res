@@ -1,4 +1,4 @@
-"resource/ui/menus/panels/battlepass_reward_bar_v2.res"
+"scripts/resource/ui/menus/panels/battlepass_reward_bar_v2.res"
 {
 	InvisiblePageLeftTriggerButton
     {

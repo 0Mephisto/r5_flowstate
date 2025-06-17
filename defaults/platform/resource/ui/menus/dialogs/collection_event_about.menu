@@ -1,4 +1,4 @@
-resource/ui/menus/collection_event_about.menu
+scripts/resource/ui/menus/collection_event_about.menu
 {
 	menu
 	{

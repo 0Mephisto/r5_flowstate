@@ -1,4 +1,4 @@
-"resource/ui/menus/panels/settings.res"
+"scripts/resource/ui/menus/panels/settings.res"
 {
 	PanelFrame
 	{
@@ -29,7 +29,7 @@
         wide					f0
         tall					84
         visible					1
-        controlSettingsFile		"resource/ui/menus/panels/tabs_settings.res"
+        controlSettingsFile		"scripts/resource/ui/menus/panels/tabs_settings.res"
 
         pin_to_sibling			PanelFrame
         pin_corner_to_sibling	TOP
@@ -85,7 +85,7 @@
         //        wide					1408
         //        tall					840
         //        visible				0
-        //        controlSettingsFile	"resource/ui/menus/panels/controls_pc.res"
+        //        controlSettingsFile	"scripts/resource/ui/menus/panels/controls_pc.res"
         //    }
     }
 
@@ -123,7 +123,7 @@
             tall                    980
             tabPosition             1
 
-            controlSettingsFile		"resource/ui/menus/panels/controls.res"
+            controlSettingsFile		"scripts/resource/ui/menus/panels/controls.res"
         }
     }
 
@@ -163,7 +163,7 @@
     //        wide					1408
     //        tall					840
     //        visible				0
-    //        controlSettingsFile	"resource/ui/menus/panels/video.res"
+    //        controlSettingsFile	"scripts/resource/ui/menus/panels/video.res"
     //        clip                  1
     //    }
     }
@@ -203,8 +203,8 @@
             tall                    940 [$WINDOWS]
             tabPosition             1
 
-            controlSettingsFile		"resource/ui/menus/panels/audio.res" [$WINDOWS]
-            controlSettingsFile		"resource/ui/menus/panels/audio_console.res" [$GAMECONSOLE]
+            controlSettingsFile		"scripts/resource/ui/menus/panels/audio.res" [$WINDOWS]
+            controlSettingsFile		"scripts/resource/ui/menus/panels/audio_console.res" [$GAMECONSOLE]
         }
     }
 
@@ -244,7 +244,7 @@
 
             tabPosition             1
 
-            controlSettingsFile		"resource/ui/menus/panels/hud_options.res"
+            controlSettingsFile		"scripts/resource/ui/menus/panels/hud_options.res"
         }
     }
 }

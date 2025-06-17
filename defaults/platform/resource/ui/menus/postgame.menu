@@ -1,4 +1,4 @@
-resource/ui/menus/postgame.menu
+scripts/resource/ui/menus/postgame.menu
 {
 	menu
 	{
@@ -378,7 +378,7 @@ resource/ui/menus/postgame.menu
 			tall					36
 			visible					1
 			zpos                    1
-			controlSettingsFile		"resource/ui/menus/panels/footer_buttons.res"
+			controlSettingsFile		"scripts/resource/ui/menus/panels/footer_buttons.res"
 
 			pin_to_sibling			MenuFrame
 			pin_corner_to_sibling	BOTTOM

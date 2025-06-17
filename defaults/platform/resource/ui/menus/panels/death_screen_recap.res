@@ -1,4 +1,4 @@
-resource/ui/menus/panels/death_screen_recap.res
+scripts/resource/ui/menus/panels/death_screen_recap.res
 {
 	ScreenFrame
 	{

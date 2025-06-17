@@ -1,4 +1,4 @@
-"resource/ui/menus/panels/ads_controls_gamepad.res"
+"scripts/resource/ui/menus/panels/ads_controls_gamepad.res"
 {
     SwchLookSensitivity
     {

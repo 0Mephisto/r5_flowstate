@@ -1,4 +1,4 @@
-"resource/ui/menus/panels/store.res"
+"scripts/resource/ui/menus/panels/store.res"
 {
 	PanelFrame
 	{
@@ -22,7 +22,7 @@
         wide					f0
         tall					60
         visible					1
-        controlSettingsFile		"resource/ui/menus/panels/tabs_store.res"
+        controlSettingsFile		"scripts/resource/ui/menus/panels/tabs_store.res"
 
         pin_to_sibling			PanelFrame
         pin_corner_to_sibling	TOP
@@ -52,7 +52,7 @@
         tall					864
         visible					0
         tabPosition             1
-        controlSettingsFile		"resource/ui/menus/panels/store_collection_event.res"
+        controlSettingsFile		"scripts/resource/ui/menus/panels/store_collection_event.res"
 		proportionalToParent    1
 
         pin_to_sibling			PanelFrame
@@ -68,7 +68,7 @@
     //    tall					864
     //    visible					0
     //    tabPosition             1
-    //    controlSettingsFile		"resource/ui/menus/panels/store_special_currency_shop.res"
+    //    controlSettingsFile		"scripts/resource/ui/menus/panels/store_special_currency_shop.res"
     //	proportionalToParent    1
     //
     //    pin_to_sibling			PanelFrame
@@ -84,7 +84,7 @@
         tall					904
         visible					0
         tabPosition             1
-        controlSettingsFile		"resource/ui/menus/panels/store_themed_shop_event.res"
+        controlSettingsFile		"scripts/resource/ui/menus/panels/store_themed_shop_event.res"
 		proportionalToParent    1
 
         pin_to_sibling			PanelFrame
@@ -100,7 +100,7 @@
         tall					864
         visible					0
         tabPosition             1
-        controlSettingsFile		"resource/ui/menus/panels/store_ec.res"
+        controlSettingsFile		"scripts/resource/ui/menus/panels/store_ec.res"
 		proportionalToParent    1
 
         pin_to_sibling			PanelFrame
@@ -117,7 +117,7 @@
         visible					0
         tabPosition             1
         proportionalToParent    1
-        controlSettingsFile		"resource/ui/menus/panels/store_loot.res"
+        controlSettingsFile		"scripts/resource/ui/menus/panels/store_loot.res"
 		proportionalToParent    1
 
         pin_to_sibling			PanelFrame
@@ -133,7 +133,7 @@
         tall					%100
         visible					0
         tabPosition             1
-        controlSettingsFile		"resource/ui/menus/panels/store_characters.res"
+        controlSettingsFile		"scripts/resource/ui/menus/panels/store_characters.res"
 		proportionalToParent    1
 
         pin_to_sibling			PanelFrame
@@ -149,7 +149,7 @@
         tall					%100
         visible					0
         tabPosition             1
-        controlSettingsFile		"resource/ui/menus/panels/store_vc.res"
+        controlSettingsFile		"scripts/resource/ui/menus/panels/store_vc.res"
 		proportionalToParent    1
 
         pin_to_sibling			PanelFrame

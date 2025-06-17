@@ -1,4 +1,4 @@
-resource/ui/menus/dialog_gamemode_select_v2.menu
+scripts/resource/ui/menus/dialog_gamemode_select_v2.menu
 {
 	menu
 	{

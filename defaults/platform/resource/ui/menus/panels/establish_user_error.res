@@ -1,4 +1,4 @@
-"resource/ui/menus/panels/establish_user_error.res"
+"scripts/resource/ui/menus/panels/establish_user_error.res"
 {
     DarkenBackground
     {

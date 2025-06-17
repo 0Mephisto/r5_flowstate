@@ -1,4 +1,4 @@
-resource/ui/menus/panels/ranked_rewards.res
+scripts/resource/ui/menus/panels/ranked_rewards.res
 {
     ScreenFrame
     {

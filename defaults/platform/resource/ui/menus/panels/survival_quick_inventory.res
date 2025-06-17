@@ -1,4 +1,4 @@
-resource/ui/menus/panels/survival_quick_inventory.res
+scripts/resource/ui/menus/panels/survival_quick_inventory.res
 {
 	PanelFrame
 	{
@@ -40,7 +40,7 @@ resource/ui/menus/panels/survival_quick_inventory.res
 		tall					%100
 		visible					1
 		tabPosition				1
-		controlSettingsFile		"Resource/UI/menus/panels/survival_main_inventory.res"
+		controlSettingsFile		"scripts/resource/ui/menus/panels/survival_main_inventory.res"
 
         pin_to_sibling			PanelFrame
         pin_corner_to_sibling	TOP

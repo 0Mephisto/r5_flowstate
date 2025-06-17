@@ -1,4 +1,4 @@
-resource/ui/menus/battle_pass_about_1.menu
+scripts/resource/ui/menus/battle_pass_about_1.menu
 {
 	menu
 	{

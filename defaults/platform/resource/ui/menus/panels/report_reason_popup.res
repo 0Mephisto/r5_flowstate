@@ -1,4 +1,4 @@
-"resource/ui/menus/panels/report_reason_popup.res"
+"scripts/resource/ui/menus/panels/report_reason_popup.res"
 {
     PanelFrame
     {

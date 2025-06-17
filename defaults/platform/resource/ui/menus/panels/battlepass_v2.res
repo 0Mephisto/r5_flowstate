@@ -1,4 +1,4 @@
-"resource/ui/menus/panels/battlepass_v2.res"
+"scripts/resource/ui/menus/panels/battlepass_v2.res"
 {
 	PanelFrame
 	{
@@ -173,7 +173,7 @@
         wide					1556
         tall					450
         visible					1
-        controlSettingsFile		"resource/ui/menus/panels/battlepass_reward_header.res"
+        controlSettingsFile		"scripts/resource/ui/menus/panels/battlepass_reward_header.res"
 
         pin_to_sibling			PurchaseBG
         pin_corner_to_sibling	TOP_LEFT

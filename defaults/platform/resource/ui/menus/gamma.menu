@@ -1,4 +1,4 @@
-resource/ui/menus/gamma.menu
+scripts/resource/ui/menus/gamma.menu
 {
 	menu
 	{

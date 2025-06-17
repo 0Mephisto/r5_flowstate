@@ -1,4 +1,4 @@
-"resource/ui/menus/panels/character_banners_v2.res"
+"scripts/resource/ui/menus/panels/character_banners_v2.res"
 {
     PanelFrame
     {
@@ -175,7 +175,7 @@
         tall					840
         visible					1
         tabPosition             1
-        controlSettingsFile		"resource/ui/menus/panels/card_frames.res"
+        controlSettingsFile		"scripts/resource/ui/menus/panels/card_frames.res"
     }
 
     CardPosesPanel
@@ -187,7 +187,7 @@
         tall					840
         visible					1
         tabPosition             1
-        controlSettingsFile		"resource/ui/menus/panels/card_poses.res"
+        controlSettingsFile		"scripts/resource/ui/menus/panels/card_poses.res"
     }
 
     CardBadgesPanel
@@ -199,7 +199,7 @@
         tall					840
         visible					1
         tabPosition             1
-        controlSettingsFile		"resource/ui/menus/panels/card_badges.res"
+        controlSettingsFile		"scripts/resource/ui/menus/panels/card_badges.res"
     }
 
     CardTrackersPanel
@@ -211,7 +211,7 @@
         tall					840
         visible					1
         tabPosition             1
-        controlSettingsFile		"resource/ui/menus/panels/card_trackers.res"
+        controlSettingsFile		"scripts/resource/ui/menus/panels/card_trackers.res"
     }
 
     IntroQuipsPanel
@@ -223,7 +223,7 @@
         tall					840
         visible					1
         tabPosition             1
-        controlSettingsFile		"resource/ui/menus/panels/quips.res"
+        controlSettingsFile		"scripts/resource/ui/menus/panels/quips.res"
     }
 
     KillQuipsPanel
@@ -235,7 +235,7 @@
         tall					840
         visible					1
         tabPosition             1
-        controlSettingsFile		"resource/ui/menus/panels/quips.res"
+        controlSettingsFile		"scripts/resource/ui/menus/panels/quips.res"
     }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -1,4 +1,4 @@
-"resource/ui/menus/panels/character_emotes.res"
+"scripts/resource/ui/menus/panels/character_emotes.res"
 {
     PanelFrame
     {
@@ -255,7 +255,7 @@
         tall					840
         visible					1
         tabPosition             1
-        controlSettingsFile		"resource/ui/menus/panels/quips.res"
+        controlSettingsFile		"scripts/resource/ui/menus/panels/quips.res"
     }
 
 }

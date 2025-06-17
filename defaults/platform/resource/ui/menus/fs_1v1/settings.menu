@@ -1,0 +1,889 @@
+//Made by @CafeFPS
+
+scripts/resource/ui/menus/fs_1v1/settings.menu
+{
+	menu
+	{
+		ControlName				Frame
+		xpos					0
+		ypos					30
+		zpos					3
+		wide					f0
+		tall					f0
+		autoResize				0
+		pinCorner				0
+		visible					1
+		enabled					1
+		tabPosition				0
+		PaintBackgroundType		0
+		infocus_bgcolor_override	"0 0 0 0"
+		outoffocus_bgcolor_override	"0 0 0 0"
+		modal					1
+
+		ScreenBlur
+		{
+			ControlName				RuiPanel
+			wide					%100
+			tall					%100
+			rui                     "ui/invisible.rpak"
+			visible					1
+			drawColor				"0 0 0 50"
+		}
+		
+		TabBackground
+		{
+			ControlName				RuiPanel
+			wide					%100
+			tall					110
+			ypos	30
+			xpos					0
+			visible					1
+			enabled					1
+			proportionalToParent    1
+			zpos 6
+			rui 					"ui/tabs_background.rpak"
+			
+			pin_to_sibling			ScreenBlur
+			pin_corner_to_sibling	TOP_RIGHT
+			pin_to_sibling_corner	TOP_RIGHT
+		}
+		
+        Logo
+        {
+            ControlName				RuiPanel
+			InheritProperties       Logo
+			ypos	30
+			
+            pin_to_sibling			ScreenBlur
+            pin_corner_to_sibling	TOP_LEFT
+            pin_to_sibling_corner	TOP_LEFT
+        }
+		
+		Title
+		{
+			ControlName				Label
+			xpos                    -60
+			ypos					-23
+			zpos 7
+			auto_wide_tocontents	1
+			tall					50
+			visible					1
+			fontHeight				60
+			labelText				"FLOWSTATE 1V1"
+			font					"TitleBoldFont"
+			allcaps					1
+			fgcolor_override		"191 13 13 255"
+			pin_to_sibling			TabBackground
+			pin_corner_to_sibling	TOP_RIGHT
+			pin_to_sibling_corner	TOP_RIGHT
+		}
+		
+		MadeBy
+		{
+			ControlName				Label
+			xpos                    -40
+			ypos					-60
+			zpos 5
+			auto_wide_tocontents	1
+			tall					25
+			visible					1
+			fontHeight				25
+			labelText				"R5Reloaded by @AmosModz"
+			font					DefaultBold_41
+			allcaps					0
+			fgcolor_override		"255 255 255 255"
+			pin_to_sibling			ScreenBlur
+			pin_corner_to_sibling	BOTTOM_RIGHT
+			pin_to_sibling_corner	BOTTOM_RIGHT
+		}
+		
+		MadeBy2
+		{
+			ControlName				Label
+			xpos                    0
+			ypos					20
+			zpos 5
+			auto_wide_tocontents	1
+			tall					25
+			visible					1
+			fontHeight				25
+			labelText				"Flowstate by @CafeFPS"
+			font					DefaultBold_41
+			allcaps					0
+			fgcolor_override		"255 255 255 255"
+			pin_to_sibling			MadeBy
+			pin_corner_to_sibling	BOTTOM_RIGHT
+			pin_to_sibling_corner	BOTTOM_RIGHT
+		}
+		
+		SettingsPanelFrame
+		{
+			ControlName				RuiPanel
+			wide					%100//%70
+			xpos                    0//%50//%15
+			ypos 					100//%15
+			tall					%110
+			zpos 1
+			visible					1
+			rui                     "ui/basic_image.rpak"
+
+            ruiArgs
+            {
+                basicImageColor     "0 0 0"
+                basicImageAlpha     0.7
+            }
+
+			pin_to_sibling          ScreenBlur
+			pin_corner_to_sibling   TOP
+			pin_to_sibling_corner   TOP
+		}
+		
+		SettingsPanelBlur
+		{
+			ControlName				RuiPanel
+			wide					%100//%70
+			xpos                    0
+			ypos 					20
+			tall					%110
+			zpos 					0
+			visible					1
+			rui 					"ui/screen_blur.rpak"
+			drawColor				"0 0 0 10"
+			
+			pin_to_sibling          SettingsPanelFrame
+			pin_corner_to_sibling   TOP_LEFT
+			pin_to_sibling_corner   TOP_LEFT
+		}
+
+		/////////////////
+
+		////////////
+
+		ToggleRestButton
+		{
+			ControlName				RuiButton
+			classname				"SystemButtonClass MenuButton"
+			scriptID				0
+			ypos                    100//65
+			zpos 2
+			wide					695
+			tall					50
+			
+			rui                     "ui/generic_button.rpak"
+			labelText               ""
+			isSelected 			1
+			
+			ruiArgs
+			{
+				buttonText          "FIND MATCH"
+				isSelected 			1
+			}
+			visible					1
+			cursorVelocityModifier  0.7
+			tabPosition             1
+
+			navUp                   SupportR5R
+			navDown					StartInRestButton
+
+			pin_to_sibling          TabBackground
+			pin_corner_to_sibling   BOTTOM
+			pin_to_sibling_corner   BOTTOM
+		}
+
+		MatchTitle
+		{
+			ControlName				Label
+			xpos                    0
+			ypos					60
+			zpos 2
+			auto_wide_tocontents	1
+			tall					50
+			visible					1
+			fontHeight				30
+			labelText				"MATCH"
+			font					"TitleBoldFont"
+			allcaps					1
+			fgcolor_override		"179 227 223 255"
+			pin_to_sibling          ToggleRestButton
+			pin_corner_to_sibling   BOTTOM_LEFT
+			pin_to_sibling_corner   BOTTOM_LEFT
+		}
+		
+		StartInRestText
+		{
+				ControlName				Label
+				auto_wide_tocontents    1
+				labelText				"Start In Rest"
+				visible                 1
+				zpos 2
+				xpos 185
+				tall					60
+				fontHeight				30
+				font					Default
+				fgcolor_override		"255 255 255 255"
+				"classname"					"SettingsBtn"	
+				
+				pin_to_sibling          StartInRestButton
+				pin_corner_to_sibling   LEFT
+				pin_to_sibling_corner   LEFT
+		}	
+
+		StartInRestButton
+		{
+			ControlName             RuiButton
+			InheritProperties       SwitchButton
+			style                   DialogListButton
+			//navUp                   SldLobbyMusicVolume
+			//navDown                 SwchChatTextToSpeech
+			//ConVar                  "sound_without_focus"
+			xpos 0
+			wide 360
+			tall 47
+			xpos 300
+			ypos 125
+			
+			ConVar "fs_1v1_startinrest"
+			"classname"					"SettingsBtn"
+			
+			list
+			{
+				"Disable"  0
+				"Enable"   1
+			}
+
+			navUp                   ToggleRestButton
+			navDown					IBMMButton
+			
+			pin_to_sibling          ToggleRestButton
+			pin_corner_to_sibling   BOTTOM_RIGHT
+			pin_to_sibling_corner   BOTTOM_RIGHT
+			childGroupAlways        ChoiceButtonAlways
+		}
+
+		IBMMText
+		{
+				ControlName				Label
+				auto_wide_tocontents    1
+				labelText				"Input Based Matchmaking (IBMM)"
+				visible                 1
+				zpos 2
+				xpos 440
+				tall					60
+				fontHeight				30
+				font					Default
+				fgcolor_override		"255 255 255 255"
+				"classname"					"SettingsBtn"	
+				
+				// ypos                    80
+				pin_to_sibling          IBMMButton
+				pin_corner_to_sibling   LEFT
+				pin_to_sibling_corner   LEFT
+		}	
+
+		IBMMButton
+		{
+			ControlName             RuiButton
+			InheritProperties       SwitchButton
+			style                   DialogListButton
+			//navUp                   SldLobbyMusicVolume
+			//navDown                 SwchChatTextToSpeech
+			//ConVar                  "sound_without_focus"
+			// xpos 400
+			wide 360
+			ypos 55
+			tall 47
+			ConVar "fs_1v1_ibmm"
+			"classname"					"SettingsBtn"
+			
+			list
+			{
+				"Disable"  0
+				"Enable"   1
+			}
+
+			navUp                   StartInRestButton
+			navDown					IBMMWaitTimeButton
+			
+			pin_to_sibling          StartInRestButton
+			pin_corner_to_sibling   BOTTOM_LEFT
+			pin_to_sibling_corner   BOTTOM_LEFT
+			childGroupAlways        ChoiceButtonAlways
+		}
+
+		IBMMText
+		{
+				ControlName				Label
+				auto_wide_tocontents    1
+				labelText				"Input Based Matchmaking"
+				visible                 1
+				zpos 2
+				xpos 340
+				tall					60
+				fontHeight				30
+				font					Default
+				fgcolor_override		"255 255 255 255"
+				"classname"					"SettingsBtn"	
+				
+				// ypos                    80
+				pin_to_sibling          IBMMButton
+				pin_corner_to_sibling   LEFT
+				pin_to_sibling_corner   LEFT
+		}
+
+		IBMMWaitTimeText
+		{
+				ControlName				Label
+				auto_wide_tocontents    1
+				labelText				"Max Wait Time for IBMM"
+				visible                 1
+				zpos 2
+				xpos 319
+				tall					60
+				fontHeight				30
+				font					Default
+				fgcolor_override		"255 255 255 255"
+				"classname"					"SettingsBtn"	
+				
+				// ypos                    80
+				pin_to_sibling          IBMMWaitTimeButton
+				pin_corner_to_sibling   LEFT
+				pin_to_sibling_corner   LEFT
+		}
+		
+		IBMMWaitTimeButton
+		{
+			ControlName				SliderControl
+			InheritProperties		SliderControl
+
+			wide 360
+			ypos 75
+			tall 47
+
+			zpos 5
+			showlabel 0
+			tabPosition				0
+			style					DialogListButton
+			classname				"SettingsBtn"
+			conCommand				"fs_1v1_maxibmmtime"
+		
+			navUp                   IBMMButton
+			navDown					MaxLatencyAllowedButton
+			
+			minValue				0
+			maxValue				30
+			stepSize				1
+			showConVarAsFloat		1
+			pin_to_sibling          IBMMButton
+			pin_corner_to_sibling   BOTTOM_LEFT
+			pin_to_sibling_corner   BOTTOM_LEFT
+		}
+		
+		IBMMWaitTimeBox
+		{
+			wide 55
+			ControlName				TextEntry
+			InheritProperties       SliderControlTextEntry
+			syncedConVar            "fs_1v1_maxibmmtime"
+			classname				"SettingsBtn"
+			showConVarAsFloat		1
+			zpos 6
+
+			pin_to_sibling			IBMMWaitTimeButton
+			pin_corner_to_sibling	RIGHT
+			pin_to_sibling_corner	RIGHT
+		}
+
+		MaxLatencyAllowedText
+		{
+				ControlName				Label
+				auto_wide_tocontents    1
+				labelText				"Max Enemy Latency"
+				visible                 1
+				zpos 2
+				xpos 265
+				tall					60
+				fontHeight				30
+				font					Default
+				fgcolor_override		"255 255 255 255"
+				"classname"					"SettingsBtn"	
+				
+				// ypos                    80
+				pin_to_sibling          MaxLatencyAllowedButton
+				pin_corner_to_sibling   LEFT
+				pin_to_sibling_corner   LEFT
+		}
+		
+		MaxLatencyAllowedButton
+		{
+			ControlName				SliderControl
+			InheritProperties		SliderControl
+
+			wide 360
+			ypos 75
+			tall 47
+
+			zpos 5
+			showlabel 0
+			tabPosition				0
+			style					DialogListButton
+			classname				"SettingsBtn"
+			conCommand				"fs_1v1_maxenemylatency"
+			
+			navUp                   IBMMWaitTimeButton
+			navDown					AcceptChallengesButton
+			
+			minValue				5
+			maxValue				999
+			stepSize				1
+			showConVarAsFloat		0
+			pin_to_sibling          IBMMWaitTimeButton
+			pin_corner_to_sibling   BOTTOM_LEFT
+			pin_to_sibling_corner   BOTTOM_LEFT
+		}
+		
+		MaxLatencyAllowedBox
+		{
+			wide 55
+			ControlName				TextEntry
+			InheritProperties       SliderControlTextEntry
+			syncedConVar            "fs_1v1_maxenemylatency"
+			classname				"SettingsBtn"
+			showConVarAsFloat		1
+			zpos 6
+
+			pin_to_sibling			MaxLatencyAllowedButton
+			pin_corner_to_sibling	RIGHT
+			pin_to_sibling_corner	RIGHT
+		}
+		
+		AcceptChallengesText
+		{
+				ControlName				Label
+				auto_wide_tocontents    1
+				labelText				"Accept Challenges"
+				visible                 1
+				zpos 2
+				xpos 245
+				tall					60
+				fontHeight				30
+				font					Default
+				fgcolor_override		"255 255 255 255"
+				"classname"					"SettingsBtn"	
+				
+				// ypos                    80
+				pin_to_sibling          AcceptChallengesButton
+				pin_corner_to_sibling   LEFT
+				pin_to_sibling_corner   LEFT
+		}	
+
+		AcceptChallengesButton
+		{
+			ControlName             RuiButton
+			InheritProperties       SwitchButton
+			style                   DialogListButton
+			//navUp                   SldLobbyMusicVolume
+			//navDown                 SwchChatTextToSpeech
+			//ConVar                  "sound_without_focus"
+			// xpos 400
+			wide 360
+			ypos 55
+			tall 47
+			ConVar "fs_1v1_acceptchallenges"
+			"classname"					"SettingsBtn"
+
+			navUp                   MaxLatencyAllowedButton
+			navDown					ShowInputBannerButton
+			
+			list
+			{
+				"Disable"  0
+				"Enable"   1
+			}
+
+			pin_to_sibling          MaxLatencyAllowedButton
+			pin_corner_to_sibling   BOTTOM_LEFT
+			pin_to_sibling_corner   BOTTOM_LEFT
+			childGroupAlways        ChoiceButtonAlways
+		}
+
+		ShowInputBannerText
+		{
+				ControlName				Label
+				auto_wide_tocontents    1
+				labelText				"Show Input Banner"
+				visible                 1
+				zpos 2
+				xpos 255
+				tall					60
+				fontHeight				30
+				font					Default
+				fgcolor_override		"255 255 255 255"
+				"classname"					"SettingsBtn"	
+				
+				// ypos                    80
+				pin_to_sibling          ShowInputBannerButton
+				pin_corner_to_sibling   LEFT
+				pin_to_sibling_corner   LEFT
+		}	
+
+		ShowInputBannerButton
+		{
+			ControlName             RuiButton
+			InheritProperties       SwitchButton
+			style                   DialogListButton
+			//navUp                   SldLobbyMusicVolume
+			//navDown                 SwchChatTextToSpeech
+			//ConVar                  "sound_without_focus"
+			// xpos 400
+			wide 360
+			ypos 55
+			tall 47
+			ConVar "fs_1v1_showinputbanner"
+			"classname"					"SettingsBtn"
+
+			navUp                   AcceptChallengesButton
+			navDown					VsUIButton
+			
+			list
+			{
+				"Disable"  0
+				"Enable"   1
+			}
+
+			pin_to_sibling          AcceptChallengesButton
+			pin_corner_to_sibling   BOTTOM_LEFT
+			pin_to_sibling_corner   BOTTOM_LEFT
+			childGroupAlways        ChoiceButtonAlways
+		}
+
+		VsUIText
+		{
+				ControlName				Label
+				auto_wide_tocontents    1
+				labelText				"Show Vs UI"
+				visible                 1
+				zpos 2
+				xpos 170
+				tall					60
+				fontHeight				30
+				font					Default
+				fgcolor_override		"255 255 255 255"
+				"classname"					"SettingsBtn"	
+				
+				// ypos                    80
+				pin_to_sibling          VsUIButton
+				pin_corner_to_sibling   LEFT
+				pin_to_sibling_corner   LEFT
+		}	
+
+		VsUIButton
+		{
+			ControlName             RuiButton
+			InheritProperties       SwitchButton
+			style                   DialogListButton
+			//navUp                   SldLobbyMusicVolume
+			//navDown                 SwchChatTextToSpeech
+			//ConVar                  "sound_without_focus"
+			// xpos 400
+			wide 360
+			ypos 55
+			tall 47
+			ConVar "fs_1v1_showvsui"
+			"classname"					"SettingsBtn"
+
+			navUp                   ShowInputBannerButton
+			navDown					CamoColorButton
+			
+			list
+			{
+				"Disable"  0
+				"Enable"   1
+			}
+
+			pin_to_sibling          ShowInputBannerButton
+			pin_corner_to_sibling   BOTTOM_LEFT
+			pin_to_sibling_corner   BOTTOM_LEFT
+			childGroupAlways        ChoiceButtonAlways
+		}
+		
+		CosmeticsTitle
+		{
+			ControlName				Label
+			xpos                    340
+			ypos					60
+			zpos 1
+			auto_wide_tocontents	1
+			tall					50
+			visible					1
+			fontHeight				30
+			labelText				"COSMETICS"
+			font					"TitleBoldFont"
+			allcaps					1
+			fgcolor_override		"179 227 223 255"
+			pin_to_sibling			VsUIButton
+			pin_corner_to_sibling	BOTTOM_LEFT
+			pin_to_sibling_corner	BOTTOM_LEFT
+		}
+		
+		CamoColorText
+		{
+				ControlName				Label
+				auto_wide_tocontents    1
+				labelText				"Camo Color"
+				visible                 1
+				zpos 2
+				xpos 170
+				tall					60
+				fontHeight				30
+				font					Default
+				fgcolor_override		"255 255 255 255"
+				"classname"					"SettingsBtn"	
+				
+				// ypos                    80
+				pin_to_sibling          CamoColorButton
+				pin_corner_to_sibling   LEFT
+				pin_to_sibling_corner   LEFT
+		}	
+
+		CamoColorButton
+		{
+			ControlName				RuiButton
+			InheritProperties		SwitchButton
+			style					DialogListButton
+			classname					"SettingsBtn"
+			
+			// xpos 400
+			ypos 130
+			wide 360
+			ypos 55
+			tall 47
+			ConVar "fs_1v1_camo"
+			
+			list{
+				"Base" 				0
+				"Red"  				1
+				"White" 			2
+				"Yellow"			3
+				"Blue"				4
+				"Pink"				5
+				"Dark Green"		6
+				"Teal Blue" 		7
+				"Green"				8
+				"Random"			9
+				// "Orange"			10
+				// "Fluorescent Green"	11
+				// "Cyan"				12
+				// "Lime Green"		13
+				// "Powder Blue"		14
+				// "No camo/Base"  	15
+			}
+			childGroupAlways        MultiChoiceButtonAlways
+
+			navUp                   VsUIButton
+			navDown					HeirloomButton
+			
+			pin_to_sibling          VsUIButton
+			pin_corner_to_sibling   BOTTOM_LEFT
+			pin_to_sibling_corner   BOTTOM_LEFT
+		}
+
+		HeirloomText
+		{
+				ControlName				Label
+				auto_wide_tocontents    1
+				labelText				"Heirloom"
+				visible                 1
+				zpos 2
+				xpos 140
+				tall					60
+				fontHeight				30
+				font					Default
+				fgcolor_override		"255 255 255 255"
+				"classname"					"SettingsBtn"	
+				
+				// ypos                    80
+				pin_to_sibling          HeirloomButton
+				pin_corner_to_sibling   LEFT
+				pin_to_sibling_corner   LEFT
+		}	
+
+		HeirloomButton
+		{
+			ControlName				RuiButton
+			InheritProperties		SwitchButton
+			style					DialogListButton
+			classname					"SettingsBtn"
+				
+			// xpos 400
+			wide 360
+			ypos 55
+			tall 47
+			ConVar "fs_1v1_heirloom"
+			
+			list{
+				"Empty Hands" 			0
+				"Bolo Sword"  				1
+				"Karambit" 			2
+				"Minecraft Sword"			3
+				"Mjolnir"				4
+				"Mack's Knife"				5
+			}
+	
+			navUp                   CamoColorButton
+			navDown					SupportFlowstate
+			
+			childGroupAlways        MultiChoiceButtonAlways
+			
+			pin_to_sibling          CamoColorButton
+			pin_corner_to_sibling   BOTTOM_LEFT
+			pin_to_sibling_corner   BOTTOM_LEFT
+		}
+		
+		CharmText
+		{
+				ControlName				Label
+				auto_wide_tocontents    1
+				labelText				"Weapon Charm"
+				visible                 1
+				zpos 2
+				xpos 210
+				tall					60
+				fontHeight				30
+				font					Default
+				fgcolor_override		"255 255 255 255"
+				"classname"					"SettingsBtn"	
+				
+				// ypos                    80
+				pin_to_sibling          CharmButton
+				pin_corner_to_sibling   LEFT
+				pin_to_sibling_corner   LEFT
+		}	
+		
+		CharmButton
+		{
+			ControlName				RuiButton
+			InheritProperties		SwitchButton
+			style					DialogListButton
+			classname					"SettingsBtn"
+				
+			// xpos 400
+			wide 360
+			ypos 55
+			tall 47
+			ConVar "fs_1v1_charm"
+			
+			list{
+				"Empty"				0
+				"Nessy" 			1
+				"Gas Canister"  				2
+				"Drone" 			3
+				"Crow"			4
+				"Jester"				5
+				"Nessy Ghost"				6
+				"Fireball" 7
+				"Yeti" 8
+			}
+	
+			navUp                   CamoColorButton
+			navDown					SupportFlowstate
+			
+			childGroupAlways        MultiChoiceButtonAlways
+			
+			pin_to_sibling          HeirloomButton
+			pin_corner_to_sibling   BOTTOM_LEFT
+			pin_to_sibling_corner   BOTTOM_LEFT
+		}
+		
+		SupportFlowstate
+		{
+			"ControlName" 			"RuiButton"
+			"rui"					"ui/footer_button.rpak"
+			"wide" 					"210"
+			"tall" 					"40"
+			
+			ypos                    80
+			xpos					130
+			
+			zpos 					10
+			sound_focus           "UI_Menu_Focus"
+			sound_accept          "UI_Menu_Accept"
+			
+			
+			ruiArgs
+			{
+				buttonText "Support Flowstate"
+				basicImageColor     "255 255 255"
+                basicImageAlpha     1
+			}
+
+			navUp                   HeirloomButton
+			navDown					SupportR5R
+			
+			pin_to_sibling          CharmText
+			pin_corner_to_sibling   BOTTOM_LEFT
+			pin_to_sibling_corner   BOTTOM_LEFT
+		}
+
+		SupportR5R
+		{
+			"ControlName" 			"RuiButton"
+			"rui"					"ui/footer_button.rpak"
+			"wide" 					"225"
+			"tall" 					"40"
+			
+			// ypos                    100
+			xpos					490
+			
+			zpos 					10
+			sound_focus           "UI_Menu_Focus"
+			sound_accept          "UI_Menu_Accept"
+			
+			
+			ruiArgs
+			{
+				buttonText "Support R5Reloaded"
+				basicImageColor     "255 255 255"
+                basicImageAlpha     1
+			}
+
+			navUp                   SupportFlowstate
+			navDown					ToggleRestButton
+			
+			pin_to_sibling          SupportFlowstate
+			pin_corner_to_sibling   RIGHT
+			pin_to_sibling_corner   RIGHT
+		}
+	
+
+		GoBackButton
+		{
+			"ControlName" 			"RuiButton"
+			"rui"					"ui/footer_button.rpak"
+			wide					105
+			tall					35
+		    visible				"1"
+			sound_focus           "UI_Menu_Focus"
+			sound_accept          "UI_Menu_Accept"
+			cursorPriority        "-1"	
+			
+			ruiArgs
+			{
+				isSelected 0
+				buttonText "`1%[B_BUTTON|ESCAPE]%`0 Close"
+				basicImageColor     "255 255 255"
+                basicImageAlpha     1
+			}
+			
+			
+			xpos                    -80
+			ypos                    -80
+			zpos                    7
+            visible 1
+
+			pin_to_sibling			ScreenBlur
+			pin_corner_to_sibling	BOTTOM_LEFT
+			pin_to_sibling_corner	BOTTOM_LEFT
+		}
+
+	}
+}

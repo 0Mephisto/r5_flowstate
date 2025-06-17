@@ -1,4 +1,4 @@
-resource/ui/menus/dialog_report_player_reason.menu
+scripts/resource/ui/menus/dialog_report_player_reason.menu
 {
 	menu
 	{
@@ -47,7 +47,7 @@ resource/ui/menus/dialog_report_player_reason.menu
             ControlName				CNestedPanel
             wide					100
             tall					100
-            controlSettingsFile		"resource/ui/menus/panels/report_reason_popup.res"
+            controlSettingsFile		"scripts/resource/ui/menus/panels/report_reason_popup.res"
             labelText               ""
             visible					1
             cursorVelocityModifier  0.7

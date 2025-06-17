@@ -1,4 +1,4 @@
-"Resource/UI/menus/button_locked_tooltip.res"
+"scripts/resource/ui/menus/button_locked_tooltip.res"
 {
 	Image
 	{

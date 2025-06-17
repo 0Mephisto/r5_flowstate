@@ -1,4 +1,4 @@
-Resource/UI/menus/panels/survival_main_inventory.res
+scripts/resource/ui/menus/panels/survival_main_inventory.res
 {
     PanelFrame
     {
@@ -495,7 +495,7 @@ Resource/UI/menus/panels/survival_main_inventory.res
 		visible					1
 		enabled                 1
 		tabPosition				1
-		controlSettingsFile		"Resource/UI/menus/panels/survival_quick_inventory_grid.res"
+		controlSettingsFile		"scripts/resource/ui/menus/panels/survival_quick_inventory_grid.res"
 
         xpos                    0
         ypos                    50

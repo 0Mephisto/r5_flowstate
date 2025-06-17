@@ -1,4 +1,4 @@
-resource/ui/menus/controls_ads_console.menu
+scripts/resource/ui/menus/controls_ads_console.menu
 {
 	menu
 	{
@@ -119,7 +119,7 @@ resource/ui/menus/controls_ads_console.menu
                 InheritProperties       SettingsContentPanel
                 tabPosition             1
 
-                controlSettingsFile		"resource/ui/menus/panels/ads_controls_gamepad.res"
+                controlSettingsFile		"scripts/resource/ui/menus/panels/ads_controls_gamepad.res"
             }
 
             DetailsPanel

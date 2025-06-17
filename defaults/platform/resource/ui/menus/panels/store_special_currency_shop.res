@@ -1,4 +1,4 @@
-"resource/ui/menus/panels/store_special_currency_shop.res"
+"scripts/resource/ui/menus/panels/store_special_currency_shop.res"
 {
 	PanelFrame
 	{

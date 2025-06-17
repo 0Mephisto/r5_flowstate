@@ -1,4 +1,4 @@
-"resource/ui/menus/panels/establish_user.res"
+"scripts/resource/ui/menus/panels/establish_user.res"
 {
     Screen
     {
@@ -51,6 +51,6 @@
         wide					%100
         tall					%100
         visible					1
-        controlSettingsFile		"resource/ui/menus/panels/establish_user_error.res"
+        controlSettingsFile		"scripts/resource/ui/menus/panels/establish_user_error.res"
     }
 }

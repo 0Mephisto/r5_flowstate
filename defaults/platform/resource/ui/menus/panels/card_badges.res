@@ -1,4 +1,4 @@
-"resource/ui/menus/panels/card_badges.res"
+"scripts/resource/ui/menus/panels/card_badges.res"
 {
 	PanelFrame
 	{

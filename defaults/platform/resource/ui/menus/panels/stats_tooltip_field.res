@@ -1,4 +1,4 @@
-"resource/ui/menus/panels/stats_tooltip_field.res"
+"scripts/resource/ui/menus/panels/stats_tooltip_field.res"
 {
 	PanelFrame
 	{

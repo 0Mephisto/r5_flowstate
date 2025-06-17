@@ -121,6 +121,8 @@ void function MainHud_AddClient( entity player )
 	player.cv.burnCardAnnouncementQueue <- []
 
 	clGlobal.empScreenEffect = Hud.HudElement( "EMPScreenFX" )
+
+	thread ClientHudInit( player )
 }
 
 void function CockpitHudInit( entity cockpit )
@@ -694,6 +696,26 @@ void function DrawAttentionToTestMap( var elem )
 		Hud_SetPos( elem, -1700, -1400 )
 		Hud_ReturnToBasePosOverTime( elem, 4, 2 )
 	}
+}
+
+
+void function ClientHudInit( entity player )
+{
+	Assert( player == GetLocalClientPlayer() )
+
+	#if DEVELOPER
+		HudElement( "Dev_Info1" ).Hide()
+		HudElement( "Dev_Info2" ).Hide()
+		HudElement( "Dev_Info3" ).Hide()
+			{
+				if ( IsTestMap() )
+				{
+					var elem = HudElement( "Dev_Info3" )
+					Hud_SetText( elem, "Map is in development! Progress: [#_____________________] 7%" )
+					Hud_Show( elem )
+				}
+			}
+	#endif //DEVELOPER
 }
 
 void function CinematicEventUpdateDoF( entity player )

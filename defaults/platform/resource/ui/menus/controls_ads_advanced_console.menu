@@ -1,4 +1,4 @@
-resource/ui/menus/controls_ads_advanced_console.menu
+scripts/resource/ui/menus/controls_ads_advanced_console.menu
 {
 	menu
 	{
@@ -120,7 +120,7 @@ resource/ui/menus/controls_ads_advanced_console.menu
                 tabPosition             1
                 tall					600
 
-                controlSettingsFile		"resource/ui/menus/panels/ads_advanced_controls_gamepad.res"
+                controlSettingsFile		"scripts/resource/ui/menus/panels/ads_advanced_controls_gamepad.res"
             }
 
             DetailsPanel

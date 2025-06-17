@@ -1,4 +1,4 @@
-"resource/ui/menus/panels/character_select_portraits_new.res"
+"scripts/resource/ui/menus/panels/character_select_portraits_new.res"
 {
     Anchor
     {

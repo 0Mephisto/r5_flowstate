@@ -1,4 +1,4 @@
-"resource/ui/menus/panels/advanced_look_controls.res"
+"scripts/resource/ui/menus/panels/advanced_look_controls.res"
 {
 //	PanelFrame
 //	{

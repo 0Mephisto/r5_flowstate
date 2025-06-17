@@ -1,4 +1,4 @@
-resource/ui/menus/lobby_all_challenges.menu
+scripts/resource/ui/menus/lobby_all_challenges.menu
 {
 	menu
 	{

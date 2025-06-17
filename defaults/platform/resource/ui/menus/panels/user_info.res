@@ -1,4 +1,4 @@
-"resource/ui/menus/user_info.menu"
+"scripts/resource/ui/menus/user_info.menu"
 {
 	Background
 	{

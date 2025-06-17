@@ -1,4 +1,4 @@
-"resource/ui/menus/panels/store_collection_event.res"
+"scripts/resource/ui/menus/panels/store_collection_event.res"
 {
 	PanelFrame
 	{
@@ -143,7 +143,7 @@
 	    tall					350
 
 	    visible					1
-	    controlSettingsFile		"resource/ui/menus/panels/collection_event_rewards.res"
+	    controlSettingsFile		"scripts/resource/ui/menus/panels/collection_event_rewards.res"
 	}
 
 	ItemDetailsBox

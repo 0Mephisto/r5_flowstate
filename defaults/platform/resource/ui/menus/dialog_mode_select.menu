@@ -1,4 +1,4 @@
-resource/ui/menus/dialog_mode_select.menu
+scripts/resource/ui/menus/dialog_mode_select.menu
 {
 	menu
 	{
@@ -47,7 +47,7 @@ resource/ui/menus/dialog_mode_select.menu
             ControlName				CNestedPanel
             wide					100
             tall					100
-            controlSettingsFile		"resource/ui/menus/panels/mode_popup.res"
+            controlSettingsFile		"scripts/resource/ui/menus/panels/mode_popup.res"
             labelText               ""
             visible					1
             cursorVelocityModifier  0.7

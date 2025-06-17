@@ -1,4 +1,4 @@
-"resource/ui/menus/panels/match_info_player.res"
+"scripts/resource/ui/menus/panels/match_info_player.res"
 {
 	Name
 	{

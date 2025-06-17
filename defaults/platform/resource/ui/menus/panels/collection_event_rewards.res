@@ -1,4 +1,4 @@
-"resource/ui/menus/panels/collection_event_rewards.res"
+"scripts/resource/ui/menus/panels/collection_event_rewards.res"
 {
 	PanelFrame
 	{
