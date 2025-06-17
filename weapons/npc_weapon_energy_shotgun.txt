@@ -103,10 +103,10 @@ WeaponData
 	"proficiency_good_spreadscale"					"4.5"
 	"proficiency_very_good_spreadscale"   			"3.7"
 
-	"npc_damage_near_value"   						"10"
-	"npc_damage_far_value"							"10"
-	"npc_damage_near_value_titanarmor"				"10"
-	"npc_damage_far_value_titanarmor" 				"10"
+	"npc_damage_near_value"   						"12"
+	"npc_damage_far_value"							"12"
+	"npc_damage_near_value_titanarmor"				"12"
+	"npc_damage_far_value_titanarmor" 				"12"
 	"npc_damage_near_distance"						"600"
 	"npc_damage_far_distance" 						"1200"
 
