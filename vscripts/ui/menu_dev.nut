@@ -281,6 +281,8 @@ void function SetupDefaultDevCommandsMP()
 	//Player is fully connected at this point, a check was made before
 	RunClientScript("DEV_SendCheatsStateToUI")
 	
+	SetupDevMenu( "Custom Cosmetics", SetDevMenu_CustomCosmetics )
+	
 	if( allowedWeaponChangeModes.contains( Playlist() ) )
 	{
 		SetupDevMenu( "FSDM: Change Primary weapon", SetDevMenu_TDMPrimaryWeapons )
@@ -1490,4 +1492,265 @@ void function SetupEditor()
 	SetupDevCommand( "Start Editing", "give mp_weapon_editor" )
 	SetupDevCommand( "Zipline", "give mp_weapon_zipline" )
 	#endif
+}
+
+const array<string> CUSTOM_COSMETICS_FILTER_LIST = [
+	"None",
+	"Empty"
+]
+
+const bool CUSTOM_COSMETICS_FILTERING_ENABLED = true
+
+void function SetDevMenu_CustomCosmetics( var _ )
+{
+	thread ChangeToThisMenu( SetupCustomCosmetics )
+}
+
+
+void function SetupCustomCosmetics()
+{
+	array<string> categories = []
+	foreach( LoadoutEntry entry in GetAllLoadoutSlots() )
+	{
+		if ( !categories.contains( entry.DEV_category ) )
+			categories.append( entry.DEV_category )
+	}
+	categories.sort()
+	foreach( string category in categories )
+	{
+		// Only show categories that have available items after filtering
+		if ( CategoryHasAvailableItems( category ) )
+		{
+			SetupDevMenu( category, void function( var unused ) : ( category ) {
+				thread ChangeToThisMenu( void function() : ( category ) {
+					SetupCustomCosmetics_CategoryScreen( category )
+				} )
+			} )
+		}
+	}
+}
+
+
+void function SetupCustomCosmetics_CategoryScreen( string category )
+{
+	array<LoadoutEntry> entries = clone GetAllLoadoutSlots()
+	entries.sort( int function( LoadoutEntry a, LoadoutEntry b ) {
+		if ( a.DEV_name < b.DEV_name )
+			return -1
+		if ( a.DEV_name > b.DEV_name )
+			return 1
+		return 0
+	} )
+
+	array<string> charactersUsed = []
+
+	foreach( LoadoutEntry entry in  entries)
+	{
+		if ( entry.DEV_category != category )
+			continue
+
+		string prefix = "character_"
+
+		if ( entry.DEV_name.find( prefix ) == 0 )
+		{
+			string character = GetCharacterNameFromDEV_name( entry.DEV_name )
+
+			if ( !charactersUsed.contains( character ) )
+			{
+				charactersUsed.append( character )
+				
+				// Check if character has available items after filtering
+				if ( CharacterHasAvailableItems( category, character ) )
+				{
+					SetupDevMenu( character, void function( var unused ) : ( category, character ) {
+						thread ChangeToThisMenu( void function() : ( category, character ) {
+							SetupCustomCosmetics_CategoryScreenForCharacter( category, character )
+						} )
+					} )
+				}
+			}
+		}
+		else
+		{
+			SetupDevMenu( entry.DEV_name, void function( var unused ) : ( entry ) {
+				thread ChangeToThisMenu( void function() : ( entry ) {
+					SetupCustomCosmetics_SlotScreen( entry )
+				} )
+			} )
+		}
+	}
+}
+
+void function SetupCustomCosmetics_CategoryScreenForCharacter( string category, string character )
+{
+	array<LoadoutEntry> entries = clone GetAllLoadoutSlots()
+	entries.sort( int function( LoadoutEntry a, LoadoutEntry b ) {
+		if ( a.DEV_name < b.DEV_name )
+			return -1
+		if ( a.DEV_name > b.DEV_name )
+			return 1
+		return 0
+	} )
+
+	array< LoadoutEntry > entriesToUse
+
+	foreach( LoadoutEntry entry in entries )
+	{
+		if ( entry.DEV_category != category )
+			continue
+
+		string entryCharacter = GetCharacterNameFromDEV_name( entry.DEV_name )
+
+		if ( entryCharacter != character )
+			continue
+
+		entriesToUse.append( entry )
+	}
+
+
+	if ( entriesToUse.len() > 1 )
+	{
+		foreach ( LoadoutEntry entry in entriesToUse )
+		{
+			SetupDevMenu( entry.DEV_name, void function( var unused ) : ( entry ) {
+				thread ChangeToThisMenu( void function() : ( entry ) {
+					SetupCustomCosmetics_SlotScreen( entry )
+				} )
+			} )
+		}
+	}
+	else if ( entriesToUse.len() == 1 )
+	{
+		LoadoutEntry entry = entriesToUse[ 0 ]
+		SetupCustomCosmetics_SlotScreen( entry )
+	}
+}
+
+bool function ShouldFilterCustomCosmeticItem( ItemFlavor item )
+{
+	if ( !CUSTOM_COSMETICS_FILTERING_ENABLED )
+		return false
+		
+	string itemName = Localize( ItemFlavor_GetLongName( item ) )
+	
+	foreach ( string filteredName in CUSTOM_COSMETICS_FILTER_LIST )
+	{
+		if ( itemName == filteredName )
+			return true
+	}
+	
+	return false
+}
+
+bool function CharacterHasAvailableItems( string category, string character )
+{
+	if ( !CUSTOM_COSMETICS_FILTERING_ENABLED )
+		return true  // If filtering is disabled, always show characters
+		
+	array<LoadoutEntry> entries = clone GetAllLoadoutSlots()
+	
+	foreach( LoadoutEntry entry in entries )
+	{
+		if ( entry.DEV_category != category )
+			continue
+			
+		string entryCharacter = GetCharacterNameFromDEV_name( entry.DEV_name )
+		
+		if ( entryCharacter != character )
+			continue
+			
+		// Get items for this entry and check if any remain after filtering
+		array<ItemFlavor> flavors = DEV_GetValidCustomItemFlavorsForLoadoutSlot( LocalClientEHI(), entry )
+		
+		foreach( ItemFlavor item in flavors )
+		{
+			if ( !ShouldFilterCustomCosmeticItem( item ) )
+				return true  // Found at least one non-filtered item
+		}
+	}
+	
+	return false  // No items available after filtering
+}
+
+// Helper function to check if a category has any available items after filtering
+bool function CategoryHasAvailableItems( string category )
+{
+	if ( !CUSTOM_COSMETICS_FILTERING_ENABLED )
+		return true  // If filtering is disabled, always show categories
+		
+	array<LoadoutEntry> entries = clone GetAllLoadoutSlots()
+	
+	foreach( LoadoutEntry entry in entries )
+	{
+		if ( entry.DEV_category != category )
+			continue
+			
+		// Check if this entry has any available items
+		string prefix = "character_"
+		
+		if ( entry.DEV_name.find( prefix ) == 0 )
+		{
+			// Character-specific entry - check if character has available items
+			string character = GetCharacterNameFromDEV_name( entry.DEV_name )
+			if ( CharacterHasAvailableItems( category, character ) )
+				return true
+		}
+		else
+		{
+			// Non-character entry - check items directly
+			array<ItemFlavor> flavors = DEV_GetValidCustomItemFlavorsForLoadoutSlot( LocalClientEHI(), entry )
+			
+			foreach( ItemFlavor item in flavors )
+			{
+				if ( !ShouldFilterCustomCosmeticItem( item ) )
+					return true  // Found at least one non-filtered item
+			}
+		}
+	}
+	
+	return false  // No items available after filtering in this category
+}
+
+void function SetupCustomCosmetics_SlotScreen( LoadoutEntry entry )
+{
+	array<ItemFlavor> flavors = clone DEV_GetValidCustomItemFlavorsForLoadoutSlot( LocalClientEHI(), entry )
+	
+	// Apply filtering if enabled
+	if ( CUSTOM_COSMETICS_FILTERING_ENABLED )
+	{
+		for ( int i = flavors.len() - 1; i >= 0; i-- )
+		{
+			if ( ShouldFilterCustomCosmeticItem( flavors[i] ) )
+			{
+				flavors.remove( i )
+			}
+		}
+	}
+	
+	flavors.sort( int function( ItemFlavor a, ItemFlavor b ) {
+		string textA = Localize( ItemFlavor_GetLongName( a ) )
+		string textB = Localize( ItemFlavor_GetLongName( b ) )
+
+		//
+		if ( textA.slice( 0, 1 ) == "[" && textB.slice( 0, 1 ) != "[" )
+			return -1
+
+		if ( textA.slice( 0, 1 ) != "[" && textB.slice( 0, 1 ) == "[" )
+			return 1
+
+		if ( textA < textB )
+			return -1
+
+		if ( textA > textB )
+			return 1
+
+		return 0
+	} )
+
+	foreach( ItemFlavor flav in flavors )
+	{
+		SetupDevFunc( Localize( ItemFlavor_GetLongName( flav ) ), void function( var unused ) : ( entry, flav ) {
+			DEV_RequestSetItemFlavorLoadoutSlot( LocalClientEHI(), entry, flav )
+		} )
+	}
 }
