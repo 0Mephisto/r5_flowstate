@@ -46,4 +46,6 @@ classes
 	import npc_supressorturret.txt
 	
 	import npc_nextbot.txt
+	import npc_titan.txt
+	import npc_titan_buddy.txt
 }

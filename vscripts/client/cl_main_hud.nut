@@ -711,7 +711,7 @@ void function ClientHudInit( entity player )
 				if ( IsTestMap() )
 				{
 					var elem = HudElement( "Dev_Info3" )
-					Hud_SetText( elem, "Map is in development! Progress: [##____________________] 10%" )
+					Hud_SetText( elem, "Map is in development! Progress: [###########___________] 59%" )
 					Hud_Show( elem )
 				}
 			}

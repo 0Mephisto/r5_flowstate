@@ -209,6 +209,7 @@ global enum eDamageSourceId
 	mp_weapon_gunship_launcher
 	mp_weapon_gunship_turret
 	mp_weapon_gunship_missile
+	mp_titanweapon_predator_cannon
 
 	// Misc
 	rodeo
@@ -566,6 +567,7 @@ void function DamageTypes_Init()
 	file.damageSourceIDToImage[eDamageSourceId.sp_weapon_arc_tool]			<- $"r2_ui/menus/loadout_icons/primary_weapon/primary_arc_tool"
 	file.damageSourceIDToImage[eDamageSourceId.mp_weapon_rspn101_og]		<- $"r2_ui/menus/loadout_icons/primary_weapon/primary_arc_tool"
 	file.damageSourceIDToImage[eDamageSourceId.mp_weapon_smart_pistol]		<- $"rui/weapon_icons/r5/weapon_smart_pistol"
+	file.damageSourceIDToImage[eDamageSourceId.mp_weapon_smart_pistol]		<- $"r2_ui/menus/loadout_icons/titan_weapon/titan_weapon_predator"
 	file.damageSourceIDToImage[eDamageSourceId.mp_titanweapon_flightcore_rockets] <- $"rui/weapon_icons/kral/custom/flamethrower"
 	file.damageSourceIDToImage[eDamageSourceId.mp_weapon_flamethrower] 		<- $"rui/weapon_icons/kral/custom/flamethrower"
 	file.damageSourceIDToImage[eDamageSourceId.mp_ability_mobile_respawn_beacon] 		<- $"rui/weapon_icons/kral/custom/flamethrower"//remove this later
@@ -724,7 +726,7 @@ void function DamageTypes_Init()
 		[ eDamageSourceId.mp_weapon_car_r2 ] 						= "Car SMG",
 		[ eDamageSourceId.mp_weapon_mgl ] 							= "MGL Mag Launcher",
 		[ eDamageSourceId.mp_weapon_3030 ] 							= "30-30 Repeater",
-		//[ eDamageSourceId.mp_weapon_energysword ] 				= "Energy Sword",
+		[ eDamageSourceId.mp_titanweapon_predator_cannon ] 			= "Predator Cannon",
 		[ eDamageSourceId.mp_weapon_dragon_lmg ] 					= "Rampage LMG",		
 		[ eDamageSourceId.mp_weapon_smart_pistol ] 	 				= "Smart Pistol",
 		[ eDamageSourceId.mp_weapon_grenade_electric_smoke ] 	 	= "Electric Smoke",

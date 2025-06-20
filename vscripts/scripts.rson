@@ -271,6 +271,7 @@ Scripts:
 	titan/sh_titan_soul.gnut
 	titan/sh_titan_triple_health.gnut
 	titan/sh_ion_energy.gnut
+	titan/sh_titan_fastball.nut
 	weapons/_arc_cannon.nut
 	weapons/_grenade.nut
 	weapons/_vortex.nut
@@ -296,6 +297,7 @@ Scripts:
 	weapons/mp_weapon_mdlspawner.nut
 	weapons/mp_weapon_satchel.nut
 	weapons/mp_weapon_turret.nut
+	weapons/mp_titanweapon_predator_cannon.nut
 
 	weapons/mp_ability_heal.nut
 	weapons/mp_ability_sonar.nut

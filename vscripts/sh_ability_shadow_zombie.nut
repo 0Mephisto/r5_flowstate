@@ -13,6 +13,7 @@ global function AreTeammatesShadowZombiesOrRespawning
 	global function ShadowZombie_TryDamagingTrapAfterTakingDamage
 	global function ShadowZombie_SetCallback_GetMaxHealthValueToSetForShadows
 
+	global function ResetCharacterSkin
 
 	global function DEV_GiveShadowZombieAbilities
 	bool Dev_Shadow_Squad_Initialized = false
@@ -611,7 +612,7 @@ void function RemoveShadowZombieAbilities( entity player )
 	player.TakeOffhandWeapon( OFFHAND_MELEE )
 	player.p.respawnPodLanded = true
 	//SurvivalPlayerRespawnedInit( player )
-	ShadowSquadCancelCharacterSkin( player )
+	ResetCharacterSkin( player )
 	player.p.respawnPodLanded = false
 	if ( player.GetPlayerNetBool( "isPlayerShadowZombie" ) )
 		player.SetPlayerNetBool( "isPlayerShadowZombie", false )
@@ -638,7 +639,7 @@ void function RemoveShadowZombieAbilities( entity player )
 #endif //#if SERVER
 
 #if SERVER
-void function ShadowSquadCancelCharacterSkin( entity player )
+void function ResetCharacterSkin( entity player )
 {
 	ItemFlavor character = LoadoutSlot_GetItemFlavor( ToEHI( player ), Loadout_CharacterClass() )
 	LoadoutEntry skinSlot = Loadout_CharacterSkin( character )

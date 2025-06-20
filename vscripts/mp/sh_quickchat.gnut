@@ -155,6 +155,7 @@ void function RegisterCustomComs()
 	RegisterCustomCom( eCommsAction.PING_WEAPON_3030, "ping_found3030")
 	RegisterCustomCom( eCommsAction.PING_WEAPON_R201, "ping_foundR301")
 	RegisterCustomCom( eCommsAction.PING_RESPAWN_MOBILE, "ping_foundPortableRespawnBeacon")
+	RegisterCustomCom( eCommsAction.PING_WEAPON_PREDATOR, "ping_foundWeapExp")
 
     // NPC's
 	asset icon = $"rui/hud/ping/icon_ping_enemy"

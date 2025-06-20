@@ -76,14 +76,14 @@ asset function GetSoulPlayerSettings( entity soul )
 
 bool function HasSoul( entity ent )
 {
-	return ( ent.IsNPC() || ent.IsPlayer() ) && IsValid( ent.GetTitanSoul() )
+	return false//( ent.IsNPC() || ent.IsPlayer() ) && IsValid( ent.GetTitanSoul() )
 }
 
 #if SERVER
 void function InitSoul( entity soul, entity titan )
 {
 	Assert( titan.IsNPC() )
-
+	return
 	asset settings = GetNPCTitanSettingFile( titan )
 	soul.SetPlayerSettingsName( settings )
 

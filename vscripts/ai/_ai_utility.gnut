@@ -1725,6 +1725,18 @@ void function DEV_SpawnSpiderAtCrosshair(int team = 99)
 	DispatchSpawn( spider )
 }
 
+void function DEV_SpawnBTAtCrosshair(int team = 99)
+{
+	entity player = GetPlayerArray()[ 0 ]
+
+	vector origin = GetPlayerCrosshairOrigin( player )
+	vector angles = Vector( 0, 0, 0 )
+
+	entity bt = CreateBT( team, origin, angles )
+
+	DispatchSpawn( bt )
+}
+
 void function DEV_SpawnTitanAtCrosshair(int team = 99)
 {
 	entity player = GetPlayerArray()[ 0 ]

@@ -106,6 +106,7 @@ void function SV_CL_Init()
 	#endif
 
 	ShDevWeapons_Init()
+	MpTitanWeaponpredatorcannon_Init()
 	BleedoutShared_Init()
 	ShPakRequests_LevelInit()
 	ShXP_Init()

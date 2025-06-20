@@ -400,6 +400,8 @@ void function PrecacheSDKWeapons()
 
 	//Custom Weapons
 	PrecacheWeapon( $"mp_weapon_lightninggun" )//Make a proper hitscan weapon later
+	PrecacheWeapon( $"mp_titanweapon_predator_cannon" )
+	PrecacheModel( $"mdl/weapons/arms/buddypov.rmdl" )
 }
 
 void function PrecacheSDKEntities()
@@ -456,6 +458,7 @@ void function PrecacheSDKEntities()
 	///////////////////////engine///////////////////////
 	PrecacheModel( $"mdl/vehicle/olympus_hovercraft/olympus_hovercraft_v2.rmdl")
 	PrecacheModel( $"mdl/communication/terminal_usable_imc_01.rmdl" )
+	PrecacheModel( $"mdl/titans/buddy/titan_buddy.rmdl" )
 	PrecacheModel( $"mdl/weapons/shellejects/shelleject_repeater3030.rmdl" )//DO NOT REMOVE!
 }
 

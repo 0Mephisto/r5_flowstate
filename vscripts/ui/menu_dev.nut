@@ -1286,28 +1286,54 @@ void function SetupRetailWeapons()
 void function SetupTitanfallWeapons()
 {
 	#if UI
-	SetupDevCommand( "Titanfall 2: EPG", "give mp_weapon_epg" )
-	SetupDevCommand( "Titanfall 2: Sidewinder", "give mp_weapon_smr" )
-	SetupDevCommand( "Titanfall 2: Archer", "give mp_weapon_rocket_launcher" )
-	SetupDevCommand( "Titanfall 2: Softball", "give mp_weapon_softball" )
-	SetupDevCommand( "Titanfall 2: Car", "give mp_weapon_car_r2" )
-	SetupDevCommand( "Titanfall 2: MGL", "give mp_weapon_mgl" )
-	SetupDevCommand( "Titanfall 2: ColdWar", "give mp_weapon_pulse_lmg" )
-	SetupDevCommand( "Titanfall 2: Thunderbolt", "give mp_weapon_arc_launcher" )
-	SetupDevCommand( "Titanfall 2: Smart Pistol", "give mp_weapon_smart_pistol" )
-	SetupDevCommand( "Titanfall 2: Arc Tool", "give sp_weapon_arc_tool" )
-	SetupDevCommand( "Titanfall 2: Wingman Elite", "give mp_weapon_wingman_n" )
-	SetupDevCommand( "Titanfall 2: R101 Assault Rifle", "give mp_weapon_rspn101_og iron_sights" )
-	SetupDevCommand( "Titanfall 2: Proximity Mine", "give mp_weapon_proximity_mine" )
+	SetupDevCommand( "Titanfall 2 Pilot Weapon: EPG", "give mp_weapon_epg" )
+	SetupDevCommand( "Titanfall 2 Pilot Weapon: : Sidewinder", "give mp_weapon_smr" )
+	SetupDevCommand( "Titanfall 2 Pilot Weapon:  Archer", "give mp_weapon_rocket_launcher" )
+	SetupDevCommand( "Titanfall 2 Pilot Weapon: Softball", "give mp_weapon_softball" )
+	SetupDevCommand( "Titanfall 2 Pilot Weapon: Car", "give mp_weapon_car_r2" )
+	SetupDevCommand( "Titanfall 2 Pilot Weapon: MGL", "give mp_weapon_mgl" )
+	SetupDevCommand( "Titanfall 2 Pilot Weapon: ColdWar", "give mp_weapon_pulse_lmg" )
+	SetupDevCommand( "Titanfall 2 Pilot Weapon: Thunderbolt", "give mp_weapon_arc_launcher" )
+	SetupDevCommand( "Titanfall 2 Pilot Weapon: Smart Pistol", "give mp_weapon_smart_pistol" )
+	SetupDevCommand( "Titanfall 2 Pilot Weapon: Arc Tool", "give sp_weapon_arc_tool" )
+	SetupDevCommand( "Titanfall 2 Pilot Weapon: Wingman Elite", "give mp_weapon_wingman_n" )
+	SetupDevCommand( "Titanfall 2 Pilot Weapon: R101 Assault Rifle", "give mp_weapon_rspn101_og iron_sights" )
+	SetupDevCommand( "Titanfall 2 Pilot Weapon: Proximity Mine", "give mp_weapon_proximity_mine" )
 	SetupDevCommand( " ", "give mp" )
 	SetupDevCommand( " ", "give mp" )
 
+	SetupDevMenu( "Titanfall 2 Titan Weapon: Predator Cannon", SetDevMenu_PredCannon )
+	SetupDevCommand( " ", "give mp" )
+	
 	// Dev
 	SetupDevCommand( "Dev: Softball Apex Version", "give mp_weapon_softball apex_model" )
 	SetupDevCommand( "Dev: Flight Core", "give mp_titanweapon_flightcore_rockets")
 	SetupDevCommand( "Dev: Satchel", "give mp_weapon_satchel")
+	SetupDevCommand( "Dev: Disable Titan POV Hands", "script ResetCharacterSkin(gp()[0])")
 	#endif
 }
+
+void function SetDevMenu_PredCannon( var _ )
+{
+	thread ChangeToThisMenu( SetDevMenu_PredCannonPanel )
+}
+
+void function SetDevMenu_PredCannonPanel()
+{
+	#if UI
+	SetupDevCommand( "Predator Cannon", "give mp_titanweapon_predator_cannon; script Dev_PrintMessage( gp()[0], \"DETECTED A TITAN WEAPON\", \"Switching player POV to titan. To reset, simply choose Disable Titan POV Hands in the dev menu!\", 7, \"UI_CraftingTable_Purchase_Accept_1P\" ); script gp()[0].SetArmsModelOverride( $\"mdl/weapons/arms/buddypov.rmdl\" )" )
+	SetupDevCommand( " ", "give mp" )
+	SetupDevCommand( "Weapon Mod: Long Range Ammo", "give mp_titanweapon_predator_cannon LongRangeAmmo; script Dev_PrintMessage( gp()[0], \"DETECTED A TITAN WEAPON\", \"Switching player POV to titan. To reset, simply choose Disable Titan POV Hands in the dev menu!\", 7, \"UI_CraftingTable_Purchase_Accept_1P\" ); script gp()[0].SetArmsModelOverride( $\"mdl/weapons/arms/buddypov.rmdl\" )" )
+	SetupDevCommand( "Weapon Mod: Smart Core", "give mp_titanweapon_predator_cannon Smart_Core; script Dev_PrintMessage( gp()[0], \"DETECTED A TITAN WEAPON\", \"Switching player POV to titan. To reset, simply choose Disable Titan POV Hands in the dev menu!\", 7, \"UI_CraftingTable_Purchase_Accept_1P\" ); script gp()[0].SetArmsModelOverride( $\"mdl/weapons/arms/buddypov.rmdl\" )" )
+	SetupDevCommand( "Weapon Mod: Close Range Power Shot", "give mp_titanweapon_predator_cannon CloseRangePowerShot; script Dev_PrintMessage( gp()[0], \"DETECTED A TITAN WEAPON\", \"Switching player POV to titan. To reset, simply choose Disable Titan POV Hands in the dev menu!\", 7, \"UI_CraftingTable_Purchase_Accept_1P\" ); script gp()[0].SetArmsModelOverride( $\"mdl/weapons/arms/buddypov.rmdl\" )" )
+
+	SetupDevCommand( "Weapon Mod: Siege Mode", "give mp_titanweapon_predator_cannon SiegeMode; script Dev_PrintMessage( gp()[0], \"DETECTED A TITAN WEAPON\", \"Switching player POV to titan. To reset, simply choose Disable Titan POV Hands in the dev menu!\", 7, \"UI_CraftingTable_Purchase_Accept_1P\" ); script gp()[0].SetArmsModelOverride( $\"mdl/weapons/arms/buddypov.rmdl\" )" )
+
+	SetupDevCommand( "Weapon Mod: Long Range Power Shot", "give mp_titanweapon_predator_cannon LongRangePowerShot; script Dev_PrintMessage( gp()[0], \"DETECTED A TITAN WEAPON\", \"Switching player POV to titan. To reset, simply choose Disable Titan POV Hands in the dev menu!\", 7, \"UI_CraftingTable_Purchase_Accept_1P\" ); script gp()[0].SetArmsModelOverride( $\"mdl/weapons/arms/buddypov.rmdl\" )" )
+	SetupDevCommand( "Weapon Mod: Piercing Shots", "give mp_titanweapon_predator_cannon fd_piercing_shots; script Dev_PrintMessage( gp()[0], \"DETECTED A TITAN WEAPON\", \"Switching player POV to titan. To reset, simply choose Disable Titan POV Hands in the dev menu!\", 7, \"UI_CraftingTable_Purchase_Accept_1P\" ); script gp()[0].SetArmsModelOverride( $\"mdl/weapons/arms/buddypov.rmdl\" )" )
+	#endif
+}
+
 
 void function SetupThrowables()
 {

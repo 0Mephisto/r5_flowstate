@@ -586,7 +586,7 @@ global struct ServerPlayerStruct
 	int chosenCharm = 0
 	float max_enemy_ping = 999.0
 	//End 1v1 Settings
-	
+	bool 						fastballActivatePressed
 	bool isPlayerInVent = false
 	asset lastGroundEntityName
 	bool isInLobby = false
