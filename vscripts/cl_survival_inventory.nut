@@ -617,7 +617,7 @@ void function SurvivalMenu_Internal( entity player, string uiScript, entity deat
 	file.currentGroundListData.deathBox = deathBox
 	file.currentGroundListData.behavior = groundListBehavior
 
-	RunUIScript( uiScript, false ) // player.IsTitan()
+	RunUIScript( uiScript, player.IsTitan() )
 
 	if ( IsValid( deathBox ) )
 	{

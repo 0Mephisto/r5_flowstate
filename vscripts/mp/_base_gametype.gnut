@@ -255,17 +255,17 @@ bool function IsProtectedFromFriendlyFire_MP( entity attacker, entity ent, var d
 	if ( DamageIgnoresFriendlyFire( damageInfo ) )
 		return false
 
-	if ( attacker.GetTeam() == ent.GetTeam() && !IsTeamRabid( attacker.GetTeam() ) )
-		return true
-
-	//if ( ent.GetOwner() != attacker && ent.GetBossPlayer() != attacker )
-	//	return true
+	// if ( attacker.GetTeam() == ent.GetTeam() && !IsTeamRabid( attacker.GetTeam() ) )
+		// return true
+		
+	// if ( ent.GetOwner() != attacker && ent.GetBossPlayer() != attacker ) //todo(cafe): investigate why this makes titans won't get damaged
+		// return true
 
 	if ( ent.e.noOwnerFriendlyFire == true )
 		return true
 
-	if ( ent.IsNPC() && ent.ai.preventOwnerDamage )
-		return true
+	// if ( ent.IsNPC() && ent.ai.preventOwnerDamage ) //todo(cafe): investigate why this makes titans won't get damaged
+		// return true
 
 	return false
 }
@@ -375,6 +375,22 @@ bool function ScriptCallback_ShouldEntTakeDamage( entity ent, damageInfo )
 
 	// if ( !ShouldEntTakeDamage_SPMP( ent, damageInfo ) )
 	// 	return false
+
+	if ( ent.IsTitan() )
+	{
+		const int BULLET_VORTEX_FLAGS = (DF_VORTEX_REFIRE | DF_BULLET)
+		if ( ((damageType & BULLET_VORTEX_FLAGS) == BULLET_VORTEX_FLAGS) && (ent == attacker) )
+			return false	// don't let vortex-refiring titan hit themselves with bullet or bullet splash damage
+
+		if ( IsTitanWithinBubbleShield( ent ) && TitanHasBubbleShieldWeapon( ent ) && !(damageType & DF_DOOMED_HEALTH_LOSS) )
+			return false
+	}
+
+	if ( IsTitanCrushDamage( damageInfo ) )
+	{
+		if ( attacker.IsPhaseShifted() )
+			return false
+	}
 
 	if ( (inflictor != null) )
 	{
@@ -564,14 +580,33 @@ function HandleLocationBasedDamage( entity ent, var damageInfo )
 	}
 	else  
 	*/
-	if ( isValidHeadShot )
+	if ( ent.IsTitan() )
 	{
-		damageMult_location = GetHeadshotDamageMultiplierFromDamageInfo( damageInfo )
+		damageMult_location = GetCriticalScaler( ent, damageInfo )
 	}
-	else if ( IsLegDamage( ent, damageInfo ) )
+	else if ( IsSuperSpectre( ent ) )
 	{
-		if ( ShouldTakeLegDamage( ent ) )
-			damageMult_location = GetLegDamageMultiplierFromDamageInfo( damageInfo )
+		if ( isValidHeadShot )
+		{
+			damageMult_location = GetHeadshotDamageMultiplierFromDamageInfo( damageInfo )
+		}
+		else if ( IsLegDamage( ent, damageInfo ) )
+		{
+			if ( ShouldTakeLegDamage( ent ) )
+				damageMult_location = GetLegDamageMultiplierFromDamageInfo( damageInfo )
+		}
+	}
+	else
+	{
+		if ( isValidHeadShot )
+		{
+			damageMult_location = GetHeadshotDamageMultiplierFromDamageInfo( damageInfo )
+		}
+		else if ( IsLegDamage( ent, damageInfo ) )
+		{
+			if ( ShouldTakeLegDamage( ent ) )
+				damageMult_location = GetLegDamageMultiplierFromDamageInfo( damageInfo )
+		}
 	}
 
 	// modify damage value based on where we hit

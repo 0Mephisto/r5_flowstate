@@ -204,9 +204,28 @@ bool function CodeCallback_CanUseEntity( entity player, entity ent )
 			return false
 	}
 
-	if ( ent.IsNPC() && !IsAlive( ent ) )
+	if ( player.IsTitan() )
 	{
-		return false
+		return !ent.IsTitan()
+	}
+
+	if ( ent.IsTitan() )
+	{
+		return PlayerCanEmbarkTitan( player, ent )
+	}
+
+	if ( ent.IsNPC() )
+	{
+		// player titan can't use NPCs
+		if ( !player.IsTitan() )
+		{
+			// not titan NPCs are not usable
+			//if ( !( ent.IsTitan() || IsTurret( ent ) ) )
+			//	return false
+
+			if ( !IsAlive( ent ) )
+				return false
+		}
 	}
 
 	if ( ent.e.canUseEntityCallback != null )
@@ -366,7 +385,7 @@ void function CodeCallback_PlayerClassChanged( entity player, bool actualSetting
 	#if CLIENT
 		player.classChanged = true
 		// Force titan to cast shadows in first person
-		//player.ForceShadowVisible( newClass == "titan" )
+		player.ForceShadowVisible( newClass == "titan" )
 
 		UpdatePlayerStatusCounts()
 		//MapConVar_Init()
@@ -382,11 +401,11 @@ void function CodeCallback_PlayerClassChanged( entity player, bool actualSetting
 		InitDamageStates( player )
 	#endif
 
-	//if ( IsClient() && !player.IsTitan() )
-	//	HideRodeoAlert()
+	// if ( IsClient() && !player.IsTitan() )
+		// HideRodeoAlert()
 
-	//if ( IsPilot( player ) )
-	//	thread PilotHardLandingThink( player )
+	// if ( IsPilot( player ) )
+		// thread PilotHardLandingThink( player )
 
 	#if SERVER
 		player.Signal( "OnChangedPlayerClass" )
