@@ -292,6 +292,7 @@ void function SURVIVAL_Loot_All_InitShared()
 	else
 	{
 		SURVIVAL_Loot_RegFromDataTable( GetDataTable( $"datatable/survival_loot_sdk.rpak" ) )
+		SURVIVAL_Loot_RegFromDataTable( GetDataTable( $"datatable/titanfall_loot_sdk.rpak" ) )
 		
 		if (IsFlowstateActive())
 			SURVIVAL_Loot_RegFromDataTable( GetDataTable( $"datatable/flowstate_all_new.rpak" ) )
