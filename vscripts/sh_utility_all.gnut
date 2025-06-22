@@ -1329,7 +1329,7 @@ array<string> function GetAllNPCSettings()
 	//aiSettings.append( "npc_stalker" )
 	//aiSettings.append( "npc_stalker_zombie" )
 	//aiSettings.append( "npc_stalker_zombie_mossy" )
-	//aiSettings.append( "npc_super_spectre" )
+	aiSettings.append( "npc_super_spectre" )
 	//aiSettings.append( "npc_titan_sarah" )
 	//aiSettings.append( "npc_titan_vanguard" )
 	//

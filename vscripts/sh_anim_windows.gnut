@@ -69,10 +69,12 @@ void function ShAnimWindows_LevelInit()
 		RegisterAnimWindowType( BOTH, "PlayFX", null, AnimWindow_PlayFX_Precache, AnimWindow_PlayFX_Start, AnimWindow_PlayFX_Transition, AnimWindow_PlayFX_Stop )
 		RegisterAnimWindowType( CLIENT, "FadeAlphaOverTime", null, null, AnimWindow_FadeAlphaOverTime_Start, null, AnimWindow_FadeAlphaOverTime_Stop )
 		RegisterAnimWindowType( CLIENT, "SetSkin", null, null, AnimWindow_SetSkin_Start, null, null )
+		
 
 		// Window types are pretty darn specific
 		RegisterAnimWindowType( CLIENT, "MirageHoloFX", AnimWindow_MirageHoloFX_Init, AnimWindow_MirageHoloFX_Precache, AnimWindow_MirageHoloFX_Start, AnimWindow_MirageHoloFX_Transition, AnimWindow_MirageHoloFX_Stop )
 		RegisterAnimWindowType( CLIENT, "ShadowFormFX", AnimWindow_ShadowFormFX_Init, AnimWindow_ShadowFormFX_Precache, AnimWindow_ShadowFormFX_Start, AnimWindow_ShadowFormFX_Transition, AnimWindow_ShadowFormFX_Stop )
+		RegisterAnimWindowType( CLIENT, "HideWeapon3P", AnimWindow_HideWeapon3P_Init, AnimWindow_HideWeapon3P_Precache, AnimWindow_HideWeapon3P_Start, AnimWindow_HideWeapon3P_Transition, AnimWindow_HideWeapon3P_Stop )
 		RegisterAnimWindowType( CLIENT, "LifelineDroneCommonFX", AnimWindow_LifelineDroneCommonFX_Init, AnimWindow_LifelineDroneCommonFX_Precache, AnimWindow_LifelineDroneCommonFX_Start, AnimWindow_LifelineDroneCommonFX_Transition, AnimWindow_LifelineDroneCommonFX_Stop )
 	#endif
 }
@@ -407,7 +409,6 @@ void function AnimWindow_PlayFX_Precache( var settingsBlock )
 void function AnimWindow_PlayFX_Start( ScriptAnimWindow window, var settingsBlock )
 {
 	asset particleAsset     = GetSettingsBlockStringAsAsset( settingsBlock, "particleSystemName" )
-	PrecacheParticleSystem( particleAsset )
 	int particleSystemIndex = GetParticleSystemIndex( particleAsset )
 
 	bool shouldFollow = GetSettingsBlockBool( settingsBlock, "followAttach" )
@@ -509,6 +510,55 @@ void function AnimWindow_PlayFX_Stop( ScriptAnimWindow window, var settingsBlock
 		#endif
 	}
 }
+
+//////////////////////
+//////////////////////
+//// HideWeapon3P ////
+//////////////////////
+//////////////////////
+
+void function AnimWindow_HideWeapon3P_Init()
+{
+	//
+}
+
+
+void function AnimWindow_HideWeapon3P_Precache( var settingsBlock )
+{
+	//
+}
+
+
+void function AnimWindow_HideWeapon3P_Start( ScriptAnimWindow window, var settingsBlock )
+{
+	#if SERVER
+		Assert( false )
+	#elseif CLIENT
+		if ( window.ent.IsPlayer() || window.ent.IsNPC() )
+			return
+			//window.ent.Set3PWeaponClonesVisibility( false )
+		else
+			Warning( "HideWeapon anim windows are only valid for players and NPCs. Trying to create window %s for entity %s.", string(window.settingsAsset), string(window.ent) )
+	#endif
+}
+
+
+void function AnimWindow_HideWeapon3P_Transition( ScriptAnimWindow window, var settingsBlock )
+{
+	//
+}
+
+
+void function AnimWindow_HideWeapon3P_Stop( ScriptAnimWindow window, var settingsBlock )
+{
+	#if CLIENT
+		if ( window.ent.IsPlayer() || window.ent.IsNPC() )
+			return//window.ent.Set3PWeaponClonesVisibility( true )
+		else
+			Warning( "HideWeapon anim windows are only valid for players and NPCs. Trying to create window %s for entity %s.", string(window.settingsAsset), string(window.ent) )
+	#endif
+}
+
 
 
 //////////////////

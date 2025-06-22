@@ -20,3 +20,4 @@ behavior_turret_sentry
 behavior_nextbot
 behavior_titan
 behavior_titan_buddy
+//behavior_super_spectre

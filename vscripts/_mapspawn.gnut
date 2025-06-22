@@ -251,7 +251,6 @@ void function CodeCallback_MapSpawn() // original script entry point
 	SV_CL_Shared_Init()
 	ClientCommands_Init()
 	
-	CacheCoreModelsInit()
 	thread FS_RestartServerAfterSomeTimeWithoutPlayers()
 	
 	FS_ResetMapLighting()
@@ -373,6 +372,7 @@ void function PrecacheSDKWeapons()
 	PrecacheWeapon( $"npc_weapon_lstar" )
 	PrecacheWeapon( $"npc_weapon_hemlok" )
 	PrecacheWeapon( $"npc_weapon_energy_shotgun" )
+	PrecacheWeapon( $"mp_weapon_spectre_spawner" )
 
 	PrecacheWeapon( $"mp_weapon_mounted_turret_weapon" )
 	PrecacheWeapon( $"mp_weapon_mounted_turret_placeable" )
@@ -400,8 +400,8 @@ void function PrecacheSDKWeapons()
 
 	//Custom Weapons
 	PrecacheWeapon( $"mp_weapon_lightninggun" )//Make a proper hitscan weapon later
-	PrecacheWeapon( $"mp_titanweapon_predator_cannon" )
 	PrecacheModel( $"mdl/weapons/arms/buddypov.rmdl" )
+	PrecacheModel( $"mdl/weapons/arms/pov_titan_medium_cockpit.rmdl" )
 }
 
 void function PrecacheSDKEntities()
@@ -460,6 +460,9 @@ void function PrecacheSDKEntities()
 	PrecacheModel( $"mdl/communication/terminal_usable_imc_01.rmdl" )
 	PrecacheModel( $"mdl/titans/buddy/titan_buddy.rmdl" )
 	PrecacheModel( $"mdl/weapons/shellejects/shelleject_repeater3030.rmdl" )//DO NOT REMOVE!
+
+	//////////////////////NPC CACHE/////////////////////
+	//PrecacheModel( $"mdl/robots/super_spectre/super_spectre_v1.rmdl")
 }
 
 const array<string> InvalidModesForTrackScoreBoard = //const values
