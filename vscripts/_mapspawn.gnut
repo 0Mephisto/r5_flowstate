@@ -351,15 +351,12 @@ void function PrecacheFSEntities()
 
 void function PrecacheSDKWeapons()
 {
+	PrecacheWeapon( $"mp_weapon_lightninggun" )//Make a proper hitscan weapon later
 	PrecacheWeapon( $"mp_weapon_droneplasma" )//remove these from here later!!! -kral
 	PrecacheWeapon( $"mp_weapon_dronerocket" )
 
-	PrecacheWeapon( $"mp_ability_mobile_respawn_beacon" )
-
 	PrecacheWeapon( $"mp_weapon_melee_boxing_ring" )
 	PrecacheWeapon( $"melee_boxing_ring" ) // Olympus ring
-	
-	PrecacheWeapon( $"mp_titanweapon_flightcore_rockets" ) // Not a loot
 	
 	PrecacheWeapon( $"mp_weapon_satchel" )
 	PrecacheWeapon( $"mp_weapon_grenade_sonar" )
@@ -398,10 +395,10 @@ void function PrecacheSDKWeapons()
 	PrecacheWeapon( $"melee_macks_knife" )
 	PrecacheWeapon( $"mp_weapon_macks_knife_primary" )
 
-	//Custom Weapons
-	PrecacheWeapon( $"mp_weapon_lightninggun" )//Make a proper hitscan weapon later
+	//Titanfall Weapons
 	PrecacheModel( $"mdl/weapons/arms/buddypov.rmdl" )
-	PrecacheModel( $"mdl/weapons/arms/pov_titan_medium_cockpit.rmdl" )
+	PrecacheWeapon( $"mp_titanweapon_meteor" )
+	PrecacheWeapon( $"mp_titanweapon_flightcore_rockets" ) // Not a loot
 }
 
 void function PrecacheSDKEntities()

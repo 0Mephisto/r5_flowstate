@@ -1305,6 +1305,8 @@ void function SetupTitanfallWeapons()
 	SetupDevMenu( "Titanfall 2 Titan Weapon: Predator Cannon", SetDevMenu_PredCannon )
 	SetupDevMenu( "Titanfall 2 Titan Weapon: Splitter Rifle", SetDevMenu_SplitRifle )
 	SetupDevMenu( "Titanfall 2 Titan Weapon: Quad Rocket", SetDevMenu_QuadRocket )
+	SetupDevMenu( "Titanfall 2 Titan Weapon: Leadwall", SetDevMenu_LeadWall )
+	SetupDevMenu( "Titanfall 2 Titan Weapon: T-203 Thermite Launcher", SetDevMenu_Thermite )
 	SetupDevCommand( " ", "give mp" )
 
 	// Dev
@@ -1329,6 +1331,17 @@ void function SetDevMenu_QuadRocket( var _ )
 {
 	thread ChangeToThisMenu( SetDevMenu_QuadRocketPanel )
 }
+
+void function SetDevMenu_LeadWall( var _ )
+{
+	thread ChangeToThisMenu( SetDevMenu_LeadWallPanel )
+}
+
+void function SetDevMenu_Thermite( var _ )
+{
+	thread ChangeToThisMenu( SetDevMenu_ThermitePanel )
+}
+
 
 void function SetDevMenu_SplitRiflePanel()
 {
@@ -1365,6 +1378,28 @@ void function SetDevMenu_QuadRocketPanel()
 	SetupDevCommand( "Weapon Mod: Burn Mod", "give mp_titanweapon_rocketeer_rocketstream burn_mod_titan_rocket_launcher; script Dev_PrintMessage( gp()[0], \"DETECTED A TITAN WEAPON\", \"Switching player POV to titan. To reset, simply choose Disable Titan POV Hands in the dev menu!\", 7, \"UI_CraftingTable_Purchase_Accept_1P\" ); script gp()[0].SetArmsModelOverride( $\"mdl/weapons/arms/buddypov.rmdl\" )" )
 	SetupDevCommand( "Weapon Mod: Singleplayer s2s Settings", "give mp_titanweapon_rocketeer_rocketstream sp_s2s_settings; script Dev_PrintMessage( gp()[0], \"DETECTED A TITAN WEAPON\", \"Switching player POV to titan. To reset, simply choose Disable Titan POV Hands in the dev menu!\", 7, \"UI_CraftingTable_Purchase_Accept_1P\" ); script gp()[0].SetArmsModelOverride( $\"mdl/weapons/arms/buddypov.rmdl\" )" )
 	SetupDevCommand( "Weapon Mod: Singleplayer s2s Settings NPC", "give mp_titanweapon_rocketeer_rocketstream sp_s2s_settings_npc; script Dev_PrintMessage( gp()[0], \"DETECTED A TITAN WEAPON\", \"Switching player POV to titan. To reset, simply choose Disable Titan POV Hands in the dev menu!\", 7, \"UI_CraftingTable_Purchase_Accept_1P\" ); script gp()[0].SetArmsModelOverride( $\"mdl/weapons/arms/buddypov.rmdl\" )" )
+	#endif
+}
+
+void function SetDevMenu_LeadWallPanel()
+{
+	#if UI
+	SetupDevCommand( "Equip Leadwall", "give mp_titanweapon_leadwall; script Dev_PrintMessage( gp()[0], \"DETECTED A TITAN WEAPON\", \"Switching player POV to titan. To reset, simply choose Disable Titan POV Hands in the dev menu!\", 7, \"UI_CraftingTable_Purchase_Accept_1P\" ); script gp()[0].SetArmsModelOverride( $\"mdl/weapons/arms/buddypov.rmdl\" )" )
+	SetupDevCommand( " ", "give mp" )
+	SetupDevCommand( "Weapon Mod: Insta Load", "give mp_titanweapon_leadwall instaload; script Dev_PrintMessage( gp()[0], \"DETECTED A TITAN WEAPON\", \"Switching player POV to titan. To reset, simply choose Disable Titan POV Hands in the dev menu!\", 7, \"UI_CraftingTable_Purchase_Accept_1P\" ); script gp()[0].SetArmsModelOverride( $\"mdl/weapons/arms/buddypov.rmdl\" )" )
+	SetupDevCommand( "Weapon Mod: Burn Mod", "give mp_titanweapon_leadwall burn_mod_titan_leadwall; script Dev_PrintMessage( gp()[0], \"DETECTED A TITAN WEAPON\", \"Switching player POV to titan. To reset, simply choose Disable Titan POV Hands in the dev menu!\", 7, \"UI_CraftingTable_Purchase_Accept_1P\" ); script gp()[0].SetArmsModelOverride( $\"mdl/weapons/arms/buddypov.rmdl\" )" )
+	SetupDevCommand( "Weapon Mod: Ronin Weapon", "give mp_titanweapon_leadwall pas_ronin_weapon; script Dev_PrintMessage( gp()[0], \"DETECTED A TITAN WEAPON\", \"Switching player POV to titan. To reset, simply choose Disable Titan POV Hands in the dev menu!\", 7, \"UI_CraftingTable_Purchase_Accept_1P\" ); script gp()[0].SetArmsModelOverride( $\"mdl/weapons/arms/buddypov.rmdl\" )" )
+	#endif
+}
+
+void function SetDevMenu_ThermitePanel()
+{
+	#if UI
+	SetupDevCommand( "Equip T-203 Thermite Launcher", "give mp_titanweapon_meteor; script Dev_PrintMessage( gp()[0], \"DETECTED A TITAN WEAPON\", \"Switching player POV to titan. To reset, simply choose Disable Titan POV Hands in the dev menu!\", 7, \"UI_CraftingTable_Purchase_Accept_1P\" ); script gp()[0].SetArmsModelOverride( $\"mdl/weapons/arms/buddypov.rmdl\" )" )
+	SetupDevCommand( " ", "give mp" )
+	SetupDevCommand( "Weapon Mod: Scorch Weapon", "give mp_titanweapon_meteor pas_scorch_weapon; script Dev_PrintMessage( gp()[0], \"DETECTED A TITAN WEAPON\", \"Switching player POV to titan. To reset, simply choose Disable Titan POV Hands in the dev menu!\", 7, \"UI_CraftingTable_Purchase_Accept_1P\" ); script gp()[0].SetArmsModelOverride( $\"mdl/weapons/arms/buddypov.rmdl\" )" )
+	SetupDevCommand( "Weapon Mod: WPN Upgrade 1", "give mp_titanweapon_meteor fd_wpn_upgrade_1; script Dev_PrintMessage( gp()[0], \"DETECTED A TITAN WEAPON\", \"Switching player POV to titan. To reset, simply choose Disable Titan POV Hands in the dev menu!\", 7, \"UI_CraftingTable_Purchase_Accept_1P\" ); script gp()[0].SetArmsModelOverride( $\"mdl/weapons/arms/buddypov.rmdl\" )" )
+	SetupDevCommand( "Weapon Mod: WPN Upgrade 2", "give mp_titanweapon_meteor fd_wpn_upgrade_2; script Dev_PrintMessage( gp()[0], \"DETECTED A TITAN WEAPON\", \"Switching player POV to titan. To reset, simply choose Disable Titan POV Hands in the dev menu!\", 7, \"UI_CraftingTable_Purchase_Accept_1P\" ); script gp()[0].SetArmsModelOverride( $\"mdl/weapons/arms/buddypov.rmdl\" )" )
 	#endif
 }
 

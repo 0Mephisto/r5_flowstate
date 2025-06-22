@@ -67,6 +67,10 @@ global const string SPECIAL_AMMO = "special"
 global const string ARROWS_AMMO = "arrows"
 global const string SNIPER_AMMO = "sniper"
 
+global const EVAC_SHIP_DAMAGE_MULTIPLIER_AGAINST_NUCLEAR_CORE = 0.5 //Multiply damage done against evac ship from nuclear core
+global const EVAC_SHIP_SHIELD_REGEN_TIME = 2.0 //Multiply damage done against evac ship from nuclear core
+global const EVAC_SHIP_SHIELD_REGEN_DELAY = 6.0 //Multiply damage done against evac ship from nuclear core
+
 #if UI
 global const float RUI_BADGAMETIME 	= -1 * pow( 10, 30 )
 #endif

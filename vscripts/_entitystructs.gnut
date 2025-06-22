@@ -1394,7 +1394,7 @@ global struct ServerWeaponStruct
 	array<PhaseRewindData> phaseRetreatSavedPositions
 	bool phaseRetreatShouldSave = true
 
-	// entity laserWorldModel
+	entity laserWorldModel
 	// entity guidedMissileTarget = null
 	// array<entity> salvoMissileArray
 

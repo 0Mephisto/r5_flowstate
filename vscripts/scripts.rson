@@ -290,17 +290,22 @@ Scripts:
 
 	weapons/mp_weapon_flamethrower.nut
 	weapons/sp_weapon_arc_tool.nut
-	weapons/mp_titanweapon_flightcore_rockets.nut
 	weapons/mp_weapon_smart_pistol.nut
 	weapons/mp_weapon_softball.nut
 	weapons/mp_weapon_sheila.nut
 	weapons/mp_weapon_mdlspawner.nut
 	weapons/mp_weapon_satchel.nut
 	weapons/mp_weapon_turret.nut
+	weapons/mp_titanweapon_flightcore_rockets.nut
 	weapons/mp_titanweapon_predator_cannon.nut
 	weapons/mp_titanweapon_particle_accelerator.nut
 	weapons/mp_titanweapon_rocketeer_rocketstream.nut
 	weapons/mp_projectile_titanweapon_rocket_launcher.nut
+	weapons/mp_titanweapon_leadwall.nut
+	weapons/mp_titanweapon_meteor.nut
+	weapons/mp_titanweapon_flame_wall.nut
+
+	weapons/mp_titancore_lasercannon.nut
 
 	weapons/mp_ability_heal.nut
 	weapons/mp_ability_sonar.nut
