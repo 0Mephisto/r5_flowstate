@@ -1,4 +1,4 @@
-"scripts/resource/ui/menus/panels/weapon_skins.res"
+"resource/ui/menus/panels/weapon_skins.res"
 {
 	PanelFrame
 	{

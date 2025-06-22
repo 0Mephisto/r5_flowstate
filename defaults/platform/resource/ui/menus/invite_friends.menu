@@ -1,4 +1,4 @@
-scripts/resource/ui/menus/invite_friends.menu
+resource/ui/menus/invite_friends.menu
 {
 	menu
 	{

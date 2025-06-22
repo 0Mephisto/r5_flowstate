@@ -1,4 +1,4 @@
-scripts/resource/ui/menus/dialog_player_stats_season_select.menu
+resource/ui/menus/dialog_player_stats_season_select.menu
 {
 	menu
 	{
@@ -47,7 +47,7 @@ scripts/resource/ui/menus/dialog_player_stats_season_select.menu
             ControlName				CNestedPanel
             wide					100
             tall					100
-            controlSettingsFile		"scripts/resource/ui/menus/panels/player_stats_select_season_popup.res"
+            controlSettingsFile		"resource/ui/menus/panels/player_stats_select_season_popup.res"
             labelText               ""
             visible					1
             cursorVelocityModifier  0.7

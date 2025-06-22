@@ -1,4 +1,4 @@
-"scripts/resource/ui/menus/panels/card_trackers.res"
+"resource/ui/menus/panels/card_trackers.res"
 {
 	PanelFrame
 	{

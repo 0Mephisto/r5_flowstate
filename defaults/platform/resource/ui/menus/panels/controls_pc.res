@@ -1,4 +1,4 @@
-"scripts/resource/ui/menus/panels/controls_pc.res"
+"resource/ui/menus/panels/controls_pc.res"
 {
 	PanelFrame
 	{

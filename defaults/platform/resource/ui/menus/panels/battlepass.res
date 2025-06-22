@@ -1,4 +1,4 @@
-"scripts/resource/ui/menus/panels/battlepass.res"
+"resource/ui/menus/panels/battlepass.res"
 {
 	PanelFrame
 	{
@@ -183,7 +183,7 @@
         tall					190
         visible					1
         tabPosition             1
-        controlSettingsFile		"scripts/resource/ui/menus/panels/battlepass_reward_bar.res"
+        controlSettingsFile		"resource/ui/menus/panels/battlepass_reward_bar.res"
 
         pin_to_sibling			PanelFrame
         pin_corner_to_sibling	BOTTOM

@@ -1,4 +1,4 @@
-"scripts/resource/ui/menus/panels/card_frames.res"
+"resource/ui/menus/panels/card_frames.res"
 {
 	PanelFrame
 	{

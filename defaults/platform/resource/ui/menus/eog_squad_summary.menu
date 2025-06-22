@@ -1,4 +1,4 @@
-scripts/resource/ui/menus/eog_squad_summary.menu
+resource/ui/menus/eog_squad_summary.menu
 {
 	menu
 	{

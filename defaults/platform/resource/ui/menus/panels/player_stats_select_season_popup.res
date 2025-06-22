@@ -1,4 +1,4 @@
-"scripts/resource/ui/menus/panels/player_stats_select_season_popup.res"
+"resource/ui/menus/panels/player_stats_select_season_popup.res"
 {
     PanelFrame
     {

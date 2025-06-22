@@ -1,4 +1,4 @@
-"scripts/resource/ui/menus/panels/store_characters.res"
+"resource/ui/menus/panels/store_characters.res"
 {
     PanelFrame
     {

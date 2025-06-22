@@ -1,4 +1,4 @@
-"scripts/resource/ui/menus/panels/character_banners.res"
+"resource/ui/menus/panels/character_banners.res"
 {
     PanelFrame
     {
@@ -175,7 +175,7 @@
         tall					840
         visible					1
         tabPosition             1
-        controlSettingsFile		"scripts/resource/ui/menus/panels/card_frames.res"
+        controlSettingsFile		"resource/ui/menus/panels/card_frames.res"
     }
 
     CardPosesPanel
@@ -187,7 +187,7 @@
         tall					840
         visible					1
         tabPosition             1
-        controlSettingsFile		"scripts/resource/ui/menus/panels/card_poses.res"
+        controlSettingsFile		"resource/ui/menus/panels/card_poses.res"
     }
 
     CardBadgesPanel
@@ -199,7 +199,7 @@
         tall					840
         visible					1
         tabPosition             1
-        controlSettingsFile		"scripts/resource/ui/menus/panels/card_badges.res"
+        controlSettingsFile		"resource/ui/menus/panels/card_badges.res"
     }
 
     CardTrackersPanel
@@ -211,7 +211,7 @@
         tall					840
         visible					1
         tabPosition             1
-        controlSettingsFile		"scripts/resource/ui/menus/panels/card_trackers.res"
+        controlSettingsFile		"resource/ui/menus/panels/card_trackers.res"
     }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

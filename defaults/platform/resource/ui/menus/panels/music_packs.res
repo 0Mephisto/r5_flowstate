@@ -1,4 +1,4 @@
-"scripts/resource/ui/menus/panels/music_packs.res"
+"resource/ui/menus/panels/music_packs.res"
 {
 	PanelFrame
 	{

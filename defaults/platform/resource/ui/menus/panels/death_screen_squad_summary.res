@@ -1,4 +1,4 @@
-scripts/resource/ui/menus/panels/death_screen_squad_summary.res
+resource/ui/menus/panels/death_screen_squad_summary.res
 {
     ScreenFrame
     {

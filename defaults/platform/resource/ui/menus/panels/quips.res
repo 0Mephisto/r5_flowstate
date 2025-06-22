@@ -1,4 +1,4 @@
-"scripts/resource/ui/menus/panels/quips.res"
+"resource/ui/menus/panels/quips.res"
 {
 	PanelFrame
 	{

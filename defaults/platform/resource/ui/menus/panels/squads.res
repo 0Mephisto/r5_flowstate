@@ -1,4 +1,4 @@
-scripts/resource/ui/menus/panels/squads.res
+resource/ui/menus/panels/squads.res
 {
     ToolTip
     {

@@ -1,4 +1,4 @@
-scripts/resource/ui/menus/post_game_ranked.menu
+resource/ui/menus/post_game_ranked.menu
 {
 	menu
 	{

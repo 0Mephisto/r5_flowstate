@@ -2,7 +2,7 @@
 // Rows x 10
 // Columns x 4 (for the users sake, menus should really never have more than 3
 
-scripts/resource/ui/menus/combo_buttons.res
+resource/ui/menus/combo_buttons.res
 {
     ButtonRow0x0
     {

@@ -1,4 +1,4 @@
-scripts/resource/ui/menus/notifications.menu
+resource/ui/menus/notifications.menu
 {
 	menu
 	{

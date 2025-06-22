@@ -1,4 +1,4 @@
-scripts/resource/ui/menus/panels/death_screen_spectate.res
+resource/ui/menus/panels/death_screen_spectate.res
 {
     ScreenFrame
     {

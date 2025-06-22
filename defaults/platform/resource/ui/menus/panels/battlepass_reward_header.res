@@ -1,4 +1,4 @@
-"scripts/resource/ui/menus/panels/battlepass_reward_header.res"
+"resource/ui/menus/panels/battlepass_reward_header.res"
 {
 	PanelFrame
 	{

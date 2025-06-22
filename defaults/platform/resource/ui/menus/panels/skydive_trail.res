@@ -1,4 +1,4 @@
-"scripts/resource/ui/menus/panels/skydive_trail.res"
+"resource/ui/menus/panels/skydive_trail.res"
 {
 	PanelFrame
 	{

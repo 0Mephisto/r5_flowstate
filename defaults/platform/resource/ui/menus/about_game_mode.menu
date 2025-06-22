@@ -1,4 +1,4 @@
-scripts/resource/ui/menus/about_game_mode.menu
+resource/ui/menus/about_game_mode.menu
 {
 	menu
 	{

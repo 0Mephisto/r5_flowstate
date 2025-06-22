@@ -1,4 +1,4 @@
-scripts/resource/ui/menus/panels/tabs_weapon_customize.res
+resource/ui/menus/panels/tabs_weapon_customize.res
 {
     Anchor
     {

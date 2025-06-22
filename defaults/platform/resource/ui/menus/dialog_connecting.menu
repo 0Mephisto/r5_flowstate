@@ -1,4 +1,4 @@
-scripts/resource/ui/menus/dialog_connecting.menu
+resource/ui/menus/dialog_connecting.menu
 {
 	menu
 	{

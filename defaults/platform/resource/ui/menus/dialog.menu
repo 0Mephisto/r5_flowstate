@@ -1,4 +1,4 @@
-scripts/resource/ui/menus/dialog.menu
+resource/ui/menus/dialog.menu
 {
 	menu
 	{

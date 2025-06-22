@@ -1,4 +1,4 @@
-scripts/resource/ui/menus/dialogs/confirm_rest.menu
+resource/ui/menus/dialogs/confirm_rest.menu
 {
 	menu
 	{

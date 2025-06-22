@@ -1,4 +1,4 @@
-"scripts/resource/ui/menus/panels/video.res"
+"resource/ui/menus/panels/video.res"
 {
 	PanelFrame
 	{
@@ -326,34 +326,6 @@
         pin_corner_to_sibling	TOP_LEFT
         pin_to_sibling_corner	BOTTOM_LEFT
         navUp					SwchAntialiasing
-        navDown					SwchLODQuality
-        // list is populated by code
-        childGroupAlways        MultiChoiceButtonAlways
-    }
-    SwchLODQuality
-    {
-        ControlName				RuiButton
-        InheritProperties		SwitchButton
-        //classname				"AdvancedVideoButtonClass"
-        style					DialogListButton
-        ConVar                  "r_lod_switch_scale"
-        list
-        {
-            "#LOD_0"  0
-            "#LOD_1"  1
-            "#LOD_2"  2
-            "#LOD_3"  3
-            "#LOD_4"  4
-            "#LOD_5"  5
-            "#LOD_6"  6
-            "#LOD_7"  7
-            "#LOD_8"  8
-            "#LOD_9"  9
-        }
-        pin_to_sibling			SwchTextureDetail
-        pin_corner_to_sibling	TOP_LEFT
-        pin_to_sibling_corner	BOTTOM_LEFT
-        navUp					SwchTextureDetail
         navDown					SwchFilteringMode
         // list is populated by code
         childGroupAlways        MultiChoiceButtonAlways
@@ -364,10 +336,10 @@
         InheritProperties		SwitchButton
         classname				"AdvancedVideoButtonClass"
         style					DialogListButton
-        pin_to_sibling			SwchLODQuality
+        pin_to_sibling			SwchTextureDetail
         pin_corner_to_sibling	TOP_LEFT
         pin_to_sibling_corner	BOTTOM_LEFT
-        navUp					SwchLODQuality
+        navUp					SwchTextureDetail
         navDown					SwchAmbientOcclusionQuality
         // list is populated by code
         childGroupAlways        MultiChoiceButtonAlways

@@ -1,4 +1,4 @@
-scripts/resource/ui/menus/dev.menu
+resource/ui/menus/dev.menu
 {
 	menu
 	{

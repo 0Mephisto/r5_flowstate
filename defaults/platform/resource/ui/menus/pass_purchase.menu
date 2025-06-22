@@ -1,4 +1,4 @@
-scripts/resource/ui/menus/pass_purchase.menu
+resource/ui/menus/pass_purchase.menu
 {
 	menu
 	{

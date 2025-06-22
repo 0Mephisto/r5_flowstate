@@ -119,6 +119,65 @@ Resource/UI/HudScripted_mp.res
 		pin_to_sibling_corner	BOTTOM
 	}
 
+	Dev_Info1
+	{
+		ControlName				Label
+		xpos					-5
+		ypos					-44
+		auto_wide_tocontents 	1
+		visible					0
+		font 					Default_21_ShadowGlow
+		labelText				"[Dev Info1]"
+		textAlignment			west
+		fgcolor_override 		"255 255 255 255"
+
+		zpos 1000
+
+		pin_to_sibling				Screen
+		pin_corner_to_sibling		BOTTOM_LEFT
+		pin_to_sibling_corner		BOTTOM_LEFT
+	}
+
+	Dev_Info2
+    {
+        ControlName				Label
+        //xpos					80
+        ypos					-4
+        auto_wide_tocontents 	1
+        visible					0
+        font 					Default_21_ShadowGlow
+        labelText				"[Dev Info2]"
+        textAlignment			west
+        fgcolor_override 		"255 255 255 255"
+
+        zpos 1000
+
+        pin_to_sibling				Dev_Info1
+        pin_corner_to_sibling		TOP_LEFT
+        pin_to_sibling_corner		BOTTOM_LEFT
+    }
+
+    Dev_Info3
+    {
+        ControlName				Label
+        xpos					-55
+        ypos					-190
+        auto_wide_tocontents 	1
+        visible					0
+        tall                    153
+        wide                    740
+        font 					Default_21_ShadowGlow
+        labelText				"Test Map"
+        textAlignment			west
+        fgcolor_override 		"255 255 255 255"
+
+        zpos 1000
+
+        pin_to_sibling				Dev_Info2
+        pin_corner_to_sibling		TOP_LEFT
+        pin_to_sibling_corner		BOTTOM_LEFT
+    }
+
 	ShoutOutAnchor
 	{
 		ControlName		ImagePanel

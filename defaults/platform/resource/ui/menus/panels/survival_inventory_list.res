@@ -1,4 +1,4 @@
-scripts/resource/ui/menus/panels/survival_inventory_list.res
+Resource/UI/menus/panels/survival_inventory_list.res
 {
     PanelFrame
     {

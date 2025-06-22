@@ -1,4 +1,4 @@
-scripts/resource/ui/menus/loadscreen_preview.menu
+resource/ui/menus/loadscreen_preview.menu
 {
 	menu
 	{

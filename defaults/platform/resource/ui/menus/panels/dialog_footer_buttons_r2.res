@@ -1,4 +1,4 @@
-"scripts/resource/ui/menus/panels/dialog_footer_buttons_r2.res"
+"resource/ui/menus/panels/dialog_footer_buttons_r2.res"
 {
 	PinFrame
 	{

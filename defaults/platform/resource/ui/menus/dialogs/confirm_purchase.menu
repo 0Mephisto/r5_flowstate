@@ -1,4 +1,4 @@
-scripts/resource/ui/menus/dialog_confirm_purchase.menu
+resource/ui/menus/dialog_confirm_purchase.menu
 {
 	menu
 	{

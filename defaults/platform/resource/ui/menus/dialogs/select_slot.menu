@@ -1,4 +1,4 @@
-scripts/resource/ui/menus/select_slot.menu
+resource/ui/menus/select_slot.menu
 {
 	menu
 	{

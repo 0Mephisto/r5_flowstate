@@ -1,4 +1,4 @@
-scripts/resource/ui/menus/panels/tabs_lobby.res
+resource/ui/menus/panels/tabs_lobby.res
 {
     Anchor
     {
@@ -43,7 +43,6 @@ scripts/resource/ui/menus/panels/tabs_lobby.res
 		ControlName				RuiButton
 		InheritProperties		TabButtonLobby
 		scriptID				0
-		wide					250
 		xpos                    -650 //-700
 		pin_to_sibling			Anchor
 		pin_corner_to_sibling	TOP_LEFT
@@ -56,7 +55,7 @@ scripts/resource/ui/menus/panels/tabs_lobby.res
 		InheritProperties		TabButtonLobby
 		scriptID				1
 
-		xpos                    -70
+		xpos                    -80
 
 		pin_to_sibling			Tab0
 		pin_corner_to_sibling	TOP_LEFT

@@ -1,4 +1,4 @@
-"scripts/resource/ui/menus/panels/loadscreens.res"
+"resource/ui/menus/panels/loadscreens.res"
 {
 	PanelFrame
 	{

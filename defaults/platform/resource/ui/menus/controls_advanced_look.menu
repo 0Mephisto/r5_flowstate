@@ -1,4 +1,4 @@
-scripts/resource/ui/menus/controls_advanced_look.menu
+resource/ui/menus/controls_advanced_look.menu
 {
 	menu
 	{
@@ -121,7 +121,7 @@ scripts/resource/ui/menus/controls_advanced_look.menu
                 tall                    1225 // Script doesn't properly determine height from PanelBottom for some reason but this value seems to work
                 tabPosition             1
 
-                controlSettingsFile		"scripts/resource/ui/menus/panels/advanced_look_controls.res"
+                controlSettingsFile		"resource/ui/menus/panels/advanced_look_controls.res"
             }
 
             DetailsPanel

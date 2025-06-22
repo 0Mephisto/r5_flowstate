@@ -1,4 +1,4 @@
-"scripts/resource/ui/menus/panels/mode_popup.res"
+"resource/ui/menus/panels/mode_popup.res"
 {
     PanelFrame
     {

@@ -1,4 +1,4 @@
-scripts/resource/ui/menus/dialogs/character_skills.menu
+resource/ui/menus/dialogs/character_skills.menu
 {
 	menu
 	{

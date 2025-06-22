@@ -1,4 +1,4 @@
-scripts/resource/ui/menus/dialog_report_player_reason.menu
+resource/ui/menus/dialog_report_player_reason.menu
 {
 	menu
 	{

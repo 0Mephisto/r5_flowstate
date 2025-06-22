@@ -1,4 +1,4 @@
-scripts/resource/ui/menus/panels/tabs_store.res
+resource/ui/menus/panels/tabs_store.res
 {
     Anchor
     {

@@ -1,4 +1,4 @@
-"scripts/resource/ui/menus/panels/match_info.res"
+"resource/ui/menus/panels/match_info.res"
 {
 	Background
 	{
@@ -214,7 +214,7 @@
 		tall					30
 		xpos					-10
 		visible					0
-		controlSettingsFile			"scripts/resource/ui/menus/panels/match_info_player.res"
+		controlSettingsFile			"resource/ui/menus/panels/match_info_player.res"
 	}
 
 	Team1Player2
@@ -226,7 +226,7 @@
 		wide					390
 		tall					30
 		visible					0
-		controlSettingsFile			"scripts/resource/ui/menus/panels/match_info_player.res"
+		controlSettingsFile			"resource/ui/menus/panels/match_info_player.res"
 	}
 
 	Team1Player3
@@ -238,7 +238,7 @@
 		wide					390
 		tall					30
 		visible					0
-		controlSettingsFile			"scripts/resource/ui/menus/panels/match_info_player.res"
+		controlSettingsFile			"resource/ui/menus/panels/match_info_player.res"
 	}
 
 	Team1Player4
@@ -250,7 +250,7 @@
 		wide					390
 		tall					30
 		visible					0
-		controlSettingsFile			"scripts/resource/ui/menus/panels/match_info_player.res"
+		controlSettingsFile			"resource/ui/menus/panels/match_info_player.res"
 	}
 
 	Team1Player5
@@ -262,7 +262,7 @@
 		wide					390
 		tall					30
 		visible					0
-		controlSettingsFile			"scripts/resource/ui/menus/panels/match_info_player.res"
+		controlSettingsFile			"resource/ui/menus/panels/match_info_player.res"
 	}
 
 	Team1Player6
@@ -274,7 +274,7 @@
 		wide					390
 		tall					30
 		visible					0
-		controlSettingsFile			"scripts/resource/ui/menus/panels/match_info_player.res"
+		controlSettingsFile			"resource/ui/menus/panels/match_info_player.res"
 	}
 
 	Team1Player7
@@ -286,7 +286,7 @@
 		wide					390
 		tall					30
 		visible					0
-		controlSettingsFile			"scripts/resource/ui/menus/panels/match_info_player.res"
+		controlSettingsFile			"resource/ui/menus/panels/match_info_player.res"
 	}
 
 	Team1Player8
@@ -298,7 +298,7 @@
 		wide					390
 		tall					30
 		visible					0
-		controlSettingsFile			"scripts/resource/ui/menus/panels/match_info_player.res"
+		controlSettingsFile			"resource/ui/menus/panels/match_info_player.res"
 	}
 
 // TEAM 2
@@ -345,7 +345,7 @@
 		tall					30
 		xpos					-10
 		visible					0
-		controlSettingsFile			"scripts/resource/ui/menus/panels/match_info_player.res"
+		controlSettingsFile			"resource/ui/menus/panels/match_info_player.res"
 	}
 
 	Team2Player2
@@ -357,7 +357,7 @@
 		wide					390
 		tall					30
 		visible					0
-		controlSettingsFile			"scripts/resource/ui/menus/panels/match_info_player.res"
+		controlSettingsFile			"resource/ui/menus/panels/match_info_player.res"
 	}
 
 	Team2Player3
@@ -369,7 +369,7 @@
 		wide					390
 		tall					30
 		visible					0
-		controlSettingsFile			"scripts/resource/ui/menus/panels/match_info_player.res"
+		controlSettingsFile			"resource/ui/menus/panels/match_info_player.res"
 	}
 
 	Team2Player4
@@ -381,7 +381,7 @@
 		wide					390
 		tall					30
 		visible					0
-		controlSettingsFile			"scripts/resource/ui/menus/panels/match_info_player.res"
+		controlSettingsFile			"resource/ui/menus/panels/match_info_player.res"
 	}
 
 	Team2Player5
@@ -393,7 +393,7 @@
 		wide					390
 		tall					30
 		visible					0
-		controlSettingsFile			"scripts/resource/ui/menus/panels/match_info_player.res"
+		controlSettingsFile			"resource/ui/menus/panels/match_info_player.res"
 	}
 
 	Team2Player6
@@ -405,7 +405,7 @@
 		wide					390
 		tall					30
 		visible					0
-		controlSettingsFile			"scripts/resource/ui/menus/panels/match_info_player.res"
+		controlSettingsFile			"resource/ui/menus/panels/match_info_player.res"
 	}
 
 	Team2Player7
@@ -417,7 +417,7 @@
 		wide					390
 		tall					30
 		visible					0
-		controlSettingsFile			"scripts/resource/ui/menus/panels/match_info_player.res"
+		controlSettingsFile			"resource/ui/menus/panels/match_info_player.res"
 	}
 
 	Team2Player8
@@ -429,7 +429,7 @@
 		wide					390
 		tall					30
 		visible					0
-		controlSettingsFile			"scripts/resource/ui/menus/panels/match_info_player.res"
+		controlSettingsFile			"resource/ui/menus/panels/match_info_player.res"
 	}
 
 }

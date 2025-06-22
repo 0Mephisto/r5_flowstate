@@ -1,4 +1,4 @@
-"scripts/resource/ui/menus/panels/ads_controls_pc.res"
+"resource/ui/menus/panels/ads_controls_pc.res"
 {
     SldMouseSensitivity
     {

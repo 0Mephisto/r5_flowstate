@@ -1,4 +1,4 @@
-"scripts/resource/ui/menus/panels/ads_advanced_controls_gamepad.res"
+"resource/ui/menus/panels/ads_advanced_controls_gamepad.res"
 {	
     ///////////////////////////
     // ADS Sensitivity

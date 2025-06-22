@@ -1,4 +1,4 @@
-scripts/resource/ui/menus/controls_ads_pc.menu
+resource/ui/menus/controls_ads_pc.menu
 {
 	menu
 	{
@@ -119,7 +119,7 @@ scripts/resource/ui/menus/controls_ads_pc.menu
                 InheritProperties       SettingsContentPanel
                 tabPosition             1
 
-                controlSettingsFile		"scripts/resource/ui/menus/panels/ads_controls_pc.res"
+                controlSettingsFile		"resource/ui/menus/panels/ads_controls_pc.res"
             }
 
             DetailsPanel

@@ -1,4 +1,4 @@
-"scripts/resource/ui/menus/panels/character_skins.res"
+"resource/ui/menus/panels/character_skins.res"
 {
 	PanelFrame
 	{

@@ -1,6 +1,6 @@
-// Copied from scripts/resource/ui/menus/panels/grid_panel_template.res
+// Copied from Resource/UI/menus/panels/grid_panel_template.res
 
-scripts/resource/ui/menus/panels/friend_list_grid.res
+Resource/UI/menus/panels/friend_list_grid.res
 {
     PanelFrame
     {

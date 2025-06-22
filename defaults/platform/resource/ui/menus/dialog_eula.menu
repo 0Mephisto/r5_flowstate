@@ -1,4 +1,4 @@
-scripts/resource/ui/menus/dialog_eula.menu
+resource/ui/menus/dialog_eula.menu
 {
 	menu
 	{

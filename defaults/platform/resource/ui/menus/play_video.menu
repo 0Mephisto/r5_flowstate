@@ -1,4 +1,4 @@
-scripts/resource/ui/menus/play_video.menu
+resource/ui/menus/play_video.menu
 {
 	menu
 	{

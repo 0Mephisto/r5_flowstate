@@ -1,5 +1,5 @@
 #base "combo_buttons.res"
-scripts/resource/ui/menus/ingame_mp.menu
+resource/ui/menus/ingame_mp.menu
 {
 	menu
 	{

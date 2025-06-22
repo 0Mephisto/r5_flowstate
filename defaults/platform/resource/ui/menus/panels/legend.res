@@ -1,4 +1,4 @@
-scripts/resource/ui/menus/panels/legend.res
+resource/ui/menus/panels/legend.res
 {
     ToolTip
     {

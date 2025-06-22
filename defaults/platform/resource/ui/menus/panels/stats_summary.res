@@ -1,4 +1,4 @@
-"scripts/resource/ui/menus/panels/stats_summary.res"
+"resource/ui/menus/panels/stats_summary.res"
 {
 	PanelFrame
 	{
@@ -54,7 +54,7 @@
         tall                    100
 
         visible					1
-        controlSettingsFile		"scripts/resource/ui/menus/panels/stats_tooltip_field.res"
+        controlSettingsFile		"resource/ui/menus/panels/stats_tooltip_field.res"
 
         pin_to_sibling          LifetimeAndSeasonalStats
         pin_corner_to_sibling   CENTER
@@ -73,7 +73,7 @@
         tall                    275
 
         visible					1
-        controlSettingsFile		"scripts/resource/ui/menus/panels/stats_tooltip_field.res"
+        controlSettingsFile		"resource/ui/menus/panels/stats_tooltip_field.res"
 
         pin_to_sibling          LifetimeAndSeasonalStats
         pin_corner_to_sibling   CENTER
@@ -92,7 +92,7 @@
         tall                    275
 
         visible					1
-        controlSettingsFile		"scripts/resource/ui/menus/panels/stats_tooltip_field.res"
+        controlSettingsFile		"resource/ui/menus/panels/stats_tooltip_field.res"
 
         pin_to_sibling          LifetimeAndSeasonalStats
         pin_corner_to_sibling   CENTER
@@ -111,7 +111,7 @@
         tall                    125
 
         visible					1
-        controlSettingsFile		"scripts/resource/ui/menus/panels/stats_tooltip_field.res"
+        controlSettingsFile		"resource/ui/menus/panels/stats_tooltip_field.res"
 
         pin_to_sibling          LifetimeAndSeasonalStats
         pin_corner_to_sibling   CENTER
@@ -130,7 +130,7 @@
         tall                    125
 
         visible					1
-        controlSettingsFile		"scripts/resource/ui/menus/panels/stats_tooltip_field.res"
+        controlSettingsFile		"resource/ui/menus/panels/stats_tooltip_field.res"
 
         pin_to_sibling          LifetimeAndSeasonalStats
         pin_corner_to_sibling   CENTER
@@ -150,7 +150,7 @@
         tall                    100
 
         visible					1
-        controlSettingsFile		"scripts/resource/ui/menus/panels/stats_tooltip_field.res"
+        controlSettingsFile		"resource/ui/menus/panels/stats_tooltip_field.res"
 
         pin_to_sibling          LifetimeAndSeasonalStats
         pin_corner_to_sibling   CENTER
@@ -169,7 +169,7 @@
         tall                    275
 
         visible					1
-        controlSettingsFile		"scripts/resource/ui/menus/panels/stats_tooltip_field.res"
+        controlSettingsFile		"resource/ui/menus/panels/stats_tooltip_field.res"
 
         pin_to_sibling          LifetimeAndSeasonalStats
         pin_corner_to_sibling   CENTER
@@ -188,7 +188,7 @@
         tall                    275
 
         visible					1
-        controlSettingsFile		"scripts/resource/ui/menus/panels/stats_tooltip_field.res"
+        controlSettingsFile		"resource/ui/menus/panels/stats_tooltip_field.res"
 
         pin_to_sibling          LifetimeAndSeasonalStats
         pin_corner_to_sibling   CENTER
@@ -207,7 +207,7 @@
         tall                    125
 
         visible					1
-        controlSettingsFile		"scripts/resource/ui/menus/panels/stats_tooltip_field.res"
+        controlSettingsFile		"resource/ui/menus/panels/stats_tooltip_field.res"
 
         pin_to_sibling          LifetimeAndSeasonalStats
         pin_corner_to_sibling   CENTER
@@ -226,7 +226,7 @@
         tall                    125
 
         visible					1
-        controlSettingsFile		"scripts/resource/ui/menus/panels/stats_tooltip_field.res"
+        controlSettingsFile		"resource/ui/menus/panels/stats_tooltip_field.res"
 
         pin_to_sibling          LifetimeAndSeasonalStats
         pin_corner_to_sibling   CENTER

@@ -1,4 +1,4 @@
-scripts/resource/ui/menus/post_game_battlepass.menu
+resource/ui/menus/post_game_battlepass.menu
 {
 	menu
 	{
