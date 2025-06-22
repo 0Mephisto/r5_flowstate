@@ -420,7 +420,8 @@ void function CodeCallback_DamagePlayerOrNPC( entity ent, var damageInfo )
 
 		if ( !entIsTitan )
 			ent.SetCloakFlicker( 0.5, 0.65 )
-	}else
+	}
+	else if ( entIsTitan )
 	{
 		Assert( entIsNPC )
 		bool clearedDamage
@@ -439,20 +440,10 @@ void function CodeCallback_DamagePlayerOrNPC( entity ent, var damageInfo )
 		}
 
 		if ( !clearedDamage )
-		{
-			if ( entIsTitan )
-			{
-				Titan_NPCTookDamage( ent, damageInfo, titanDamage )
-				savedDamage = DamageInfo_GetDamage( damageInfo )
-			}
-			else
-			{
-				Generic_NPCTookDamage( ent, damageInfo, titanDamage )
-			}
+		{ 
+			Titan_NPCTookDamage( ent, damageInfo, titanDamage )
+			savedDamage = DamageInfo_GetDamage( damageInfo )
 		}
-
-		if ( attackerIsPlayer )
-			PlayerDamageFeedback( ent, damageInfo )
 	}
 
 	if( entIsNPC && attackerIsNPC )
@@ -503,7 +494,7 @@ void function CodeCallback_DamagePlayerOrNPC( entity ent, var damageInfo )
 		}
 	}
 
-	if (  ( entIsNPC && attackerIsPlayer ) ) //|| ( entIsPlayer && attackerIsNPC ) )
+	if ( entIsNPC && attackerIsPlayer ) //|| ( entIsPlayer && attackerIsNPC ) )
 	{
 		float damage = 0
 		if( ent.GetShieldHealth() > 0 )
@@ -552,7 +543,7 @@ void function CodeCallback_DamagePlayerOrNPC( entity ent, var damageInfo )
 			
 			DamageInfo_SetDamage( damageInfo, 0) //hack, the damage value was only required for proper client display. Colombia
 		} 
-		else
+		else //Applies for npc titans as well
 		{
 			if( attackerIsPlayer )
 			{
@@ -617,8 +608,6 @@ void function CodeCallback_DamagePlayerOrNPC( entity ent, var damageInfo )
 	UpdateLastDamageTime( ent )
 	
 	UpdateAttackerInfo( ent, attacker, savedDamage )
-
-	
 
 	if ( !(DamageInfo_GetCustomDamageType( damageInfo ) & DF_DOOMED_HEALTH_LOSS) )
 	{
