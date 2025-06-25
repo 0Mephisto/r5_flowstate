@@ -177,7 +177,7 @@ void function Sh_ArenaDeathField_Init()
 
 	AddSpawnCallbackEditorClass( "prop_dynamic", "script_survival_survey_beacon", Pathfinder_AddSurveyBeacon )
 
-	// AddClientCommandCallback( "UpdateCirclePos", ClientCommand_UpdateCirclePos )
+	AddClientCommandCallback( "UpdateCirclePos", ClientCommand_UpdateCirclePos )
 #endif
 
 	// InitDeathFieldDataAndStageData() //moved to eGameState.Playing enter
@@ -829,43 +829,42 @@ void function DeathFieldDamage( DeathFieldData data, entity deathField )
 	}
 }
 
-// bool function ClientCommand_UpdateCirclePos( entity player, array<string> args )
-// {
-	// if ( args.len() < 2 )
-		// return false
+bool function ClientCommand_UpdateCirclePos( entity player, array<string> args )
+{
+	if ( args.len() < 2 )
+		return false
 
-	// bool cheatsEnabled = GetConVarBool( "sv_cheats" )
-	// if ( !cheatsEnabled )
-	// {
-		// BigWarningLog( "UpdateCirclePos - disabled (server cheats are off): " + player )
-		// return true
-	// }
-	// if ( !Flag( "AllowDeathFieldUpdate" ) )
-	// {
-		// BigWarningLog( "UpdateCirclePos - no longer allowed to change circle pos" )
-		// return true
-	// }
+	bool cheatsEnabled = GetConVarBool( "sv_cheats" )
+	if ( !cheatsEnabled )
+	{
+		BigWarningLog( "UpdateCirclePos - disabled (server cheats are off): " + player )
+		return false
+	}
+	if ( !Flag( "AllowDeathFieldUpdate" ) )
+	{
+		BigWarningLog( "UpdateCirclePos - no longer allowed to change circle pos" )
+		return false
+	}
 
-	// float argX    = float( args[0] )
-	// float argY    = float( args[1] )
-	// vector newPos = <argX, argY, 0>
+	float argX    = float( args[0] )
+	float argY    = float( args[1] )
+	vector newPos = <argX, argY, 0>
 
-	// #if DEVELOPER
-		// thread DEV_ForceDeathFieldPosition( newPos )
-		// return true
-	// #endif
-
-	// return false
-// }
+	#if DEVELOPER
+		thread DEV_ForceDeathFieldPosition( newPos )
+		return true
+	#endif // DEVELOPER
+	return false
+}
 
 #if DEVELOPER
 void function DEV_ForceDeathFieldPosition( vector endPos )
 {
 	if ( !SURVIVAL_IsValidCircleLocation( endPos ) )
 	{
-		Warning( "Invalid Circle Location Requested: " + endPos )
-		return
+		Warning( "Invalid Circle Location Requested" )
 	}
+	Warning( "Updating the Circle Location to new position:" + endPos )
 	waitthread GenerateDeathFieldData( endPos, 5.0 )
 }
 
