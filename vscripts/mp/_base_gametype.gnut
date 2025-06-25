@@ -255,8 +255,8 @@ bool function IsProtectedFromFriendlyFire_MP( entity attacker, entity ent, var d
 	if ( DamageIgnoresFriendlyFire( damageInfo ) )
 		return false
 
-	// if ( attacker.GetTeam() == ent.GetTeam() && !IsTeamRabid( attacker.GetTeam() ) )
-		// return true
+	if ( attacker.GetTeam() == ent.GetTeam() && !IsTeamRabid( attacker.GetTeam() ) )
+		return true
 		
 	// if ( ent.GetOwner() != attacker && ent.GetBossPlayer() != attacker ) //todo(cafe): investigate why this makes titans won't get damaged
 		// return true
