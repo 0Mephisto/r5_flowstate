@@ -397,7 +397,7 @@ void function PrecacheSDKWeapons()
 
 	//Titanfall Weapons
 	PrecacheModel( $"mdl/weapons/arms/buddypov.rmdl" )
-	PrecacheWeapon( $"mp_titanweapon_meteor" )
+	PrecacheWeapon( $"mp_titanweapon_sniper" )
 	PrecacheWeapon( $"mp_titanweapon_flightcore_rockets" ) // Not a loot
 }
 

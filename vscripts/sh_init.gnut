@@ -110,6 +110,7 @@ void function SV_CL_Init()
 	MpTitanWeaponParticleAccelerator_Init()
 	MpTitanweaponRocketeetRocketStream_Init()
 	MpTitanweaponMeteor_Init()
+	MpTitanWeapon_SniperInit()
 
 	LaserCannon_Init()
 	BleedoutShared_Init()

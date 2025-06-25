@@ -217,6 +217,7 @@ global enum eDamageSourceId
 	mp_titanweapon_meteor_thermite
 	mp_titanweapon_flame_wall
 	mp_titanweapon_meteor
+	mp_titanweapon_sniper
 
 	// Misc
 	rodeo
