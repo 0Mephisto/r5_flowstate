@@ -465,6 +465,7 @@ WeaponData
 			"burst_or_looping_fire_sound_end_npc"			""
 
 			"bodygroup1_set"								"1"
+			"projectile_launch_speed"						"12000"
 		}
 		battle_rifle_icon
 		{
@@ -477,6 +478,7 @@ WeaponData
 			"fire_rate_max"					"18"
 			"fire_rate_max_time_speedup"	"3.0"
 			"fire_rate_max_time_cooldown"	"2.15"
+			"hud_icon"										"r2_ui/menus/loadout_icons/titan_weapon/titan_weapon_xo16_br_upgrade"
 
 			"damage_near_value"   							"*1.25"
 			"damage_far_value"								"*1.25"
@@ -537,7 +539,7 @@ WeaponData
 		fd_vanguard_utility_1
 		{
 		}
-		fd_vanguard_utility_2
+		gold
 		{
 		}
 		fd_vanguard_weapon_1

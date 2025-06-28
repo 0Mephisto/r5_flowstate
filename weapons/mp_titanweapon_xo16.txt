@@ -30,8 +30,11 @@ WeaponData
 	"ads_move_speed_scale"							"0.40"
 
 	// Models
-	"viewmodel"   									"mdl/weapons/xotbr16/atpov_xotbr16.rmdl"
-	"playermodel" 									"mdl/weapons/xotbr16/w_xotbr16.rmdl"
+	//"viewmodel"   									"mdl/weapons/xotbr16/atpov_xotbr16.rmdl"
+	//"playermodel" 									"mdl/weapons/xotbr16/w_xotbr16.rmdl"
+
+	"viewmodel"   									"mdl/weapons/titan_xo16_shorty/atpov_xo16shorty.rmdl"
+	"playermodel" 									"mdl/weapons/titan_xo16_shorty/w_xo16shorty.rmdl"
 
 	"bolt_gravity_enabled"							"0"
 
@@ -527,6 +530,9 @@ WeaponData
 			"is_burn_mod"		"1"
 			"fire_sound_1_player_1p"						"Weapon_XO16_SingleAmped_1P"
 			"fire_sound_1_player_3p"						"Weapon_XO16_SingleAmped_1P"
+		}
+		gold
+		{
 		}
 	}
 
