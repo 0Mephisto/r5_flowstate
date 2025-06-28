@@ -59,7 +59,7 @@ void function TitanFastball_Init()
 
 	#endif
 	#if CLIENT
-		//RegisterEntityVarChangeCallback( "player", "drawFastballHud", DrawFastballHudChanged )
+		RegisterEntityVarChangeCallback( "player", "drawFastballHud", DrawFastballHudChanged )
 		RegisterButtonPressedCallback( BUTTON_TRIGGER_RIGHT, ButtonCallback_FastballLaunch )
 		RegisterButtonPressedCallback( MOUSE_LEFT, ButtonCallback_FastballLaunch )
 		RegisterButtonPressedCallback( BUTTON_B, ButtonCallback_FastballCancelLaunch )
@@ -112,11 +112,11 @@ void function FastballTitanThink( entity titan )
 
 		wait 0.1
 
-		/*player = titan.GetBossPlayer()
+		player = titan.GetBossPlayer()
 		if ( !IsValid( player ) || !IsAlive( player ) )
 			continue
 
-		if ( player.IsNoclipping() )
+		/*if ( player.IsNoclipping() )
 			continue
 
 		if ( player.p.pilotEjecting )
@@ -136,15 +136,14 @@ void function FastballTitanThink( entity titan )
 	}
 }
 
-void function Fastball_PlayerAndTitanEnterAimingMode( entity player, entity tte )
+void function Fastball_PlayerAndTitanEnterAimingMode( entity player, entity titan )
 {
-	//EndSignal( player, "OnDeath" )
-	//EndSignal( titan, "OnDestroy" )
-	//EndSignal( player, "player_embarks_titan" )
-	//EndSignal( player, "FastballCancel" )
+	EndSignal( player, "OnDeath" )
+	EndSignal( titan, "OnDestroy" )
+	EndSignal( player, "player_embarks_titan" )
+	EndSignal( player, "FastballCancel" )
 
-	//int ogTitanMode = player.GetPetTitanMode()
-	entity titan = CreatePropDynamic( $"mdl/titans/buddy/titan_buddy.rmdl", gp()[0].GetOrigin(), gp()[0].GetAngles() , SOLID_VPHYSICS, -1 )
+	int ogTitanMode = player.GetPetTitanMode()
 	vector ogTitanOrg = titan.GetOrigin()
 	vector playerViewVector = player.GetViewVector()
 	float playerYaw = VectorToAngles( playerViewVector ).y
@@ -156,8 +155,8 @@ void function Fastball_PlayerAndTitanEnterAimingMode( entity player, entity tte 
 	player.SetParent( titan, "FASTBALL_R", false )
 	thread PlayAnim( titan, "bt_FastBall_Pose", mover, "REF" )
 
-	int attachID = titan.LookupAttachment( "FASTBALL" )
-	vector tagAngles = <0,0,0>//titan.GetAttachmentAngles( attachID )
+	int attachID = titan.LookupAttachment( "FASTBALL_R" )
+	vector tagAngles = titan.GetAttachmentAngles( attachID )
 
 	player.PlayerCone_SetSpecific( AnglesToForward( tagAngles ) )
 	player.PlayerCone_SetMinYaw( 0 )
@@ -171,14 +170,14 @@ void function Fastball_PlayerAndTitanEnterAimingMode( entity player, entity tte 
 	player.PlayerCone_SetMaxPitch( 50 )
 
 	OnThreadEnd(
-		function() : ( player, titan, mover, ogTitanOrg )
+		function() : ( player, titan, mover, ogTitanMode, ogTitanOrg )
 		{
 			if ( IsValid( player ) )
 			{
 				player.ClearParent()
 				player.SetLocalAngles( player.EyeAngles() )
 				player.PlayerCone_Disable()
-				//player.SetPetTitanMode( ogTitanMode )  // HACK he forgets about guard mode after anim stops
+				player.SetPetTitanMode( ogTitanMode )  // HACK he forgets about guard mode after anim stops
 				player.DeployWeapon()
 				player.nv.drawFastballHud = false
 
@@ -325,8 +324,8 @@ void function ScriptedTitanFastball( entity player, entity titan, entity titanNo
 	EndSignal( titan, "OnDeath" )
 
 	entity ref = file.fastballAnimRef
-	if ( !IsValid( ref ) )
-		ref = CreateOwnedScriptMover( titanNode )
+	//if ( !IsValid( ref ) )
+		//ref = CreateOwnedScriptMover( titanNode )
 	if ( file.fastballVelocityFunc == null )
 		file.fastballVelocityFunc = GetScriptedFastBallVelocity
 
@@ -353,7 +352,7 @@ void function ScriptedTitanFastball( entity player, entity titan, entity titanNo
 	// Send the titan to the throw position
 	//RunToAnimStartForced_Deprecated( titan, file.fastballAnims[0], ref )
 
-	titan.SetParent( ref )
+	//titan.SetParent( ref )
 
 	// Assert( file.fastballAnims[0] != "" )
 	Assert( file.fastballAnims[1] != "" )
@@ -395,7 +394,7 @@ void function ScriptedTitanFastball( entity player, entity titan, entity titanNo
 	WaitSignal( titan, "fastball_release" )
 
 	// Throw the player
-	vector throwVelocity = file.fastballVelocityFunc( player, throwTarget )
+	vector throwVelocity = Fastball_GetThrowVelocity( player )//file.fastballVelocityFunc( player, throwTarget )
 
 	player.ClearParent()
 	player.SetVelocity( throwVelocity )
@@ -463,7 +462,7 @@ void function PlayerScriptedFastballAnim( entity player, entity titan, entity re
 // ========== CLIENT ONLY ==========
 // =================================
 #if CLIENT
-function DrawFastballHudChanged( player )
+void function DrawFastballHudChanged( player, varName, newValue, oldValue )
 {
 	expect entity( player )
 

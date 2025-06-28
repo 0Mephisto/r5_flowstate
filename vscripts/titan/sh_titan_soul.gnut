@@ -66,7 +66,7 @@ function IsSoul( entity ent )
 string function GetSoulTitanSubClass( entity soul )
 {
 	asset settings = GetSoulPlayerSettings( soul )
-	return GetGlobalSettingsString( settings, "subclass" )
+	return "atlas"//GetGlobalSettingsString( settings, "subclass" )
 }
 
 asset function GetSoulPlayerSettings( entity soul )
@@ -76,16 +76,16 @@ asset function GetSoulPlayerSettings( entity soul )
 
 bool function HasSoul( entity ent )
 {
-	return false//( ent.IsNPC() || ent.IsPlayer() ) && IsValid( ent.GetTitanSoul() )
+	return ( ent.IsNPC() || ent.IsPlayer() ) && IsValid( ent.GetTitanSoul() )
 }
 
 #if SERVER
 void function InitSoul( entity soul, entity titan )
 {
 	Assert( titan.IsNPC() )
-	return
+
 	asset settings = GetNPCTitanSettingFile( titan )
-	soul.SetPlayerSettingsName( settings )
+	soul.SetPlayerSettingsName( $"settings/itemflav/character/bangalore.rpak" )
 
 	soul.hijackProgress = 0
 	soul.lastHijackTime = 0
@@ -312,7 +312,7 @@ void function SetStanceStand( entity soul )
 float function GetTitanSoulShieldHealth( entity soul )
 {
 	asset playerSettings = GetSoulPlayerSettings( soul )
-	return GetGlobalSettingsFloat( playerSettings, "healthShield" )
+	return 0.0//GetGlobalSettingsFloat( playerSettings, "healthShield" )
 }
 
 float function GetTitanSoulDoomedHealth( entity soul )

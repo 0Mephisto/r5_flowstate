@@ -245,6 +245,7 @@ Scripts:
 	mp/sh_teams.gnut
 	pilot/sh_pilot_gun_shield.gnut
 	pilot/sh_pilot_leeching.gnut
+	rodeo/sh_rodeo_titan_anim.nut
 	sentry_turrets/sh_sentry_turrets.gnut
 	sh_anim_aliases.gnut
 	sh_codecallbacks.gnut
@@ -305,6 +306,7 @@ Scripts:
 	weapons/mp_titanweapon_meteor.nut
 	weapons/mp_titanweapon_flame_wall.nut
 	weapons/mp_titanweapon_sniper.nut
+	weapons/mp_titanweapon_xo16.nut
 	weapons/mp_projectile_titanweapon_sniper.nut
 
 	weapons/mp_titancore_lasercannon.nut

@@ -372,6 +372,10 @@ void function RemoteFunctions_Init_Begin()
 	ScriptRemote_RegisterClientFunction( "ServerCallback_ShouldExitDrone" )
 	
 	
+	RegisterNetworkedVariable( "coreAvailableFrac", SNDC_TITAN_SOUL, SNVT_FLOAT_RANGE, 0.0, 0.0, 1.0 )
+	RegisterNetworkedVariable( "coreExpireFrac", SNDC_TITAN_SOUL, SNVT_FLOAT_RANGE_OVER_TIME, 0.0, 0.0, 1.0 )
+	RegisterNetworkedVariable( "upgradeCount", SNDC_TITAN_SOUL, SNVT_INT, 0 )
+	
 	#if DEVELOPER
 		if( Playlist() != ePlaylists.fs_scenarios )
 			DEV_RegisterNetworking_SpawnSystem() //Audit 2-22-2025
@@ -1023,6 +1027,7 @@ void function RemoteFunctions_Init_Begin()
 	}
 
 	RegisterEntityVar( "player", "permanentEventNotification", -1 )
+	RegisterEntityVar( "player", "drawFastballHud", false )
 
 	//ScriptRemote_RegisterUntypedFunction_deprecated( "ServerCallback_IncomingAirdrop" ) //Audit 2-22-2025 not currently called.
 	ScriptRemote_RegisterClientFunction( "ServerCallback_CreateAirdropBadPlace", "int", -1, 9999, "vector", -32000.0, 32000.0, 32, "int", 0, 9999, "entity" ) //Audit 2-22-2025

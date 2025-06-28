@@ -21,20 +21,19 @@ npc_titan
 	BaseClass				"npc_titan"
 
 	DefaultModelName		"mdl/titans/buddy/titan_buddy.rmdl"
-	DefaultWeapon			"mp_titanweapon_predator_cannon"
+	//DefaultWeapon			"mp_titanweapon_predator_cannon"
 	BehaviorSelector		"behavior_titan"
 	WeaponCapacity			"TitanMainWeapons"
-	npc_titan_player_settings 		"titan_atlas"
+	npc_titan_player_settings 	"settings/player/mp/pilot_survival_gas.rpak"
 
 	mechanical				1
 
 	showHolsteredWeapons	1
 
-	Health					8000 [$sp]
-	Health					8000 [$mp]
+	Health					2500
 
 	PainOnHeavyDamageThreshold		1000
-	PainOnRepeatDamageThreshold		3000
+	PainOnRepeatDamageThreshold		1000
 	RepeatDamageTimeInterval		3
 	breakOutOfPainDamageThreshold	300
 	lightPainMinInterval	1.5

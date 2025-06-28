@@ -4,7 +4,7 @@ global function CodeCallback_MapInit
 void function CodeCallback_MapInit()
 {	
 	#if SERVER
-	thread MapModels()
+	thread InitARBarriers()
 	#endif
 }
 
@@ -17,8 +17,11 @@ void function ShInit_Skygarden()
 }
 
 #if SERVER
-void function MapModels()
+void function InitARBarriers()
 {
-
+	AddSpawnCallback( "func_brush", void function ( entity brush )
+	{
+		brush.MakeVisible()//Destroy()//TODO: Recover this function once we get correct shaders and arenas -LorryLeKral
+	} )
 }
 #endif

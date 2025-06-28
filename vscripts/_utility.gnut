@@ -200,10 +200,10 @@ void function PrintPlaylists()
 
 entity function CreateEntity( string name )
 {
-//	if ( name == "npc_titan" )
-//	{
-//		DumpStack(3)
-//	}
+	if ( name == "npc_titan" )
+	{
+		DumpStack(3)
+	}
 //	if ( name == "info_particle_system" )
 //	{
 //		printl( " " )

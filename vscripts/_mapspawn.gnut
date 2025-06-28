@@ -232,6 +232,10 @@ void function CodeCallback_MapSpawn() // original script entry point
 	PrecacheParticleSystem( $"P_mrb_destruction" )
 	PrecacheParticleSystem( $"P_skydive_smoke_shdw" )
 
+	PrecacheModel( $"mdl/dev/editor_ref.rmdl" )
+	PrecacheModel( $"mdl/dev/empty_model.rmdl" )
+	PrecacheModel( $"mdl/error.rmdl" ) // model used when no model is provided
+
 	_cc = CreateEntity( "point_clientcommand" )
 	_sc = CreateEntity( "point_servercommand" )
 	PrecacheEntity( "env_entity_dissolver" )
@@ -397,7 +401,8 @@ void function PrecacheSDKWeapons()
 
 	//Titanfall Weapons
 	PrecacheModel( $"mdl/weapons/arms/buddypov.rmdl" )
-	PrecacheWeapon( $"mp_titanweapon_sniper" )
+	PrecacheModel( $"mdl/weapons/arms/pov_titan_medium_cockpit.rmdl" )
+	PrecacheModel( $"mdl/titans/medium/titan_medium_rodeo_battery.rmdl" )
 	PrecacheWeapon( $"mp_titanweapon_flightcore_rockets" ) // Not a loot
 }
 

@@ -157,7 +157,7 @@ void function AddPanelToTitan( entity soul )
 	entity titan = soul.GetTitan()
 
 	asset settings = GetSoulPlayerSettings( soul )
-	asset model = GetGlobalSettingsAsset( settings, "hatchModel" )
+	asset model = $"mdl/titans/medium/titan_medium_rodeo_battery.rmdl"//GetGlobalSettingsAsset( settings, "hatchModel" )
 	if ( model == $"" )
 		return
 
