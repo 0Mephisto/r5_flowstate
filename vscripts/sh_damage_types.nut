@@ -139,6 +139,8 @@ global enum eDamageSourceId
 	mp_weapon_mounted_turret_weapon
 	mp_titanweapon_flightcore_rockets
 	mp_titancore_laser_cannon
+	mp_titanweapon_xo16
+	mp_titanweapon_xo16_shorty
 	//
 	melee_pilot_emptyhanded
 	melee_pilot_arena
