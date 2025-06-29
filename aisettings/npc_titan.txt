@@ -21,7 +21,7 @@ npc_titan
 	BaseClass				"npc_titan"
 
 	DefaultModelName		"mdl/titans/buddy/titan_buddy.rmdl"
-	//DefaultWeapon			"mp_titanweapon_predator_cannon"
+	DefaultWeapon			"mp_titanweapon_predator_cannon"
 	BehaviorSelector		"behavior_titan"
 	WeaponCapacity			"TitanMainWeapons"
 	npc_titan_player_settings 	"settings/player/mp/pilot_survival_gas.rpak"

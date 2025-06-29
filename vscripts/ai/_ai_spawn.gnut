@@ -218,7 +218,7 @@ entity function CreateNPCTitan( string settings, int team, vector origin, vector
 	npc.kv.origin = origin
 	npc.kv.angles = Vector( 0, angles.y, 0 )
 	npc.kv.teamnumber = team
-	SetTitanSettings( npc.ai.titanSettings, settings, settingsMods )
+	//SetTitanSettings( npc.ai.titanSettings, settings, settingsMods )//TODO: FIX LOADOUTS -kral
 	return npc
 }
 

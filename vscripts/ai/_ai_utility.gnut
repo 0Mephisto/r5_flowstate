@@ -1741,7 +1741,7 @@ void function DEV_SpawnSpiderAtCrosshair(int team = 99)
 	DispatchSpawn( spider )
 }
 
-void function DEV_SpawnBTAtCrosshair(int team = 99)
+/*void function DEV_SpawnBTAtCrosshair(int team = 99)
 {
 	entity player = GetPlayerArray()[ 0 ]
 
@@ -1751,6 +1751,44 @@ void function DEV_SpawnBTAtCrosshair(int team = 99)
 	entity bt = CreateBT( team, origin, angles )
 
 	DispatchSpawn( bt )
+	//SetPlayerPetTitan( player, bt )
+	player.SetPetTitan( bt )
+	bt.SetCollisionAllowed( false )
+	//entity camera = CreateTitanDropCamera( origin, angles )
+	waitthread PlayersTitanHotdrops( bt, origin, angles, player, "at_hotdrop_drop_2knee_turbo" )
+	//bt.SetBossPlayer( player )
+}*/
+
+void function DEV_SpawnBTAtCrosshair( bool hotdrop = false )
+{
+	DisablePrecacheErrors()
+	wait 0.2
+	entity player = GetPlayerArray()[ 0 ]
+
+	entity pet_titan = player.GetPetTitan()
+	if ( IsValid(pet_titan) )
+		pet_titan.Destroy()
+
+	vector origin = GetPlayerCrosshairOrigin( player )
+	vector angles = Vector( 0, 0, 0 )
+
+	//TitanLoadoutDef loadout = GetTitanLoadoutForCurrentMap()
+	entity npc = CreateAutoTitanForPlayer_FromTitanLoadout( player, origin, angles )
+
+	SetSpawnOption_AISettings( npc, "npc_titan_buddy" )
+	npc.SetCollisionAllowed( false )
+	npc.kv.solid = 8
+
+	DispatchSpawn( npc )
+
+	SetPlayerPetTitan( player, npc )
+	player.SetPetTitan( npc )
+
+	if ( hotdrop )
+		thread NPCTitanHotdrops( npc, false )
+		
+	npc.GiveWeapon("mp_titanweapon_xo16_shorty", WEAPON_INVENTORY_SLOT_ANY)
+	//CodeCallback_EmbarkTitan( player, npc )
 }
 
 void function DEV_SpawnTitanAtCrosshair(int team = 99)

@@ -2141,6 +2141,19 @@ bool function FiringRangeHasFriendlyFire()
 	return GetCurrentPlaylistVarBool( "firingrange_has_friendlyfire", true )
 }
 
+string function GetTitanCharacterNameFromSetFile( string setFile )
+{
+	var result = "BT-7274"//Dev_GetPlayerSettingByKeyField_Global( setFile, "titanCharacterName" )
+	if ( result == null )
+	{
+		//CodeWarning( "Warning, no field titanCharacterName found for set file: " + setFile + ", returning default of ion" )
+		return "ion"
+	}
+
+	expect string( result )
+	return result
+}
+
 float function LerpFloat( float startValue, float endValue, float time )
 {
 	return ((1-time) * startValue + time * endValue)

@@ -5,7 +5,7 @@ global function TitanTransfer_Init
 global function PilotBecomesTitan
 global function TitanBecomesPilot
 //global function CreateAutoTitanForPlayer_ForTitanBecomesPilot
-//global function CreateAutoTitanForPlayer_FromTitanLoadout
+global function CreateAutoTitanForPlayer_FromTitanLoadout
 global function CopyWeapons
 global function StorePilotWeapons
 global function RetrievePilotWeapons
@@ -217,49 +217,49 @@ function TransferHealth( srcEnt, destEnt )
 	//destEnt.SetHealthPerSegment( srcEnt.GetHealthPerSegment() )
 }
 
-// entity function CreateAutoTitanForPlayer_FromTitanLoadout( entity player, TitanLoadoutDef loadout, vector origin, vector angles )
-// {
-// 	int team = player.GetTeam()
+entity function CreateAutoTitanForPlayer_FromTitanLoadout( entity player, vector origin, vector angles )
+{
+	int team = player.GetTeam()
 
-// 	player.titansBuilt++
-// 	ResetTitanBuildTime( player )
+	player.titansBuilt++
+	ResetTitanBuildTime( player )
 
-// 	entity npcTitan = CreateNPCTitan( loadout.setFile, team, origin, angles, loadout.setFileMods )
-// 	SetTitanSpawnOptionsFromLoadout( npcTitan, loadout )
-// 	SetSpawnOption_OwnerPlayer( npcTitan, player )
+	entity npcTitan = CreateNPCTitan( "", team, origin, angles )
+	//SetTitanSpawnOptionsFromLoadout( npcTitan, loadout )
+	SetSpawnOption_OwnerPlayer( npcTitan, player )
 
-// 	if ( IsSingleplayer() )
-// 	{
-// 		npcTitan.EnableNPCFlag( NPC_IGNORE_FRIENDLY_SOUND )
-// 	}
-// 	#if MP
-// 		string titanRef = GetTitanCharacterNameFromSetFile( loadout.setFile )
-// 		npcTitan.SetTargetInfoIcon( GetTitanCoreIcon( titanRef ) )
-// 	#endif
+	//if ( IsSingleplayer() )
+	{
+		npcTitan.EnableNPCFlag( NPC_IGNORE_FRIENDLY_SOUND )
+	}
+	#if MP
+		//string titanRef = GetTitanCharacterNameFromSetFile( loadout.setFile )
+		//npcTitan.SetTargetInfoIcon( GetTitanCoreIcon( titanRef ) )
+	#endif
 
-// 	return npcTitan
-// }
+	return npcTitan
+}
 
-// entity function CreateAutoTitanForPlayer_ForTitanBecomesPilot( entity player, bool hidden = false )
-// {
-// 	vector origin = player.GetOrigin()
-// 	vector angles = player.GetAngles()
-// 	TitanLoadoutDef loadout = GetTitanLoadoutFromPlayerInventory( player )
+/*entity function CreateAutoTitanForPlayer_ForTitanBecomesPilot( entity player, bool hidden = false )
+{
+	vector origin = player.GetOrigin()
+	vector angles = player.GetAngles()
+	TitanLoadoutDef loadout = GetTitanLoadoutFromPlayerInventory( player )
 
-// 	int team = player.GetTeam()
-// 	entity npcTitan = CreateNPCTitan( loadout.setFile, team, origin, angles, loadout.setFileMods )
-// 	npcTitan.s.spawnWithoutSoul <- true
-// 	SetTitanSpawnOptionsFromLoadout( npcTitan, loadout )
-// 	SetSpawnOption_OwnerPlayer( npcTitan, player )
-// 	npcTitan.SetSkin( player.GetSkin() )
-// 	npcTitan.SetCamo( player.GetCamo() )
-// 	npcTitan.SetDecal( player.GetDecal() )
+	int team = player.GetTeam()
+	entity npcTitan = CreateNPCTitan( loadout.setFile, team, origin, angles, loadout.setFileMods )
+	npcTitan.s.spawnWithoutSoul <- true
+	SetTitanSpawnOptionsFromLoadout( npcTitan, loadout )
+	SetSpawnOption_OwnerPlayer( npcTitan, player )
+	npcTitan.SetSkin( player.GetSkin() )
+	npcTitan.SetCamo( player.GetCamo() )
+	npcTitan.SetDecal( player.GetDecal() )
 
-// 	if ( IsSingleplayer() )
-// 		npcTitan.EnableNPCFlag( NPC_IGNORE_FRIENDLY_SOUND )
+	if ( IsSingleplayer() )
+		npcTitan.EnableNPCFlag( NPC_IGNORE_FRIENDLY_SOUND )
 
-// 	return npcTitan
-// }
+	return npcTitan
+}*/
 
 void function SetTitanSpawnOptionsFromLoadout( entity titan, TitanLoadoutDef loadout )
 {

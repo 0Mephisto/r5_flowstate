@@ -23,7 +23,7 @@ struct
 } file
 #endif // DEVELOPER
 
-function ModelViewer_Init()
+void function ModelViewer_Init()
 {
 	#if DEVELOPER
 		if ( reloadingScripts )

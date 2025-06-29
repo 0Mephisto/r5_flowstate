@@ -1,5 +1,6 @@
 Selector Common
 
+	SelectSchedule_FallToGround
 	SelectSchedule_MissileDodge
 	CNPC_Titan::SelectSchedule_TitanCore
 	CNPC_Titan::SelectSchedule_PhysEntKnock
