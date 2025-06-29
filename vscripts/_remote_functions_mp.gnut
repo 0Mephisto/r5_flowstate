@@ -1020,7 +1020,7 @@ void function RemoteFunctions_Init_Begin()
 	ScriptRemote_RegisterClientFunction( "HandleBroadcastCommsAction", "entity", "int", 0, eCommsAction._count, "entity", "vector", -32000.0, 32000.0, 32, "int", 0, (1 << eCommsFlags._flagCount) )
 	ScriptRemote_RegisterClientFunction( "PerformQuip", "entity", "int", 0, INT_MAX ) //Audit 2-22-2025 todo, revisit max quip
 
-	ScriptRemote_RegisterUntypedFunction_deprecated( "ServerCallback_TitanEmbark" ) // used purely to play a single line of dialo
+	ScriptRemote_RegisterUntypedFunction_deprecated( "ServerCallback_TitanEmbark" ) // used purely to play a single line of dialog
 
 	if( Playlist() == ePlaylists.survival_training )
 	{
