@@ -137,11 +137,6 @@ void function ShUtilityAll_Init()
 		PrecacheModel( $"mdl/fx/peacekeeper_legendary_ice_lvl3_add.rmdl" )
 		PrecacheModel( $"mdl/fx/peacekeeper_legendary_ice_lvl3_add_b.rmdl" )
 	#endif
-	
-	// #if DEVELOPER && SERVER 
-		// AddClientCommandCallbackVoid( "server_resume", server_resume )
-		// RegisterSignal( "server_resume" )
-	// #endif
 }
 
 Timeout function BeginTimeout( float duration )
@@ -1240,29 +1235,47 @@ string function GetAISettingsStringForMode()
 	return "aiSettingsFile"
 }
 
+const array<string> liveDisabledRefs = [ "vanguard_skin_01", "vanguard_skin_02", "vanguard_skin_03", "vanguard_skin_07", "vanguard_skin_08" ]
+const array<string> disabledRefs = [ "mp_ability_pathchooser" ]
+
+bool function IsDisabledRef( string ref )
+{
+	if ( liveDisabledRefs.contains( ref ) )
+		return true
+
+    #if DEVELOPER
+        return false
+    #endif
+
+    return ( disabledRefs.contains( ref ) )
+}
+
 array<asset> function GetAllowedPlayerTitanSettings() //Based off AllowedTItanAISettings, which is based off the titan_properties table
 {
-	//string searchString = "mp_npcUseAllowed"
-	//
-	//array<asset> list = []
-	//var dataTable = GetDataTable( TITAN_PROPERTIES_DATATABLE )
-	//int numRows = GetDatatableRowCount( dataTable )
-	//
-	//for ( int r=0; r<numRows; r++ )
-	//{
-	//	bool allowed = GetDataTableBool( dataTable, r, GetDataTableColumnByName( dataTable, searchString ) )
-	//	if ( allowed )
-	//	{
-	//		string titanRef = GetDataTableString( dataTable, r, GetDataTableColumnByName( dataTable, "titanRef" ) )
-	//
-	//		if ( IsDisabledRef( titanRef ) )
-	//			continue
-	//
-	//		list.append( GetDataTableAsset( dataTable, r, GetDataTableColumnByName( dataTable, "setFile" ) ) )
-	//	}
-	//}
-	//
-	//return list
+	#if !UI
+	return []//TODO: FIX THIS
+	string searchString = "mp_npcUseAllowed"
+	
+	array<asset> list = []
+	var dataTable = GetDataTable( $"datatable/titan_properties.rpak" )//Ported from titanfall2
+	int numRows = GetDatatableRowCount( dataTable )
+	
+	for ( int r=0; r<numRows; r++ )
+	{
+		bool allowed = GetDataTableBool( dataTable, r, GetDataTableColumnByName( dataTable, searchString ) )
+		if ( allowed )
+		{
+			string titanRef = GetDataTableString( dataTable, r, GetDataTableColumnByName( dataTable, "titanRef" ) )
+	
+			if ( IsDisabledRef( titanRef ) )
+				continue
+	
+			list.append( GetDataTableAsset( dataTable, r, GetDataTableColumnByName( dataTable, "setFile" ) ) )
+		}
+	}
+	
+	return list
+	#endif
 	return []
 }
 

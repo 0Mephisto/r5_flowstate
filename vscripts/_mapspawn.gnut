@@ -350,7 +350,6 @@ void function PrecacheSDKWeapons()
 	PrecacheWeapon( $"mp_ability_cloak" )
 	PrecacheWeapon( $"mp_ability_3dash" )
 	
-	PrecacheWeapon( $"mp_weapon_mastiff" ) // Why does mastiff not precache itself?
 	PrecacheWeapon( $"npc_weapon_lstar" )
 	PrecacheWeapon( $"npc_weapon_hemlok" )
 	PrecacheWeapon( $"npc_weapon_energy_shotgun" )
@@ -389,44 +388,6 @@ void function PrecacheSDKWeapons()
 
 void function PrecacheSDKEntities()
 {
-	///////////////////////character_revenant///////////////////////
-	PrecacheModel( $"mdl/dev/empty_model_revenant.rmdl" ) // called by revenant finisher, remove when rseq dependency support added?
-	PrecacheModel( $"mdl/props/revenant_totem/revenant_totem.rmdl" ) // revenant gladcard models
-	PrecacheModel( $"mdl/props/revenant_gladcards/revenant_gc_contemplation_static.rmdl" ) // revenant gladcard models
-	PrecacheModel( $"mdl/props/revenant_gladcards/revenant_gc_patience_static.rmdl" ) // revenant gladcard models
-	PrecacheModel( $"mdl/props/revenant_totem/revenant_totem_glad_card.rmdl" ) // revenant gladcard models
-	PrecacheModel( $"mdl/weapons_r5/lmg_devotion/w_lmg_devotion_legendary_03.rmdl") // not a skin! used for revenant gcard
-	PrecacheModel( $"mdl/props/tablet/tablet_mini.rmdl" ) // s4 mirage animset needs this model? game crashes if not precached, remove when rseq dependency support added?
-	PrecacheModel( $"mdl/Weapons/octane_epipen/w_octane_epipen.rmdl" ) // s4 octane animset needs this model? game crashes if not precached, remove when rseq dependency support added?
-	PrecacheModel( $"mdl/Weapons/grenades/octane_frag_grenade.rmdl" ) // s4 octane animset needs this model? game crashes if not precached, remove when rseq dependency support added?
-	PrecacheModel( $"mdl/industrial/screwdriver_octane.rmdl" ) // s4 octane animset needs this model? game crashes if not precached, remove when rseq dependency support added?
-	PrecacheModel( $"mdl/Weapons/p2011_auto/p2011_auto_static.rmdl" ) // s4 octane animset needs this model? game crashes if not precached, remove when rseq dependency support added?
-
-	///////////////////////character_RAMPART///////////////////////
-	PrecacheModel( $"mdl/props/rampart_gum/rampart_gum.rmdl" )
-	PrecacheModel( $"mdl/props/rampart_gum/rampart_bubblegum.rmdl" )
-	PrecacheModel( $"mdl/props/rampart_turret/rampart_turret_lobby.rmdl" )
-	PrecacheModel( $"mdl/props/welder/welder.rmdl" )
-	PrecacheModel( $"mdl/props/rampart_cover_wall/rampart_cover_wall.rmdl" )
-	PrecacheModel( $"mdl/props/wrench/wrench.rmdl" )
-	PrecacheModel( $"mdl/props/bullets/bullets_v02_all.rmdl" )
-
-	///////////////////////character_loba///////////////////////
-	PrecacheModel( $"mdl/fx/loba_staff_holo_stand.rmdl" )
-	PrecacheModel( $"mdl/Weapons/loba_rings/ptpov_loba_rings.rmdl" )
-	PrecacheModel( $"mdl/Weapons/loba_rings/w_loba_rings.rmdl" )
-	PrecacheModel( $"mdl/Weapons/p2011/ptpov_p2011_loba.rmdl" )
-	PrecacheModel( $"mdl/Weapons/p2011/w_p2011_loba.rmdl" )
-	PrecacheModel( $"mdl/Weapons/loba_loot_stick/w_loba_loot_stick.rmdl" )
-	PrecacheModel( $"mdl/Weapons/loba_loot_stick/ptpov_loba_loot_stick.rmdl" )
-	PrecacheModel( $"mdl/props/loba_mirror/loba_mirror.rmdl" )
-	PrecacheModel( $"mdl/props/loba_loot_stick/loba_loot_stick.rmdl" )
-	PrecacheModel( $"mdl/Weapons/p2011/w_p2011_loba_prop_version.rmdl" )
-	PrecacheModel( $"mdl/props/revenant_jar/revenant_jar.rmdl" )
-	PrecacheModel( $"mdl/props/loot_bin/loot_bin_01_loba_gladcard.rmdl" )
-	PrecacheModel( $"mdl/props/loba_treasure/loba_treasure.rmdl" )
-	PrecacheModel( $"mdl/Humans/class/medium/pilot_medium_loba.rmdl" )// TEMPORARILY PRECACHE LOBA WORLD MODEL
-
 	///////////////////////npcs///////////////////////
 	PrecacheModel( $"mdl/Humans/grunts/imc_grunt_lmg_corpse.rmdl" )
 	PrecacheModel( $"mdl/creatures/prowler/prowler_apex.rmdl" )
@@ -435,14 +396,10 @@ void function PrecacheSDKEntities()
 	PrecacheModel( $"mdl/weapons/sentry_turret/sentry_turret.rmdl" )
 	PrecacheModel( $"mdl/Humans/class/medium/combat_dummie_medium.rmdl" )
 	
-	///////////////////////mp_lobby///////////////////////
-	PrecacheModel( $"mdl/weapons_r5/loot/_master/w_loot_wep_ammo_sniper.rmdl" )
-	
-	///////////////////////engine///////////////////////
+	///////////////////////misc///////////////////////
 	PrecacheModel( $"mdl/vehicle/olympus_hovercraft/olympus_hovercraft_v2.rmdl")
 	PrecacheModel( $"mdl/communication/terminal_usable_imc_01.rmdl" )
 	PrecacheModel( $"mdl/titans/buddy/titan_buddy.rmdl" )
-	PrecacheModel( $"mdl/weapons/shellejects/shelleject_repeater3030.rmdl" )//DO NOT REMOVE!
 
 	//////////////////////NPC CACHE/////////////////////
 	//PrecacheModel( $"mdl/robots/super_spectre/super_spectre_v1.rmdl")

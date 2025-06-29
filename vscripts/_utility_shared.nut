@@ -199,8 +199,6 @@ void function InitWeaponScripts()
 	MpWeaponTrophy_Init()
 
 	MpWeaponBasicBolt_Init()
-
-	WeaponMastiff_Init()
 	
 	//(cafe) S0 Dev Protos
 	MpWeaponGroundSlam_Init()
