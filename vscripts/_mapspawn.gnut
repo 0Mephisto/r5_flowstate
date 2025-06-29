@@ -190,51 +190,32 @@ global SvGlobals svGlobal
 
 void function CodeCallback_MapSpawn() // original script entry point
 {	
-	ShWeapons_LevelInit()
 	//seterrorhandler(void function() {})
-	//ScriptCompilerTest()
+	ScriptCompilerTest()
 	LoadDiamond()
-	ReMap_Init()
-	LootTicks_Init()
 	
 	PrecacheSDKEntities()
 	PrecacheSDKWeapons()
 	PrecacheFSEntities()
 
-	RegisterSignal( "CleanupFXAndSoundsForDecoy" )//THESE SIGNALS ARE NOT SUPPOSED TO BE HERE! -LorryLeKral
-	RegisterSignal( "MirageSpotted" )
-	RegisterSignal( "forever" )
+	RegisterSignal( "OnChangedPlayerClass_ActuallyChanged" )
 	RegisterSignal( "UpdatePlayerStatusCounts" )
-	RegisterSignal( "BleedOut_OnReviveStart" )
-	RegisterSignal( "PlayerPlaneStatusChanged" )
-	RegisterSignal( "CancelTryRelinquishSquadLeaderOrBreakFromSquad" )
-	RegisterSignal( "GameStateChanged" )
-	RegisterSignal( "CleanupOutsideCircle" )
-
-	////////////////////DELETE THESE PARTICLES WHEN WE GET EFCT!!!!/////////////////////
-
-	PrecacheParticleSystem( $"P_crypto_map_arm_glow" )
-	PrecacheParticleSystem( $"P_crypto_map_center_glow" )
-	PrecacheParticleSystem( $"P_cryp_sat_act_world" )
-	PrecacheParticleSystem( $"P_crypto_map_arm_nrg" )
-	PrecacheParticleSystem( $"P_loba_staff_holo_loop" )
-	PrecacheParticleSystem( $"P_lob_menu_gun_ring" )
-	PrecacheParticleSystem( $"P_loba_staff_menu_dlight" )
-	PrecacheParticleSystem( $"P_lob_menu_gun_grab" )
-	PrecacheParticleSystem( $"P_loba_staff_holo_end_menu" )
-	PrecacheParticleSystem( $"P_lob_menu_hand_glow" )
-	PrecacheParticleSystem( $"P_lob_menu_staff_grab" )
-	PrecacheParticleSystem( $"P_warp_brac_loop_gear" )
-	PrecacheParticleSystem( $"P_warp_brac_loop_gear_3" )
-	PrecacheParticleSystem( $"P_warp_brac_loop_gear_2" )
-	PrecacheParticleSystem( $"P_warp_brac_toss_arm" )
-	PrecacheParticleSystem( $"P_warp_brac_ring_hld" )
-	PrecacheParticleSystem( $"P_mrb_destruction" )
-	PrecacheParticleSystem( $"P_skydive_smoke_shdw" )
+	RegisterSignal( "_disconnectedInternal" )
+	RegisterSignal( "OnChangedPlayerClass" )
+	RegisterSignal( "OnDisconnecting" )
+	RegisterSignal( "TeamChange" )
+	RegisterSignal( "LeftClass" )
+	RegisterSignal( "waitOver" )
+	RegisterSignal( "forever" )
+	RegisterSignal( "HitSky" )
 
 	PrecacheModel( $"mdl/dev/editor_ref.rmdl" )
 	PrecacheModel( $"mdl/dev/empty_model.rmdl" )
 	PrecacheModel( $"mdl/error.rmdl" ) // model used when no model is provided
+
+	#if DEVELOPER
+		ModelViewer_Init()
+	#endif // DEVELOPER
 
 	_cc = CreateEntity( "point_clientcommand" )
 	_sc = CreateEntity( "point_servercommand" )
@@ -465,6 +446,27 @@ void function PrecacheSDKEntities()
 
 	//////////////////////NPC CACHE/////////////////////
 	//PrecacheModel( $"mdl/robots/super_spectre/super_spectre_v1.rmdl")
+
+	////////////////////DELETE THESE PARTICLES WHEN WE GET EFCT!!!!/////////////////////
+
+	PrecacheParticleSystem( $"P_crypto_map_arm_glow" )
+	PrecacheParticleSystem( $"P_crypto_map_center_glow" )
+	PrecacheParticleSystem( $"P_cryp_sat_act_world" )
+	PrecacheParticleSystem( $"P_crypto_map_arm_nrg" )
+	PrecacheParticleSystem( $"P_loba_staff_holo_loop" )
+	PrecacheParticleSystem( $"P_lob_menu_gun_ring" )
+	PrecacheParticleSystem( $"P_loba_staff_menu_dlight" )
+	PrecacheParticleSystem( $"P_lob_menu_gun_grab" )
+	PrecacheParticleSystem( $"P_loba_staff_holo_end_menu" )
+	PrecacheParticleSystem( $"P_lob_menu_hand_glow" )
+	PrecacheParticleSystem( $"P_lob_menu_staff_grab" )
+	PrecacheParticleSystem( $"P_warp_brac_loop_gear" )
+	PrecacheParticleSystem( $"P_warp_brac_loop_gear_3" )
+	PrecacheParticleSystem( $"P_warp_brac_loop_gear_2" )
+	PrecacheParticleSystem( $"P_warp_brac_toss_arm" )
+	PrecacheParticleSystem( $"P_warp_brac_ring_hld" )
+	PrecacheParticleSystem( $"P_mrb_destruction" )
+	PrecacheParticleSystem( $"P_skydive_smoke_shdw" )
 }
 
 const array<string> InvalidModesForTrackScoreBoard = //const values

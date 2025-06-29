@@ -231,7 +231,7 @@ global const MID_SPEC_MAX_AI_COUNT   		= 9 // max number of AI per side when pla
 
 global const vector ZERO_VECTOR 			= <0,0,0>
 
-global const bool MODEL_VIEWER_ENABLED = false
+global const bool MODEL_VIEWER_ENABLED = true
 
 // If modified, keep these functions updated:
 // 		SetPersistentPilotLoadout()

@@ -125,10 +125,10 @@ void function ClientCodeCallback_MapSpawn()
 	level.clientScriptInitialized <- false
 
 	RegisterSignal( "forever" )
-	RegisterSignal( "UpdatePlayerStatusCounts" )
 	
 	//main menu cameras thread end signal
 	RegisterSignal("ChallengeStartRemoveCameras")
+	RegisterSignal( "UpdatePlayerStatusCounts" )
 	
 	FlagInit( "ClientInitComplete" )
 	FlagInit( "EntitiesDidLoad" )
@@ -136,7 +136,8 @@ void function ClientCodeCallback_MapSpawn()
 	PrecacheResFiles()
 
 	#if DEVELOPER
-		ClModelViewInit()
+		ClModelViewer_Init()
+		ClModelViewer_DumpEnts()
 	#endif
 
 	CreateHUDRuiTopologies()

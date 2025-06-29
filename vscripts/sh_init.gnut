@@ -167,6 +167,8 @@ void function SV_CL_Init()
 	//ShGruntChatter_MP_Init()
 	//ShSpectreChatter_MP_Init()
 
+	ShWeapons_LevelInit()
+
 	SURVIVAL_Loot_All_InitShared()
 	SURVIVAL_Loot_InitShared()
 	SURVIVAL_LootActions_InitShared()
@@ -364,6 +366,7 @@ void function Server_Init()
 	//Stats_Init()
 	MenuCallbacks_Init()
 	//InitChallenges()
+	LootTicks_Init()
 
 	Score_Init()
 
@@ -405,6 +408,7 @@ void function Server_Init()
 	LootHelper_Init()
 
 	MOTD_Init()
+	ReMap_Init()
 
     // ReMap Live
     if ( IsDevGamemode() )
@@ -565,9 +569,7 @@ void function Shared_Lobby_Init()
 	ShPing_Init()
 	ShQuickchat_Init()
 	ShChallenges_LevelInit_PreStats()
-	#if(false)
-
-#endif
+	ShWeapons_LevelInit()
 	ShItems_LevelInit_Finish()
 	ShItemPerPlayerState_LevelInit()
 	ShLoadouts_LevelInit_Finish()

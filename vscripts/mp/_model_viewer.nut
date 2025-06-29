@@ -1,15 +1,17 @@
+#if DEVELOPER
 untyped
+#endif
 
 
 global function ModelViewer_Init
 
 global function ToggleModelViewer
 
-global modelViewerModels = []
-
 #if DEVELOPER
 struct
 {
+	array<asset> modelViewerModels
+
 	bool initialized
 	bool active
 	entity gameUIFreezeControls
@@ -17,7 +19,7 @@ struct
 	array<string> playerOffhands
 	bool dpadUpPressed = true
 	bool dpadDownPressed = true
-	var lastTitanAvailability
+	//var lastTitanAvailability
 } file
 #endif // DEVELOPER
 
@@ -26,23 +28,26 @@ function ModelViewer_Init()
 	#if DEVELOPER
 		if ( reloadingScripts )
 			return
-		AddClientCommandCallback( "ModelViewer", ClientCommand_ModelViewer )
-	#endif
+		AddClientCommandCallback( "ModelViewer", ClientCommand_ModelViewer ) // dev
+	#endif // DEVELOPER
 }
 
-function ToggleModelViewer()
+void function ToggleModelViewer()
 {
 	#if DEVELOPER
+		WaitFrame()
 		entity player = GetPlayerArray()[ 0 ]
 		if ( !file.active )
 		{
 			file.active = true
 
+			player.SetPlayerNetBool( "pingEnabled", false )
+
 			DisablePrecacheErrors()
 			wait 0.5
 
 			ModelViewerDisableConflicts()
-			Remote_CallFunction_NonReplay( player, "ServerCallback_ModelViewerDisableConflicts" )
+
 			ReloadShared()
 
 			if ( !file.initialized )
@@ -51,43 +56,44 @@ function ToggleModelViewer()
 				ControlsInit()
 			}
 
-			#if MODEL_VIEWER_ENABLED //remote func doesnt register if false in sh_consts.
 			Remote_CallFunction_NonReplay( player, "ServerCallback_MVEnable" )
-			#endif
 
 			//file.lastTitanAvailability = level.nv.titanAvailability
 			//Riff_ForceTitanAvailability( eTitanAvailability.Never )
 
 			WeaponsRemove()
 			thread UpdateModelBounds()
+			PilotAbilitySelectMenu_SetEnabled( false )
 		}
 		else
 		{
 			file.active = false
+			PilotAbilitySelectMenu_SetEnabled( true )
 
-			#if MODEL_VIEWER_ENABLED
+			player.SetPlayerNetBool( "pingEnabled", true )
+
 			Remote_CallFunction_NonReplay( player, "ServerCallback_MVDisable" )
-			#endif
-
 			RestorePrecacheErrors()
+
 			//Riff_ForceTitanAvailability( file.lastTitanAvailability )
+
 			WeaponsRestore()
 		}
-	#endif
+	#endif // DEVELOPER
 }
 
 #if DEVELOPER
-function ModelViewerDisableConflicts()
+void function ModelViewerDisableConflicts()
 {
 	disable_npcs() //Just disable_npcs() for now, will probably add things later
 }
 
-function ReloadShared()
+void function ReloadShared()
 {
-	modelViewerModels = GetModelViewerList()
+	file.modelViewerModels = GetModelViewerList()
 }
 
-function ControlsInit()
+void function ControlsInit()
 {
 	file.gameUIFreezeControls = CreateEntity( "game_ui" )
 	file.gameUIFreezeControls.kv.spawnflags = 32
@@ -98,30 +104,30 @@ function ControlsInit()
 
 bool function ClientCommand_ModelViewer( entity player, array<string> args )
 {
-	string command = args[ 0 ]
-	switch ( command )
+	//string command = args.remove( 0 )
+	//switch ( command )
 	{
-		case "freeze_player":
+		//case "freeze_player":
 			file.gameUIFreezeControls.Fire( "Activate", "!player", 0 )
-			break
+			//break
 
-		case "unfreeze_player":
+		//case "unfreeze_player":
 			file.gameUIFreezeControls.Fire( "Deactivate", "!player", 0 )
-			break
+			//break
 	}
 
 	return true
 }
 
-function UpdateModelBounds()
+void function UpdateModelBounds()
 {
 	wait( 0.3 )
 
-	foreach ( index, modelName in modelViewerModels )
+	foreach ( index, modelName in file.modelViewerModels )
 	{
-		entity model = CreatePropDynamic( expect asset( modelName ) )
-		local mins = model.GetBoundingMins()
-		local maxs = model.GetBoundingMaxs()
+		entity model = CreatePropDynamic( modelName )
+		vector mins = model.GetBoundingMins()
+		vector maxs = model.GetBoundingMaxs()
 
 		mins.x = min( -8.0, mins.x )
 		mins.y = min( -8.0, mins.y )
@@ -136,7 +142,7 @@ function UpdateModelBounds()
 	}
 }
 
-function WeaponsRemove()
+void function WeaponsRemove()
 {
 	entity player = GetPlayerArray()[0]
 	if ( !IsValid( player ) )
@@ -162,20 +168,20 @@ function WeaponsRemove()
 	}
 }
 
-function WeaponsRestore()
+void function WeaponsRestore()
 {
 	entity player = GetPlayerArray()[0]
 	if ( !IsValid( player ) )
 		return
-	//todo: fix this
 	foreach ( weapon in file.playerWeapons )
 	{
-		//player.GiveWeapon( weapon, WEAPON_INVENTORY_SLOT_ANY )
+		player.GiveWeapon( weapon, WEAPON_INVENTORY_SLOT_ANY )
 	}
 
 	foreach ( index, offhand in file.playerOffhands )
 	{
-		//player.GiveOffhandWeapon( offhand, index )
+		if ( offhand != "" )
+			player.GiveOffhandWeapon( offhand, index )
 	}
 }
 
