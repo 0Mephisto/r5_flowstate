@@ -212,6 +212,10 @@ global enum eDamageSourceId
 	mp_weapon_gunship_launcher
 	mp_weapon_gunship_turret
 	mp_weapon_gunship_missile
+
+	mp_titanweapon_stun_laser
+	mp_titanability_smoke
+
 	mp_titanweapon_predator_cannon
 	mp_titanweapon_particle_accelerator
 	mp_titanweapon_rocketeer_rocketstream

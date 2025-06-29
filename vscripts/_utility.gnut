@@ -3297,6 +3297,184 @@ bool function ShouldResetRoundBasedTeamScore()
 {
 	return IsRoundBased() && svGlobal.roundBasedTeamScore_RoundReset
 }
+
+/*TitanLoadoutDef function GetTitanLoadoutForPlayer( entity player )
+{
+	return GetTitanLoadoutForCurrentMap()
+}
+
+TitanLoadoutDef function GetTitanLoadoutForCurrentMap()
+{
+	string mapName = GetMapName()
+
+	TitanLoadoutDef result
+	result = GetAllowedTitanLoadouts().getrandom()
+	//result.setFile = "titan_buddy"
+
+	TitanLevelLoadoutDefaults levelDef = GetTitanLevelLoadoutDefaultsForMapname( mapName )
+	Assert( GetTitanLoadoutForPrimary( levelDef.primaryWeaponName ) != null, "Level loadout tried to specify '" + levelDef.primaryWeaponName + "' for BT, but that weapon is not in titan_properties.csv" )
+
+	int bitIndex = GetTitanLoadoutIndex( levelDef.primaryWeaponName )
+
+	// fall back to xo16 if not unlocked yet
+	if ( !IsBTLoadoutUnlocked( bitIndex ) )
+		levelDef.primaryWeaponName = "mp_titanweapon_xo16_shorty"
+
+	result = expect TitanLoadoutDef( GetTitanLoadoutForPrimary( levelDef.primaryWeaponName ) )
+	//result.setFile = levelDef.setFile
+	result.name = mapName
+	result.titanExecution = levelDef.titanExecution
+
+	PopulateTitanLoadoutFromLevelTrans( result )
+	return result
+}
+
+array<TitanLoadoutDef> function GetAllowedTitanLoadouts()
+{
+	array<TitanLoadoutDef> loadouts
+
+	var dataTable = GetDataTable( $"datatable/titan_properties.rpak" )
+
+	int numRows = GetDatatableRowCount( dataTable )
+
+	string searchString = GetAllowedTitanAISettingsSearchString()
+	int column = GetDataTableColumnByName( dataTable, searchString )
+
+	for ( int r = 0; r < numRows; r++ )
+	{
+		if ( !GetDataTableBool( dataTable, r, column ) )
+			continue
+
+		loadouts.append( GetTitanLoadoutForRow( dataTable, r ) )
+	}
+
+	return loadouts
+}
+
+struct TitanLevelLoadoutDefaults
+{
+	string setFile = "titan_buddy"
+	string primaryWeaponName
+	array<string> unlockedWeaponNames
+	string titanExecution
+}
+
+TitanLevelLoadoutDefaults function GetTitanLevelLoadoutDefaultsForMapname( string mapName )
+{
+	TitanLevelLoadoutDefaults result
+
+	// All loadouts:
+	result.unlockedWeaponNames		= ["mp_titanweapon_xo16_shorty", "mp_titanweapon_sticky_40mm", "mp_titanweapon_meteor", "mp_titanweapon_leadwall", "mp_titanweapon_rocketeer_rocketstream", "mp_titanweapon_particle_accelerator", "mp_titanweapon_sniper", "mp_titanweapon_predator_cannon" ]
+
+	switch ( mapName )
+	{
+		case "sp_training":
+		case "sp_crashsite": // Wilds
+		case "sp_wilds_anim_test":
+			result.primaryWeaponName		= "mp_titanweapon_xo16_shorty"
+			result.unlockedWeaponNames		= ["mp_titanweapon_xo16_shorty" ]
+			break
+
+		case "sp_sewers1": // Reclamation
+			result.primaryWeaponName		= "mp_titanweapon_xo16_shorty"
+			result.unlockedWeaponNames		= ["mp_titanweapon_xo16_shorty" ]
+			result.titanExecution           = "execution_bt_kickshoot"
+			break
+
+		case "sp_boomtown_start":
+			result.primaryWeaponName		= "mp_titanweapon_sticky_40mm"
+			result.unlockedWeaponNames		= ["mp_titanweapon_xo16_shorty", "mp_titanweapon_sticky_40mm", ]
+			break
+
+		case "sp_boomtown":
+			result.primaryWeaponName		= "mp_titanweapon_sticky_40mm"
+			result.unlockedWeaponNames		= ["mp_titanweapon_xo16_shorty", "mp_titanweapon_sticky_40mm", "mp_titanweapon_meteor", "mp_titanweapon_rocketeer_rocketstream" ]
+			break
+
+		case "sp_boomtown_end":
+			result.primaryWeaponName		= "mp_titanweapon_sticky_40mm"
+			result.unlockedWeaponNames		= ["mp_titanweapon_xo16_shorty", "mp_titanweapon_sticky_40mm", "mp_titanweapon_meteor", "mp_titanweapon_rocketeer_rocketstream" ]
+			result.titanExecution           = "execution_bt_pilotrip"
+			break
+
+		case "sp_hub_timeshift":
+		case "sp_timeshift_spoke02":
+			result.primaryWeaponName		= "mp_titanweapon_sticky_40mm"
+			result.unlockedWeaponNames		= ["mp_titanweapon_xo16_shorty", "mp_titanweapon_sticky_40mm", "mp_titanweapon_meteor", "mp_titanweapon_rocketeer_rocketstream" ]
+			break
+
+		case "sp_beacon":
+		case "sp_beacon_spoke0":
+		case "sp_beacon_spoke2":
+			result.primaryWeaponName		= "mp_titanweapon_particle_accelerator"
+			result.unlockedWeaponNames		= ["mp_titanweapon_xo16_shorty", "mp_titanweapon_sticky_40mm", "mp_titanweapon_meteor", "mp_titanweapon_rocketeer_rocketstream", "mp_titanweapon_particle_accelerator" ]
+			result.titanExecution           = "execution_bt_flip"
+			break
+
+		case "sp_tday":
+			result.primaryWeaponName 		= "mp_titanweapon_xo16_shorty"
+			result.unlockedWeaponNames		= ["mp_titanweapon_xo16_shorty", "mp_titanweapon_sticky_40mm", "mp_titanweapon_meteor", "mp_titanweapon_leadwall", "mp_titanweapon_rocketeer_rocketstream", "mp_titanweapon_particle_accelerator" ]
+			break
+
+		case "sp_s2s":
+			result.primaryWeaponName 		= "mp_titanweapon_sticky_40mm"
+			result.unlockedWeaponNames		= ["mp_titanweapon_xo16_shorty", "mp_titanweapon_sticky_40mm", "mp_titanweapon_meteor", "mp_titanweapon_leadwall", "mp_titanweapon_rocketeer_rocketstream", "mp_titanweapon_particle_accelerator", "mp_titanweapon_sniper" ]
+			break
+
+		case "sp_skyway_v1":
+			result.setFile 					= "titan_buddy_spare"
+			result.primaryWeaponName		= "mp_titanweapon_predator_cannon"
+			result.unlockedWeaponNames		= ["mp_titanweapon_xo16_shorty", "mp_titanweapon_sticky_40mm", "mp_titanweapon_meteor", "mp_titanweapon_leadwall", "mp_titanweapon_rocketeer_rocketstream", "mp_titanweapon_particle_accelerator", "mp_titanweapon_sniper", "mp_titanweapon_predator_cannon" ]
+			result.titanExecution           = "execution_bt_kickshoot"
+			break
+
+		default:
+			result.primaryWeaponName		= "mp_titanweapon_rocketeer_rocketstream"
+			result.titanExecution           = "execution_bt_flip"
+			// All loadouts unlocked.
+	}
+
+	return result
+}
+
+int function GetTitanLoadoutIndex( string weaponName )
+{
+	Assert( weaponName in file.titanWeaponToIndex, weaponName + " is not a legal titan weapon loadout" )
+	return file.titanWeaponToIndex[ weaponName ]
+}
+
+TitanLoadoutDef ornull function GetTitanLoadoutForPrimary( string findPrimary )
+{
+	return GetTitanLoadoutForColumn( "primary", findPrimary )
+}
+
+void function PopulateTitanLoadoutFromLevelTrans( TitanLoadoutDef titanLoadout )
+{
+	LevelTransitionStruct ornull trans = GetLevelTransitionStruct()
+
+	if ( trans == null )
+		return
+
+	expect LevelTransitionStruct( trans )
+
+	if ( trans.titan_mainWeapon >= 0 )
+	{
+		string primary = SPWeapons_GetWeaponFromID( trans.titan_mainWeapon )
+		TitanLoadoutDef ornull newLoadout = GetTitanLoadoutForPrimary( primary )
+
+		if ( newLoadout == null )
+			return
+
+		expect TitanLoadoutDef( newLoadout )
+		titanLoadout.primary = newLoadout.primary
+		titanLoadout.ordnance = newLoadout.ordnance
+		titanLoadout.special = newLoadout.special
+		titanLoadout.antirodeo = newLoadout.antirodeo
+		titanLoadout.coreAbility = newLoadout.coreAbility
+		titanLoadout.melee = newLoadout.melee
+	}
+}*/
+
 array<entity> function CreateZipline( vector startPos, vector endPos, bool disableResting = false, float detatchDistanceOverride = -1, bool skin = false )
 {
 	vector delta     = startPos - endPos

@@ -336,10 +336,11 @@ bool function DamageIgnoresFriendlyFire( damageInfo )
 	{
 		case eDamageSourceId.damagedef_creeping_bombardment_detcord_explosion:
 		case eDamageSourceId.damagedef_defensive_bombardment:
+		case eDamageSourceId.switchback_trap:
+		case eDamageSourceId.suicideSpectreAoE:
+		case eDamageSourceId.mp_titanweapon_stun_laser: // for energy transfer functionality. Preventing FF damage in the callback.
+		case eDamageSourceId.mp_titanability_smoke: // For FD Vanguard Shield Upgrades. Preventing FF damage in the callback.
 			return true
-		// case eDamageSourceId.suicideSpectreAoE:
-		// case eDamageSourceId.mp_titanweapon_stun_laser: // for energy transfer functionality. Preventing FF damage in the callback.
-		// case eDamageSourceId.mp_titanability_smoke: // For FD Vanguard Shield Upgrades. Preventing FF damage in the callback.
 		default:
 			return false
 	}
@@ -1275,62 +1276,62 @@ bool function ShouldStartSpawn( entity player )
 
 void function PlayerSpawnsIntoPetTitan( entity player )
 {
-	// player.EndSignal( "OnDestroy" )
+	player.EndSignal( "OnDestroy" )
 
-	// entity titan = player.GetPetTitan()
+	entity titan = player.GetPetTitan()
 
-	// vector origin = titan.GetOrigin() + Vector( 0, 0, 600 )
-	// vector angles = titan.GetAngles()
+	vector origin = titan.GetOrigin() + Vector( 0, 0, 600 )
+	vector angles = titan.GetAngles()
 
-	// entity camera = CreateTitanDropCamera( origin, Vector(90,angles.y,0) )
-	// player.SetViewEntity( camera, false )
+	entity camera = CreateTitanDropCamera( origin, Vector(90,angles.y,0) )
+	player.SetViewEntity( camera, false )
 
-	// player.isSpawning = true // set this to prevent .isSpawning checks from returning false
+	player.isSpawning = true // set this to prevent .isSpawning checks from returning false
+	
+	angles.x = 70
 
-	// angles.x = 70
+	player.SetOrigin( origin )
+	player.SnapEyeAngles( angles )
+	player.SetVelocity( Vector( 0.0, 0.0, 0.0 ) )
 
-	// player.SetOrigin( origin )
-	// player.SnapEyeAngles( angles )
-	// player.SetVelocity( Vector( 0.0, 0.0, 0.0 ) )
+	OnThreadEnd(
+		function() : ( player )
+		{
+			if ( IsValid( player ) )
+			{
+				player.ClearViewEntity()
+				player.ClearSpawnPoint()
+				player.isSpawning = null
+			}
+		}
+	)
 
-	// OnThreadEnd(
-	// 	function() : ( player )
-	// 	{
-	// 		if ( IsValid( player ) )
-	// 		{
-	// 			player.ClearViewEntity()
-	// 			player.ClearSpawnPoint()
-	// 			player.isSpawning = null
-	// 		}
-	// 	}
-	// )
+	wait 0.2
 
-	// wait 0.2
+	local criteria = {
+		embark = "above_close",
+		titanCanStandRequired = true
+	}
 
-	// local criteria = {
-	// 	embark = "above_close",
-	// 	titanCanStandRequired = true
-	// }
+	local embarkAction
+	//embarkAction = FindEmbarkActionForCriteria( criteria )
+	if ( embarkAction == null )
+		embarkAction = GetRandomEmbarkAction()
 
-	// local embarkAction
-	// embarkAction = FindEmbarkActionForCriteria( criteria )
-	// if ( embarkAction == null )
-	// 	embarkAction = GetRandomEmbarkAction()
+	if ( IsValid( camera ) )
+	{
+		// camera can be invalid for a moment when server shuts down
+		// camera.FireNow( "Disable", "!activator", null, player )
+		camera.Destroy()
+	}
 
-	// if ( IsValid( camera ) )
-	// {
-	// 	// camera can be invalid for a moment when server shuts down
-	// 	// camera.FireNow( "Disable", "!activator", null, player )
-	// 	camera.Destroy()
-	// }
+	DoRespawnPlayer( player, null )
 
-	// DoRespawnPlayer( player, null )
-
-	// if ( PlayerCanSpawnIntoTitan( player ) )
-	// {
-	// 	table action = expect table( GenerateEmbarkActionTable( player, titan, embarkAction ) )
-	// 	PlayerEmbarksTitan( player, titan, action )
-	// }
+	//if ( PlayerCanSpawnIntoTitan( player ) )
+	{
+		table action = expect table( GenerateEmbarkActionTable( player, titan, embarkAction ) )
+		PlayerEmbarksTitan( player, titan, action )
+	}
 }
 
 entity function CreateTitanDropCamera( origin, angles )
