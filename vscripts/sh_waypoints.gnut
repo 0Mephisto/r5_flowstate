@@ -1525,7 +1525,17 @@ void function InstanceLocationPing_Thread( entity wp )
 
 		RuiSetBool( rui, "drawHeightLine", PingFlavor_GetDrawHeightLine( pingFlavor ) )
 		
-		if(pingType == ePingType.SHADOWFALL_LEGEND_DEATH || pingType == ePingType.SHADOWFALL_SHADOW_DEATH || pingType == ePingType.SHADOWFALL_NEMESIS || pingType == ePingType.SND_BOMB)
+		if(pingType == ePingType.SHADOWFALL_LEGEND_DEATH || 
+			pingType == ePingType.SHADOWFALL_SHADOW_DEATH || 
+			pingType == ePingType.SHADOWFALL_NEMESIS || 
+			pingType == ePingType.SND_BOMB  ||
+			pingType == ePingType.SPIESLEGENDS_STATION_A  ||
+			pingType == ePingType.SPIESLEGENDS_STATION_B  ||
+			pingType == ePingType.SPIESLEGENDS_STATION_C ||
+			pingType == ePingType.SPIESLEGENDS_STATION_A_ATTACK  ||
+			pingType == ePingType.SPIESLEGENDS_STATION_B_ATTACK  ||
+			pingType == ePingType.SPIESLEGENDS_STATION_C_ATTACK 
+		)
 		{
 			RuiSetImage( rui, "innerIcon", PingFlavor_GetOuterIcon( pingFlavor ) )
 			RuiSetImage( rui, "innerShadowIcon", PingFlavor_GetOuterShadowIcon( pingFlavor ) )
@@ -1552,6 +1562,20 @@ void function InstanceLocationPing_Thread( entity wp )
 			RuiSetString( rui, "shortPromptText", "" )
 		}
 		
+		if( pingType == ePingType.SPIESLEGENDS_STATION_A )
+		{
+			RuiSetString( rui, "promptText", "Station A" )
+			RuiSetString( rui, "shortPromptText", "" )
+		} else if( pingType == ePingType.SPIESLEGENDS_STATION_B )
+		{
+			RuiSetString( rui, "promptText", "Station B" )
+			RuiSetString( rui, "shortPromptText", "" )
+		} else if( pingType == ePingType.SPIESLEGENDS_STATION_C )
+		{
+			RuiSetString( rui, "promptText", "Station C" )
+			RuiSetString( rui, "shortPromptText", "" )
+		}
+		
 		iconColor = SrgbToLinear( PingFlavor_GetColor( pingFlavor, owner.GetTeamMemberIndex() ) )
 		RuiSetFloat3( rui, "iconColor", iconColor )
 	}
@@ -1569,6 +1593,76 @@ void function InstanceLocationPing_Thread( entity wp )
 			iconColor = SrgbToLinear( Ping_IconColorForPing_Hud( pingType, isSameTeam ) )
 			RuiSetImage( rui, "iconImage", $"rui/flowstatecustom/bombicon" )
 			RuiSetFloat3( rui, "iconColor", iconColor )
+		}
+	
+		if( pingType == ePingType.SPIESLEGENDS_STATION_A )
+		{
+			RuiSetString( rui, "promptText", "Station A" )
+			RuiSetString( rui, "shortPromptText", "" )
+
+			iconColor = SrgbToLinear( Ping_IconColorForPing_Hud( pingType, isSameTeam ) )
+			RuiSetImage( rui, "iconImage", $"rui/flowstatecustom/A_Defend" )
+			RuiSetFloat3( rui, "iconColor", iconColor )
+
+			RuiSetFloat( rui, "iconSize", 50.0 )
+			RuiSetFloat( rui, "iconSizePinned", 50.0 )
+		} else if( pingType == ePingType.SPIESLEGENDS_STATION_B )
+		{
+			RuiSetString( rui, "promptText", "Station B" )
+			RuiSetString( rui, "shortPromptText", "" )
+
+			iconColor = SrgbToLinear( Ping_IconColorForPing_Hud( pingType, isSameTeam ) )
+			RuiSetImage( rui, "iconImage", $"rui/flowstatecustom/B_Defend" )
+			RuiSetFloat3( rui, "iconColor", iconColor )
+
+			RuiSetFloat( rui, "iconSize", 50.0 )
+			RuiSetFloat( rui, "iconSizePinned", 50.0 )
+		} else if( pingType == ePingType.SPIESLEGENDS_STATION_C )
+		{
+			RuiSetString( rui, "promptText", "Station C" )
+			RuiSetString( rui, "shortPromptText", "Test" )
+
+			iconColor = SrgbToLinear( Ping_IconColorForPing_Hud( pingType, isSameTeam ) )
+			RuiSetImage( rui, "iconImage", $"rui/flowstatecustom/C_Defend" )
+			RuiSetFloat3( rui, "iconColor", iconColor )
+
+			RuiSetFloat( rui, "iconSize", 50.0 )
+			RuiSetFloat( rui, "iconSizePinned", 50.0 )
+		}
+
+		if( pingType == ePingType.SPIESLEGENDS_STATION_A_ATTACK )
+		{
+			RuiSetString( rui, "promptText", "Station A" )
+			RuiSetString( rui, "shortPromptText", "" )
+
+			iconColor = SrgbToLinear( Ping_IconColorForPing_Hud( pingType, isSameTeam ) )
+			RuiSetImage( rui, "iconImage", $"rui/flowstatecustom/A_Attack" )
+			RuiSetFloat3( rui, "iconColor", iconColor )
+
+			RuiSetFloat( rui, "iconSize", 50.0 )
+			RuiSetFloat( rui, "iconSizePinned", 50.0 )
+		} else if( pingType == ePingType.SPIESLEGENDS_STATION_B_ATTACK )
+		{
+			RuiSetString( rui, "promptText", "Station B" )
+			RuiSetString( rui, "shortPromptText", "" )
+
+			iconColor = SrgbToLinear( Ping_IconColorForPing_Hud( pingType, isSameTeam ) )
+			RuiSetImage( rui, "iconImage", $"rui/flowstatecustom/B_Attack" )
+			RuiSetFloat3( rui, "iconColor", iconColor )
+
+			RuiSetFloat( rui, "iconSize", 50.0 )
+			RuiSetFloat( rui, "iconSizePinned", 50.0 )
+		} else if( pingType == ePingType.SPIESLEGENDS_STATION_C_ATTACK )
+		{
+			RuiSetString( rui, "promptText", "Station C" )
+			RuiSetString( rui, "shortPromptText", "Test" )
+
+			iconColor = SrgbToLinear( Ping_IconColorForPing_Hud( pingType, isSameTeam ) )
+			RuiSetImage( rui, "iconImage", $"rui/flowstatecustom/C_Attack" )
+			RuiSetFloat3( rui, "iconColor", iconColor )
+
+			RuiSetFloat( rui, "iconSize", 50.0 )
+			RuiSetFloat( rui, "iconSizePinned", 50.0 )
 		}
 	}
 

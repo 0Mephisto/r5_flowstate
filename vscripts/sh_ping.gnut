@@ -171,6 +171,14 @@ global enum ePingType
 	RAPIDFIREZONE,
 	SND_BOMB,
 	
+	SPIESLEGENDS_STATION_A,
+	SPIESLEGENDS_STATION_B,
+	SPIESLEGENDS_STATION_C,
+
+	SPIESLEGENDS_STATION_A_ATTACK,
+	SPIESLEGENDS_STATION_B_ATTACK,
+	SPIESLEGENDS_STATION_C_ATTACK,
+	
 	_count
 }
 
@@ -313,6 +321,13 @@ string function Ping_GetSoundForLocationPing( int pingType, bool isOurs, bool is
 		case ePingType.SHADOWFALL_NEMESIS:
 		case ePingType.SND_BOMB:
 		
+		case ePingType.SPIESLEGENDS_STATION_A:
+		case ePingType.SPIESLEGENDS_STATION_B:
+		case ePingType.SPIESLEGENDS_STATION_C:
+		
+		case ePingType.SPIESLEGENDS_STATION_A_ATTACK:
+		case ePingType.SPIESLEGENDS_STATION_B_ATTACK:
+		case ePingType.SPIESLEGENDS_STATION_C_ATTACK:		
 			return ""
 	}
 
@@ -1186,6 +1201,14 @@ array<int> function GetReplyOptionsForWaypoint( entity player, entity wp )
 				//DoClickAsOwner( player, wp )
 				switch ( pingType )
 				{
+					case ePingType.SPIESLEGENDS_STATION_A:
+					case ePingType.SPIESLEGENDS_STATION_B:
+					case ePingType.SPIESLEGENDS_STATION_C:
+
+					case ePingType.SPIESLEGENDS_STATION_A_ATTACK:
+					case ePingType.SPIESLEGENDS_STATION_B_ATTACK:
+					case ePingType.SPIESLEGENDS_STATION_C_ATTACK:
+					
 					case ePingType.SHADOWFALL_LEGEND_DEATH:
 					case ePingType.SHADOWFALL_SHADOW_DEATH:
 					case ePingType.SHADOWFALL_NEMESIS:
@@ -1215,6 +1238,14 @@ array<int> function GetReplyOptionsForWaypoint( entity player, entity wp )
 			{
 				switch ( pingType )
 				{
+					case ePingType.SPIESLEGENDS_STATION_A:
+					case ePingType.SPIESLEGENDS_STATION_B:
+					case ePingType.SPIESLEGENDS_STATION_C:
+
+					case ePingType.SPIESLEGENDS_STATION_A_ATTACK:
+					case ePingType.SPIESLEGENDS_STATION_B_ATTACK:
+					case ePingType.SPIESLEGENDS_STATION_C_ATTACK:
+					
 					case ePingType.SHADOWFALL_LEGEND_DEATH:
 					case ePingType.SHADOWFALL_SHADOW_DEATH:
 					case ePingType.SND_BOMB:
@@ -2674,6 +2705,14 @@ int function GetCommsActionForPing( entity pingingPlayer, int pingType, entity p
 		case ePingType.RESPAWN_CARD:
 		case ePingType.RESPAWN_BANNER:
 		case ePingType.SND_BOMB:
+
+		case ePingType.SPIESLEGENDS_STATION_A:
+		case ePingType.SPIESLEGENDS_STATION_B:
+		case ePingType.SPIESLEGENDS_STATION_C:
+
+		case ePingType.SPIESLEGENDS_STATION_A_ATTACK:
+		case ePingType.SPIESLEGENDS_STATION_B_ATTACK:
+		case ePingType.SPIESLEGENDS_STATION_C_ATTACK:
 			return eCommsAction.BLANK
 
 		case ePingType.BLOODHOUND_POI_TRAVELER:
