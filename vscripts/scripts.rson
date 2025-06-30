@@ -288,15 +288,13 @@ Scripts:
 	weapons/mp_ability_panic_button.nut
 	weapons/mp_ability_mobile_respawn_beacon.nut
 	weapons/sh_silence.gnut
-
-	weapons/mp_weapon_flamethrower.nut
+	
 	weapons/sp_weapon_arc_tool.nut
 	weapons/mp_weapon_smart_pistol.nut
 	weapons/mp_weapon_softball.nut
 	weapons/mp_weapon_sheila.nut
 	weapons/mp_weapon_mdlspawner.nut
 	weapons/mp_weapon_satchel.nut
-	weapons/mp_weapon_turret.nut
 	weapons/mp_titanweapon_flightcore_rockets.nut
 	weapons/mp_titanweapon_predator_cannon.nut
 	weapons/mp_titanweapon_particle_accelerator.nut
@@ -1100,32 +1098,6 @@ Scripts:
 
 	mp/sh_weapon_inspect.gnut
 	weapons/mp_weapon_throwingknife.nut
-	
-	//(cafe) custom content
-	weapons/mp_weapon_titan_sword.nut
-	weapons/mp_weapon_titan_sword_heavy.nut
-	weapons/mp_weapon_titan_sword_block.nut
-	weapons/mp_weapon_titan_sword_dash.nut
-	weapons/mp_weapon_titan_sword_slam.nut
-	weapons/mp_weapon_titan_sword_launcher.nut
-	weapons/mp_weapon_titan_sword_super.nut
-	// weapons/mp_weapon_grenade_cryonade.nut
-	weapons/mp_ability_phase_chamber.nut
-	// weapons/mp_ability_tank.nut
-	mp/sh_nextbots.gnut
-	weapons/mp_ability_emote_projector.nut
-	weapons/mp_weapon_raygun.nut
-	weapons/mp_ability_phase_rewind.nut
-	weapons/mp_ability_space_elevator_tac.nut
-	weapons/mp_weapon_portalgun_approach.nut
-	weapons/mp_weapon_clickweapon.nut
-	weapons/mp_weapon_needler.nut
-	weapons/mp_ability_revenant_shadow_pounce_free.nut
-	weapons/mp_weapon_energysword.nut
-	weapons/mp_weapon_plasmapistol.nut
-	weapons/mp_weapon_heatwave.nut
-	weapons/mp_weapon_guidedmissile.nut
-	weapons/mp_weapon_ringflare.nut
 ]
 
 When: "SERVER || CLIENT"
@@ -1187,7 +1159,6 @@ Scripts:
 	gamemodes/fs_prophunt/sh_gamemode_prophunt.nut
 	gamemodes/fs_duckhunt/sh_gamemode_duckhunt.nut
 	gamemodes/fs_infection/sh_gamemode_infection.nut
-	// gamemodes/fs_pkknockback/sh_gamemode_pkknockback.nut	
 	gamemodes/fs_snd/sh_gamemode_snd.nut
 	gamemodes/util/sh_custom_zombie_mystery_box.nut
 	gamemodes/util/sh_custom_zombie_mystery_box_weapon.nut
@@ -1195,7 +1166,6 @@ Scripts:
 	mp/sh_movement_recorder.nut
 	sh_hover_vehicle.gnut
 	gamemodes/fs_scenarios/sh_gamemode_scenarios.nut
-	// gamemodes/fs_spieslegends/sh_gamemode_spieslegends.nut
 	//gamemodes/fs_carritos/sh_gamemode_carritos.nut
 	mp/sh_skydive_launchers.gnut
 ]
@@ -1215,12 +1185,10 @@ Scripts:
 	gamemodes/custom_ctf/_gamemode_custom_ctf.nut
 	gamemodes/fs_duckhunt/_gamemode_duckhunt.nut
 	gamemodes/fs_prophunt/_gamemode_prophunt.nut
-	// gamemodes/fs_pkknockback/_gamemode_pkknockback.nut
 	gamemodes/fs_infection/_gamemode_infection.nut
 	gamemodes/fs_snd/_gamemode_snd.nut
 	gamemodes/fs_surf/_gamemode_surf.nut
 	gamemodes/fs_surf/_gamemode_surf2.nut
-	// gamemodes/fs_spieslegends/_gamemode_spieslegends.nut
 	//gamemodes/fs_carritos/_gamemode_carritos.nut
 	
 	gamemodes/fs_aimtrainer/_gamemode_aimtrainer.nut
@@ -1276,8 +1244,7 @@ Scripts:
 	gamemodes/fs_aimtrainer/cl_gamemode_aimtrainer.nut
 	gamemodes/fs_duckhunt/cl_gamemode_duckhunt.nut
 	gamemodes/fs_prophunt/cl_gamemode_prophunt.nut
-	gamemodes/fs_infection/cl_gamemode_infection.nut	
-	// gamemodes/fs_pkknockback/cl_gamemode_pkknockback.nut
+	gamemodes/fs_infection/cl_gamemode_infection.nut
 	gamemodes/fs_snd/cl_gamemode_snd.nut
 	lobby/lobbyvm/cl_lobbyvm.nut
 	custom_maps/cl_custom_falling_forever.nut
