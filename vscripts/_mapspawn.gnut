@@ -196,7 +196,6 @@ void function CodeCallback_MapSpawn() // original script entry point
 	
 	PrecacheSDKEntities()
 	PrecacheSDKWeapons()
-	PrecacheFSEntities()
 
 	RegisterSignal( "OnChangedPlayerClass_ActuallyChanged" )
 	RegisterSignal( "UpdatePlayerStatusCounts" )
@@ -241,102 +240,8 @@ void function CodeCallback_MapSpawn() // original script entry point
 	FS_ResetMapLighting()
 }
 
-void function PrecacheFSEntities()
-{
-	if ( !IsFlowstateActive() )
-		return
-	
-	//Server only init for flowstate gamemodes
-	switch( GetCurrentPlaylistName() )
-	{
-		case "fs_fallingforever":
-		InitFallingForever()
-		break
-		
-		case "fs_doormovementpractice":
-		door_map_init()
-		break
-		
-		case "fs_grapplemovementpractice":
-		grapplemap_init()
-		break
-		
-		case "fs_mantlejumppractice":
-		mantlejumpmap_init()
-		break
-
-		case "fs_firstmovementmappractice":
-		Firstmap_init()
-		break
-
-		case "fs_gymmovementmappractice":
-		Gymmovementmap_init()
-		break
-
-		case "fs_ithurtsmovementmappractice":
-		ithurtsmap_init()
-		break
-
-		case "fs_strafeitmovementmappractice":
-		strafeitmap_init()
-		break
-
-		
-		case "fs_lgduels_1v1":
-			
-			PrecacheModel( $"mdl/thunderdome/thunderdome_cage_wall_256x256_01.rmdl" )
-			PrecacheModel( $"mdl/imc_base/generator_IMC_01.rmdl" )
-			PrecacheModel( $"mdl/containers/underbelly_cargo_container_128_red_02.rmdl" )
-			PrecacheModel( $"mdl/containers/underbelly_cargo_container_128_blue_02.rmdl" )
-			
-		
-		case "fs_1v1":
-		
-		if( !InvalidModesForTrackScoreBoard.contains( GameRules_GetGameMode() ) ) //prevent mapchange crash
-			thread FS_TrackPlayersPositionInScoreboard()
-		break
-
-		case "fs_rankupmapmovementpractice":
-		rankupmap_init()
-		break
-	}
-
-	PrecacheWeapon( $"mp_ability_phase_chamber" )
-	PrecacheWeapon( $"mp_ability_phase_rewind" )
-	PrecacheWeapon( $"mp_weapon_ringflare" )
-
-	switch( GameRules_GetGameMode() )
-	{
-		case CUSTOM_CTF:
-			PrecacheWeapon( $"melee_flagpole" )
-			PrecacheWeapon( $"mp_weapon_flagpole_primary" )
-			break
-		case fs_prophunt:
-			PrecacheWeapon( $"mp_weapon_flashbang_fakeultimate" )
-			PrecacheWeapon( $"mp_weapon_changeprops_fakeultimate" )
-			break
-		case "flowstate_pkknockback":
-			PrecacheWeapon( $"mp_ability_selfpushback" )
-			break
-		case fs_dm:
-		case fs_aimtrainer:
-		default:		
-			break
-	}
-
-	PrecacheWeapon( $"mp_weapon_turret" )
-	PrecacheWeapon( $"npc_weapon_turret_volt" )
-
-	if( GetCurrentPlaylistVarBool( "enable_oddball_gamemode", false ) )
-	{
-		PrecacheWeapon( $"mp_weapon_oddball_primary" )
-		PrecacheWeapon( $"melee_oddball" )
-	}
-}
-
 void function PrecacheSDKWeapons()
 {
-	PrecacheWeapon( $"mp_weapon_lightninggun" )//Make a proper hitscan weapon later
 	PrecacheWeapon( $"mp_weapon_droneplasma" )//remove these from here later!!! -kral
 	PrecacheWeapon( $"mp_weapon_dronerocket" )
 
@@ -428,17 +333,6 @@ void function PrecacheSDKEntities()
 	PrecacheParticleSystem( $"P_skydive_smoke_shdw" )
 }
 
-const array<string> InvalidModesForTrackScoreBoard = //const values
-[
-	SURVIVAL,
-	MENUFALL,
-	CUSTOM_CTF,
-	TEAM_DEATHMATCH,
-	fs_prophunt,
-	fs_duckhunt,
-	fs_infected	,
-]
-
 void function FS_RestartServerAfterSomeTimeWithoutPlayers()
 {
 	int timeWithoutPlayers
@@ -465,30 +359,6 @@ void function FS_RestartServerAfterSomeTimeWithoutPlayers()
 		}
 
 		previousPlayerCount = playerCount
-		wait 1
-	}
-}
-void function FS_TrackPlayersPositionInScoreboard()
-{
-	array<entity> players
-
-	while( true )
-	{
-		players = GetPlayerArray()
-		players.sort( CompareKills )
-
-		int i = 1
-		foreach( sPlayer in players )
-		{
-			if( !IsValid( sPlayer ) )
-				continue
-			
-			if( i != sPlayer.GetPlayerNetInt( "FSDM_1v1_PositionInScoreboard" ) )
-				sPlayer.SetPlayerNetInt( "FSDM_1v1_PositionInScoreboard", i )
-
-			i++
-		}
-		
 		wait 1
 	}
 }
