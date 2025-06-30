@@ -13,6 +13,10 @@ global function DEV_ExecBoundDevMenuCommand
 global function DEV_InitCodeDevMenu
 global function UpdateCheatsState
 global function AddLevelDevCommand
+global function ChangeToThisMenu
+
+global function AddUICallback_OnDevMenuLoaded
+global function GetCheatsState
 
 const string DEV_MENU_NAME = "[LEVEL]"
 
@@ -58,10 +62,20 @@ struct
 	bool                      initializingCodeDevMenu = false
 	string                    codeDevMenuPrefix = DEV_MENU_NAME + "/"
 	table<string, DevCommand> codeDevMenuCommands
+	
+	array<void functionref()>                   OnDevMenuLoaded
 
 	array<DevCommand> levelSpecificCommands = []
 	bool cheatsState
 } file
+
+void function AddUICallback_OnDevMenuLoaded( void functionref() callback ) //(cafe) New callback to add dev menu entries from mods
+{
+	if(file.OnDevMenuLoaded.contains(callback))
+		return
+	
+	file.OnDevMenuLoaded.append( callback )
+}
 
 function Dummy_Untyped( param )
 {
@@ -281,8 +295,9 @@ void function SetupDefaultDevCommandsMP()
 	//Player is fully connected at this point, a check was made before
 	RunClientScript("DEV_SendCheatsStateToUI")
 
-	SetupDevMenu( "Custom Cosmetics", SetDevMenu_CustomCosmetics )
-
+	foreach ( callback in file.OnDevMenuLoaded )
+		callback()
+	
 	if( allowedWeaponChangeModes.contains( Playlist() ) )
 	{
 		SetupDevMenu( "FSDM: Change Primary weapon", SetDevMenu_TDMPrimaryWeapons )
@@ -293,6 +308,8 @@ void function SetupDefaultDevCommandsMP()
 
 	if( GetCheatsState() )
 	{
+		SetupDevMenu( "Custom Cosmetics", SetDevMenu_CustomCosmetics )
+		
 		SetupDevMenu( "Equip Legend Abilities", SetDevMenu_Abilities )
 		SetupDevMenu( "Equip Custom Abilities", SetDevMenu_CustomAbilities )
 		SetupDevMenu( "Equip Weapons", SetDevMenu_Weapons )
@@ -717,11 +734,14 @@ void function SetupRespawnPlayersDevMenu()
 void function SetupHeirloomsDevMenu()
 {
 	SetupDevCommand( "Default Melee", "giveheirloom -1" )
-	if ( IsKralStuffActive() ){
-	SetupDevCommand( "Bolo Sword", "giveheirloom 0" )
-	SetupDevCommand( "Diamond Sword", "giveheirloom 2" )
-	SetupDevCommand( "Mjolnir", "giveheirloom 3" )
-	SetupDevCommand( "Le Karambit", "giveheirloom 4" )}
+	if ( IsKralStuffActive() )
+	{
+		SetupDevCommand( "Bolo Sword", "giveheirloom 0" )
+		SetupDevCommand( "Diamond Sword", "giveheirloom 2" )
+		SetupDevCommand( "Mjolnir", "giveheirloom 3" )
+		SetupDevCommand( "Le Karambit", "giveheirloom 4" )
+	}
+	
 	SetupDevCommand( "Dragonfly Knife", "giveheirloom 1" )
 }
 
@@ -1573,13 +1593,6 @@ void function SetupCustomAbilities()
 	SetupDevCommand( "Dev: Dodge Roll", "give mp_ability_dodge_roll" )
 
 	// SetupDevCommand( "Tf2: Gravity Star", "give mp_weapon_grenade_gravity" ) //(cafe) it needs to be added to the datatable, but this means a new grenade, we should probably find a different approach for this weapon, probably make it offhand like an ultimate
-
-	//(cafe) Custom
-	SetupDevCommand( "Custom: Gravity Lift", "give mp_ability_space_elevator_tac" )
-	SetupDevCommand( "Custom: Phase Rewind", "give mp_ability_phase_rewind" )
-	SetupDevCommand( "Custom: Suppressor Turret", "give mp_weapon_turret")
-	SetupDevCommand( "Custom: Phase Chamber", "give mp_ability_phase_chamber")
-	SetupDevCommand( "Custom: Ring Flare", "give mp_weapon_ringflare")
 	#endif
 }
 
