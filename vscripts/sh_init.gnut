@@ -195,7 +195,6 @@ void function SV_CL_Init()
 	CharacterSelectNewMenu_Init()
 
 	//ShHoverBike_Init()
-	ShHoverVehicle_Init()
 	Sh_SkydiveLaunchers_Init()
 	ShLootBin_Init()
 	ShFlyers_Init()
@@ -236,7 +235,6 @@ void function SV_CL_Init()
 
     // Zipline Utility
     #if SERVER
-		TurretPlasma_Init()
         ZiplineUtility_Init()
     #endif
 
