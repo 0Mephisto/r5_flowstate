@@ -6416,7 +6416,7 @@ void function SpawnLockout() //Halo 2 Encerrona
 		#endif
 
 		//Spawn Lift.
-		CreateLockoutLiftAtOrigin( <43300, -9840.33008, -21201.3379>, null, true )
+		// CreateLockoutLiftAtOrigin( <43300, -9840.33008, -21201.3379>, null, true )
 		
 		//Rotate skybox.
 		entity skyboxCamera = GetEnt( "skybox_cam_level" )

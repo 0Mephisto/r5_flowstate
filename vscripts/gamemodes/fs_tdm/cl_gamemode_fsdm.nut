@@ -172,7 +172,7 @@ void function Cl_CustomTDM_Init()
 			AddCallback_CharacterSelectMenu_OnCharacterLocked( Gamemode1v1_OnSelectedLegend )
 			AddCallback_OnCharacterSelectMenuClosed( Gamemode1v1_OnLegendSelector_Close )
 		case ePlaylists.fs_vamp_1v1:
-		case ePlaylists.fs_1v1_headshotsonly:
+		// case ePlaylists.fs_1v1_headshotsonly:
 		case ePlaylists.fs_lgduels_1v1:
 			RegisterConCommandTriggeredCallback( "+scriptCommand5", FS_RestButton )
 			RegisterConCommandTriggeredCallback( "+scriptCommand3", FS_SettingsButton )
@@ -1313,7 +1313,7 @@ void function ServerCallback_SetLGDuelPesistenceSettings( float s1, int s2, int 
 		printt("Calling LoadLgDuelSettings with: ", s1, s2, s3, s4, s5, s6, s7, s8 )
 	#endif	
 	
-	LGDuels_SetFromPersistence( s1, s2, s3, s4, s5, s6, s7, s8 )	
+	// LGDuels_SetFromPersistence( s1, s2, s3, s4, s5, s6, s7, s8 )	
 	//RunUIScript( "LoadLgDuelSettings", s1, s2, s3, s4, s5, s6, s7, s8 )
 }
 
