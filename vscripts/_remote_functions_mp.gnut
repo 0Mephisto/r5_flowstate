@@ -16,8 +16,8 @@ global function FindFuncID_ByRef
 //			Use entity in typed functions. If an entity is not sent to client  
 // 			in a world update before rpc from remote func, the entity will be invalid 
 
-const int EHANDLE_MIN 			= -1 //(mk): Some custom gamemodes send -1 for invalid. Needs call audits, then remove this and use:  EncodedEHandle_null.
-const int EHANDLE_MAX 			= 0x7FFFFFFF
+global const int EHANDLE_MIN 			= -1 //(mk): Some custom gamemodes send -1 for invalid. Needs call audits, then remove this and use:  EncodedEHandle_null.
+global const int EHANDLE_MAX 			= 0x7FFFFFFF
 const int EDAMAGESOURCE_MIN 	= -1
 const int DAMAGE_TYPE_MIN		= 1 << 31
 
@@ -313,17 +313,11 @@ void function RemoteFunctions_Init_Begin()
 	ScriptRemote_RegisterUntypedFunction_deprecated( "fs_NewBoxBuildMessage" )
 	ScriptRemote_RegisterUntypedFunction_deprecated( "fs_NewBoxShowMessage" )
 		
-	// Ringflare
-	ScriptRemote_RegisterClientFunction( "EnterTriggerRF", "entity" )
-	ScriptRemote_RegisterClientFunction( "ExitTriggerRF", "entity" )
-	
+
 	//Evo shield mod
 	if( GetCurrentPlaylistVarBool( "flowstate_evo_shields", false ) )
 		ScriptRemote_RegisterClientFunction( "EvoShield_PlayFX", "int", 0, 10 )
-
-	//Custom HoloSpray
-	ScriptRemote_RegisterClientFunction( "HoloSpray_OnUse", "int", EHANDLE_MIN, EHANDLE_MAX, "int", 0, 256 ) //Audit 2-22-2025
-
+	
 	//Update rainbow extra property
 	ScriptRemote_RegisterClientFunction( "Flowstate_UpdateRainbowShieldExtraProperty", "int", EHANDLE_MIN, EHANDLE_MAX, "int", 0, 5000 )//Audit 2-22-2025
 	
@@ -333,16 +327,6 @@ void function RemoteFunctions_Init_Begin()
 
 	if( MapName() == eMaps.mp_rr_olympus_tt )
 		PathTT_OnNetworkRegistration()
-
-	// R5R Sword, (cafe) revisit, only register if "titansword" is precached and enabled
-	// ScriptRegisterNetworkedVariable( "isPlayerBlocking", SNDC_PLAYER_EXCLUSIVE, SNVT_BOOL, false )
-	
-	// if( Playlist() != ePlaylists.fs_scenarios )
-		// ScriptRegisterNetworkedVariable( "TitanSwordSuper", SNDC_PLAYER_EXCLUSIVE, SNVT_TIME, -2.0 )//temp change. need a SNVT_TIME SNDC_PLAYER_EXCLUSIVE slot for scenarios. Cafe
-	
-	// ScriptRemote_RegisterClientFunction( "ServerCallback_TitanSword_SuperReady", "entity" )
-	// ScriptRemote_RegisterClientFunction( "ServerCallback_StopDash" )
-	// ScriptRemote_RegisterClientFunction( "FS_TitanSword_CreateSlamGroundFx", "vector", -32000.0, 32000.0, 32 )
 	
 	// Falling Forever Custom Timer
 	if( Playlist() == ePlaylists.fs_fallingforever )
@@ -364,8 +348,7 @@ void function RemoteFunctions_Init_Begin()
 	//Lightning Gun
 	if ( !IsFallLTM() )
 		ScriptRegisterNetworkedVariable( "isPlayerShootingFlowstateLightningGun", SNDC_PLAYER_GLOBAL, SNVT_BOOL, false )
-	ScriptRemote_RegisterClientFunction( "ServerCallback_CreatesLaserFXFromServer", "entity", "vector", -1.0, 66000.0, 32, "vector", -32000.0, 32000.0, 32 )
-	
+
 	//Sentinel
 	ScriptRemote_RegisterClientFunction( "Flowstate_SentinelChargeHUD", "float", 0.0, 4000.0, 16 ) //Audit 2-22-2025 (mk): 66 mins server time, charge end max
 	
@@ -706,8 +689,6 @@ void function RemoteFunctions_Init_Begin()
 	RegisterSignal("OnChangedPlayerClass")
 	RegisterSignal("BleedOut_OnStartDying")
 	
-	ScriptRemote_RegisterClientFunction( "SetupThirdPersonForVehicle", "bool" )
-	
 	ScriptRemote_RegisterClientFunction( "ServerCallback_SkydiveTrailStart", "entity" )
 	ScriptRemote_RegisterClientFunction( "ServerCallback_SkydiveTrailEnd", "entity" )
 	// ScriptRegisterNetworkedVariable( "skyDiveTrailOverrideIndex", SNDC_PLAYER_GLOBAL, SNVT_INT, -1 )
@@ -764,9 +745,6 @@ void function RemoteFunctions_Init_Begin()
 
 	ScriptRegisterNetworkedVariable( "PreGameStartTime", SNDC_GLOBAL, SNVT_TIME, 0.0 )
 	RegisterServerVar( "winningTeam", null )
-
-	//Fade REVISIT
-	ScriptRemote_RegisterClientFunction( "ServerCallback_SonarPhaseChamber", "entity", "entity", "float", 0.0, 120.0, 16 )
 	
 	// Attack/Defend based game modes
 	ScriptRegisterNetworkedVariable( "attackingTeam", SNDC_GLOBAL, SNVT_INT, TEAM_UNASSIGNED )
