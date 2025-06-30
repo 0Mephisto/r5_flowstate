@@ -1719,6 +1719,25 @@ entity function CreatePropScript_NoDispatchSpawn( asset model, vector ornull ori
 	return prop_script
 }
 
+bool function TeleportPlayerNoInterp( entity player, vector pos, vector angles = <0,0,0> )
+{
+    if ( !IsValid( player ) || !player.IsPlayer() )
+        return false
+
+    bool success = PutPlayerInSafeSpot( player, null, null, pos, pos )
+
+    // if ( success )
+    // {
+        player.SetVelocity( <0, 0, 0> )
+        player.SetAbsOrigin( pos )
+        player.SetAngles( angles )
+        player.SnapEyeAngles( angles )
+        player.SnapFeetToEyes()
+    // }
+
+    return success
+}
+
 //-----------------------------------------------------------
 // CreatePropPhysics( model ) - create a generic prop_physics with default properties
 //------------------------------------------------------------
@@ -1739,6 +1758,120 @@ entity function CreatePropPhysics( asset model, vector origin, vector angles, in
 	DispatchSpawn( prop_physics )
 
 	return prop_physics
+}
+
+//-----------------------------------------------------------
+// CreateTriggerCylinder( origin, radius, height ) - create a server only trigger_cylinder that can be triggerd by players only
+//------------------------------------------------------------
+entity function CreateTriggerCylinder( vector origin, int radius, int aboveHeight, int belowHeight )
+{
+	entity trigger = Entities_CreateByClassname( "trigger_cylinder" )
+	trigger.SetCylinderRadius( radius )
+	trigger.SetAboveHeight( aboveHeight )
+	trigger.SetBelowHeight( belowHeight )
+	trigger.kv.triggerFilterNpc = "none"
+	trigger.kv.triggerFilterPlayer = "all"
+	trigger.kv.triggerFilterNonCharacter = 0
+	trigger.SetOrigin( origin )
+	DispatchSpawn( trigger )
+
+	return trigger
+}
+
+//-----------------------------------------------------------
+// CreateTriggerCylinderNetworked( origin, radius, height ) - create a networked trigger_cylinder. Works like a normal trigger.
+//------------------------------------------------------------
+entity function CreateTriggerCylinderNetworked( vector origin, float radius, float aboveHeight, float belowHeight, vector angles = <0,0,0> )
+{
+	entity trigger = Entities_CreateByClassname( "trigger_cylinder" )//( "trigger_cylinder_networked" )
+	trigger.SetCylinderRadius( radius )
+	trigger.SetAboveHeight( aboveHeight )
+	trigger.SetBelowHeight( belowHeight )
+	trigger.kv.triggerFilterNpc = "none"
+	trigger.kv.triggerFilterPlayer = "all"
+	trigger.kv.triggerFilterNonCharacter = 0
+	trigger.SetOrigin( origin )
+	trigger.SetAngles( angles )
+	DispatchSpawn( trigger )
+
+	return trigger
+}
+
+//-----------------------------------------------------------
+// CreateTriggerCylinderNetworked_OutOfBounds( origin, radius, height ) - create a networked cylinder that works as an out of bounds volume.
+//------------------------------------------------------------
+entity function CreateTriggerCylinderNetworked_OutOfBounds( vector origin, float radius, float aboveHeight, float belowHeight, vector angles = <0,0,0> )
+{
+	entity trigger = Entities_CreateByClassname( "trigger_cylinder" )//( "trigger_networked_out_of_bounds" )
+	trigger.SetPhaseShiftCanTouch( true )
+	trigger.SetCylinderRadius( radius )
+	trigger.SetAboveHeight( aboveHeight )
+	trigger.SetBelowHeight( belowHeight )
+	trigger.kv.triggerFilterNpc = "none"
+	trigger.kv.triggerFilterPlayer = "all"
+	trigger.kv.triggerFilterNonCharacter = 0
+	trigger.SetOrigin( origin )
+	trigger.SetAngles( angles )
+	DispatchSpawn( trigger )
+
+	return trigger
+}
+
+//-----------------------------------------------------------
+// CreateTriggerCylinderNetworked_OutOfBounds( origin, radius, height ) - create a networked cylinder that works as an out of bounds volume.
+//------------------------------------------------------------
+entity function CreateTriggerCylinderNetworked_NoObjectPlacement( vector origin, float radius, float aboveHeight, float belowHeight, vector angles = <0,0,0> )
+{
+	entity trigger = Entities_CreateByClassname( "trigger_cylinder" )//( "trigger_networked_no_op" )
+	trigger.SetCylinderRadius( radius )
+	trigger.SetAboveHeight( aboveHeight )
+	trigger.SetBelowHeight( belowHeight )
+	trigger.kv.triggerFilterNpc = "none"
+	trigger.kv.triggerFilterPlayer = "all"
+	trigger.kv.triggerFilterNonCharacter = 0
+	trigger.SetOrigin( origin )
+	trigger.SetAngles( angles )
+	DispatchSpawn( trigger )
+
+	return trigger
+}
+
+//-----------------------------------------------------------
+// CreateTriggerCylinderNetworked_OutOfBounds( origin, radius, height ) - create a networked cylinder that works as an out of bounds volume.
+//------------------------------------------------------------
+entity function CreateTriggerCylinderNetworked_NoObjectPlacementSpecial( vector origin, float radius, float aboveHeight, float belowHeight, vector angles = <0,0,0> )
+{
+	entity trigger = Entities_CreateByClassname( "trigger_cylinder" )//( "trigger_networked_no_ops" )
+	trigger.SetCylinderRadius( radius )
+	trigger.SetAboveHeight( aboveHeight )
+	trigger.SetBelowHeight( belowHeight )
+	trigger.kv.triggerFilterNpc = "none"
+	trigger.kv.triggerFilterPlayer = "all"
+	trigger.kv.triggerFilterNonCharacter = 0
+	trigger.SetOrigin( origin )
+	trigger.SetAngles( angles )
+	DispatchSpawn( trigger )
+
+	return trigger
+}
+
+//-----------------------------------------------------------
+// CreateTriggerCylinderNetworked_OutOfBounds( origin, radius, height ) - create a networked cylinder blocks both object placement and object placement special
+//------------------------------------------------------------
+entity function CreateTriggerCylinderNetworked_BlockAllObjectPlacement( vector origin, float radius, float aboveHeight, float belowHeight, vector angles = <0,0,0> )
+{
+	entity trigger = Entities_CreateByClassname( "trigger_cylinder" )//( "trigger_networked_block_all_op" )
+	trigger.SetCylinderRadius( radius )
+	trigger.SetAboveHeight( aboveHeight )
+	trigger.SetBelowHeight( belowHeight )
+	trigger.kv.triggerFilterNpc = "none"
+	trigger.kv.triggerFilterPlayer = "all"
+	trigger.kv.triggerFilterNonCharacter = 0
+	trigger.SetOrigin( origin )
+	trigger.SetAngles( angles )
+	DispatchSpawn( trigger )
+
+	return trigger
 }
 
 // Spawn loot on an entity and return an array of the loot that got spawned
@@ -4431,7 +4564,11 @@ void function TeleportPlayerToEnt( entity player, entity org )
 
 float function ShieldModifyDamage( entity ent, var damageInfo )
 {
-	entity victim = ent
+	entity victim
+	if ( ent.IsTitan() )
+		victim = ent.GetTitanSoul()
+	else
+		victim = ent
 
 	int shieldHealth = victim.GetShieldHealth()
 
@@ -5201,6 +5338,31 @@ entity function CreateTraceBlockerVolume( vector fxOrigin, float radius, bool b0
 	SetTeam( traceBlockerVol, team )
 
 	return traceBlockerVol
+}
+
+entity function CreateTraceBlockerVolume_CustomBox( vector origin, vector angles, vector mins, vector maxes, int contents, int team, string scriptName, entity ownerEnt = null )
+{
+	entity tbl = CreateEntity( "trace_volume" )
+	//tbl.kv.targetname = UniqueString( "smokescreen_traceblocker_vol" )
+	//tbl.kv.origin = origin
+	//tbl.kv.angles = angles
+	tbl.SetOrigin( origin )
+	tbl.SetAngles( angles )
+	tbl.kv.contents = contents    // CONTENTS_BLOCKLOS
+	DispatchSpawn( tbl )
+
+	tbl.SetBox( mins, maxes )
+
+	SetTeam( tbl, team )
+	tbl.SetScriptName( scriptName )
+
+	if ( IsValid( ownerEnt ) )
+	{
+		tbl.RemoveFromAllRealms()
+		tbl.AddToOtherEntitysRealms( ownerEnt )
+	}
+
+	return tbl
 }
 
 void function SetOutOfBoundsTimeLimit( float maxtime )
