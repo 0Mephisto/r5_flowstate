@@ -136,11 +136,7 @@ void function Utility_Shared_Init()
 void function InitWeaponScripts()
 {
 	SmartAmmo_Init()
-	MpWeaponNeedler_Init()
-	MpWeaponRayGun_Init()
-	MpAbilityShadowPounceFree_Init()
-	MpWeaponEnergySword_Init()
-
+	
 	// WEAPON SCRIPTS
 	ArcCannon_Init()
 	Grenade_FileInit()
@@ -216,19 +212,7 @@ void function InitWeaponScripts()
 	MpWeaponCoverWall_Init()
 	ShPassiveShotgunKick_Init()
 	
-	//(cafe) Custom Stuff
-	// LobaTacticalTranslocation_LevelInit()
-	// MpAbilityAshDash_Init()
-	MpUltimatePhaseChamber_Init()
-	MpWeaponPortalGun_Init()
-	// MpWeaponTitanSword_Init() //Flowstate Sword //Revisit, change model, audit remote functs
-	MpWeaponFlameThrower_Init()
 	ChargePylons_Init()
-	MpWeaponRingFlare_Init()
-	if( Playlist() != ePlaylists.fs_1v1 && Playlist() != ePlaylists.fs_lgduels_1v1  && Playlist() != ePlaylists.fs_scenarios )
-		MpWeaponEmoteProjector_Init()
-	MpSpaceElevatorAbility_Init()
-	Clickweapon_Init() //Lightning Gun
 	
 	//(kral) wip abilities
 	ShLobaPassiveEyeForQuality_LevelInit()				// Loba Passive
@@ -5988,6 +5972,10 @@ vector function MapAngleToRadius( float angle, float radius )
 	return offset
 }
 
+bool function StatusEffect_HasSeverity( entity player, int statuseffect )
+{
+	return StatusEffect_GetSeverity( player, statuseffect ) > 0.0
+}
 
 #if DEVELOPER && CLIENT
 	void function DEV_PrintReadableBackendNames()
