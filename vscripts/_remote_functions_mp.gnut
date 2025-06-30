@@ -1030,6 +1030,9 @@ void function RemoteFunctions_Init_Begin()
 
 	RegisterEntityVar( "player", "permanentEventNotification", -1 )
 	RegisterEntityVar( "player", "drawFastballHud", false )
+	
+	RegisterServerVar( "titanAvailableBits", 0 ) // HACK; we need this information to be 100% accurate, even during kill replay
+	RegisterServerVar( "respawnAvailableBits", 0 ) // HACK; we need this information to be 100% accurate, even during kill replay
 
 	//ScriptRemote_RegisterUntypedFunction_deprecated( "ServerCallback_IncomingAirdrop" ) //Audit 2-22-2025 not currently called.
 	ScriptRemote_RegisterClientFunction( "ServerCallback_CreateAirdropBadPlace", "int", -1, 9999, "vector", -32000.0, 32000.0, 32, "int", 0, 9999, "entity" ) //Audit 2-22-2025

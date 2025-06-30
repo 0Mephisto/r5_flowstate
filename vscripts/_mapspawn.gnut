@@ -383,6 +383,8 @@ void function PrecacheSDKWeapons()
 	PrecacheModel( $"mdl/weapons/arms/buddypov.rmdl" )
 	PrecacheModel( $"mdl/weapons/arms/pov_titan_medium_cockpit.rmdl" )
 	PrecacheModel( $"mdl/titans/medium/titan_medium_rodeo_battery.rmdl" )
+	PrecacheWeapon( $"mp_titancore_flight_core" )
+	PrecacheWeapon( $"mp_titancore_laser_cannon" )
 	PrecacheWeapon( $"mp_titanweapon_flightcore_rockets" ) // Not a loot
 }
 

@@ -112,6 +112,7 @@ void function SV_CL_Init()
 	MpTitanweaponMeteor_Init()
 	MpTitanWeapon_SniperInit()
 	MpTitanweaponXo16_Init()
+	FlightCore_Init()
 
 	LaserCannon_Init()
 	BleedoutShared_Init()

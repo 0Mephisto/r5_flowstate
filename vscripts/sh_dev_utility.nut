@@ -77,6 +77,18 @@ bool function ClientCommand_GiveHeirloom( entity commandPlayer, array<string> ar
 		Dev_PrintMessage( commandPlayer, "Reset Melee", "" )
 		return true
 	}
+	
+    if(selected == -2)
+	{
+		commandPlayer.TakeOffhandWeapon( OFFHAND_MELEE )
+		commandPlayer.TakeNormalWeaponByIndexNow( WEAPON_INVENTORY_SLOT_PRIMARY_2 )
+
+		commandPlayer.GiveWeapon( "mp_weapon_melee_titan", WEAPON_INVENTORY_SLOT_PRIMARY_2 )
+		commandPlayer.GiveOffhandWeapon( "melee_titan_punch", OFFHAND_MELEE )
+		commandPlayer.SetActiveWeaponBySlot( eActiveInventorySlot.mainHand, WEAPON_INVENTORY_SLOT_PRIMARY_2)
+
+		return true
+	}
 
     if(selected >= CustomHeirlooms.len())
 	{

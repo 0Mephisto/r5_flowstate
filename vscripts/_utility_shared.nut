@@ -3646,9 +3646,14 @@ bool function PROTO_VariableRegenDelay()
 	return ( GetCurrentPlaylistVarInt( "variable_regen_delay", 1 ) == 1 )
 }
 
+bool function PROTO_AutoTitansDisabled()
+{
+	return ( GetCurrentPlaylistVarInt( "always_enable_autotitans", 1 ) == 0 )
+}
+
 bool function TitanDamageRewardsTitanCoreTime()
 {
-	if ( GetCurrentPlaylistVarInt( "titan_core_from_titan_damage", 1 ) != 0 )
+	if ( GetCurrentPlaylistVarInt( "titan_core_from_titan_damage", 0 ) != 0 )
 		return true
 	return false
 }

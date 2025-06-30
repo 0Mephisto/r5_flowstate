@@ -8,6 +8,10 @@ behavior_dummy_empty
 behavior_spider
 behavior_infected
 behavior_marvin
+behavior_mp_auto_titan
+behavior_mp_auto_titan_enhanced
+behavior_mp_auto_titan_guard
+behavior_mp_auto_titan_enhanced_guard
 behavior_prowler
 behavior_drone
 behavior_soldier

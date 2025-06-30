@@ -308,6 +308,8 @@ Scripts:
 	weapons/mp_titanweapon_sniper.nut
 	weapons/mp_titanweapon_xo16.nut
 	weapons/mp_projectile_titanweapon_sniper.nut
+	weapons/mp_titancore_flight_core.nut
+	weapons/mp_titanability_hover.nut
 
 	weapons/mp_titancore_lasercannon.nut
 

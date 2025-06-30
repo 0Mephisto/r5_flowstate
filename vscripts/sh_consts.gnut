@@ -1599,10 +1599,7 @@ global const float GROUND_SPOT_VISIBLE_TIME 			= 2.0
 global const float SPOT_GLOBAL_VO_COOLDOWN 				= 4.0
 
 
-global const int RUI_SORT_SCREENFADE 					= 1000
 global const int RUI_SORT_GLADCARD 						= 990
-
-global const int TITAN_HINT_DASH 						= 5
 
 global const string CAMO_REF_COLUMN_NAME 				= "itemRef"
 global const string CAMO_PILOT_REF_COLUMN_NAME 			= "pilotRef"
@@ -1626,6 +1623,13 @@ global const int WEAPON_SKIN_INDEX_DEFAULT 	= 0
 global const int WEAPON_SKIN_INDEX_CAMO 	= 1
 global const int WEAPON_SKIN_INDEX_GHOST 	= 9
 
+global const float ANTI_RODEO_RESULT_DURATION = 3.0
+
+global const int RUI_SORT_SCREENFADE = 1000
+
+global const bool R1_VGUI_MINIMAP = false
+global const int TITAN_HINT_DASH = 5
+
 global const int HUD_Z_BASE 				= 300
 
 global const int FULLMAP_Z_BASE 			= 600
@@ -1642,10 +1646,15 @@ global const int MINIMAP_Z_PING				= 60
 global const int MINIMAP_Z_NPC 				= 75
 global const int MINIMAP_Z_PLAYER 			= 100
 
+global const string SP_STARTING_TITAN_LOADOUT_KIT = "mp_titanweapon_xo16_shorty"
+global const string SP_FIRST_TITAN_LOADOUT_KIT = "mp_titanweapon_sticky_40mm"
 // must match values in global_defs.rui
 global const int IMAGE_ATLAS_MENU 			= 0
 global const int IMAGE_ATLAS_HUD 			= 1
-global const int IMAGE_ATLAS_COMMS 			= 3
+global const int IMAGE_ATLAS_CALLINGCARD = 2
+global const int IMAGE_ATLAS_FACTION_LOGO = 3
+global const int IMAGE_ATLAS_CAMO = 4
+global const int IMAGE_ATLAS_COMMS 			= 5
 
 // Must match values in ajax_cockpit.rui ( two locations )
 global const float COCKPIT_COLOR_BLUE 		= 0.0
@@ -1655,6 +1664,11 @@ global const float COCKPIT_COLOR_SIEGE 		= 0.25
 global const float COCKPIT_COLOR_THREAT 	= 0.35
 global const float COCKPIT_COLOR_HIDDEN 	= 0.45
 global const float COCKPIT_COLOR_VANGUARD 	= 0.55
+
+global const SP_RODEO_BOOST = 300 // Used to boost the player off the titan to prevent rodeo spam in SP
+
+global const int PRO_SCREEN_INT_LIFETIME_KILLS = 0
+global const int PRO_SCREEN_INT_MATCH_KILLS = 1
 
 // Achievements/Trophys
 global enum achievements

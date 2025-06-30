@@ -102,6 +102,7 @@ void function SetCustomFastBallAimModeFunc( void functionref(entity,entity) func
 
 void function FastballTitanThink( entity titan )
 {
+	return
 	EndSignal( titan, "OnDeath" )
 
 	entity player
@@ -138,6 +139,7 @@ void function FastballTitanThink( entity titan )
 
 void function Fastball_PlayerAndTitanEnterAimingMode( entity player, entity titan )
 {
+	return
 	EndSignal( player, "OnDeath" )
 	EndSignal( titan, "OnDestroy" )
 	EndSignal( player, "player_embarks_titan" )
@@ -228,6 +230,7 @@ void function Fastball_PlayerAndTitanEnterAimingMode( entity player, entity tita
 
 function TitanRotateForAiming( entity mover, entity titan, entity player )
 {
+	return
 	EndSignal( player, "OnDeath" )
 	EndSignal( titan, "OnDestroy" )
 	EndSignal( mover, "OnDestroy" )
@@ -320,6 +323,7 @@ void function SetFastballVars( entity ref = null, vector functionref( entity, en
 
 void function ScriptedTitanFastball( entity player, entity titan, entity titanNode, entity throwTarget, string setFlagWhenGrabbed = "" )
 {
+	return
 	EndSignal( player, "OnDeath" )
 	EndSignal( titan, "OnDeath" )
 
