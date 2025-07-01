@@ -2668,10 +2668,7 @@ entity function AssertLocalOrServerValidPlayer( entity player )
 
 bool function IsFlowstateActive()
 {
-	if ( GetCurrentPlaylistVarBool( "flowstate_mod_active", true ) )
-		return true
-
-	return false
+	return HAS_FLOWSTATE_MOD
 }
 
 
