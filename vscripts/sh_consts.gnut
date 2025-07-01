@@ -10,6 +10,9 @@ global const int BOOSTZONE_ALIVE_TIME = 15
 
 global const SCRIPT_GAME_VERSION__RELEASE = true  //not used currently
 
+//Flowstate
+global bool HAS_FLOWSTATE_MOD = false 
+
 //r5r.dev
 global const bool TRACKER 					= false
 global const bool HAS_TRACKER_DLL 			= false
