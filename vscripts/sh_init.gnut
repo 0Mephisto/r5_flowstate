@@ -64,6 +64,7 @@ void function SV_CL_Init()
 		#endif 
 	Flags_Init()
 	RemoteFunctions_Init_Begin()
+	ModSystem_RunCallbacks()//MOD SYSTEM CALLBACK
 	CryptoTT_Init()
 	ShGamepad_LevelInit()
 	Thirdperson_Init()
@@ -274,7 +275,6 @@ void function SV_CL_Init()
 			RegisterNetworkedVariableChangeCallback_int( "FSDM_GameState", FSCTF_GameStateChanged )
 		}
 	#endif
-	ModSystem_RunCallbacks()//MOD SYSTEM CALLBACK
 	RemoteFunctions_Init_Finish()
 }
 
