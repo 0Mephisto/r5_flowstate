@@ -197,7 +197,6 @@ void function Consumable_Init()
 	RegisterSignal( "ConsumableDestroyRui" ) // idk really, from S7 or so...
 	
 	PrecacheParticleSystem( VFX_ULT_ACCEL_POP )
-		RegisterSignal( "VCTBlueFX" )
 
 	{ // Phoenix Kit - Full health and shields
 		ConsumableInfo phoenixKit

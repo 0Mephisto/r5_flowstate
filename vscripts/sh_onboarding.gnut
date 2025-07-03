@@ -65,10 +65,6 @@ global function SV_CL_Onboarding_Init
 	#endif
 #endif
 
-#if ENTITYVAR_DEPRECATED
-	global function ModifiedMovement_RegisterNetworking
-#endif
-
 global function PreGame_GetWaitingForPlayersHasBlackScreen
 global function PreGame_GetWaitingForPlayersSpawningEnabled
 global function PreGame_GetWaitingForPlayersDelayMin
@@ -1402,12 +1398,8 @@ void function SetPlayerSettings( entity player, table settings )
 {
 	foreach( k,v in settings )
 	{
-		#if ENTITYVAR_DEPRECATED
-			SetEntityVar( player, k, v )
-		#else
-			//Thanks amos for this implementation <3. Cafe
-			player.SetClassVar( expect string( k ), expect float( v ).tostring() )
-		#endif
+		//Thanks amos for this implementation <3. Cafe
+		player.SetClassVar( expect string( k ), expect float( v ).tostring() )
 	}
 }
 
@@ -1553,124 +1545,6 @@ void function Flowstate_ApplyModifiedMovementToPlayer( entity player, bool reset
 	}
 }
 #endif
-
-#if ENTITYVAR_DEPRECATED
-	void function ModifiedMovement_RegisterNetworking() 
-	{
-		array<string> entityClassVars = 
-		[
-			"airacceleration",
-			"landslowdownduration",
-			"gravityscale",
-			"jumpheight",
-			"Slidejumpheight",
-			"slideRequiredStartSpeed",
-			"stepheight",
-			"ziplineSpeed",
-			"wallrun",
-			"doublejump",
-			"superjumpMinHeight",
-			"superjumpMaxHeight",
-			"superjumpHorzSpeed",
-			"wallrun_timeLimit",
-			"wallrunJumpOutwardSpeed",
-			"wallrunJumpUpSpeed",
-			"wallrunJumpInputDirSpeed",
-			"wallrunMaxSpeedVertical",
-			"wallrunMaxSpeedHorizontal",
-			"wallrunAccelerateVertical",
-			"wallrunAccelerateHorizontal",
-			"leech_range",
-			"impactSpeed",
-			"slidedecel",
-			"automantle_enable",
-			"slidevelocitydecay",
-			"skip_speed_reduce",
-			"slideSpeedBoostCap",
-			"antiMultiJumpHeightFrac",
-			"airspeed",
-			"acceleration",
-			"player_slideBoostEnabled",
-			"slideRequiredStartSpeedAir",
-			"slideSpeedBoost",
-			"slideVelocityDecay",
-			"climbheight",
-			"skip_time",
-			"climbEnabled",
-			"automantle",
-			"airStrafeAcceleration",
-			"airStrafeEnabled",
-			"airStrafeTaperStart",
-			"airStrafeTaperFinish",
-			"glideStrafeTaperStart",
-			"glideStrafeTaperFinish",
-			"glideStrafe",
-			"glideRedirectSideways",
-			"glideRedirectJumpHeightStartOffset",
-			"glideRedirectJumpHeightFinishOffset",
-			"superjumpCanUseAfterWallrun",
-			"glideEnabled",
-			"player_slideBoostCooldown",
-			"sprintspeed",
-			"speed",
-			"automantle_forwarddist",
-			"grapple_accel_human",
-			"grapple_airAccel",
-			"grapple_airSpeedMax",
-			"grapple_decel_human",
-			"grapple_detachAwaySpeed",
-			"grapple_detachLengthMax",
-			"grapple_detachLengthMin",
-			"grapple_detachLowSpeedGroundTime",
-			"grapple_detachLowSpeedThreshold",
-			"grapple_detachLowSpeedTime",
-			"grapple_detachLowSpeedWallTime",
-			"grapple_detachSpeedLoss",
-			"grapple_detachSpeedLossMin",
-			"grapple_detachVerticalBoost",
-			"grapple_detachVerticalMaxSpeed",
-			"grapple_gravityFracMax",
-			"grapple_gravityFracMin",
-			"grapple_impactVerticalBoost",
-			"grapple_impactVerticalMaxSpeed",
-			"grapple_power_regen_delay",
-			"grapple_power_regen_rate",
-			"grapple_shootVel",
-			"grapple_speedRampMax_human",
-			"grapple_speedRampMin_human",
-			"grapple_speedRampTime_human",
-			"grapple_windowCheckDist",
-			"melee_cone_trace_angle",
-			"melee_cone_trace_range",
-			"skip_speed_retain",
-			"slide_boost_cooldown",
-			"sprintEndDuration",
-			"sprintStartDelay",
-			"sprintStartDuration",
-			"sprintStartFastDuration",
-			"sprintViewOffset",
-			"sprinttiltMaxRoll",
-			"wallrun_allowed_wall_dist",
-			"wallrun_allowed_wall_dist_wallhang",
-			"wallrun_gravityRampUpTime",
-			"wallrun_hangTimeLimit",
-			"wallrun_maxViewTilt",
-			"wallrun_sameWallHeight",
-			"wallrun_upWallBoost",
-			"zipline_use_range",
-		]
-
-		foreach( varKey in entityClassVars )
-		{
-			RegisterEntityVar_Entity( "player", varKey, 0 )
-			
-			#if CLIENT
-				RegisterEntityVarChangeCallback( "player", varKey, OnVarChangedCallback_PlayerMovement )
-			#endif
-		}
-	}
-#endif
-
 
 #if SERVER
 	table<int,table> movementLookupTable = {}

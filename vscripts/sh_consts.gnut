@@ -6,7 +6,6 @@ global const float KILOMETERS_TO_INCHES = 39370.1
 global string SDK_VERSION = "v2.6"
 global string FLOWSTATE_VERSION = "v4.5"
 global const FLOWSTATE_HWLTM_SHIELD_AMOUNT = 25
-global const int BOOSTZONE_ALIVE_TIME = 15
 
 global const SCRIPT_GAME_VERSION__RELEASE = true  //not used currently
 
@@ -19,7 +18,6 @@ global const bool HAS_TRACKER_DLL 			= false
 
 //
 global const bool MULTIPLAYER_DEBUG_PRINTS 	= false // Toggles print console message to all players where used (printm).
-global const bool ENTITYVAR_DEPRECATED		= false //Todo(mk): fully remove this deprecated system
 
 global const string DEFAULT_RATE_KEY 		= "default"
 global const bool NOTIFY_RATELIMIT_FAILED	= false
@@ -180,15 +178,13 @@ global const fs_duckhunt					= "fs_duckhunt"
 global const fs_infected					= "fs_infected"
 global const fs_snd							= "fs_snd"
 global const fs_apexkart					= "fs_apexkart"
+global const fs_spieslegends				= "fs_spieslegends"
+global const flowstate_pkknockback			= "flowstate_pkknockback"
 
 //Respawn modes
 global const WINTEREXPRESS					= "winterexpress"
 
-//global const flowstate_pkknockback		= "flowstate_pkknockback"
-
 //////////////////////////////
-
-
 
 global const FREELANCE_ENABLED          	= false
 
@@ -960,8 +956,6 @@ global const int DOOMED_MIN_HEALTH 			= 1
 
 global const float AREA_SONAR_SCAN_PULSE_DURATION 	= 6.0
 
-global const float SONAR_GRENADE_RADIUS 			= 1250.0 //(mk): max in ServerCallback_SonarPulseFromPosition set to 3000.0 with 8 bits.
-global const float SONAR_GRENADE_PULSE_DURATION 	= 6.0
 // these numbers should be kept in sync with bakery assets: inside_sonar, outline_sonar
 global const float SONAR_PULSE_SPACE = 400.0
 global const float SONAR_PULSE_SPEED = 300.0

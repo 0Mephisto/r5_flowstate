@@ -120,12 +120,6 @@ Scripts:
 	sh_weapon_cosmetics.nut
 ]
 
-When: "SERVER || CLIENT"
-Scripts:
-[
-	mp/banner/sh_banner_asset.nut
-]
-
 When: "CLIENT"
 Scripts:
 [
@@ -288,7 +282,7 @@ Scripts:
 	weapons/mp_ability_panic_button.nut
 	weapons/mp_ability_mobile_respawn_beacon.nut
 	weapons/sh_silence.gnut
-	
+
 	weapons/sp_weapon_arc_tool.nut
 	weapons/mp_weapon_smart_pistol.nut
 	weapons/mp_weapon_softball.nut
@@ -407,7 +401,8 @@ Scripts:
 	//PROTOS - NOT ASSIGNED TO A CHARACTER YET
 	//Stryder Dodge Roll (Proto)
 	weapons/s0_dev_protos/mp_ability_dodge_roll.nut
-	// weapons/s0_dev_protos/mp_ability_phase_dash.nut
+	weapons/s0_dev_protos/mp_ability_dodge_roll_cafe.nut
+	weapons/s0_dev_protos/mp_ability_phase_dash.nut
 
 	//Sonic Shriek (Proto)
 	//A charged short-range blast of force that pushes pilots and projectiles.
@@ -608,7 +603,7 @@ Scripts:
 	ai/_titan_npc_behavior.gnut
 	conversation/_conversation_schedule.gnut
 	mp/_ai_superspectre.nut
-	mp/_antiafk.nut
+	
 	mp/_base_gametype.gnut
 	mp/_changemap.nut
 	mp/_codecallbacks.gnut
@@ -691,8 +686,6 @@ Scripts:
 	pilot/_pilot_tracking_vision.gnut
 	pilot/_pilot_passive_gas_gear.gnut
 	mp/_jump_pads.gnut
-
-	mp/flowstate/_fs_cannon.gnut
 ]
 
 When: "SERVER || CLIENT"
@@ -992,22 +985,7 @@ Scripts:
 	
 	//CTF
 	ui/CTFMenus/menu_ctf_respawn.nut
-	//FR Challenges
-	ui/FRChallenges/menu_frchallenges.nut
-	ui/FRChallenges/mainmenu_challenges.nut
-	ui/FRChallenges/mainmenu_history.nut
-	ui/FRChallenges/mainmenu_settings.nut
-	ui/FRChallenges/mainmenu_settings_weaponselector.nut
-	ui/FRChallenges/panel_buymenu1.nut
-	ui/FRChallenges/panel_buymenu2.nut
-	ui/FRChallenges/panel_buymenu3.nut
-	ui/FRChallenges/panel_buymenu4.nut
-	ui/FRChallenges/panel_buymenu5.nut
 	
-	ui/FRChallenges/flowstate_lgduels_settings.nut
-	ui/FRChallenges/flowstate_valksimulator_settings.nut
-	//Movement Gym
-	ui/MovementGym/movementgym_settings.nut
 	//KillReplay
 	ui/KillReplay/menu_killreplay.nut
 	
@@ -1029,18 +1007,6 @@ Scripts:
 
 	//R5R Extra
 	ui/CTFMenus/menu_ctf_vote.nut
-	
-	//Statistics
-	ui/FlowstateDM/flowstate_statistics.nut
-	ui/FlowstateDM/flowstate_menu_vote.nut
-	ui/FlowstateDM/flowstate_menu_voteteam.nut
-	ui/FlowstateDM/flowstate_server_msgs_to_chatbox.nut
-	ui/menu_weaponmods.nut
-
-	//Snd Buy menu
-	ui/FlowstateSND/flowstate_snd_buy_menu.nut
-	
-	ui/fs_1v1/settingsmenu.nut
 ]
 
 When: "SERVER || UI "
@@ -1125,130 +1091,37 @@ Scripts:
 	sh_dev_utility.nut // For convenience
 ]
 
-When: "DEV && CLIENT"
-Scripts:
-[
-
-]
-
-// END DEVSCRIPTS CONTENT
-
-// Custom
-
-When: "SERVER"
-Scripts:
-[
-	gamemodes/global/_gamemode_spawn_system.nut
-]
-
-When: "UI"
-Scripts:
-[
-	ui/fs_scenarios/scenarios_ui.nut
-	ui/fs_1v1/1v1_coaching.nut
-]
-
 When: "SERVER || CLIENT"
 Scripts:
 [
-	gamemodes/fs_tdm/sh_gamemode_fsdm.nut
-	gamemodes/fs_tdm/fsdm_settings.nut
+	
 	gamemodes/custom_ctf/sh_gamemode_custom_ctf.nut
 	gamemodes/custom_ctf/custom_ctf_settings.nut
-	gamemodes/fs_aimtrainer/sh_gamemode_aimtrainer.nut
-	gamemodes/fs_prophunt/sh_gamemode_prophunt.nut
-	gamemodes/fs_duckhunt/sh_gamemode_duckhunt.nut
-	gamemodes/fs_infection/sh_gamemode_infection.nut
-	gamemodes/fs_snd/sh_gamemode_snd.nut
-	gamemodes/util/sh_custom_zombie_mystery_box.nut
-	gamemodes/util/sh_custom_zombie_mystery_box_weapon.nut
+	
 	lobby/lobbyvm/sh_lobbyvm.nut
-	mp/sh_movement_recorder.nut
 	sh_hover_vehicle.gnut
-	gamemodes/fs_scenarios/sh_gamemode_scenarios.nut
-	//gamemodes/fs_carritos/sh_gamemode_carritos.nut
+	
 	mp/sh_skydive_launchers.gnut
 ]
 
 When: "SERVER"
 Scripts:
 [
-	gamemodes/fs_tdm/_4d_tutorial.nut
-	gamemodes/fs_tdm/_gamemode_fsdm.nut
-	gamemodes/fs_realistic_ttv/_realistic_mode.nut
-	gamemodes/fs_tdm/_gamemode_fsdm_oddball.nut
-	gamemodes/fs_1v1/_notifications.nut
-	gamemodes/fs_1v1/_gamemode_1v1.nut
-	gamemodes/fs_lgduels_1v1/_fs_lgduels_1v1.nut
-	gamemodes/fs_scenarios/_gamemode_scenarios.nut
-	gamemodes/fs_scenarios/_gamemode_scenarios_teams.nut
-	gamemodes/custom_ctf/_gamemode_custom_ctf.nut
-	gamemodes/fs_duckhunt/_gamemode_duckhunt.nut
-	gamemodes/fs_prophunt/_gamemode_prophunt.nut
-	gamemodes/fs_infection/_gamemode_infection.nut
-	gamemodes/fs_snd/_gamemode_snd.nut
-	gamemodes/fs_surf/_gamemode_surf.nut
-	gamemodes/fs_surf/_gamemode_surf2.nut
-	//gamemodes/fs_carritos/_gamemode_carritos.nut
-	
-	gamemodes/fs_aimtrainer/_gamemode_aimtrainer.nut
-	lobby/lobbyvm/_lobbyvm.nut
-
-	//maps
-	custom_maps/_custom_maps_1.nut
-	custom_maps/_custom_maps_2.nut
-	custom_maps/_custom_maps_3.nut
-	custom_maps/_custom_maps_4.nut
-	custom_maps/_custom_maps_5.nut
-	custom_maps/_custom_maps_6.nut
-	custom_maps/_custom_maps_7.nut
-	custom_maps/_custom_maps_8.nut
-	custom_maps/_custom_maps_9.nut
-	custom_maps/_custom_deafps_maps.nut
-
-	// 4d specific
-	custom_maps/_custom_maps_4d.nut
-	
-	//mkos LG patches & map based patches
-	custom_maps/_LG_Duel.nut
-	custom_maps/_map_patch.nut
-
-	gamemodes/fs_movementgym/_movement_gym.nut
-
-	custom_maps/_custom_doormap.nut
-	custom_maps/_custom_grapplemap.nut
-	custom_maps/_custom_mantlejumpmap.nut
-	custom_maps/_custom_falling_forever.nut
-	custom_maps/_custom_deafps_defuse_maps.nut
-	custom_maps/_custom_firstmap.nut
-	custom_maps/_custom_gymmovementmap.nut
-	custom_maps/_custom_ithurtsmap.nut
-	custom_maps/_custom_rankupmap.nut
-
 	// ReMap Live
 	mp/levels/mp_rr_remap.nut
 	  _mapeditor.gnut
-	custom_maps/_custom_strafeitmap.nut
 	
-	mp/_movement_recorder_deprecated.nut
+	lobby/lobbyvm/_lobbyvm.nut
+	
+	gamemodes/custom_ctf/_gamemode_custom_ctf.nut
 ]
 
 When: "CLIENT"
 Scripts:
 [
-	gamemodes/fs_movementgym/cl_movement_gym_personalbest.nut
-	gamemodes/fs_movementgym/cl_movement_gym.nut
-	gamemodes/fs_tdm/cl_gamemode_fsdm.nut
-	gamemodes/fs_tdm/cl_gamemode_fsdm_oddball.nut
-	gamemodes/custom_ctf/cl_gamemode_custom_ctf.nut
-	gamemodes/fs_aimtrainer/cl_gamemode_aimtrainer.nut
-	gamemodes/fs_duckhunt/cl_gamemode_duckhunt.nut
-	gamemodes/fs_prophunt/cl_gamemode_prophunt.nut
-	gamemodes/fs_infection/cl_gamemode_infection.nut
-	gamemodes/fs_snd/cl_gamemode_snd.nut
 	lobby/lobbyvm/cl_lobbyvm.nut
-	custom_maps/cl_custom_falling_forever.nut
-	//gamemodes/fs_carritos/cl_gamemode_carritos.nut
+
+	gamemodes/custom_ctf/cl_gamemode_custom_ctf.nut
 ]
 
 
@@ -1282,5 +1155,4 @@ When: "SERVER || CLIENT || UI"
 Scripts:
 [
 	gamemodes/sh_gamemode_winterexpress.nut
-	gamemodes/fs_1v1/sh_gamemode_1v1_coaching.nut
 ]

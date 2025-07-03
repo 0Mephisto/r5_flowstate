@@ -179,9 +179,6 @@ void function GamemodeSurvival_Init()
 		AddClientCommandCallback("giveGoodLoot", ClientCommand_GiveGoodLootToPlayers)
 		AddClientCommandCallback("enableGodMode", ClientCommand_EnableDemigod)
 		AddClientCommandCallback("disableGodMode", ClientCommand_EnableDemigod)
-		AddClientCommandCallback("becomeFade", ClientCommand_BecomeFade)
-		AddClientCommandCallback("becomeRhapsody", ClientCommand_BecomeRhapsody)
-		AddClientCommandCallback("spawnGreenWallIdk", ClientCommand_GreenWall) //requires custom material
 	#endif
 
 	FillSkyWithClouds()
@@ -233,9 +230,6 @@ void function GamemodeSurvival_Init()
 		//Move faster while adsing
 		AddCallback_OnPlayerZoomIn( FS_HaloMod_OnPlayerZoomIn )
 		AddCallback_OnPlayerZoomOut( FS_HaloMod_OnPlayerZoomOut )
-
-		//Precache Charm
-		PrecacheModel( $"mdl/flowstate_custom/charm_hiswattson.rmdl" )
 	}
 }
 

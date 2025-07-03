@@ -10,8 +10,7 @@ void function SV_CL_Shared_Init()
 	Initialize_SH_FlowstateSettings()
 	
 	GameModes_Init()
-	Settings_Init()
-	
+
 	if ( IsLobby() )
 	{
 		Shared_Lobby_Init()
@@ -63,8 +62,13 @@ void function SV_CL_Init()
 			CodeCallbacksCommon_Init()
 		#endif 
 	Flags_Init()
+	
+	//(cafe) Proper order of loading remote functions, mods, and gamemodes
 	RemoteFunctions_Init_Begin()
-	ModSystem_RunCallbacks()//MOD SYSTEM CALLBACK
+	ModSystem_RunCallbacks()// MOD SYSTEM CALLBACKS, has to run as soon as remote functions start registering
+	GameMode_VerifyModes() // Has to run after mod system callbacks
+	Settings_Init() // Should run after gamemodes are verified
+	
 	CryptoTT_Init()
 	ShGamepad_LevelInit()
 	Thirdperson_Init()
@@ -412,11 +416,7 @@ void function Server_Init()
     // ReMap Live
     if ( IsDevGamemode() )
         ReMapLive_Init()
-		
-	SpawnSystem_Init()
-	NotificationSystem_Init()
-	Flowstate_Afk_Init()
-
+	
 	#if DEVELOPER
 		SmokeTest_Init()
 	#endif // DEVELOPER

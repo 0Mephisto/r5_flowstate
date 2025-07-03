@@ -133,6 +133,8 @@ global const asset WAYPOINT_ICON_TARGET = $"rui/hud/common/objective_marker"
 global const asset WAYPOINT_ICON_BATTERY_NEEDED = $"rui/menu/dpad_comms/emoji/battery_need"
 global const asset WAYPOINT_ICON_WAYPOINT = $"rui/hud/common/map_waypoint"
 
+global float BOOSTZONE_ALIVE_TIME = 15.0
+
 #if CLIENT
 //global const asset SQUAD_PING_FX = $"P_ar_ping_ground_CP"
 //global const asset SQUAD_PING_FAR_FX = $"P_ar_ping_ground_far_CP"

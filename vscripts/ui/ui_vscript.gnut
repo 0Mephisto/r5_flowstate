@@ -343,6 +343,7 @@ void function UICodeCallback_UIInit()
 	UtilityUI_Init()
 	ShAssets_Init()
 	Settings_Init() // UI script doesn't need everything in this, reorganize
+	ModSystem_RunCallbacks()//MOD SYSTEM CALLBACK
 	GameModes_Init()
 	UIVars_Init()
 
@@ -389,8 +390,6 @@ void function UICodeCallback_UIInit()
 		{
 		}
 	#endif
-
-	ModSystem_RunCallbacks()//MOD SYSTEM CALLBACK
 }
 
 

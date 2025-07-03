@@ -3003,3 +3003,45 @@ void function DEV_SetBreakPoint( bool bPrintLocals = true )
 			RunClientScript( "DEV_SetBreakPoint", bPrintLocals )
 	#endif
 }
+
+vector function GetCenterOfCircle( array<LocPair> spawns )
+{
+	vector total
+
+	foreach ( spawnLocation in spawns )
+	{
+		total += spawnLocation.origin
+	}
+
+	total.x /= float( spawns.len() )
+	total.y /= float( spawns.len() )
+	total.z /= float( spawns.len() )
+
+	return total
+}
+
+#if SERVER
+entity function CreateCustomLight( vector origin, vector angles, string lightcolor, float scale )
+{
+	entity env_sprite = CreateEntity( "env_sprite" )
+	env_sprite.SetScriptName( UniqueString( "molotov_sprite" ) )
+	env_sprite.kv.rendermode = 5
+	env_sprite.kv.origin = origin
+	env_sprite.kv.angles = angles
+	env_sprite.kv.fadedist = -1
+	env_sprite.kv.rendercolor = lightcolor
+	env_sprite.kv.renderamt = 255
+	env_sprite.kv.framerate = "10.0"
+	env_sprite.SetValueForModelKey( $"sprites/glow_05.vmt" )
+	env_sprite.kv.scale = string( scale )
+	env_sprite.kv.spawnflags = 1
+	env_sprite.kv.GlowProxySize = 15.0
+	env_sprite.kv.HDRColorScale = 15.0
+	DispatchSpawn( env_sprite )
+	EntFireByHandle( env_sprite, "ShowSprite", "", 0, null, null )
+
+	// surf.playerSpawnedProps.append(env_sprite)
+
+	return env_sprite
+}
+#endif

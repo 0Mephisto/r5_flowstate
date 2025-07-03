@@ -15,6 +15,21 @@ global function PrintMaps
 global function PrintGamemodes
 global function PrintRegisteredPlaylists
 
+// Enhanced dynamic enum registration system
+global function RegisterExternalPlaylist
+global function RegisterExternalGamemodeEnum
+global function IsExternalPlaylist
+global function IsExternalGamemodeEnum
+global function GetExternalPlaylistId
+global function GetExternalGamemodeId
+global function RefreshEnumArrays
+
+// Helper functions for external entry conditionals
+global function PlaylistIs
+global function GamemodeIs
+global function IsCurrentPlaylistExternal
+global function IsCurrentGamemodeExternal
+
 #if SERVER 
 	global function GetPlaylistMaps //client has a copy already
 #endif
@@ -165,8 +180,22 @@ struct
 	int currentMap = -1
 	int currentPlaylist = -1
 	int currentGamemode = -1
+	
+	// Enhanced dynamic registration system
+	table<string, int> externalPlaylists = {}  // playlist_name -> dynamic_id
+	table<string, int> externalGamemodes = {}  // gamemode_name -> dynamic_id
+	int nextPlaylistId = 1000  // Start dynamic playlist IDs at 1000
+	int nextGamemodeId = 1000  // Start dynamic gamemode IDs at 1000 (sync with sh_gamemodes.gnut)
+	array<string> registeredExternalPlaylists = []
+	array<string> registeredExternalGamemodes = []
 
 } SH_globals
+
+// Global enum tables for easy conditional access (populated at runtime)
+global table<string, int> EXTERNAL_PLAYLISTS = {}  // External playlist name -> ID
+global table<string, int> EXTERNAL_GAMEMODES = {}  // External gamemode name -> ID
+global table<string, int> ALL_PLAYLISTS = {}       // All playlists (static + external)
+global table<string, int> ALL_GAMEMODES = {}       // All gamemodes (static + external)
 
 //this is the global location for defining a mode that is 1v1 based
 const array<int> playlist1v1Types = 
@@ -198,6 +227,13 @@ void function __EnumsToArrays_Init()
 	
 	foreach( string strname, int num in eGamemodes )
 		SH_globals.gamemodes.append( strname.tolower() )
+	
+	// Add external entries to arrays
+	foreach( string playlistName in SH_globals.registeredExternalPlaylists )
+		SH_globals.playlists.append( playlistName.tolower() )
+	
+	foreach( string gamemodeName in SH_globals.registeredExternalGamemodes )
+		SH_globals.gamemodes.append( gamemodeName.tolower() )
 }
 
 void function __ClearEnumArrays()
@@ -214,6 +250,9 @@ void function PlayLists_Mapnames_Gamemodes_Init()
 	#endif 
 	
 	__EnumsToArrays_Init()
+	
+	// Initialize global enum tables
+	__UpdateGlobalEnumTables()
 		
 	#if SERVER || CLIENT
 		string level = GetMapName()
@@ -282,10 +321,14 @@ int function getMapEnumFromName( string mapString )
 {
 	string mapStringLower = mapString.tolower()
 	
-	for ( int i = 0; i < eMaps._MAP_COUNT; i++ ) 
+	// Ensure array is initialized before accessing
+	if ( SH_globals.mapNames.len() >= eMaps._MAP_COUNT )
 	{
-		if ( SH_globals.mapNames[i].tolower() == mapStringLower ) 
-			return i
+		for ( int i = 0; i < eMaps._MAP_COUNT; i++ ) 
+		{
+			if ( SH_globals.mapNames[i].tolower() == mapStringLower ) 
+				return i
+		}
 	}
 	
 	return -1
@@ -295,22 +338,40 @@ int function getPlaylistEnumFromName( string playlistString )
 {
 	string playlistStringLower = playlistString.tolower()
 	
-	for ( int i = 0; i < ePlaylists._PLAYLISTS_COUNT; i++ ) 
+	// Check static playlists first (ensure array is initialized)
+	if ( SH_globals.playlists.len() >= ePlaylists._PLAYLISTS_COUNT )
 	{
-		if ( SH_globals.playlists[i].tolower() == playlistStringLower ) 
-			return i
+		for ( int i = 0; i < ePlaylists._PLAYLISTS_COUNT; i++ ) 
+		{
+			if ( SH_globals.playlists[i].tolower() == playlistStringLower ) 
+				return i
+		}
 	}
+	
+	// Check external playlists
+	if ( playlistStringLower in SH_globals.externalPlaylists )
+		return SH_globals.externalPlaylists[playlistStringLower]
 	
 	return -1
 }
 
 int function getGamemodeEnumFromName( string gamemodeString ) 
 {
-	for ( int i = 0; i < eGamemodes._GAMEMODES_COUNT; i++ ) 
+	string gamemodeStringLower = gamemodeString.tolower()
+	
+	// Check static gamemodes first (ensure array is initialized)
+	if ( SH_globals.gamemodes.len() >= eGamemodes._GAMEMODES_COUNT )
 	{
-		if ( SH_globals.gamemodes[i] == gamemodeString ) 
-			return i
+		for ( int i = 0; i < eGamemodes._GAMEMODES_COUNT; i++ ) 
+		{
+			if ( SH_globals.gamemodes[i] == gamemodeString ) 
+				return i
+		}
 	}
+	
+	// Check external gamemodes
+	if ( gamemodeStringLower in SH_globals.externalGamemodes )
+		return SH_globals.externalGamemodes[gamemodeStringLower]
 	
 	return -1
 }
@@ -665,4 +726,220 @@ bool function Flowstate_ModeDisablesRagdolls()
 bool function Flowstate_Is4DMode()
 {
 	return modeSettings.is4DMode
+}
+
+//////////////////////////////////////////
+//  Enhanced dynamic enum registration  //
+//////////////////////////////////////////
+
+void function RegisterExternalPlaylist( string playlistName, string modSource )
+{
+	string playlistLower = playlistName.tolower()
+	
+	// Check if the playlist already exists and skip registration if it does
+	if ( playlistLower in SH_globals.externalPlaylists )
+	{
+		printw( "[ENUM] Warning: External playlist " + playlistName + " already exists, skipping registration" )
+		return
+	}
+	
+	if ( getPlaylistEnumFromName( playlistName ) != -1 )
+	{
+		printw( "[ENUM] Error: Playlist " + playlistName + " conflicts with existing static playlist" )
+		return
+	}
+	
+	if ( modSource == "" )
+	{
+		printw( "[ENUM] Error: Mod source cannot be empty for playlist " + playlistName )
+		return
+	}
+	
+	// Generate a dynamic ID for this external playlist
+	int dynamicId = SH_globals.nextPlaylistId
+	SH_globals.nextPlaylistId++
+	
+	// Register the external playlist
+	SH_globals.externalPlaylists[playlistLower] <- dynamicId
+	SH_globals.registeredExternalPlaylists.append( playlistName )
+	
+	// Refresh enum arrays to include new playlist
+	RefreshEnumArrays()
+	
+	printt( "[ENUM] Registered external playlist: " + playlistName + " from mod: " + modSource + " with ID: " + dynamicId )
+}
+
+void function RegisterExternalGamemodeEnum( string gamemodeName, string modSource, int gamemodeId = -1 )
+{
+	string gamemodeLower = gamemodeName.tolower()
+	
+	// Check if the gamemode already exists and skip registration if it does
+	if ( gamemodeLower in SH_globals.externalGamemodes )
+	{
+		printw( "[ENUM] Warning: External gamemode " + gamemodeName + " already exists in enum system, skipping registration" )
+		return
+	}
+	
+	if ( getGamemodeEnumFromName( gamemodeName ) != -1 )
+	{
+		printw( "[ENUM] Error: Gamemode " + gamemodeName + " conflicts with existing static gamemode" )
+		return
+	}
+	
+	if ( modSource == "" )
+	{
+		printw( "[ENUM] Error: Mod source cannot be empty for gamemode " + gamemodeName )
+		return
+	}
+	
+	int dynamicId
+	if ( gamemodeId != -1 )
+	{
+		// Use provided ID (for sync with sh_gamemodes.gnut system)
+		dynamicId = gamemodeId
+	}
+	else
+	{
+		// Generate a dynamic ID for this external gamemode
+		dynamicId = SH_globals.nextGamemodeId
+		SH_globals.nextGamemodeId++
+	}
+	
+	// Register the external gamemode
+	SH_globals.externalGamemodes[gamemodeLower] <- dynamicId
+	SH_globals.registeredExternalGamemodes.append( gamemodeName )
+	
+	// Refresh enum arrays to include new gamemode
+	RefreshEnumArrays()
+	
+	printt( "[ENUM] Registered external gamemode: " + gamemodeName + " from mod: " + modSource + " with ID: " + dynamicId )
+}
+
+bool function IsExternalPlaylist( string playlistName )
+{
+	string playlistLower = playlistName.tolower()
+	return ( playlistLower in SH_globals.externalPlaylists )
+}
+
+bool function IsExternalGamemodeEnum( string gamemodeName )
+{
+	string gamemodeLower = gamemodeName.tolower()
+	return ( gamemodeLower in SH_globals.externalGamemodes )
+}
+
+int function GetExternalPlaylistId( string playlistName )
+{
+	string playlistLower = playlistName.tolower()
+	if ( !(playlistLower in SH_globals.externalPlaylists) )
+	{
+		printw( "[ENUM] Error: External playlist " + playlistName + " not found" )
+		return -1
+	}
+	return SH_globals.externalPlaylists[playlistLower]
+}
+
+int function GetExternalGamemodeId( string gamemodeName )
+{
+	string gamemodeLower = gamemodeName.tolower()
+	if ( !(gamemodeLower in SH_globals.externalGamemodes) )
+	{
+		printw( "[ENUM] Error: External gamemode " + gamemodeName + " not found" )
+		return -1
+	}
+	return SH_globals.externalGamemodes[gamemodeLower]
+}
+
+void function RefreshEnumArrays()
+{
+	// Clear existing arrays (but keep static entries)
+	SH_globals.playlists.clear()
+	SH_globals.gamemodes.clear()
+	
+	// Rebuild arrays with both static and external entries
+	__EnumsToArrays_Init()
+	
+	// Update global enum tables
+	__UpdateGlobalEnumTables()
+}
+
+void function __UpdateGlobalEnumTables()
+{
+	// Clear global tables
+	EXTERNAL_PLAYLISTS.clear()
+	EXTERNAL_GAMEMODES.clear()
+	ALL_PLAYLISTS.clear()
+	ALL_GAMEMODES.clear()
+	
+	// Populate static playlist entries
+	foreach( string playlistName, int playlistId in ePlaylists )
+	{
+		if( playlistId >= 0 && playlistId < ePlaylists._PLAYLISTS_COUNT )
+			ALL_PLAYLISTS[playlistName.tolower()] <- playlistId
+	}
+	
+	// Populate static gamemode entries  
+	foreach( string gamemodeName, int gamemodeId in eGamemodes )
+	{
+		if( gamemodeId >= 0 && gamemodeId < eGamemodes._GAMEMODES_COUNT )
+			ALL_GAMEMODES[gamemodeName.tolower()] <- gamemodeId
+	}
+	
+	// Populate external playlist entries
+	foreach( string playlistName, int playlistId in SH_globals.externalPlaylists )
+	{
+		EXTERNAL_PLAYLISTS[playlistName] <- playlistId
+		ALL_PLAYLISTS[playlistName] <- playlistId
+	}
+	
+	// Populate external gamemode entries
+	foreach( string gamemodeName, int gamemodeId in SH_globals.externalGamemodes )
+	{
+		EXTERNAL_GAMEMODES[gamemodeName] <- gamemodeId
+		ALL_GAMEMODES[gamemodeName] <- gamemodeId
+	}
+}
+
+//////////////////////////////////////////
+//     Conditional Helper Functions     //
+//////////////////////////////////////////
+
+bool function PlaylistIs( string playlistName )
+{
+	string playlistLower = playlistName.tolower()
+	
+	// Check if playlist exists in unified table
+	if( !(playlistLower in ALL_PLAYLISTS) )
+		return false
+		
+	// Compare current playlist ID with expected ID
+	return Playlist() == ALL_PLAYLISTS[playlistLower]
+}
+
+bool function GamemodeIs( string gamemodeName )
+{
+	string gamemodeLower = gamemodeName.tolower()
+	
+	// Check if gamemode exists in unified table
+	if( !(gamemodeLower in ALL_GAMEMODES) )
+		return false
+		
+	// Compare current gamemode ID with expected ID
+	return Gamemode() == ALL_GAMEMODES[gamemodeLower]
+}
+
+bool function IsCurrentPlaylistExternal()
+{
+	string currentPlaylistName = GetCurrentPlaylistName()
+	return IsExternalPlaylist( currentPlaylistName )
+}
+
+bool function IsCurrentGamemodeExternal()
+{
+	#if SERVER || CLIENT
+		string currentGamemodeName = GameRules_GetGameMode()
+	#elseif UI
+		string currentGamemodeName = GetConVarString( "mp_gamemode" )
+	#endif
+	
+	return IsExternalGamemodeEnum( currentGamemodeName )
 }

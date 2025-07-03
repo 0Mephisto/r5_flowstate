@@ -478,7 +478,6 @@ void function UICodeCallback_LevelLoadingFinished( bool error )
 	TEMP_CircularReferenceCleanup()
 }
 
-
 void function UICodeCallback_LevelInit( string levelname )
 {	
 	if ( GetCurrentPlaylistVarBool( "random_loadscreen", false ) )
@@ -559,7 +558,8 @@ void function UICodeCallback_FullyConnected( string levelname )
 	ShEHI_LevelInit_End()
 
 	//InitItems()
-
+	ModSystem_RunCallbacks()//MOD SYSTEM CALLBACK
+	
 	SURVIVAL_Loot_All_InitShared()
 	//ShWeaponXP_Init()
 	//ShFactionXP_Init()

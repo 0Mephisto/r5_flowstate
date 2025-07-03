@@ -21,10 +21,6 @@ global function ServerCallback_PlayerLandedNOCAudio
 global function ServerCallback_MoreNOCAudio
 global function ShadowClientEffectsEnable
 
-global function Infection_CreateEvacCountdown
-global function Infection_DestroyEvacCountdown
-global function Infection_CreateEvacShipMinimapIcons
-
 const asset ANNOUNCEMENT_LEGEND_ICON = $"rui/gamemodes/shadow_squad/legend_icon_sdk"
 const asset ANNOUNCEMENT_SHADOW_ICON = $"rui/gamemodes/shadow_squad/shadow_icon_orange_sdk"
 #endif
@@ -838,85 +834,6 @@ void function UpdatePlayerHUD( entity player )
 	RuiSetColorAlpha( file.countdownRui, "timerColor", SrgbToLinear( <255,233,0> / 255.0 ), 1.0 )
 }
 
-void function Infection_DestroyEvacCountdown()
-{
-	if ( file.countdownRui != null )
-	{
-		RuiDestroyIfAlive( file.countdownRui )
-		file.countdownRui = null
-	}
-
-	if ( file.minimapEvacShipIcon != null )
-	{
-		RuiDestroyIfAlive( file.minimapEvacShipIcon )
-		file.minimapEvacShipIcon = null
-	}
-	
-	if ( file.fullmapEvacShipIcon != null )
-	{
-		Fullmap_RemoveRui( file.fullmapEvacShipIcon )
-		RuiDestroy( file.fullmapEvacShipIcon )
-		file.fullmapEvacShipIcon = null
-	}
-}
-
-void function Infection_CreateEvacCountdown( int gamePhase)
-{
-	entity player = GetLocalClientPlayer()
-	
-	if ( !IsValid( player ) )
-		return	
-	
-	if ( file.countdownRui != null )
-	{
-		RuiDestroyIfAlive( file.countdownRui )
-		file.countdownRui = null
-	}
-	
-	if ( !IsValid( file.countdownRui ) )
-		file.countdownRui = CreateFullscreenRui( $"ui/generic_timer.rpak" )
-
-	float countdownTimerStart = GetGlobalNetTime( "countdownTimerStart" )
-	float countdownTimerEnd = GetGlobalNetTime( "countdownTimerEnd" )
-	string countdownText
-
-	switch ( gamePhase )
-	{
-		case 0:// case eShadowSquadGamePhase.MATCH_ENDED_IN_DRAW:
-			CircleAnnouncementsEnable( false )
-			return
-		case 1:// case eShadowSquadGamePhase.FINAL_LEGENDS_DECIDED_EVAC_TIMER_STARTED:
-			//CircleAnnouncementsEnable( false )
-			countdownText = "#SHADOW_SQUAD_TIMER_TXT_INBOUND"
-			break
-		case 2:// case eShadowSquadGamePhase.EVAC_SHIP_DEPARTURE_TIMER_STARTED:
-			countdownText = "#SHADOW_SQUAD_TIMER_TXT_DEPARTING"
-			break
-		case 3:// case eShadowSquadGamePhase.WINNER_DETERMINED:
-			// if ( file.countdownRui != null )
-			// {
-				// RuiDestroyIfAlive( file.countdownRui )
-				// file.countdownRui = null
-			// }
-			// if ( IsShadowVictory() )
-				// SetChampionScreenRuiAsset( $"ui/shadowfall_shadow_champion_screen.rpak" )
-			// else
-				// SetChampionScreenRuiAsset( $"ui/shadowfall_legend_champion_screen.rpak" )
-
-			return
-		default:
-			return
-	}
-
-	if ( file.countdownRui == null )
-		return
-
-	RuiSetString( file.countdownRui, "messageText", countdownText )
-	RuiSetGameTime( file.countdownRui, "startTime", countdownTimerStart )
-	RuiSetGameTime( file.countdownRui, "endTime", countdownTimerEnd )
-	RuiSetColorAlpha( file.countdownRui, "timerColor", SrgbToLinear( <255,233,0> / 255.0 ), 1.0 )
-}
-
 #endif
 
 bool function IsShadowVictory()
@@ -1161,23 +1078,6 @@ void function ServerCallback_ModeShadowSquad_AnnouncementSplash( int messageInde
 	}
 
 	AnnouncementMessageSweepShadowSquad( player, messageText, subText, titleColor, soundAlias, duration, icon, leftIcon, rightIcon )
-}
-
-void function Infection_CreateEvacShipMinimapIcons(entity cpoint)
-{
-	//Minimap Icon
-	var rui = Infection_AddMinimapIcon( $"rui/gamemodes/shadow_squad/evac_countdown_sdk", 80, <0.5, 0.5, 0>)
-	RuiTrackFloat3( rui, "objectPos", cpoint, RUI_TRACK_ABSORIGIN_FOLLOW )
-	RuiSetImage( rui, "clampedIconImage", $"rui/gamemodes/shadow_squad/evac_countdown_sdk" )
-	RuiSetFloat3( rui, "objColor", SrgbToLinear( Vector( 235, 213, 52 ) / 255.0 ) )
-	file.minimapEvacShipIcon = rui
-	
-	//Fullmap Icon
-	var ruiFullmap = Infection_AddFullmapIcon( $"rui/gamemodes/shadow_squad/evac_countdown_sdk", 30, <0.5, 0.5, 0>)
-	RuiTrackFloat3( ruiFullmap, "objectPos", cpoint, RUI_TRACK_ABSORIGIN_FOLLOW )
-	RuiSetFloat3( ruiFullmap, "objColor", SrgbToLinear( Vector( 235, 213, 52 ) / 255.0 ) )
-	Fullmap_AddRui( ruiFullmap )
-	file.fullmapEvacShipIcon = ruiFullmap
 }
 #endif
 

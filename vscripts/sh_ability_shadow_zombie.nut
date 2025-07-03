@@ -846,7 +846,7 @@ bool function AreTeammatesShadowZombiesOrRespawning( entity player )
 		if ( guy == player )
 			continue
 
-		if ( guy.GetPlayerNetInt( "respawnStatus" ) == eRespawnStatus.WAITING_FOR_RESPAWN )
+		if ( guy.GetPlayerNetInt( "respawnStatus" ) == eRespawnStatus.WAITING_FOR_DROPPOD )
 			continue
 
 		if ( !IsPlayerShadowZombie( guy ) )
@@ -867,6 +867,3 @@ float function GetPlaylistVar_ShadowHealthRegenDelay()
 {
 	return GetCurrentPlaylistVarFloat( "shadow_health_regen_delay", 6.0 )
 }
-
-                                   
- 
