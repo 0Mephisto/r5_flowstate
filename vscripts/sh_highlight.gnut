@@ -167,6 +167,9 @@ struct
 {
 	bool registeringHighlights = false
 	int colorblindMode
+
+	table< entity, table<entity, bool> > highlightedPlayersInArea
+	float highlightDistance = 30 * METERS_TO_INCHES
 } file
 
 void function Highlight_Init()
@@ -2013,3 +2016,194 @@ bool function ShouldCausticGasHighlight( entity viewPlayer, entity ent )
 
 
 
+//Redish highlight. Cafe
+bool function RedishHighlightEnabled()
+{
+	return GetCurrentPlaylistVarBool( "redish_highlight_los", true )
+}
+
+void function RedishHighlight_Thread( entity player )
+{
+	if( !RedishHighlightEnabled() )
+		return
+
+	#if SERVER
+	player.EndSignal( "OnRespawned" )
+	#elseif CLIENT
+	clGlobal.levelEnt.EndSignal( "LocalClientPlayerRespawned" )
+	#endif
+	
+	EndSignal( player, "OnDestroy", "OnDeath" )
+
+	table< entity, bool > highlightedPlayers
+	file.highlightedPlayersInArea[player] <- highlightedPlayers
+
+	OnThreadEnd(
+		function() : ( player, highlightedPlayers )
+		{
+			if( player in file.highlightedPlayersInArea )
+				delete file.highlightedPlayersInArea[player]
+
+			#if SERVER
+			player.Highlight_SetCurrentContext( -1 )
+			#endif
+
+			#if CLIENT
+			foreach ( entity otherPlayer, bool isHightlighted in highlightedPlayers )
+			{
+				ManageHighlightEntity( otherPlayer )
+			}
+			#endif
+		}
+	)
+
+	const float effectMin = 0.6
+	const float effectMax = 0.2
+	int contextId = HIGHLIGHT_CHARACTER_SPECIAL_HIGHLIGHT // :nerd:
+
+	while(true)
+	{
+		array< entity > playersToHighlight
+		array< entity > playersToNotHighlight
+		array< entity > playersToHighlightBang
+		array< entity > playersToNotHighlightBang
+		
+		#if SERVER
+		player.Highlight_SetCurrentContext( contextId )
+		#endif
+	
+		RedishThingo_GetPlayersToHighlight( player, playersToHighlight, playersToNotHighlight )
+		BangSmoke_GetPlayersToHighlight( player, playersToHighlightBang, playersToNotHighlightBang )
+		
+		foreach( entity otherPlayer in playersToHighlight )
+		{
+			if ( !( otherPlayer in highlightedPlayers ) )
+			{
+				highlightedPlayers[ otherPlayer ] <- false
+			}
+
+			if ( highlightedPlayers[otherPlayer] )
+			{
+				continue
+			}
+
+			highlightedPlayers[otherPlayer] = true
+
+			#if SERVER
+			Highlight_SetSpecialHighlight( otherPlayer, "redish_highlight" )
+			#endif
+
+			#if CLIENT
+			ManageHighlightEntity( otherPlayer )
+			#endif
+		}
+
+		foreach( entity otherPlayer in playersToNotHighlight )
+		{
+			if ( otherPlayer in highlightedPlayers )
+			{
+				if ( !highlightedPlayers[otherPlayer] )
+					continue
+
+				highlightedPlayers[otherPlayer] = false
+
+				#if SERVER
+				otherPlayer.Highlight_SetFunctions( contextId, 0, true, 0, 2, 0, false ) //remove special highlight. Cafe
+				#endif
+
+				#if CLIENT
+				ManageHighlightEntity( otherPlayer )
+				#endif
+			}
+		}
+
+		#if SERVER
+		if( BangSmokeHighlightsEnabled() )
+		{
+			foreach( entity otherPlayer in playersToHighlightBang )
+			{
+				if ( !( otherPlayer in highlightedPlayers ) )
+				{
+					highlightedPlayers[ otherPlayer ] <- false
+				}
+
+				if ( highlightedPlayers[otherPlayer] )
+				{
+					continue
+				}
+
+				highlightedPlayers[otherPlayer] = true
+
+				Highlight_SetSpecialHighlight( otherPlayer, "smoke_highlight_blockscan" )
+			}
+		}
+		#endif
+		
+		WaitFrame()
+	}
+
+}
+
+void function RedishThingo_GetPlayersToHighlight( entity player, array<entity> outPlayersToHighlight, array<entity> outPlayersToNotHighlight )
+{
+	int playerTeam = player.GetTeam()
+
+	vector visibilityCheckPoint = player.EyePosition()
+	float maxSqrDist = file.highlightDistance * file.highlightDistance
+
+	array<entity> allTargets = GetPlayerArray_Alive()
+	allTargets.extend( GetEntArrayByScriptName( DECOY_SCRIPTNAME ) )
+	allTargets.extend( GetEntArrayByScriptName( CONTROLLED_DECOY_SCRIPTNAME ) )
+	allTargets.extend( GetEntArrayByScriptName( DECOY_ULTIMATE_SCRIPTNAME ) )
+	if( GetCurrentPlaylistVarBool( "redish_highlight_los_npcs", false ) )
+		allTargets.extend( GetNPCArrayOfEnemies( player.GetTeam() ) )
+
+	TraceResults results
+	foreach ( entity otherPlayer in allTargets )
+	{
+		if ( otherPlayer == player )
+			continue
+
+		if( !otherPlayer.DoesShareRealms( player ) ) // missing check. Cafe
+			continue
+		
+		if ( !IsEnemyTeam( playerTeam, otherPlayer.GetTeam() ) )
+		{
+			outPlayersToNotHighlight.append( otherPlayer )
+			continue
+		}
+		
+		if( StatusEffect_GetSeverity( otherPlayer, eStatusEffect.smokescreen ) > 0.0 )
+		{
+			outPlayersToNotHighlight.append( otherPlayer )
+			continue
+		}
+
+		vector otherPlayerEyePos = otherPlayer.EyePosition()
+
+		if ( DistanceSqr( visibilityCheckPoint, otherPlayerEyePos ) < maxSqrDist )
+		{
+			outPlayersToHighlight.append( otherPlayer )
+			continue
+		}
+
+		outPlayersToNotHighlight.append( otherPlayer )
+	}
+}
+
+bool function RedishHighlight_IsPlayerHighlighted( entity player, entity otherPlayer )
+{
+	if ( !RedishHighlightEnabled() )
+		return false
+
+	if ( !(player in file.highlightedPlayersInArea) )
+		return false
+
+	if ( !(otherPlayer in file.highlightedPlayersInArea[player]) )
+		return false
+
+	if ( !file.highlightedPlayersInArea[player][otherPlayer] )
+		return false
+
+	return true
+}

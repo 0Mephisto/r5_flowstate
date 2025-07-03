@@ -83,7 +83,7 @@ void function OnMiscMenu_NavigateBack()
 	}
 		
 
-	if(ISAIMTRAINER){
+	if(uiGlobal.isAimTrainer){
 		CloseAllMenus()
 		RunClientScript("ServerCallback_OpenFRChallengesMainMenu", PlayerKillsForChallengesUI)
 	}

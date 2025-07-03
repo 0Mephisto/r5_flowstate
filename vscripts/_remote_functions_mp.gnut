@@ -403,8 +403,6 @@ void function RemoteFunctions_Init_Begin()
 		case eGamemodes.CUSTOM_CTF:
 			// CTF: Server to Client
 			
-			BannerAssets_SetEnabled( false )
-			
 			ScriptRemote_RegisterClientFunction( "ServerCallback_CTF_AddPointIcon", "entity", "entity", "int", 0, 255)
 			ScriptRemote_RegisterClientFunction( "ServerCallback_CTF_RecaptureFlag", "int", 0, 999, "float", 0.0, 999.0, 32, "float", 0.0, 999.0, 32, "bool")
 			ScriptRemote_RegisterClientFunction("ServerCallback_CTF_FlagCaptured", "entity", "int", 0, 255)
@@ -681,6 +679,7 @@ void function RemoteFunctions_Init_Begin()
 		if ( Gamemode() == eGamemodes.CUSTOM_CTF )
 		{
 			CL_FSCTF_RegisterNetworkFunctions()
+			RegisterNetworkedVariableChangeCallback_int( "FSDM_GameState", FSCTF_GameStateChanged )
 		}
 
 		RegisterNetworkedVariableChangeCallback_bool( "playerInPlane", PlayerPlaneStatusChanged )

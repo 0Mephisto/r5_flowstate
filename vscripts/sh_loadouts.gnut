@@ -1961,7 +1961,7 @@ bool function ClientCommand_loadouts_set( entity player, array<string> args )
 	// 1: [loadout slot entry index]
 	// 2: [slot contents index]
 
-	if ( !IsValid( player ) || !CheckRate( player, "loadouts_set" ) || Gamemode() == eGamemodes.WINTEREXPRESS && !player.GetPlayerNetBool( "WinterExpress_IsPlayerAllowedLegendChange" ) ) 
+	if ( !IsValid( player ) || Gamemode() == eGamemodes.WINTEREXPRESS && !player.GetPlayerNetBool( "WinterExpress_IsPlayerAllowedLegendChange" ) ) 
 		return false
 
 	EHI playerEHI = ToEHI( player )

@@ -3370,8 +3370,8 @@ void function UI_UpdateOpenMenuButtonCallbacks_Spectate( int newLifeState, bool 
 		if ( shouldCloseMenu )
 			RunClientScript( "CloseCharacterSelectNewMenu" )
 
-		if ( shouldCloseMenu )
-			CloseFRChallengesSettingsWpnSelector()
+		// if ( shouldCloseMenu )
+			// CloseFRChallengesSettingsWpnSelector()
 	}
 }
 
@@ -3451,7 +3451,7 @@ void function WinterExpress_UpdateOpenMenuButtonCallbacks_Gameplay( bool isLegen
 		}
 
 		DeregisterConCommandTriggeredCallback( "+offhand4", WinterExpress_CL_TryOpenLoadoutSelect )
-		RunUIScript( "CloseFRChallengesSettingsWpnSelector" )
+		// RunUIScript( "CloseFRChallengesSettingsWpnSelector" )
 
 		file.OpenMenuGameplayButtonCallbackRegistered = false
 	}

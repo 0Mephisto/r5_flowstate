@@ -3604,8 +3604,8 @@ DamageEvent function Tracker_GetCurrentEventByPlayerHandle_expensive( int player
 		if( !IsValid( player ) || !player.p.isConnected )
 			return true
 			
-		if( !CheckRate( player ) )
-			return true
+		// if( !CheckRate( player ) )
+			// return true
 			
 		if( GetGameState() != eGameState.Playing )
 		{

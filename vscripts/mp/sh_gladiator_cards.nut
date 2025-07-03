@@ -1650,8 +1650,8 @@ void function TriggerNestedGladiatorCardUpdate( NestedGladiatorCardHandle handle
 #if SERVER
 	void function ClientCommand_SaveBadgeSlot( entity player, array<string> args )
 	{
-		if( !CheckRate( player, "save_badge", 2.5, true ) )
-			return
+		// if( !CheckRate( player, "save_badge", 2.5, true ) )
+			// return
 		
 		if( args.len() < 2 )
 			return

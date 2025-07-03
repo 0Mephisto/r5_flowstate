@@ -2866,10 +2866,10 @@ bool function SURVIVAL_PlayerAllowedToPickup( entity player, entity pickup = nul
 	{
 		LootData data = SURVIVAL_Loot_GetLootDataByIndex( pickup.GetSurvivalInt() )
 		
-		if(data.ref == "snd_bomb" && player.GetTeam() != Sh_GetAttackerTeam())
+		if(data.ref == "snd_bomb" && player.GetTeam() != Safe_GetAttackerTeam())
 		{
 			#if CLIENT
-			if(player.GetTeam() == Sh_GetDefenderTeam())
+			if(player.GetTeam() == Safe_GetDefenderTeam())
 				SND_HintCatalog(7, 0)
 			#endif
 			return false
@@ -2900,7 +2900,7 @@ bool function PlayerInValidState( entity player )
 {
 	#if SERVER
 	//printt("PlayerInValidState NOT - ", !IsAlive( player ), player.ContextAction_IsActive(), Bleedout_IsBleedingOut( player ), SURVIVAL_IsPlayerCarryingLoot( player ))
-	if( Playlist() == ePlaylists.fs_haloMod_oddball && GetBallCarrier() == player || Playlist() == ePlaylists.fs_dm_oddball && GetBallCarrier() == player || Playlist() == ePlaylists.fs_haloMod_ctf && GetGlobalNetEnt( "milFlag" ) == player || Playlist() == ePlaylists.fs_haloMod_ctf && GetGlobalNetEnt( "imcFlag" ) == player )
+	if( Playlist() == ePlaylists.fs_haloMod_oddball && Safe_GetBallCarrier() == player || Playlist() == ePlaylists.fs_dm_oddball && Safe_GetBallCarrier() == player || Playlist() == ePlaylists.fs_haloMod_ctf && GetGlobalNetEnt( "milFlag" ) == player || Playlist() == ePlaylists.fs_haloMod_ctf && GetGlobalNetEnt( "imcFlag" ) == player )
 		return false
 	#endif
 

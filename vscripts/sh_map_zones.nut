@@ -205,7 +205,7 @@ void function EntitiesDidLoad()
 #if DEVELOPER
 	thread DebugFrameThread()
 #endif // DEVELOPER
-	if( isScenariosMode() )
+	if( Safe_isScenariosMode() )
 	{
 		SURVIVAL_PlaceGroundItems()
 		return

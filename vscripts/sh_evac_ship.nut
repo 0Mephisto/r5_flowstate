@@ -544,7 +544,7 @@ void function PlayerBoardsEvacShip( entity player, EvacShipData evacShipData )
 		player.SetInvulnerable()
 	
 		
-	Message_New( player, "The danger is behind you... for now. You made it out alive.", 10 )
+	// Message_New( player, "The danger is behind you... for now. You made it out alive.", 10 )
 	
 	
 	//fixme Cafe

@@ -691,7 +691,7 @@ void function SURVIVAL_PlaceGroundItems()
 		if( GetEditorClass( ent ) != "info_survival_weapon_location" )
 			continue
 
-		if( isScenariosMode() )
+		if( Safe_isScenariosMode() )
 		{
 			FS_Scenarios_SaveLocationFromLootSpawn( ent )
 			continue
@@ -1623,7 +1623,7 @@ void function SURVIVAL_PlayerPickedupItem( entity pickup, entity player, int uni
 			printt( "new bomb carrier " + player + player.p.playerHasBomb )
 		#endif
 
-		foreach(sPlayer in GetPlayerArrayOfTeam( Sh_GetAttackerTeam() ))
+		foreach(sPlayer in GetPlayerArrayOfTeam( Safe_GetAttackerTeam() ))
 		{
 			if( !IsValid(sPlayer) || sPlayer == player ) continue
 			
@@ -4950,17 +4950,9 @@ void function SURVIVAL_Death_DropLoot_Internal( entity player, entity attacker, 
 	if ( player.IsPlayback() )
 		return
 
-	if( isScenariosMode() )
+	if( Safe_isScenariosMode() )
 	{
-		scenariosGroupStruct ornull group = FS_Scenarios_ReturnGroupForPlayer(player)
-		
-		if( group != null )
-		{
-			expect scenariosGroupStruct( group )
-			
-			if( IsValid( group ) )
-				EndSignal( group.dummyEnt, "FS_Scenarios_GroupFinished" ) //Cafe
-		}
+		Safe_DropLoot_RefScenarios( player )
 	}
 
 	bool dropBox = settings.deathbox_ondeath_enabled

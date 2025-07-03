@@ -217,7 +217,6 @@ void function SV_CL_Init()
 	MobileRespawnBeacon_Init()
 	PanicButton_Init()
 	WeaponMastiff_Init()
-	WorldDrawAsset_Init()
 
 	MpWeaponSentinel_Init()
 	ProtoBatteryCharger_Init()
@@ -257,28 +256,7 @@ void function SV_CL_Init()
 	// #if DEVSCRIPTS
 	// Dev_RemoteFunctions_Init()
 	// #endif
-
-	if( Playlist() == ePlaylists.fs_movementrecorder )
-	{
-		Sh_FS_MovementRecorder_Init()
-	}
-
-	#if CLIENT	
-		if( GetCurrentPlaylistVarBool( "enable_oddball_gamemode", false ) )
-		{
-			RegisterNetworkedVariableChangeCallback_ent( "FSDM_Oddball_BallOrCarrierEntity", Oddball_BallOrCarrierEntityChanged )
-			// RegisterNetworkedVariableChangeCallback_time( "FSIntro_StartTime", Flowstate_IntroTimeChanged )
-			// RegisterNetworkedVariableChangeCallback_time( "FSIntro_EndTime", Flowstate_IntroEndTimeChanged )
-			// RegisterNetworkedVariableChangeCallback_time( "FSVoteTeam_EndTime", Flowstate_VoteTeamEndTimeChanged )
-			if( Gamemode() == eGamemodes.fs_dm )
-				RegisterNetworkedVariableChangeCallback_int( "FSDM_GameState", FSDM_GameStateChanged )		
-		}
-		
-		if( Gamemode() == eGamemodes.CUSTOM_CTF )
-		{
-			RegisterNetworkedVariableChangeCallback_int( "FSDM_GameState", FSCTF_GameStateChanged )
-		}
-	#endif
+	
 	RemoteFunctions_Init_Finish()
 }
 
@@ -405,7 +383,6 @@ void function Server_Init()
 	SneakPeek_Init()
 	JumpPad_Init()
 	ObjectiveResourceSystem_ServerInit()
-	Chat_Init()
 
 	LiveAPI_Init()
 	LootHelper_Init()

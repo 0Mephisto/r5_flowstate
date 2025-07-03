@@ -1,3 +1,5 @@
+untyped
+
 global function InitSystemMenu
 global function InitSystemPanelMain
 global function InitSystemPanel
@@ -12,6 +14,9 @@ global function OpenChampionCard
 
 global function ShouldDisplayOptInOptions
 global function OpenWeaponSelector
+
+global string PlayerKillsForChallengesUI = ""
+global string PlayerCurrentWeapon = ""
 
 struct ButtonData
 {
@@ -150,7 +155,7 @@ void function OpenWeaponSelector()
 
 void function OpenRecordingsMenu()
 {
-	UI_Open1v1CoachingMenu()
+	SafeCallFunction( "UI_Open1v1CoachingMenu", [], "Recordings menu not available - Flowstate mod not loaded", "[MENU_SYSTEM]" )
 }
 
 void function InitSystemPanel( var panel )
@@ -288,7 +293,7 @@ void function InitSystemPanel( var panel )
 	file.OpenMOTD[ panel ].activateFunc = OpenMOTD	
 	
 	file.OpenScenariosStandings[ panel ].label = "#FS_SCENARIOS_STANDINGS"
-	file.OpenScenariosStandings[ panel ].activateFunc = UI_OpenScenariosStandingsMenu	
+	file.OpenScenariosStandings[ panel ].activateFunc = OpenScenariosStandings_System	
 	
 	file.OpenChampionCard[ panel ].label = "#FS_OPEN_CHAMPION"
 	file.OpenChampionCard[ panel ].activateFunc = OpenChampionCard	
@@ -420,7 +425,7 @@ void function UpdateSystemPanel( var panel )
 		} 
 		else
 		{
-			if(ISAIMTRAINER)
+			if(uiGlobal.isAimTrainer)
 				SetButtonData( panel, buttonIndex++, file.lobbyReturnButtonData[ panel ] )
 			else
 			{
@@ -544,7 +549,7 @@ void function SetButtonData( var panel, int buttonIndex, ButtonData buttonData )
 
 void function OnSystemMenu_Close()
 {
-	if( ISAIMTRAINER && IsConnected() && Playlist() == ePlaylists.fs_aimtrainer ){
+	if( uiGlobal.isAimTrainer && IsConnected() && Playlist() == ePlaylists.fs_aimtrainer ){
 		CloseAllMenus()
 		RunClientScript("ServerCallback_OpenFRChallengesMainMenu", PlayerKillsForChallengesUI)
 	}
@@ -555,7 +560,7 @@ void function OnSystemMenu_NavigateBack()
 {
 	Assert( GetActiveMenu() == file.menu )
 	CloseActiveMenu()
-	if( ISAIMTRAINER && IsConnected() && Playlist() == ePlaylists.fs_aimtrainer ){
+	if( uiGlobal.isAimTrainer && IsConnected() && Playlist() == ePlaylists.fs_aimtrainer ){
 		CloseAllMenus()
 		RunClientScript("ServerCallback_OpenFRChallengesMainMenu", PlayerKillsForChallengesUI)
 	}
@@ -608,12 +613,17 @@ void function Toggle1v1Scoreboard_System()
 
 void function OpenLGDuelsSettings_System()
 {
-	OpenLGDuelsSettings()
+	SafeCallFunction( "OpenLGDuelsSettings", [], "LG Duels settings not available - Flowstate mod not loaded", "[MENU_SYSTEM]" )
 }
 
 void function OpenValkSimulatorSettings_System()
 {
-	OpenValkSimulatorSettings()
+	SafeCallFunction( "OpenValkSimulatorSettings", [], "Valkyrie Simulator settings not available - Flowstate mod not loaded", "[MENU_SYSTEM]" )
+}
+
+void function OpenScenariosStandings_System()
+{
+	SafeCallFunction( "UI_OpenScenariosStandingsMenu", [], "Scenarios standings not available - Flowstate mod not loaded", "[MENU_SYSTEM]" )
 }
 
 void function OpenLockCurrent1v1Enemy_System()
@@ -761,7 +771,7 @@ void function OpenMOTD()
 
 void function OpenChampionCard()
 {
-	RunClientScript( "SelfShowChampion" )
+	SafeCallFunction( "SelfShowChampion", [], "Champion card not available - Flowstate mod not loaded", "[MENU_SYSTEM]" )
 }
 
 void function UpdateOptInFooter()

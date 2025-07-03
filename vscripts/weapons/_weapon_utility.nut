@@ -2664,33 +2664,9 @@ void function PROTO_InitTrackedProjectile( entity projectile )
 
 void function AddToTrackedEnts( entity player, entity ent )
 {
-	if( isScenariosMode() )
+	if( Safe_isScenariosMode() )
 	{
-		scenariosGroupStruct ornull group = FS_Scenarios_ReturnGroupForPlayer(player)
-
-		bool iLoveMkos = false
-		
-		if( group != null )
-		{
-			expect scenariosGroupStruct( group )
-			
-			if( group.isValid && !group.IsFinished && group.trackedEntsArrayIndex > -1 )
-			{
-				AddToScriptManagedEntArray( group.trackedEntsArrayIndex, ent )
-				
-				#if DEVELOPER
-					printt( "tracked ent added to scenarios group managed ent array", group.trackedEntsArrayIndex, ent )
-				#endif
-			} else
-				iLoveMkos = true
-		} else
-			iLoveMkos = true
-			
-		if( iLoveMkos )
-		{
-			if( IsValid( ent ) ) //group does not exist anymore.. Cafe
-				ent.Destroy()
-		}
+		Safe_AddToTrackedEnts_RefScenarios( player, ent )
 	} 
 	else
 	{

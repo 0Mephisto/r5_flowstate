@@ -2671,6 +2671,239 @@ bool function IsFlowstateActive()
 	return HAS_FLOWSTATE_MOD
 }
 
+bool function SafeCallFunction( string functionName, array<string> paramStrings = [], string fallbackMessage = "", string errorPrefix = "[SAFE_CALL]" )
+{
+	try 
+	{
+		string callString = functionName + "("
+		for ( int i = 0; i < paramStrings.len(); i++ )
+		{
+			if ( i > 0 )
+				callString += ", "
+			callString += paramStrings[i]
+		}
+		callString += ")"
+		
+		compilestring( callString )()
+		return true
+	}
+	catch ( exception )
+	{
+		if ( fallbackMessage != "" )
+			printw( errorPrefix + " " + fallbackMessage )
+		else
+			printw( errorPrefix + " Function '" + functionName + "' not available (mod not loaded or function doesn't exist)" )
+		return false
+	}
+}
+
+// Convenience functions for common parameter patterns
+bool function SafeCallFunction1( string functionName, string param1, string fallbackMessage = "", string errorPrefix = "[SAFE_CALL]" )
+{
+	return SafeCallFunction( functionName, [param1], fallbackMessage, errorPrefix )
+}
+
+bool function SafeCallFunction2( string functionName, string param1, string param2, string fallbackMessage = "", string errorPrefix = "[SAFE_CALL]" )
+{
+	return SafeCallFunction( functionName, [param1, param2], fallbackMessage, errorPrefix )
+}
+
+bool function SafeCallFunction3( string functionName, string param1, string param2, string param3, string fallbackMessage = "", string errorPrefix = "[SAFE_CALL]" )
+{
+	return SafeCallFunction( functionName, [param1, param2, param3], fallbackMessage, errorPrefix )
+}
+
+// SafeCallFunction variants with return values
+int function SafeCallFunctionInt( string functionName, int defaultValue, array<string> paramStrings = [], string errorPrefix = "[SAFE_CALL]" )
+{
+	try 
+	{
+		string callString = functionName + "("
+		for ( int i = 0; i < paramStrings.len(); i++ )
+		{
+			if ( i > 0 )
+				callString += ", "
+			callString += paramStrings[i]
+		}
+		callString += ")"
+		
+		// Execute and capture return value
+		return expect int( compilestring( "return " + callString )() )
+	}
+	catch ( exception )
+	{
+		printw( errorPrefix + " Function '" + functionName + "' not available, using default value: " + defaultValue )
+		return defaultValue
+	}
+}
+
+string function SafeCallFunctionString( string functionName, string defaultValue, array<string> paramStrings = [], string errorPrefix = "[SAFE_CALL]" )
+{
+	try 
+	{
+		string callString = functionName + "("
+		for ( int i = 0; i < paramStrings.len(); i++ )
+		{
+			if ( i > 0 )
+				callString += ", "
+			callString += paramStrings[i]
+		}
+		callString += ")"
+		
+		return expect string( compilestring( "return " + callString )() )
+	}
+	catch ( exception )
+	{
+		printw( errorPrefix + " Function '" + functionName + "' not available, using default value: " + defaultValue )
+		return defaultValue
+	}
+}
+
+bool function SafeCallFunctionBool( string functionName, bool defaultValue, array<string> paramStrings = [], string errorPrefix = "[SAFE_CALL]" )
+{
+	try 
+	{
+		string callString = functionName + "("
+		for ( int i = 0; i < paramStrings.len(); i++ )
+		{
+			if ( i > 0 )
+				callString += ", "
+			callString += paramStrings[i]
+		}
+		callString += ")"
+		
+		return expect bool( compilestring( "return " + callString )() )
+	}
+	catch ( exception )
+	{
+		printw( errorPrefix + " Function '" + functionName + "' not available, using default value: " + defaultValue )
+		return defaultValue
+	}
+}
+
+float function SafeCallFunctionFloat( string functionName, float defaultValue, array<string> paramStrings = [], string errorPrefix = "[SAFE_CALL]" )
+{
+	try 
+	{
+		string callString = functionName + "("
+		for ( int i = 0; i < paramStrings.len(); i++ )
+		{
+			if ( i > 0 )
+				callString += ", "
+			callString += paramStrings[i]
+		}
+		callString += ")"
+		
+		return expect float( compilestring( "return " + callString )() )
+	}
+	catch ( exception )
+	{
+		printw( errorPrefix + " Function '" + functionName + "' not available, using default value: " + defaultValue )
+		return defaultValue
+	}
+}
+
+entity function SafeCallFunctionEntity( string functionName, entity defaultValue = null, array<string> paramStrings = [], string errorPrefix = "[SAFE_CALL]" )
+{
+	try 
+	{
+		string callString = functionName + "("
+		for ( int i = 0; i < paramStrings.len(); i++ )
+		{
+			if ( i > 0 )
+				callString += ", "
+			callString += paramStrings[i]
+		}
+		callString += ")"
+		
+		return expect entity( compilestring( "return " + callString )() )
+	}
+	catch ( exception )
+	{
+		printw( errorPrefix + " Function '" + functionName + "' not available, using default entity" )
+		return defaultValue
+	}
+}
+
+// Safe wrappers for Flowstate team functions
+int function Safe_GetAttackerTeam()
+{
+	// Default to IMC team (typically team 2) when Flowstate mod not available
+	return SafeCallFunctionInt( "Sh_GetAttackerTeam", TEAM_IMC, [], "[TEAM_SAFE]" )
+}
+
+int function Safe_GetDefenderTeam()
+{
+	// Default to Militia team (typically team 3) when Flowstate mod not available  
+	return SafeCallFunctionInt( "Sh_GetDefenderTeam", TEAM_MILITIA, [], "[TEAM_SAFE]" )
+}
+
+// Safe wrapper for Flowstate ball carrier function
+entity function Safe_GetBallCarrier()
+{
+	// Return null entity when Flowstate mod not available
+	// This ensures comparisons like "Safe_GetBallCarrier() == player" will be false
+	return SafeCallFunctionEntity( "GetBallCarrier", null, [], "[BALL_CARRIER]" )
+}
+
+// Safe wrapper for Flowstate movement map dummy creation (threaded function)
+void function Safe_CreateMovementMapDummieFromMapLoad( vector pos, vector ang )
+{
+	// Convert vector parameters to string format for compilestring
+	string posStr = format( "<%f,%f,%f>", pos.x, pos.y, pos.z )
+	string angStr = format( "<%f,%f,%f>", ang.x, ang.y, ang.z )
+	
+	SafeCallFunction( "CreateMovementMapDummieFromMapLoad", [posStr, angStr], "Movement map dummy creation not available - Flowstate mod not loaded", "[MOVEMENT_DUMMY]" )
+}
+
+// Safe wrapper for Flowstate scenarios mode check
+bool function Safe_isScenariosMode()
+{
+	// Default to false when Flowstate mod not available
+	// This ensures scenarios mode features are disabled when mod not present
+	return SafeCallFunctionBool( "isScenariosMode", false, [], "[SCENARIOS_MODE]" )
+}
+
+// Safe wrapper for Flowstate scenarios big door data saving
+void function Safe_FS_Scenarios_SaveBigDoorData( entity door )
+{
+	// Pass entity index as integer parameter
+	string doorIndexStr = door.GetEntIndex().tostring()
+	
+	SafeCallFunction( "FS_Scenarios_SaveBigDoorData_SafeWrapper", [doorIndexStr], "Big door data saving not available - Flowstate mod not loaded", "[SCENARIOS_DOOR]" )
+}
+
+// Safe wrapper for Flowstate scenarios loot dropping
+void function Safe_DropLoot_RefScenarios( entity player )
+{
+	// Pass entity index as integer parameter
+	string playerIndexStr = player.GetEntIndex().tostring()
+	
+	SafeCallFunction( "DropLoot_RefScenarios_SafeWrapper", [playerIndexStr], "Scenarios loot dropping not available - Flowstate mod not loaded", "[SCENARIOS_LOOT]" )
+}
+
+// Safe wrapper for Flowstate scenarios tracked entities
+void function Safe_AddToTrackedEnts_RefScenarios( entity player, entity ent )
+{
+	// Pass entity indices as integer parameters
+	string playerIndexStr = player.GetEntIndex().tostring()
+	string entIndexStr = ent.GetEntIndex().tostring()
+	
+	SafeCallFunction( "AddToTrackedEnts_RefScenarios_SafeWrapper", [playerIndexStr, entIndexStr], "Scenarios tracked entities not available - Flowstate mod not loaded", "[SCENARIOS_TRACKED]" )
+}
+
+// Safe wrapper for Flowstate spies victim backwards check
+bool function Safe_FS_Spies_IsVictimBackwardsToAttacker( entity attacker, entity victim, vector position )
+{
+	// Pass entity indices and vector as parameters
+	string attackerIndexStr = attacker.GetEntIndex().tostring()
+	string victimIndexStr = victim.GetEntIndex().tostring()
+	string positionStr = format( "<%f,%f,%f>", position.x, position.y, position.z )
+	
+	// Default to false when Flowstate mod not available (disables special spies mechanics)
+	return SafeCallFunctionBool( "FS_Spies_IsVictimBackwardsToAttacker", false, [attackerIndexStr, victimIndexStr, positionStr], "[SPIES_BACKWARDS]" )
+}
+
 
 bool function IsEverythingUnlocked()
 {
@@ -3043,5 +3276,346 @@ entity function CreateCustomLight( vector origin, vector angles, string lightcol
 	// surf.playerSpawnedProps.append(env_sprite)
 
 	return env_sprite
+}
+
+
+void function FS_ResetMapLighting()
+{
+	SetConVarToDefault( "mat_sun_color" )
+	SetConVarToDefault( "mat_sun_scale" )
+	SetConVarToDefault( "mat_sky_color" )
+	SetConVarToDefault( "mat_sky_scale" )
+	SetConVarToDefault( "mat_autoexposure_min_multiplier" )
+	SetConVarToDefault( "mat_autoexposure_min" )
+	SetConVarToDefault( "mat_autoexposure_max_multiplier" )
+	SetConVarToDefault( "mat_autoexposure_max" )
+	SetConVarToDefault( "mat_bloom_max_lighting_value" )
+	// SetConVarToDefault( "jump_graceperiod" )
+	SetConVarToDefault( "mat_envmap_scale" )
+}
+
+void function Message( entity player, string text, string subText = "", float duration = 7.0, string sound = "" )
+{
+	if( !IsValid( player ) ) 
+		return
+		
+	if( !player.IsPlayer() ) 
+		return
+		
+	if ( !player.p.isConnected ) 
+		return
+	
+	LocalMsg( player, "#FS_NULL", "#FS_NULL", eMsgUI.DEFAULT, duration, text, subText, sound )
+	
+	// if ( ( text.len() + subText.len() ) >= 599 ) 
+		// return
+
+	// string sendMessage
+	// for ( int textType = 0 ; textType < 2 ; textType++ )
+	// {
+		// sendMessage = textType == 0 ? text : subText
+
+		// for ( int i = 0; i < sendMessage.len(); i++ )
+		// {
+			// Remote_CallFunction_NonReplay( player, "Dev_BuildClientMessage", textType, sendMessage[i] )
+		// }
+	// }
+	// Remote_CallFunction_NonReplay( player, "Dev_PrintClientMessage", duration )
+
+	// if ( sound != "" )
+		// thread EmitSoundOnEntityOnlyToPlayer( player, player, sound )
+}
+
+bool function IsStringNumber( string str ) 
+{
+	if ( str.len() == 0 )
+		return false
+	
+    int start = ( str[0] == '-' && str.len() > 1 ) ? 1 : 0    
+	bool dot = false
+	
+	for ( int i = start; i < str.len(); i++ ) 
+	{
+		if (str[i] == '.')
+		{
+			if( dot )
+				return false
+			else 
+				dot = true
+		} 
+		else if ( str[i] < '0' || str[i] > '9' )
+			return false
+    }
+	
+    return true
+}
+
+bool function IsStringNumber2( string str )
+{
+	return DoesMatchRegexp( str, "^-?(\\d+\\.\\d+|\\d+)$" ) 
+}
+
+array<float> s_unitTestArr1
+void function RegExpUnitTest( string str )
+{
+	mAssert( IsThreadTop(), "Thread this function" )
+	
+	int iter = 0	
+	bool test
+	
+	TimerStart()
+	while( iter < 100000 )
+	{
+		test = IsStringNumber2( str )
+		iter++
+	}
+	
+	float finish = TimerEnd()
+	s_unitTestArr1.append( finish )
+	
+	printt( "Unit test1; regexp; 100000 iterations: ms:", finish, ";Criteria:", str )
+	
+	if( s_unitTestArr1.len() > 5 )
+	{
+		float total
+		foreach( float entry in s_unitTestArr1 )
+		{
+			printt( "entry =", entry )
+			total += entry
+		}
+			
+		float avg = total / 6
+		printt( "Unit test 1 avg = ms", avg )
+		
+		s_unitTestArr1.clear()
+	}
+}
+
+
+array<float> s_unitTestArr2
+void function RegExpUnitTest2( string str )
+{
+	mAssert( IsThreadTop(), "Thread this function" )
+	
+	int iter = 0	
+	bool test
+	
+	TimerStart()
+	while( iter < 100000 )
+	{
+		test = IsStringNumber( str )
+		iter++
+	}
+	
+	float finish = TimerEnd()
+	s_unitTestArr2.append( finish )
+	
+	printt( "Unit test1; custom; 100000 iterations: ms:", finish, ";Criteria:", str )
+	
+	if( s_unitTestArr2.len() > 5 )
+	{
+		float total
+		foreach( float entry in s_unitTestArr2 )
+		{
+			printt( "entry =", entry )
+			total += entry
+		}
+			
+		float avg = total / 6
+		printt( "Unit test 2 avg ms =", avg )
+		
+		s_unitTestArr2.clear()
+	}
+}
+
+array<float> s_unitTestArr3
+void function StringUnitTest( string str )
+{
+	mAssert( IsThreadTop(), "Thread this function" )
+	
+	int iter = 0	
+	bool test
+	
+	TimerStart()
+	while( iter < 100000 )
+	{
+		test = IsSafeString( str )
+		iter++
+	}
+	
+	float finish = TimerEnd()
+	s_unitTestArr3.append( finish )
+	
+	printt( "Unit test3; regexp IsSafeString; 100000 iterations: ms:", finish, ";Criteria:", str )
+	
+	if( s_unitTestArr3.len() > 5 )
+	{
+		float total
+		foreach( float entry in s_unitTestArr3 )
+		{
+			printt( "entry =", entry )
+			total += entry
+		}
+			
+		float avg = total / 6
+		printt( "Unit test 3 avg ms =", avg )
+		
+		s_unitTestArr3.clear()
+	}
+}
+
+int function stringcmp( string a, string b ) 
+{
+    if ( a.len() != b.len() )
+		return a.len() < b.len() ? -1 : 1
+	
+    for ( int i = 0; i < a.len(); ++i ) 
+	{
+		if ( a[i] != b[i] )
+			return a[i] < b[i] ? -1 : 1
+	}
+
+    return 0
+}
+
+bool function IsStringNumeric( string str, int ornull min = null, int ornull max = null )
+{
+	string minStr = min == null ? "-2147483647" : expect int ( min ).tostring()
+	string maxStr = max == null ? "2147483647" : expect int ( max ).tostring()
+	
+	if ( !IsStringNumber( str ) ) 
+        return false
+    
+    if ( str[0] == '-' ) 
+	{
+        if ( stringcmp( str.slice( 1 ), minStr.slice( 1 ) ) > 0 ) 
+            return false
+    }
+	else 
+	{
+        if ( stringcmp( str, maxStr ) > 0 ) 
+            return false
+    }
+
+    //sqprint( format( "%s", str ) )
+    return true
+}
+
+
+bool function IsFloat( string str, float min = INT_MAX, float limit = INT_MIN )  //cleanup
+{
+	if ( str.len() == 0 ) 
+		return false
+	
+	for ( int i = 0; i < str.len(); i++ ) 
+	{
+		var c = str[i]
+		if ( !( ( c >= '0' && c <= '9' ) || ( c == '.' && i != 0 ) || ( c == '-' && i == 0 ) ) ) 
+			return false
+	}
+	
+	float num = 0.0
+	try { num = str.tofloat() } catch ( outofrange ){ return false }	
+	return ( num >= min && num <= limit )
+}
+
+string function LineBreak( string str, int interval = 80 )
+{
+	string output = ""
+	
+	for ( int i = 0; i < str.len(); ) 
+	{
+		int end = i + interval
+		
+		if ( end >= str.len() ) 
+		{
+			output += str.slice( i ) + "\n"
+			break
+		}
+		
+		bool located_space = false
+		
+		for ( int j = end; j > i; --j ) 
+		{
+			if ( str.slice( j-1, j ) == " " ) 
+			{
+				end = j
+				located_space = true
+				break
+			}
+		}
+		
+		if ( !located_space ) 
+			end = i + interval
+
+		output += str.slice( i, end ) + "\n"
+		i = end
+	}
+	
+	return output
+}
+
+bool function IsStringBool( string str )
+{
+	switch( str )
+	{
+		case "0":
+		case "1":
+		case "true":
+		case "false":		
+			return true 
+		
+		default:
+			return false 
+	}
+	
+	unreachable
+}
+
+bool function StringToBool( string str )
+{
+	mAssert( IsStringBool( str ), "Tried to convert \"%s\" to bool", str )
+	
+	switch( str )
+	{
+		case "0":
+		case "false":
+			return false 
+			
+		case "1":
+		case "true":
+			return true 
+	}
+	
+	unreachable
+}
+
+entity function GetPlayerEntityByName( string name ) //deprecate use universal lookup for both name/uid
+{	
+	entity p	
+	name = name.tolower()
+	
+	foreach ( player in GetPlayerArray() )
+	{
+		if ( player.GetPlayerName().tolower() == name )	
+			return player
+	}
+	
+	return p
+}
+
+//Defaults: space and:  A-Z  a-z  0-9  _    [  ]  (  )  :  ;  -  *  &  ^  %  $  #  @  ! + = ? . |
+bool function IsSafeString( string str, int strlen = -1, string pattern = "" ) 
+{
+	if( empty( str ) )
+		return true
+		
+	if( strlen != -1 && str.len() > strlen )
+		return false
+	
+	if( pattern == "" )
+		pattern = "^[A-Za-z0-9_ \\[\\]\\(\\):;\\-*&^%$#@!+=?.|]*$"
+	
+	return ( RegexpFindAll( str, pattern ).len() != 0 )
 }
 #endif
