@@ -146,6 +146,8 @@ global function UpdateActiveMenuThink
 global function DialogFlow
 global function TryDialogFlowPersistenceQuery
 
+global function AddUICallback_OnInitMenus
+
 #if DURANGO_PROG
 global function OpenXboxPartyApp
 global function OpenXboxHelp
@@ -161,6 +163,7 @@ global function CloseAllMenusExcept
 
 struct
 {
+	array<void functionref()>                   OnInitMenusCallbacks
 	array<void functionref()>                   partyUpdatedCallbacks
 	array<void functionref()>                   partymemberAddedCallbacks
 	array<void functionref()>                   partymemberRemovedCallbacks
@@ -1622,68 +1625,18 @@ void function InitMenus()
 	var gamemodeselectv4 = AddMenu( "GamemodeSelectV4Dialog", $"scripts/resource/ui/menus/dialogs/gamemode_select_v4.res", InitGamemodeSelectDialogV4 )
 	AddPanel( gamemodeselectv4, "MapSelectPanel", InitFreeRoamMapPanel )
 
-	//Settings
-	AddMenu( "FRLGDuelsSettings", $"scripts/resource/ui/menus/FRChallenges/flowstate_lgduels_settings.menu", InitLGDuelsSettings )
-	// AddMenu( "ValkSimulatorSettings", $"scripts/resource/ui/menus/FRChallenges/flowstate_valksimulator_settings.menu", InitValkSimulatorSettings )
+	foreach ( callbackFunc in file.OnInitMenusCallbacks )
+		callbackFunc()
 
 	//CTF UI
 	var controlmenu = AddMenu( "CTFRespawnMenu", $"scripts/resource/ui/menus/CTF/ctfrespawnmenu.menu", InitCTFRespawnMenu )
 	var ctfvotemenu = AddMenu( "CTFVoteMenu", $"scripts/resource/ui/menus/CTF/ctfvotemenu.menu", InitCTFVoteMenu )
 
-	//Flowstate Aim Trainer
-	//Main Menu
-	AddMenu( "FRChallengesMainMenu", $"scripts/resource/ui/menus/FRChallenges/mainmenu_main.menu", InitFRChallengesMainMenu )
-	
-	//Settings
-	AddMenu( "FRChallengesSettings", $"scripts/resource/ui/menus/FRChallenges/mainmenu_settings.menu", InitFRChallengesSettings )
-	
-	//History
-	AddMenu( "FRChallengesHistory", $"scripts/resource/ui/menus/FRChallenges/mainmenu_history.menu", InitChallengesHistory )
-	
-	//Weapon Selector
-	var weaponselector = AddMenu( "FRChallengesSettingsWpnSelector", $"scripts/resource/ui/menus/FRChallenges/mainmenu_settings_weaponselector.menu", InitFRChallengesSettingsWpnSelector )
-	AddPanel( weaponselector, "BuyMenu1", InitArenasBuyPanel1 )
-	AddPanel( weaponselector, "BuyMenu2", InitArenasBuyPanel2 )
-	AddPanel( weaponselector, "BuyMenu3", InitArenasBuyPanel3 )
-	AddPanel( weaponselector, "BuyMenu4", InitArenasBuyPanel4 )
-	AddPanel( weaponselector, "BuyMenu5", InitArenasBuyPanel5 )
-	
-	//results
-	AddMenu( "FRChallengesMenu", $"scripts/resource/ui/menus/FRChallenges/challenges_results.menu", InitFRChallengesResultsMenu ) //results
-	
 	//Custom KillReplayHud
 	var killreplayhud = AddMenu( "KillReplayHud", $"scripts/resource/ui/menus/KillReplay/replayhud.menu", InitKillReplayHud )
 
-	//Custom msgs to chat box
-	AddMenu( "FS_ServerMsgs_To_ChatBox", $"scripts/resource/ui/menus/FlowstateDM/flowstate_msgs_to_chatbox.menu", InitServerMSGSToChatBox )
-
-	//FLOWSTATE DM
-	//Statistics
-	AddMenu( "StatisticsUI", $"scripts/resource/ui/menus/FlowstateDM/flowstate_statistics.menu", InitStatisticsUI )
-	AddMenu( "FSDMVoteMenu", $"scripts/resource/ui/menus/FlowstateDM/flowstate_menu_vote.menu", Init_FSDM_VoteMenu )
-	
-	AddMenu( "FSVoteTeamMenu", $"scripts/resource/ui/menus/FlowstateDM/flowstate_menu_voteteam.menu", Init_FS_VoteTeamMenu )//Halo mod and others probably
-
-	AddMenu( "FSProphuntScoreboardMenu", $"scripts/resource/ui/menus/FlowstateDM/flowstate_prophunt_scoreboard.menu", Init_FSDM_ProphuntScoreboardMenu )
-
 	//Custom Weapon Mods Menu
 	var weaponmodsmenu = AddMenu( "WeaponMods", $"scripts/resource/ui/menus/weaponmods.menu", InitWeaponModsMenu )
-
-	
-	//FLOWSTATE MOVEMENT GYM
-	//Settings
-	AddMenu( "MGSettingsMenu", $"scripts/resource/ui/menus/MovementGym/movementgym_settings.menu", InitMGSettings )
-
-	//FLOWSTATE SND
-	//Buy Menu
-	AddMenu( "FSSND_BuyMenu", $"scripts/resource/ui/menus/FlowstateSND/flowstate_snd_buy_menu.menu", Init_FSSND_BuyMenu )
-	
-	//FLOWSTATE SPIES LEGENDS
-	//Gadgets Selector
-	// var gadgetsselector = AddMenu( "Spies_GadgetsSelector", $"scripts/resource/ui/menus/SpiesLegends/gadgetsselector.menu", Init_GadgetsSelector )
-	
-	//FLOWSTATE 1v1
-	var fs1v1_SettingsMenu = AddMenu( "1v1_SetttingsMenu", $"scripts/resource/ui/menus/fs_1v1/settings.menu", Init_1v1_SettingsMenu )
 	
 	var lobbyMenu = AddMenu( "LobbyMenu", $"scripts/resource/ui/menus/lobby.menu", InitLobbyMenu )
 	AddPanel( lobbyMenu, "PlayPanel", InitPlayPanel )
@@ -1850,13 +1803,7 @@ void function InitMenus()
 	AddMenu( "DevMenu", $"scripts/resource/ui/menus/dev.menu", InitDevMenu, "Dev" )
 	
 	AddMenu( "SERVER_MOTD", $"scripts/resource/ui/menus/dialogs/server_motd.menu", Init_Server_MOTD, "Server MOTD" )
-
-	AddMenu( "ScenariosStandingsMenu", $"scripts/resource/ui/menus/FlowstateScenarios/fs_scenarios.menu", InitScenariosMenu, "Match Standings" )
 	
-	//Coaching menu
-	var coachingMenu = AddMenu( "1v1CoachingModeMenu", $"scripts/resource/ui/menus/FS_1v1_Coaching/fs_1v1_coaching.menu", InitCoachingMenu, "1v1 Coaching" )
-	AddPanel( coachingMenu, "CoachingRecordingsList", Init_CoachingRecordingsList )
-
 	InitTabs()
 	InitSurveys()
 	ShMenuModels_UIInit()
@@ -2792,6 +2739,15 @@ bool function IsDialogOnlyActiveMenu()
 	return false
 }
 
+void function AddUICallback_OnInitMenus( void functionref() callbackFunc )
+{
+	Assert( !file.OnInitMenusCallbacks.contains( callbackFunc ), "Already added " + string( callbackFunc ) + " with AddCallback_OnPartyUpdated" )
+	
+	if( file.OnInitMenusCallbacks.contains( callbackFunc ) )
+		return
+	
+	file.OnInitMenusCallbacks.append( callbackFunc )
+}
 
 void function AddCallback_OnPartyUpdated( void functionref() callbackFunc )
 {
