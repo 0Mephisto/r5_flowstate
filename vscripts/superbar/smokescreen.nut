@@ -340,13 +340,13 @@ array<entity> function SmokescreenFX( SmokescreenStruct smokescreen, Smokescreen
 
 void function DestroySmokescreen( SmokescreenStruct smokescreen, float lifetime, SmokescreenFXStruct fxInfo, entity traceBlocker, array<entity> fxEntities, entity player )
 {
-	printw( "DestroySmokescreen" )
+	// printw( "DestroySmokescreen" )
 	player.EndSignal( "CleanUpPlayerAbilities" )
 	EndThreadOn_PlayerChangedClass( smokescreen.attacker )
 	
 	OnThreadEnd( function() : ( fxEntities, fxInfo, traceBlocker, smokescreen )
 		{
-			printw("smoke end" )
+			// printw("smoke end" )
 			smokescreen.lifetime = 0
 			
 			if ( IsValid( traceBlocker ) )
