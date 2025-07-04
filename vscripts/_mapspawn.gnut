@@ -416,7 +416,7 @@ entity ornull function CreateEditorProp(asset a, vector pos, vector ang, bool ma
 {
 	if(a == $"mdl/humans/class/medium/combat_dummie_medium.rmdl")
 	{
-		thread CreateMovementMapDummieFromMapLoad(pos,ang)
+		thread Safe_CreateMovementMapDummieFromMapLoad(pos,ang)
 		return null
 	}
 	
@@ -428,8 +428,8 @@ entity ornull function CreateEditorProp(asset a, vector pos, vector ang, bool ma
 	if(mantle) e.AllowMantle()
 	e.SetScriptName("editor_placed_prop")
 
-	if(GetCurrentPlaylistVarBool( "flowstateSURF", true ))
-		_OnPropDynamicSpawnedSURF(e)
+	// if(GetCurrentPlaylistVarBool( "flowstateSURF", true ))
+		// _OnPropDynamicSpawnedSURF(e)
 	
 	
 	return e

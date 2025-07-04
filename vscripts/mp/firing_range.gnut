@@ -40,6 +40,7 @@ global const asset FIRINGRANGE_QUARRY_BLOCK_ASSET = $"mdl/rocks/thunderdome_quar
 // To be used outside if needed
 global int firingrange_infinite_ammo = 0
 global function FiringRangeProps
+global function CreateFRButton
 
 bool toggledFriendlyFire = false
 global function CreateGunRangeTargetsForRealm
@@ -1306,6 +1307,20 @@ void function MovingGunRangeTargetMove( sMovingTarget movingTarget, bool initSta
 // ==================================================
 //					MAP PROPS
 // ==================================================
+
+entity function CreateFRButton(vector pos, vector ang, string prompt)
+{
+	entity button = CreateEntity("prop_dynamic")
+	button.kv.solid = 6
+	button.SetValueForModelKey($"mdl/props/global_access_panel_button/global_access_panel_button_console_w_stand.rmdl")
+	button.SetOrigin(pos)
+	button.SetAngles(ang)
+	DispatchSpawn(button)
+	button.SetUsable()
+	button.SetUsableByGroup("pilot")
+	button.SetUsePrompts(prompt, prompt)
+	return button
+}
 
 void function SpawnMapProps()
 {

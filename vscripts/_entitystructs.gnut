@@ -455,6 +455,10 @@ global struct ServerEntityStruct
 	bool isInAirborne = false
 	bool canBoost = true
 	bool canReset = true
+	bool isBraking = false
+	float boostEndTime
+	float lastBoostTime
+	VehicleSim& simState
 
 	TraceResults& hoverTrace
 	vector forwardSpeed

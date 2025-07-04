@@ -75,7 +75,7 @@ void function OnPanelSpawn( entity panel )
 
 bool function ControlPanel_UseScriptDrivenSFX( entity panel )
 {
-	return ( GetCurrentPlaylistVarBool("control_panel_use_script_driven_SFX", false ) )
+	return true //( GetCurrentPlaylistVarBool("control_panel_use_script_driven_SFX", false ) )
 }
 
 void function OnPanelSpawn_Internal( entity panel )
@@ -768,6 +768,7 @@ void function ControlPanel_TrackContinuousUse( entity player, float leechTime, b
 {
 	player.EndSignal( "OnDeath" )
 	player.EndSignal( "ScriptAnimStop" )
+	player.EndSignal( "Interrupted" )
 
 	table result
 	result.success <- false
@@ -1067,5 +1068,5 @@ void function SetPathfinder_HandUSB( entity player, bool showUSB = false )
 
 bool function FS_ShouldPanelHaveHighlight( entity panel )
 {
-	return IsPVEMode() // || Gamemode() == eGamemodes.fs_spieslegends && panel.GetTeam() == gCurrentSpyTeam
+	return IsPVEMode() || Gamemode() == eGamemodes.fs_spieslegends && panel.GetTeam() == gCurrentSpyTeam
 }

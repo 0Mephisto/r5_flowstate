@@ -637,15 +637,15 @@ void function CodeCallback_OnMeleeStartActivity( entity attacker, entity meleeAt
 					attacker.Lunge_LockPitch( true )
 				}
 
-				// #if SERVER
-				// if( Gamemode() == eGamemodes.fs_spieslegends && FS_Spies_IsVictimBackwardsToAttacker( attacker, lungeTarget, attacker.GetOrigin() ) )
-				// {
-					// if( attacker.PlayerMelee_IsAttackActive() )
-						// attacker.PlayerMelee_EndAttack()
-					// TryStartSyncedMelee( attacker, lungeTarget )
-					// return
-				// }
-				// #endif
+				#if SERVER
+				if( Gamemode() == eGamemodes.fs_spieslegends && Safe_FS_Spies_IsVictimBackwardsToAttacker( attacker, lungeTarget, attacker.GetOrigin() ) )
+				{
+					if( attacker.PlayerMelee_IsAttackActive() )
+						attacker.PlayerMelee_EndAttack()
+					TryStartSyncedMelee( attacker, lungeTarget )
+					return
+				}
+				#endif
 			}
 			else
 			{
@@ -758,15 +758,15 @@ void function CodeCallback_OnMeleeAttackAnimEvent( entity attacker, entity melee
 	if ( !IsValid( target ) )
 		return
 	
-	// #if SERVER
-	// if( Gamemode() == eGamemodes.fs_spieslegends && FS_Spies_IsVictimBackwardsToAttacker( attacker, target, startPosition ) )
-	// {
-		// if( attacker.PlayerMelee_IsAttackActive() )
-			// attacker.PlayerMelee_EndAttack()
-		// TryStartSyncedMelee( attacker, target )
-		// return
-	// }
-	// #endif
+	#if SERVER
+	if( Gamemode() == eGamemodes.fs_spieslegends && Safe_FS_Spies_IsVictimBackwardsToAttacker( attacker, target, startPosition ) )
+	{
+		if( attacker.PlayerMelee_IsAttackActive() )
+			attacker.PlayerMelee_EndAttack()
+		TryStartSyncedMelee( attacker, target )
+		return
+	}
+	#endif
 		
 	if( Gamemode() == eGamemodes.fs_prophunt && target.GetNetworkedClassName() == "prop_dynamic" && IsValid(target.GetParent()))
 	{

@@ -254,6 +254,7 @@ global struct ClientAIStruct
 // hooked up to entity.w in code
 global struct ClientWeaponStruct
 {
+	bool isAkimboFiring = false
 	float startChargeTime = 0.0
 	bool wasCharged = false
 	bool initialized = false
@@ -279,7 +280,7 @@ global struct ClientWeaponStruct
 	bool wasFired
 	
 	bool isInAdsCustom = false
-	bool toggleShot
+	bool toggleShot = true
 }
 
 

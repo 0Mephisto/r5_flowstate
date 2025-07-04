@@ -1120,6 +1120,73 @@ void function DisplayMessage( string str1, string str2, float duration, int uiTy
 	AnnouncementFromClass( player, announcement )
 }
 
+//Unused :C Cafe ----- used now :) ~Mkos
+void function FS_IBMM_Msg( string msgString, string subMsgString, float duration = 5 )
+{
+	entity player = GetLocalClientPlayer()
+
+	clGlobal.levelEnt.Signal( "FS_CloseNewMsgBox" )
+	clGlobal.levelEnt.EndSignal( "FS_CloseNewMsgBox" )
+	player.EndSignal( "OnDestroy" )
+
+	OnThreadEnd(
+		function() : ( )
+		{
+			Hud_SetVisible( HudElement( "FS_IBMM_MsgBg" ), false )
+			Hud_SetVisible( HudElement( "FS_IBMM_MsgText" ), false )
+			Hud_SetVisible( HudElement( "FS_IBMM_MsgSubText" ), false )
+
+			Hud_SetText( HudElement( "FS_IBMM_MsgText" ), "" )
+			Hud_SetText( HudElement( "FS_IBMM_MsgSubText" ), "" )
+			Hud_SetAlpha( HudElement( "FS_IBMM_MsgText" ), 255 )
+			Hud_SetAlpha( HudElement( "FS_IBMM_MsgSubText" ), 255 )
+		}
+	)
+	// printt( "trying to show message:", file.fs_newMsgBoxString, file.fs_newMsgBoxSubString )
+
+	entity enemy = player.GetPlayerNetEnt( "FSDM_1v1_Enemy")
+	
+	if( enemy != null )
+	{
+		if( subMsgString.find( "%s" ) != -1 )
+			subMsgString = StringReplaceLimited( subMsgString, "%s", enemy.GetPlayerName(), 1 )
+	}
+	else
+	{
+		if( subMsgString.find( "%s" ) != -1 )
+			subMsgString = StringReplaceLimited( subMsgString, "%s", "~unknown~", 1 )
+	}
+
+	Hud_SetText( HudElement( "FS_IBMM_MsgText"), msgString )
+	Hud_SetText( HudElement( "FS_IBMM_MsgSubText"), subMsgString )
+	
+	RuiSetImage( Hud_GetRui( HudElement( "FS_IBMM_MsgBg") ), "basicImage", $"rui/flowstatecustom/strip_bg" )
+
+	Hud_ReturnToBasePos( HudElement( "FS_IBMM_MsgBg" ) )
+	Hud_SetSize( HudElement( "FS_IBMM_MsgBg" ), 0, 0 )
+
+	Hud_SetVisible( HudElement( "FS_IBMM_MsgBg" ), true )
+	Hud_SetVisible( HudElement( "FS_IBMM_MsgText" ), true )
+	Hud_SetVisible( HudElement( "FS_IBMM_MsgSubText" ), true )
+
+	Hud_ScaleOverTime( HudElement( "FS_IBMM_MsgBg" ), 1.35, 1.35, 0.20, INTERPOLATOR_SIMPLESPLINE)
+
+	wait 0.15
+
+	Hud_ScaleOverTime( HudElement( "FS_IBMM_MsgBg" ), 1, 1, 0.20, INTERPOLATOR_SIMPLESPLINE)
+
+	wait duration - 0.6
+
+	UIPos currentPos = REPLACEHud_GetPos( HudElement( "FS_IBMM_MsgBg" ) )
+
+	Hud_FadeOverTime( HudElement( "FS_IBMM_MsgBg" ), 0, duration/2, INTERPOLATOR_ACCEL )
+	Hud_FadeOverTime( HudElement( "FS_IBMM_MsgText" ), 0, duration/2, INTERPOLATOR_ACCEL )
+	Hud_FadeOverTime( HudElement( "FS_IBMM_MsgSubText" ), 0, duration/2, INTERPOLATOR_ACCEL )
+	Hud_MoveOverTime( HudElement( "FS_IBMM_MsgBg" ), currentPos.x + 1000, currentPos.y + 0, 0.15 )
+
+	wait 0.24
+}
+
 void function FS_CreateTextInfoPanelWithID_Localized( int token, int subToken, vector origin, vector angles, float textScale, int panelID )
 {
 	string Msg = "";

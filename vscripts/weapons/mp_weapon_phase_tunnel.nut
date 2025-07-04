@@ -875,7 +875,7 @@ void function PhaseTunnel_WaitForPhaseTunnelExpiration( entity player, PhaseTunn
 		player.EndSignal( "CleanUpPlayerAbilities" )
 		player.EndSignal( "PhaseTunnel_DestroyPlacement" )
 
-		if( Flowstate_IsRealisticMode() )
+		if( Playlist() == ePlaylists.fs_realistic_ttv )
 		{
 			if( !Realistic_InAllowedZone( endPos ) )
 				thread RemovePortalDelayed( player, tunnelData )

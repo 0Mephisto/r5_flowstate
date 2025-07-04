@@ -546,7 +546,7 @@ void function CodeCallback_DamagePlayerOrNPC( entity ent, var damageInfo )
 			
 			if( file.register_dummie_kill_as_actual_kill && !file.firingrange_aimtrainerbycolombia )
 			{
-				if( is1v1EnabledAndAllowed() )
+				if( Safe_is1v1EnabledAndAllowed() )
 				{				
 					if ( damageSourceId == eDamageSourceId.damagedef_suicide || damageSourceId == eDamageSourceId.damagedef_despawn )
 						return

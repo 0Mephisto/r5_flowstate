@@ -231,13 +231,33 @@ entity function MapEditor_CreateProp( asset a, vector pos, vector ang, bool mant
     int actualRealm = realm
 	// printt( a )
 	// return null
+	bool isLamp = false
+	// if( a == $"mdl/lamps/warning_light_ON_red.rmdl" )
+	// {
+		// SaveLampData( pos, ang, 1 ) //red
+		// isLamp = true
+	// } else if( a == $"mdl/lamps/light_hanging_industrial_on.rmdl" )
+	// {
+		// SaveLampData( pos, ang, 2 ) //yellow
+		// isLamp = true
+	// } else if( a == $"mdl/lamps/light_fc.rmdl" )
+	// {	
+		// SaveLampData( pos, ang, 3 ) //yellow
+		// isLamp = true
+	// }
+	
     entity e = CreatePropDynamic( a, pos, ang, SOLID_VPHYSICS, fade )
     e.kv.fadedist = fade
     e.kv.rendermode = 0
     e.kv.renderamt = 1
-    e.kv.solid = 6
+    e.kv.solid = isLamp ? 0 : 6
     e.kv.CollisionGroup = TRACE_COLLISION_GROUP_PLAYER
-
+	
+	// if( Gamemode() == eGamemodes.fs_spieslegends )
+	// {
+		// Spies_AddPropMap( e )
+	// }
+	
     if( mantle ) e.AllowMantle()
     
     if (Flowstate_Is4DMode())
@@ -265,48 +285,48 @@ entity function MapEditor_CreateProp( asset a, vector pos, vector ang, bool mant
     e.SetModelScale( scale )
 
     #if IS_FLOWSTATE_SCRIPT
-        e.kv.contents = CONTENTS_PLAYERCLIP | CONTENTS_BULLETCLIP | CONTENTS_MONSTERCLIP | CONTENTS_SOLID | CONTENTS_PHYSICSCLIP
+        // e.kv.contents = CONTENTS_PLAYERCLIP | CONTENTS_BULLETCLIP | CONTENTS_MONSTERCLIP | CONTENTS_SOLID | CONTENTS_PHYSICSCLIP
 		
-		if( a == $"mdl/props/octane_jump_pad/octane_jump_pad.rmdl" )
-			e.SetScriptName( "map_editor_jumppad" )
+		// if( a == $"mdl/props/octane_jump_pad/octane_jump_pad.rmdl" )
+			// e.SetScriptName( "map_editor_jumppad" )
 		
-		if( Flowstate_IsHaloMode() )
-		{
-            if( a == $"mdl/imc_base/imc_fan_large_case_01.rmdl" )
-                thread HaloMod_Cyberdyne_CreateFanPusher( e.GetOrigin() + Vector( -60, 0, 15 ), e.GetAngles() )
-		}
-        if( Gamemode() == eGamemodes.fs_duckhunt )
-        {
-            if( a == $"mdl/foliage/plant_leafy_02.rmdl" && IsValid( e ) || a == $"mdl/foliage/plant_tropical_green_large_02.rmdl" && IsValid( e ) )
-            {
-                e.kv.solid = 0
-            }
-            else e.kv.solid = 6
+		// if( Flowstate_IsHaloMode() )
+		// {
+            // if( a == $"mdl/imc_base/imc_fan_large_case_01.rmdl" )
+                // thread HaloMod_Cyberdyne_CreateFanPusher( e.GetOrigin() + Vector( -60, 0, 15 ), e.GetAngles() )
+		// }
+        // if( Gamemode() == eGamemodes.fs_duckhunt )
+        // {
+            // if( a == $"mdl/foliage/plant_leafy_02.rmdl" && IsValid( e ) || a == $"mdl/foliage/plant_tropical_green_large_02.rmdl" && IsValid( e ) )
+            // {
+                // e.kv.solid = 0
+            // }
+            // else e.kv.solid = 6
     
-            if( a == $"mdl/imc_base/imc_fan_large_case_01.rmdl" )
-                CreateFanPusher( e.GetOrigin() + Vector( 0, 0, 56 ), e.GetAngles() )
+            // if( a == $"mdl/imc_base/imc_fan_large_case_01.rmdl" )
+                // CreateFanPusher( e.GetOrigin() + Vector( 0, 0, 56 ), e.GetAngles() )
     
-            if( a == $"mdl/industrial/traffic_cone_01.rmdl" )
-            {
-                SpawnKillerWalls( e.GetOrigin() )
-                e.Destroy()
-                return null
-            }
+            // if( a == $"mdl/industrial/traffic_cone_01.rmdl" )
+            // {
+                // SpawnKillerWalls( e.GetOrigin() )
+                // e.Destroy()
+                // return null
+            // }
     
-            if( a == $"mdl/industrial/traffic_tube_01.rmdl" )
-            {
-                SpawnMovingPlatform( e.GetOrigin() )
-                e.Destroy()
-                return null		
-            }
+            // if( a == $"mdl/industrial/traffic_tube_01.rmdl" )
+            // {
+                // SpawnMovingPlatform( e.GetOrigin() )
+                // e.Destroy()
+                // return null		
+            // }
     
-            if( a == $"mdl/industrial/traffic_barrel_01.rmdl" )
-            {
-                SpawnMovingPlatformWithFanPusher( e.GetOrigin() )
-                e.Destroy()
-                return null		
-            }
-        }
+            // if( a == $"mdl/industrial/traffic_barrel_01.rmdl" )
+            // {
+                // SpawnMovingPlatformWithFanPusher( e.GetOrigin() )
+                // e.Destroy()
+                // return null		
+            // }
+        // }
     #endif
 
     if( addToArray ) MapEditorEnts.append( e )

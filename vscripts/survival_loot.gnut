@@ -691,11 +691,11 @@ void function SURVIVAL_PlaceGroundItems()
 		if( GetEditorClass( ent ) != "info_survival_weapon_location" )
 			continue
 
-		if( Safe_isScenariosMode() )
-		{
-			FS_Scenarios_SaveLocationFromLootSpawn( ent )
-			continue
-		}
+		// if( Safe_isScenariosMode() )
+		// {
+			// FS_Scenarios_SaveLocationFromLootSpawn( ent )
+			// continue
+		// }
 
 		if ( !settings.ground_loot_enable ) 
 		{
@@ -1613,31 +1613,31 @@ void function SURVIVAL_PlayerPickedupItem( entity pickup, entity player, int uni
 
 	pickup.Signal( "OnItemPickup", { player = player } )
 
-	if( pickupData.ref == "snd_bomb" && Gamemode() == eGamemodes.fs_snd && GetGameState() == eGameState.Playing )
-	{
-		player.p.playerHasBomb = true
-		SetBombState(bombState.CARRIED)
-		SetBombEntity(null)
+	// if( pickupData.ref == "snd_bomb" && Gamemode() == eGamemodes.fs_snd && GetGameState() == eGameState.Playing )
+	// {
+		// player.p.playerHasBomb = true
+		// SetBombState(bombState.CARRIED)
+		// SetBombEntity(null)
 		
-		#if DEVELOPER
-			printt( "new bomb carrier " + player + player.p.playerHasBomb )
-		#endif
+		// #if DEVELOPER
+			// printt( "new bomb carrier " + player + player.p.playerHasBomb )
+		// #endif
 
-		foreach(sPlayer in GetPlayerArrayOfTeam( Safe_GetAttackerTeam() ))
-		{
-			if( !IsValid(sPlayer) || sPlayer == player ) continue
+		// foreach(sPlayer in GetPlayerArrayOfTeam( Safe_GetAttackerTeam() ))
+		// {
+			// if( !IsValid(sPlayer) || sPlayer == player ) continue
 			
-			Remote_CallFunction_NonReplay( sPlayer, "SND_HintCatalog_WithEntity", 0, player) //a player have the bomb
-		}
+			// Remote_CallFunction_NonReplay( sPlayer, "SND_HintCatalog_WithEntity", 0, player) //a player have the bomb
+		// }
 		
-		Remote_CallFunction_NonReplay( player, "SND_HintCatalog", 14, 0 )
-	}
+		// Remote_CallFunction_NonReplay( player, "SND_HintCatalog", 14, 0 )
+	// }
 	
-	if( pickupData.ref == "fs_ball" && GetGameState() == eGameState.Playing )
-	{
-		SetBallEntity( null )
-		SetBallCarrier( player )
-	}
+	// if( pickupData.ref == "fs_ball" && GetGameState() == eGameState.Playing )
+	// {
+		// SetBallEntity( null )
+		// SetBallCarrier( player )
+	// }
 
 	// foreach ( callbackFunc in file.Callbacks_OnPlayerLootPickup )
 		// callbackFunc( player, pickup, ref, unitsPickedUp, !dontDestroy, deathBox, pickupFlags )
@@ -4236,13 +4236,13 @@ bool function FlowstateCheckItemDropableFor__fs_snd( string ref, entity player )
 	if ( fs_snd_drop_exclusions_array.contains( ref ) )
 		return false
 	
-	if( ref == "snd_bomb" && player.p.playerIsPlantingBomb && GetGameState() == eGameState.Playing ) 
-		return false
+	// if( ref == "snd_bomb" && player.p.playerIsPlantingBomb && GetGameState() == eGameState.Playing ) 
+		// return false
 	
-	#if SERVER
-	if( ref == "snd_bomb" && IsValid( GetPlantedBombEntity() ) )
-		return false
-	#endif
+	// #if SERVER
+	// if( ref == "snd_bomb" && IsValid( GetPlantedBombEntity() ) )
+		// return false
+	// #endif
 	
 	return true
 } 
@@ -4296,14 +4296,14 @@ bool function SURVIVAL_DropBackpackItem( entity player, string item, int dropCou
 
 	LootData data = SURVIVAL_Loot_GetLootDataByRef( item )
 
-	if ( !FlowstateCheckItemDropableFor__fs_snd( item, player ) )
-		return false
+	// if ( !FlowstateCheckItemDropableFor__fs_snd( item, player ) )
+		// return false
 
-	if( item == "fs_ball" )
-	{
-		Flowstate_ClientCommand_AttemptThrowOddball( player, [] )
-		return false
-	}
+	// if( item == "fs_ball" )
+	// {
+		// Flowstate_ClientCommand_AttemptThrowOddball( player, [] )
+		// return false
+	// }
 	
 	int count = 0
 

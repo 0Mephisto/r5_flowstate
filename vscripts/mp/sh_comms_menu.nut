@@ -577,7 +577,7 @@ array<CommsMenuOptionData> function BuildMenuOptions( int chatPage )
 			if ( GetCurrentPlaylistVarBool( "auto_heal_option", false ) )
 				results.append( MakeOption_UseHealItem( WHEEL_HEAL_AUTO ) )
 			{
-				if(player.GetTeam() == Sh_GetAttackerTeam() && Gamemode() == eGamemodes.fs_snd )
+				if(player.GetTeam() == Safe_GetAttackerTeam() && Gamemode() == eGamemodes.fs_snd )
 					results.append( MakeOption_UseHealItem( eHealthPickupType.SND_BOMB ) )
 				
 				results.append( MakeOption_UseHealItem( eHealthPickupType.COMBO_FULL ) )

@@ -13,6 +13,24 @@ global array<asset> LEGAL_PLAYER_TITAN_SETTINGS
 
 //
 global const PST_TIME_ZONE_OFFSET = -7
+
+global enum e1v1State
+{
+	INVALID = -1,
+	CHARSELECT,
+	PREMATCH,
+	MATCH_START,
+	WAITING,
+	SEQUENCE,
+	MATCHING,
+	RESTING,
+	RECAP,
+	SPECTATING,
+	
+	//coaching mode
+	WATCHING_FIGHT_REPLAY
+}
+
 global enum eDaysOfWeek
 {
 	SUNDAY,
@@ -2864,11 +2882,26 @@ bool function Safe_isScenariosMode()
 	return SafeCallFunctionBool( "isScenariosMode", false, [], "[SCENARIOS_MODE]" )
 }
 
+bool function Safe_is1v1EnabledAndAllowed()
+{
+	return SafeCallFunctionBool( "is1v1EnabledAndAllowed", false, [], "[1v1_MODE]" )
+}
+
+void function Safe_FS_InitCommunityHeirlooms()
+{
+	SafeCallFunction( "FS_InitCommunityHeirlooms", [], "", "" )
+}
+
+void function Safe_StartUpdatingArmorSwapLastTime()
+{
+	SafeCallFunction( "StartUpdatingArmorSwapLastTime", [], "", "" )
+}
+
 // Safe wrapper for Flowstate scenarios big door data saving
 void function Safe_FS_Scenarios_SaveBigDoorData( entity door )
 {
 	// Pass entity index as integer parameter
-	string doorIndexStr = door.GetEntIndex().tostring()
+	string doorIndexStr = string( door.GetEntIndex() )
 	
 	SafeCallFunction( "FS_Scenarios_SaveBigDoorData_SafeWrapper", [doorIndexStr], "Big door data saving not available - Flowstate mod not loaded", "[SCENARIOS_DOOR]" )
 }
@@ -2877,7 +2910,7 @@ void function Safe_FS_Scenarios_SaveBigDoorData( entity door )
 void function Safe_DropLoot_RefScenarios( entity player )
 {
 	// Pass entity index as integer parameter
-	string playerIndexStr = player.GetEntIndex().tostring()
+	string playerIndexStr = string( player.GetEntIndex() )
 	
 	SafeCallFunction( "DropLoot_RefScenarios_SafeWrapper", [playerIndexStr], "Scenarios loot dropping not available - Flowstate mod not loaded", "[SCENARIOS_LOOT]" )
 }
@@ -2886,8 +2919,8 @@ void function Safe_DropLoot_RefScenarios( entity player )
 void function Safe_AddToTrackedEnts_RefScenarios( entity player, entity ent )
 {
 	// Pass entity indices as integer parameters
-	string playerIndexStr = player.GetEntIndex().tostring()
-	string entIndexStr = ent.GetEntIndex().tostring()
+	string playerIndexStr = string( player.GetEntIndex() )
+	string entIndexStr = string( ent.GetEntIndex() )
 	
 	SafeCallFunction( "AddToTrackedEnts_RefScenarios_SafeWrapper", [playerIndexStr, entIndexStr], "Scenarios tracked entities not available - Flowstate mod not loaded", "[SCENARIOS_TRACKED]" )
 }
@@ -2896,14 +2929,30 @@ void function Safe_AddToTrackedEnts_RefScenarios( entity player, entity ent )
 bool function Safe_FS_Spies_IsVictimBackwardsToAttacker( entity attacker, entity victim, vector position )
 {
 	// Pass entity indices and vector as parameters
-	string attackerIndexStr = attacker.GetEntIndex().tostring()
-	string victimIndexStr = victim.GetEntIndex().tostring()
+	string attackerIndexStr = string( attacker.GetEntIndex() )
+	string victimIndexStr = string( victim.GetEntIndex() )
 	string positionStr = format( "<%f,%f,%f>", position.x, position.y, position.z )
 	
 	// Default to false when Flowstate mod not available (disables special spies mechanics)
 	return SafeCallFunctionBool( "FS_Spies_IsVictimBackwardsToAttacker", false, [attackerIndexStr, victimIndexStr, positionStr], "[SPIES_BACKWARDS]" )
 }
 
+// Safe wrapper for Flowstate scenarios player ping check
+bool function Safe_FS_Scenarios_PlayerCanPing( entity player )
+{
+	// Pass entity index as parameter
+	string playerIndexStr = string( player.GetEntIndex() )
+	
+	// Default to true when Flowstate mod not available (allows normal pinging)
+	return SafeCallFunctionBool( "FS_Scenarios_PlayerCanPing", true, [playerIndexStr], "[SCENARIOS_PING]" )
+}
+
+void function Safe_FS_Scenarios_SaveLootbinData( entity player )
+{
+	string playerIndexStr = string( player.GetEntIndex() )
+	
+	SafeCallFunction( "FS_Scenarios_SaveLootbinData", [playerIndexStr], "", "" )
+}
 
 bool function IsEverythingUnlocked()
 {

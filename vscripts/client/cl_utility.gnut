@@ -41,7 +41,12 @@ global struct RUIWorldCoordinates // this isn't specific to RUI, it generally re
 struct LampData
 {
 	int id
+	float radius
 	entity lamp
+	bool isInterpolating = false
+	float targetRadius = 0.0
+	float startRadius = 0.0
+	float interpolationStartTime = 0.0
 }
 
 struct
@@ -1772,21 +1777,21 @@ void function MapConVar_Init()
 	switch( GetMapName() )
 	{
 		case "mp_rr_arena_empty":
-			if( Gamemode() == eGamemodes.fs_spieslegends )
-			{
-				SetConVarFloat( "mat_autoexposure_force_value", 0 )
-				SetConVarFloat( "mat_bloom_max_lighting_value", 2.0 )
+			// if( Gamemode() == eGamemodes.fs_spieslegends )
+			// {
+				// SetConVarFloat( "mat_autoexposure_force_value", 0 )
+				// SetConVarFloat( "mat_bloom_max_lighting_value", 2.0 )
 				
-				SetConVarFloat( "mat_autoexposure_max", 0.3 )
-				SetConVarFloat( "mat_autoexposure_max_multiplier", 0.4 )
-				SetConVarFloat( "mat_autoexposure_min", 0.2 )
-				SetConVarFloat( "mat_autoexposure_min_multiplier", 1.0 )
+				// SetConVarFloat( "mat_autoexposure_max", 0.3 )
+				// SetConVarFloat( "mat_autoexposure_max_multiplier", 0.4 )
+				// SetConVarFloat( "mat_autoexposure_min", 0.2 )
+				// SetConVarFloat( "mat_autoexposure_min_multiplier", 1.0 )
 
-				SetConVarFloat( "mat_sky_scale", 1.0 )
-				SetConVarString( "mat_sky_color", "1.0 1.0 1.0 1.0" )
-				SetConVarFloat( "mat_sun_scale", 1.0 )
-				SetConVarString( "mat_sun_color", "1.0 1.5 2.0 1.0" )
-			}
+				// SetConVarFloat( "mat_sky_scale", 1.0 )
+				// SetConVarString( "mat_sky_color", "1.0 1.0 1.0 1.0" )
+				// SetConVarFloat( "mat_sun_scale", 1.0 )
+				// SetConVarString( "mat_sun_color", "1.0 1.5 2.0 1.0" )
+			// }
 		break
 		
 		//case "mp_rr_aqueduct_night":
@@ -1954,7 +1959,7 @@ void function DynamicLight_Init()
 	}
 }
 
-void function ServerCallback_SpawnOrModifyClientSideDynamicLight( vector pos, vector ang, int color, float brightness, float exponent, int id )
+void function ServerCallback_SpawnOrModifyClientSideDynamicLight( vector pos, vector ang, int color, float radius, float exponent, int id )
 {
 	// printw( "ServerCallback_SpawnOrModifyClientSideDynamicLight", color )
 	
@@ -2005,14 +2010,35 @@ void function ServerCallback_SpawnOrModifyClientSideDynamicLight( vector pos, ve
 
     bool foundExisting = false
 	entity light
+	int foundIndex = -1
     foreach(index, LampData lamp in file.clientLightsFromServer)
     {
         if(lamp.id == id && IsValid( lamp.lamp ) )
         {
 			foundExisting = true
+			foundIndex = index
 			light = lamp.lamp
-			light.SetLightRadius( brightness )
 			light.SetLightExponent( exponent )
+			
+			// Check if radius is different and we're not already interpolating
+			if ( fabs( lamp.radius - radius ) > 0.01 && !lamp.isInterpolating )
+			{
+				// Trigger smooth interpolation for radius change
+				InterpolateLightRadius( index, radius )
+			}
+			else if ( lamp.isInterpolating )
+			{
+				// If already interpolating, update the target radius
+				lamp.targetRadius = radius
+				file.clientLightsFromServer[index] = lamp
+			}
+			else
+			{
+				// No significant radius change, update directly
+				lamp.radius = radius
+				lamp.lamp.SetLightRadius( radius )
+				file.clientLightsFromServer[index] = lamp
+			}
 		}
 		
 	}
@@ -2020,12 +2046,17 @@ void function ServerCallback_SpawnOrModifyClientSideDynamicLight( vector pos, ve
 	if( !foundExisting )
 	{
 		DeleteSpawnedClientSideDynamicLightsWithId( id ) //avoid duplications, just in case
-		light = CreateClientSideDynamicLight( pos, ang, vColor, brightness )
+		light = CreateClientSideDynamicLight( pos, ang, vColor, radius )
 		light.SetLightExponent( exponent )
 		
 		LampData lamp
 		lamp.lamp = light
+		lamp.radius = radius
 		lamp.id = id
+		lamp.isInterpolating = false
+		lamp.targetRadius = radius
+		lamp.startRadius = radius
+		lamp.interpolationStartTime = 0.0
 		
 		file.clientLightsFromServer.append( lamp )
 		
@@ -2072,6 +2103,109 @@ void function DebugSpawnedLightEntities()
 {
 	foreach( int i, LampData lamp in file.clientLightsFromServer )
 		printw( i+1, lamp.lamp, lamp.lamp.GetOrigin() )
+}
+
+void function InterpolateLightRadius( int lampIndex, float newRadius, float duration = 0.4 )
+{
+	// Validate parameters
+	if ( lampIndex < 0 || lampIndex >= file.clientLightsFromServer.len() )
+		return
+		
+	LampData lamp = file.clientLightsFromServer[lampIndex]
+	
+	if ( !IsValid( lamp.lamp ) )
+		return
+		
+	// If already interpolating, just update the target
+	if ( lamp.isInterpolating )
+	{
+		lamp.targetRadius = newRadius
+		file.clientLightsFromServer[lampIndex] = lamp
+		return
+	}
+	
+	// Set up interpolation state
+	lamp.isInterpolating = true
+	lamp.startRadius = lamp.radius
+	lamp.targetRadius = newRadius
+	lamp.interpolationStartTime = Time()
+	file.clientLightsFromServer[lampIndex] = lamp
+	
+	// Start interpolation thread
+	thread InterpolateLightRadiusThread( lampIndex, duration )
+}
+
+void function InterpolateLightRadiusThread( int lampIndex, float duration )
+{
+	// Validate lamp index
+	if ( lampIndex < 0 || lampIndex >= file.clientLightsFromServer.len() )
+		return
+		
+	LampData lamp = file.clientLightsFromServer[lampIndex]
+	
+	if ( !IsValid( lamp.lamp ) )
+	{
+		// Clean up interpolation state if light was destroyed
+		lamp.isInterpolating = false
+		file.clientLightsFromServer[lampIndex] = lamp
+		return
+	}
+	
+	float startTime = Time()
+	float startRadius = lamp.startRadius
+	float targetRadius = lamp.targetRadius
+	
+	while ( Time() - startTime < duration )
+	{
+		// Check if lamp still exists
+		if ( lampIndex >= file.clientLightsFromServer.len() )
+			return
+			
+		lamp = file.clientLightsFromServer[lampIndex]
+		
+		if ( !IsValid( lamp.lamp ) )
+		{
+			lamp.isInterpolating = false
+			file.clientLightsFromServer[lampIndex] = lamp
+			return
+		}
+		
+		// Check if target radius changed during interpolation
+		if ( targetRadius != lamp.targetRadius )
+		{
+			// Update interpolation with new target
+			targetRadius = lamp.targetRadius
+			startRadius = lamp.radius
+			startTime = Time()
+		}
+		
+		// Calculate interpolation progress
+		float progress = (Time() - startTime) / duration
+		progress = min( progress, 1.0 )
+		
+		// Use GraphCapped for smooth interpolation
+		float currentRadius = GraphCapped( progress, 0.0, 1.0, startRadius, targetRadius )
+		
+		// Update light radius
+		lamp.radius = currentRadius
+		lamp.lamp.SetLightRadius( currentRadius )
+		file.clientLightsFromServer[lampIndex] = lamp
+		
+		WaitFrame()
+	}
+	
+	// Ensure we end exactly at target radius
+	if ( lampIndex < file.clientLightsFromServer.len() )
+	{
+		lamp = file.clientLightsFromServer[lampIndex]
+		if ( IsValid( lamp.lamp ) )
+		{
+			lamp.radius = targetRadius
+			lamp.lamp.SetLightRadius( targetRadius )
+			lamp.isInterpolating = false
+			file.clientLightsFromServer[lampIndex] = lamp
+		}
+	}
 }
 
 

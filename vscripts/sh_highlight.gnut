@@ -9,6 +9,8 @@ global function Highlight_SetSonarHighlight
 global function SetSurvivalPropHighlight
 global function ClearSurvivalPropHighlight
 
+global function RedishHighlight_Thread
+
 #if SERVER
 global function Highlight_SetFriendlyHighlight
 global function Highlight_SetEnemyHighlight

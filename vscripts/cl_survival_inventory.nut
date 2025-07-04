@@ -622,7 +622,7 @@ void function SurvivalMenu_Internal( entity player, string uiScript, entity deat
 	if ( IsValid( deathBox ) )
 	{
 		if( Gamemode() == eGamemodes.fs_aimtrainer )
-			thread StartUpdatingArmorSwapLastTime()
+			thread Safe_StartUpdatingArmorSwapLastTime()
 		
 		thread TrackDistanceFromDeathBox( player, deathBox )
 	}

@@ -165,7 +165,6 @@ void function GamemodeSurvival_Init()
 	AddClientCommandCallback("Flowstate_AssignCustomCharacterFromMenu", ClientCommand_Flowstate_AssignCustomCharacterFromMenu)
 
 	#if DEVELOPER //uncommented dev defines
-		AddClientCommandCallback("SpawnDeathboxAtCrosshair", ClientCommand_deathbox)
 		AddClientCommandCallback("forceBleedout", ClientCommand_bleedout)
 		AddClientCommandCallback("lsm_restart", ClientCommand_restartServer)
 		AddClientCommandCallback("playerRequestsSword", ClientCommand_GiveSword)
@@ -194,43 +193,44 @@ void function GamemodeSurvival_Init()
 	if( GetCurrentPlaylistVarBool( "deathfield_starts_in_prematch", false ) )
 		thread SURVIVAL_RunArenaDeathField()
 
-	if( Playlist() == ePlaylists.fs_haloMod_survival )
-	{
-		BannerAssets_SetAllGroupsFunc
-		(
-			void function()
-			{
-				BannerAssets_RegisterAudioGroup
-				(
-					"halo_audio",
-					false //(audio interruptable, false = queued for audio from this group. )
-				)
-			}
-		)
+	// Halo audios, make callback and move when fixed
+	// if( Playlist() == ePlaylists.fs_haloMod_survival )
+	// {
+		// BannerAssets_SetAllGroupsFunc
+		// (
+			// void function()
+			// {
+				// BannerAssets_RegisterAudioGroup
+				// (
+					// "halo_audio",
+					// false //(audio interruptable, false = queued for audio from this group. )
+				// )
+			// }
+		// )
 
-		BannerAssets_SetAllAssetsFunc
-		(
-			void function()
-			{
-				array<string> haloAudio = WorldDrawAsset_GetAssetArrayByCategory( "halo" )
+		// BannerAssets_SetAllAssetsFunc
+		// (
+			// void function()
+			// {
+				// array<string> haloAudio = WorldDrawAsset_GetAssetArrayByCategory( "halo" )
 
-				foreach( assetRef in haloAudio )
-				{
-					BannerAssets_GroupAppendAsset
-					(
-						"halo_audio",
-						WorldDrawAsset_AssetRefToID( assetRef )
-					)
-				}
-			}
-		)
+				// foreach( assetRef in haloAudio )
+				// {
+					// BannerAssets_GroupAppendAsset
+					// (
+						// "halo_audio",
+						// WorldDrawAsset_AssetRefToID( assetRef )
+					// )
+				// }
+			// }
+		// )
 
-		BannerAssets_Init()
+		// BannerAssets_Init()
 
-		//Move faster while adsing
-		AddCallback_OnPlayerZoomIn( FS_HaloMod_OnPlayerZoomIn )
-		AddCallback_OnPlayerZoomOut( FS_HaloMod_OnPlayerZoomOut )
-	}
+		// //Move faster while adsing
+		// AddCallback_OnPlayerZoomIn( FS_HaloMod_OnPlayerZoomIn )
+		// AddCallback_OnPlayerZoomOut( FS_HaloMod_OnPlayerZoomOut )
+	// }
 }
 
 #if DEVELOPER
@@ -407,22 +407,6 @@ bool function ClientCommand_DestroyEndScreen(entity player, array<string> args)
 	Remote_CallFunction_ByRef( player, "ServerCallback_DestroyEndAnnouncement" )
 	ToggleHudForPlayer( player )
 
-	return true
-}
-
-bool function ClientCommand_deathbox(entity player, array<string> args)
-{
-	if ( GetConVarInt( "sv_cheats" ) != 1 )
-		return false
-
-	vector origin = OriginToGround( GetPlayerCrosshairOrigin( player ) )
-
-	vector org2 = player.GetOrigin()
-	vector vec1 = org2 - origin
-	vector angles1 = VectorToAngles( vec1 )
-	angles1.x = 0
-
-	CreateAimtrainerDeathbox( gp()[0], origin )
 	return true
 }
 #endif
@@ -1329,8 +1313,8 @@ int function CodeCallback_KillDamagePlayerOrNPC( entity ent, var damageInfo, int
 
 		if ( attacker.IsPlayer() && attacker != damagedEnt )
 		{
-			if( Playlist() == ePlaylists.fs_haloMod_survival )
-				HisWattsons_HaloModFFA_KillStreakAnnounce( attacker )
+			// if( Playlist() == ePlaylists.fs_haloMod_survival )
+				// HisWattsons_HaloModFFA_KillStreakAnnounce( attacker )
 
 			// AddGameSummaryKnockdown( attacker, ent, 1, damageInfo )
 
@@ -1359,8 +1343,8 @@ int function CodeCallback_KillDamagePlayerOrNPC( entity ent, var damageInfo, int
 					AddPlayerScore( attacker, "Sur_DownedPilot", damagedEnt )
 
 
-				if( attacker.IsPlayer() && Playlist() == ePlaylists.fs_scenarios )
-					FS_Scenarios_UpdatePlayerScore( attacker, FS_ScoreType.DOWNED, damagedEnt )
+				// if( attacker.IsPlayer() && Playlist() == ePlaylists.fs_scenarios )
+					// FS_Scenarios_UpdatePlayerScore( attacker, FS_ScoreType.DOWNED, damagedEnt )
 			}
 
 			damagedEnt.p.playerToTimeThatAssistCreditLastsTable = GetLatestAssistingPlayersFromSameTeam( damagedEnt, attacker )

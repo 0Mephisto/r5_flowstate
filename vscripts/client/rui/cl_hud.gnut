@@ -16,6 +16,7 @@ global function Flowstate_AddCustomScoreEventMessage
 global function FS_GetScoreEventTopo
 
 const bool RUI_ENABLED = true
+global bool ENABLE_HIT_DOT = false
 
 /*
 

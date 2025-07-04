@@ -179,6 +179,8 @@ global const float SAFE_ZONE_ALPHA = 0.05
 global const string HEALTHKIT_BIND_COMMAND = "+scriptCommand2"
 global const string ORDNANCEMENU_BIND_COMMAND = "+strafe"
 
+global bool RGB_HUD = false
+
 struct MinimapLabelStruct
 {
 	string name
@@ -480,81 +482,129 @@ void function Flowstate_CheckForLaserSightsAndApplyEffect()
 	
 	entity weapon
 	entity weapon2
-	entity activeWeapon
-	array<string> mods
+	entity altWeapon
+	entity activeMainWeapon
+	entity activeAltWeapon
+	array<string> modsMain
+	array<string> modsAlt
 	table<string,int> e
-	bool hasLaser = false
+	bool hasLaserMain = false
+	bool hasLaserAlt = false
 	bool exitCheck = false
-	e["fxHandle"] <- -1
-	bool changedWeapon = false
+	e["mainFxHandle"] <- -1
+	e["altFxHandle"] <- -1
+	entity prevMainWeapon = null
+	entity prevAltWeapon = null
 
 	while ( true )
 	{
 		WaitFrame()
 		
-		if( !IsValid( player ) )
+		if ( !IsValid( player ) )
 			break
 
 		weapon = player.GetNormalWeapon( WEAPON_INVENTORY_SLOT_PRIMARY_0 )
 		weapon2 = player.GetNormalWeapon( WEAPON_INVENTORY_SLOT_PRIMARY_1 )
-		changedWeapon = player.GetActiveWeapon( eActiveInventorySlot.mainHand ) == activeWeapon ? false : true
-		activeWeapon = player.GetActiveWeapon( eActiveInventorySlot.mainHand )
-		mods.clear()
+		altWeapon = player.GetNormalWeapon( WEAPON_INVENTORY_SLOT_DUALPRIMARY_0 )
 
-		if( IsValid( activeWeapon ) )
-			mods = clone activeWeapon.GetMods()
-		
+		activeMainWeapon = player.GetActiveWeapon( eActiveInventorySlot.mainHand )
+		activeAltWeapon = player.GetActiveWeapon( eActiveInventorySlot.altHand )
+
+		bool changedMainWeapon = activeMainWeapon != prevMainWeapon
+		bool changedAltWeapon = activeAltWeapon != prevAltWeapon
+		prevMainWeapon = activeMainWeapon
+		prevAltWeapon = activeAltWeapon
+
+		modsMain.clear()
+		hasLaserMain = false
+		if ( IsValid( activeMainWeapon ) )
+			modsMain = clone activeMainWeapon.GetMods()
+
 		exitCheck = false
-		hasLaser = false
-		
-		foreach ( mod in mods )
+		foreach ( mod in modsMain )
 		{			
-			if( exitCheck )
+			if ( exitCheck )
 				continue
 			
-			if( !SURVIVAL_Loot_IsRefValid( mod ) )
+			if ( !SURVIVAL_Loot_IsRefValid( mod ) )
 				continue
 			
-			if ( mod != "laser_sight_l1" && mod != "laser_sight_l2" && mod != "laser_sight_l3" && mod != "laser_sight_l4" )
+			if ( mod == "laser_sight_l1" || mod == "laser_sight_l2" || mod == "laser_sight_l3" || mod == "laser_sight_l4" )
 			{
-				hasLaser = false
-			} 
-			else
-			{
-				hasLaser = true
+				hasLaserMain = true
 				exitCheck = true
-				continue
 			}
 		}
-		
-		// #if DEVELOPER
-		// printt("DEBUG LASER - ID: " + e["fxHandle"] + " - hasLaser: " + hasLaser + "\n Current active weapon: " + activeWeapon )
-		// #endif
-		
-		if( !IsAlive( player ) || 
-			!IsValid( weapon ) && !IsValid( weapon2 ) || 
-			!IsValid( activeWeapon ) || 
-			activeWeapon.IsWeaponAdsButtonPressed() || 
-			activeWeapon != weapon && activeWeapon != weapon2 || 
-			activeWeapon.GetWeaponClassName().find("melee") > 0 || 
-			activeWeapon.IsDiscarding() || 
-			!hasLaser || 
+
+		modsAlt.clear()
+		hasLaserAlt = false
+		if ( IsValid( activeAltWeapon ) )
+			modsAlt = clone activeAltWeapon.GetMods()
+
+		exitCheck = false
+		foreach ( mod in modsAlt )
+		{			
+			if ( exitCheck )
+				continue
+			
+			if ( !SURVIVAL_Loot_IsRefValid( mod ) )
+				continue
+			
+			if ( mod == "laser_sight_l1" || mod == "laser_sight_l2" || mod == "laser_sight_l3" || mod == "laser_sight_l4" )
+			{
+				hasLaserAlt = true
+				exitCheck = true
+			}
+		}
+
+		// Check conditions for mainHand
+		if ( !IsAlive( player ) || 
+			( !IsValid( weapon ) && !IsValid( weapon2 ) ) || 
+			!IsValid( activeMainWeapon ) || 
+			activeMainWeapon.IsWeaponAdsButtonPressed() || 
+			( activeMainWeapon != weapon && activeMainWeapon != weapon2 ) || 
+			activeMainWeapon.GetWeaponClassName().find("melee") != -1 || 
+			activeMainWeapon.IsDiscarding() || 
+			!hasLaserMain || 
 			player.Player_IsFreefalling() ||
 			player != GetLocalViewPlayer() ||
 			player.IsThirdPersonShoulderModeOn() ||
-			changedWeapon )
+			changedMainWeapon )
 		{
-			if ( e["fxHandle"] != -1 )
+			if ( e["mainFxHandle"] != -1 )
 			{
-				EffectStop( e["fxHandle"], true, false )
-				e["fxHandle"] = -1
+				EffectStop( e["mainFxHandle"], true, false )
+				e["mainFxHandle"] = -1
 			}
-			continue
 		}
-		
-		if ( hasLaser && e["fxHandle"] == -1 )
+		else if ( hasLaserMain && e["mainFxHandle"] == -1 )
 		{
-			e["fxHandle"] = activeWeapon.PlayWeaponEffectReturnViewEffectHandle( $"P_wpn_lasercannon_aim", $"", "muzzle_flash" )
+			e["mainFxHandle"] = activeMainWeapon.PlayWeaponEffectReturnViewEffectHandle( $"P_wpn_lasercannon_aim", $"", "muzzle_flash" )
+		}
+
+		// Check conditions for altHand
+		if ( !IsAlive( player ) || 
+			!IsValid( altWeapon ) || 
+			!IsValid( activeAltWeapon ) || 
+			activeAltWeapon.IsWeaponAdsButtonPressed() || 
+			activeAltWeapon != altWeapon || 
+			activeAltWeapon.GetWeaponClassName().find("melee") != -1 || 
+			activeAltWeapon.IsDiscarding() || 
+			!hasLaserAlt || 
+			player.Player_IsFreefalling() ||
+			player != GetLocalViewPlayer() ||
+			player.IsThirdPersonShoulderModeOn() ||
+			changedAltWeapon )
+		{
+			if ( e["altFxHandle"] != -1 )
+			{
+				EffectStop( e["altFxHandle"], true, false )
+				e["altFxHandle"] = -1
+			}
+		}
+		else if ( hasLaserAlt && e["altFxHandle"] == -1 )
+		{
+			e["altFxHandle"] = activeAltWeapon.PlayWeaponEffectReturnViewEffectHandle( $"P_wpn_lasercannon_aim", $"", "muzzle_flash" )
 		}
 	}
 }
@@ -765,6 +815,7 @@ const array<int> nonCompassModes = [
 	ePlaylists.fs_1v1,
 	ePlaylists.fs_lgduels_1v1,
 	ePlaylists.fs_snd,
+	ePlaylists.fs_spieslegends,
 	ePlaylists.fs_apexkart
 ]
 
@@ -865,7 +916,7 @@ void function InitSurvivalHealthBar()
 	Assert( IsNewThread(), "Must be threaded off" )
 	entity player = GetLocalViewPlayer()
 
-	if( Playlist() == ePlaylists.fs_movementgym )
+	if( IsFlowstateActive() )
 	{
 		MG_CustomPilotRUI( player, file.pilotRui )
 		return
@@ -874,6 +925,30 @@ void function InitSurvivalHealthBar()
 	SURVIVAL_PopulatePlayerInfoRui( player, file.pilotRui )
 }
 
+void function MG_CustomPilotRUI( entity player, var rui ) {
+	
+	RuiSetInt( rui, "micStatus", 0 )
+	RuiSetColorAlpha( rui, "customCharacterColor", SrgbToLinear( <0, 0, 255> / 255.0 ), 1.0 )
+	RuiSetBool( rui, "useCustomCharacterColor", true )
+	
+	switch(player.GetPlayerName()) {
+		case "DEAFPS":
+			RuiSetImage( rui, "playerIcon", $"rui/flowstatecustom/dea/dea_pfp" )
+			RuiSetString( rui, "name", "DEAFPS" )
+			break
+		case "DEAR5R":
+			RuiSetImage( rui, "playerIcon", $"rui/flowstatecustom/dea/dea_pfp" )
+			RuiSetString( rui, "name", "DEAFPS" )
+   			break
+		case "LoyTakian":
+			RuiSetImage( rui, "playerIcon", $"rui/flowstatecustom/dea/loy_pfp" )
+			RuiSetString( rui, "name", "Loy" )
+			break
+   		default:
+			SURVIVAL_PopulatePlayerInfoRui( player, rui )
+	}
+	
+}
 
 void function SURVIVAL_PopulatePlayerInfoRui( entity player, var rui )
 {
@@ -1190,9 +1265,9 @@ void function MinimapPackage_A( entity ent, var rui )
 {
 	asset icon = $""
 	
-	if(GetLocalClientPlayer().GetTeam() == Sh_GetAttackerTeam())
+	if(GetLocalClientPlayer().GetTeam() == Safe_GetAttackerTeam())
 		icon = $"rui/flowstatecustom/A_Attack"
-	else if(GetLocalClientPlayer().GetTeam() == Sh_GetDefenderTeam())
+	else if(GetLocalClientPlayer().GetTeam() == Safe_GetDefenderTeam())
 		icon = $"rui/flowstatecustom/A_Defend"
 		
 	RuiSetImage( rui, "defaultIcon", icon )
@@ -1203,9 +1278,9 @@ void function MinimapPackage_B( entity ent, var rui )
 {
 	asset icon = $""
 	
-	if(GetLocalClientPlayer().GetTeam() == Sh_GetAttackerTeam())
+	if(GetLocalClientPlayer().GetTeam() == Safe_GetAttackerTeam())
 		icon = $"rui/flowstatecustom/B_Attack"	
-	else if(GetLocalClientPlayer().GetTeam() == Sh_GetDefenderTeam())
+	else if(GetLocalClientPlayer().GetTeam() == Safe_GetDefenderTeam())
 		icon = $"rui/flowstatecustom/B_Defend"
 		
 	RuiSetImage( rui, "defaultIcon", icon )
@@ -2950,7 +3025,6 @@ void function OnPropDynamicCreated( entity prop )
 
 void function OnPropCreated( entity prop )
 {
-	//(cafe) not used
 	// if ( prop.GetSurvivalInt() < 0 )
 	// {
 		// PROTO_OnContainerCreated( prop )
@@ -3467,7 +3541,7 @@ bool function GetWaitingForPlayersOverlayEnabled( entity player )
 	// if( GameRules_GetGameMode() != SURVIVAL )
 		// return false
 
-	if( Gamemode() == eGamemodes.fs_snd )
+	if( Gamemode() == eGamemodes.fs_snd || Gamemode() == eGamemodes.fs_spieslegends )
 		return false
 	
 	return true
@@ -3696,7 +3770,7 @@ array<WaitingForPlayersCameraLocPair> function GetCamerasForMap( string map )
 		case "mp_rr_arena_empty":
 			cutsceneSpawns.append(NewCameraPair( <41000,-10000,0>, <0,0,0> ) )
 		break
-
+		
 		case "mp_rr_arena_composite":
 		cutsceneSpawns.append(NewCameraPair( <2307.4375, 1415.3374, 429.479797> , <0, 130.879272, 0> ) )
 		cutsceneSpawns.append(NewCameraPair( <2877.44409, 5697.83105, 1672.90344> , <0, 10.1077566, 0> ) )
@@ -3732,6 +3806,12 @@ array<WaitingForPlayersCameraLocPair> function GetCamerasForMap( string map )
 		cutsceneSpawns.append(NewCameraPair( <-840.577515, 3031.18994, 1057.86731> , <0, -49.7104607, 0> ) )
 		cutsceneSpawns.append(NewCameraPair( <416.486328, 2083.01709, 562.318604> , <0, -83.0055008, 0> ) )
 		cutsceneSpawns.append(NewCameraPair( <2646.22314, 2588.46582, 1168.85779> , <0, -107.622498, 0> ) )
+		break
+		
+		case "mp_rr_canyonlands_staging":
+		cutsceneSpawns.append(NewCameraPair( <33541.2188, -5675.45654, -28549.1484>, <0, -132.551712, 0> ) )
+		cutsceneSpawns.append(NewCameraPair( <33966.2188, -6687.17529, -28518.5449>, <0, 58.0181351, 0> ) )
+
 		break
 	}
 	
@@ -4680,8 +4760,8 @@ void function ShowVictorySequence( bool placementMode = false )
 
 	ScreenFade( player, 255, 255, 255, 255, 0.4, 0.0, FFADE_IN | FFADE_PURGE )
 
-	if( GetCurrentPlaylistVarBool( "survival_server_restart_after_end", false ) )
-		DM_HintCatalog( 5, null )
+	// if( GetCurrentPlaylistVarBool( "survival_server_restart_after_end", false ) )
+		// DM_HintCatalog( 5, null )
 	
 	asset defaultModel                = GetGlobalSettingsAsset( DEFAULT_PILOT_SETTINGS, "bodyModel" )
 	LoadoutEntry loadoutSlotCharacter = Loadout_CharacterClass()

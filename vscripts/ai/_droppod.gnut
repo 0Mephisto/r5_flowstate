@@ -6,7 +6,10 @@ global function CreateDropPod
 global function LaunchAnimDropPod
 global function GetDropPodAnimDuration
 global function CreateDropPodSmokeTrail
+
 global function DropPod_ClearLandingZone
+
+global function ReturnCarePackagesNewArray
 
 global function DropPod_OnUse
 //const droppod_fireteam_collision = $"models/vehicle/droppod_fireteam/droppod_fireteam_collision.mdl"
@@ -32,6 +35,7 @@ struct
     #endif
 	array<entity>                 lootBinList
 	int                           numLootBins
+	array<entity>                 carePackagesNew
 } file
 
 void function CreateBeacondrop( vector origin, vector angles, entity fxToStop = null, string animationName = "droppod_loot_drop", entity owner = null, string sourceWeaponClassName = "" )
@@ -74,9 +78,17 @@ void function AirDropPingMinimap( entity dropPod, vector origin, string animatio
 
 void function AirdropItems( vector origin, vector angles, array<string> contents, entity fxToStop, string animationName, entity owner, int skin, string sourceWeaponClassName )
 {
+	// if(ReturnSelectedLocationName() == "Shipment")
+	// {
+		// origin = <11224.8115, 24494.2285, 247.695862>
+	// }
+	
 	entity dropPod = CreateDropPod( origin, angles, sourceWeaponClassName )
 	dropPod.SetSkin( skin )
     
+    file.carePackagesNew.append(dropPod)
+	
+	EndSignal(dropPod, "OnDestroy")
     entity threatProxy = CreateDropPodThreatIndicator(origin, angles)
 
 	OnThreadEnd(
@@ -135,6 +147,11 @@ void function AirdropItems_Lifeline( vector origin, vector angles, array<string>
 
 	InitDropPod( dropPod )
 	AddMultipleLootItemsToDropPod_Lifeline(dropPod, contents)
+}
+
+array<entity> function ReturnCarePackagesNewArray()
+{
+	return file.carePackagesNew
 }
 
 void function AirDropFireteam( vector origin, vector angles, string animationName, int skin, string sourceWeaponClassName, entity player )
@@ -747,7 +764,8 @@ function LaunchAnimDropPod2( entity dropPod, string anim, vector targetOrigin, v
 function CheckPlayersIntersectingPod( pod, targetOrigin )
 {
 	array<entity> playerList = GetPlayerArray()
-
+	playerList.extend( GetNPCArray() )
+	
 	// Multiplying the bounds by 1.42 to ensure this encloses the droppod when it's rotated 45 degrees
 	local mins = pod.GetBoundingMins() * 1.42 + targetOrigin
 	local maxs = pod.GetBoundingMaxs() * 1.42 + targetOrigin
@@ -768,10 +786,17 @@ function CheckPlayersIntersectingPod( pod, targetOrigin )
         
 		if ( DistanceSqr( targetOrigin, playerOrigin ) < (safeRadiusSqr / 8) && IsAlive(player))
 		{   
-            vector dif = Normalize( player.GetOrigin() - targetOrigin )
-            dif *= 300
-            dif.z = 0
-            player.SetVelocity( dif )
+			if( GetCurrentPlaylistVarBool( "ketchup_mod8", false ) )
+			{
+				player.Die( null, null, { damageSourceId = eDamageSourceId.droppod_impact } )
+			} else
+			{
+				vector dif = Normalize( player.GetOrigin() - targetOrigin )
+				dif *= 300
+				dif.z = 0
+				player.SetVelocity( dif )
+			}
+			
             return true
        }
 	}

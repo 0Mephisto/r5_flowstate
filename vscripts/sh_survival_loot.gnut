@@ -2862,19 +2862,19 @@ bool function SURVIVAL_PlayerAllowedToPickup( entity player, entity pickup = nul
 	if ( IsPlayingFirstAndThirdPersonAnimation( player ) )
 		return false
 
-	if(IsValid(pickup))
-	{
-		LootData data = SURVIVAL_Loot_GetLootDataByIndex( pickup.GetSurvivalInt() )
+	// if(IsValid(pickup))
+	// {
+		// LootData data = SURVIVAL_Loot_GetLootDataByIndex( pickup.GetSurvivalInt() )
 		
-		if(data.ref == "snd_bomb" && player.GetTeam() != Safe_GetAttackerTeam())
-		{
-			#if CLIENT
-			if(player.GetTeam() == Safe_GetDefenderTeam())
-				SND_HintCatalog(7, 0)
-			#endif
-			return false
-		}
-	}
+		// if(data.ref == "snd_bomb" && player.GetTeam() != Safe_GetAttackerTeam())
+		// {
+			// #if CLIENT
+			// if(player.GetTeam() == Safe_GetDefenderTeam())
+				// SND_HintCatalog(7, 0)
+			// #endif
+			// return false
+		// }
+	// }
 
 	return PlayerInValidState( player )
 }

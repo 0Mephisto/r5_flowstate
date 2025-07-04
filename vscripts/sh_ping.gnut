@@ -484,7 +484,7 @@ void function CodeCallback_PingCommandExecuteQueued( entity player, int pingType
 
 	if( Playlist() == ePlaylists.fs_scenarios ) //TODO: set state for allowed ping in gamemode logic
 	{
-		if( !FS_Scenarios_PlayerCanPing( player ) )
+		if( !Safe_FS_Scenarios_PlayerCanPing( player ) )
 			return
 	}
 

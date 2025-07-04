@@ -21,6 +21,10 @@ global function ShowChat
 
 global function IsWatchingReplay
 
+//Chat 
+global function mute
+global function isMuted
+
 global const MAX_ACTIVE_TRAPS_DISPLAYED = 5
 global const VGUI_CLOSED                = 0
 global const VGUI_CLOSING               = 1
@@ -58,6 +62,7 @@ struct
 	
 	bool hideChat = false
 	
+	bool muted = false	
 } file
 
 void function ClMainHud_Init()
@@ -1014,3 +1019,12 @@ bool function IsWatchingReplay()
 	return false
 }
 
+void function mute( bool set )
+{
+	file.muted = set
+}
+
+bool function isMuted()
+{
+	return file.muted
+}

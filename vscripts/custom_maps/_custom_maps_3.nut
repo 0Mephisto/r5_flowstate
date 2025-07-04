@@ -968,20 +968,6 @@ void function TeleportFRPlayer(entity player, vector pos, vector ang)
 	EmitSoundOnEntityExceptToPlayer( player, player, "PhaseGate_Enter_3p" )
 }
 
-entity function CreateFRButton(vector pos, vector ang, string prompt)
-{
-	entity button = CreateEntity("prop_dynamic")
-	button.kv.solid = 6
-	button.SetValueForModelKey($"mdl/props/global_access_panel_button/global_access_panel_button_console_w_stand.rmdl")
-	button.SetOrigin(pos)
-	button.SetAngles(ang)
-	DispatchSpawn(button)
-	button.SetUsable()
-	button.SetUsableByGroup("pilot")
-	button.SetUsePrompts(prompt, prompt)
-	return button
-}
-
 void function SpawnSingleDoor(vector doorpos, vector doorang)
  {
 	entity singleDoor = CreateEntity("prop_door")

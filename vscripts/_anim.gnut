@@ -1256,12 +1256,12 @@ void function FirstPersonSequence( FirstPersonSequenceStruct sequence, entity pl
 		SetPlayerAnimViewEntity( player, firstPersonProxy )
 		firstPersonProxy.SetNextThinkNow()
 		SetForceDrawWhileParented( firstPersonProxy, true )
-		if( isScenariosMode() )
+		if( Safe_isScenariosMode() )
 			firstPersonProxy.Anim_SetPlaybackRate( 2.0 )
 	}
 	else if ( sequence.thirdPersonCameraAttachments.len() > 0 )
 	{
-		if ( player.IsPlayer() )
+		if ( player.IsPlayer() ) //&& Gamemode() != eGamemodes.fs_spieslegends )
 		{
 			entity fpProxy = player.GetFirstPersonProxy() //Shouldn't ever need to show the first person proxy when doing thirdPersonCameraAttachments; hide it explicitly here to stop it from showing up when chaining animations
 			if ( IsValid( fpProxy )  )

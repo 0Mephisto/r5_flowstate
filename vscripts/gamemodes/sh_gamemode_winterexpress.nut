@@ -314,9 +314,9 @@ void function WinterExpress_Init()
 		// Survival_AddCallback_PlayerFreefallEnd( WinterExpress_PlayerFreefallEnd )
 
 		//Flowstate weapon selector
-		AddClientCommandCallback("CC_MenuGiveAimTrainerWeapon", CC_MenuGiveAimTrainerWeapon ) 
-		AddClientCommandCallback("CC_AimTrainer_SelectWeaponSlot", CC_AimTrainer_SelectWeaponSlot )
-		AddClientCommandCallback("CC_AimTrainer_WeaponSelectorClose", CC_AimTrainer_CloseWeaponSelector )
+		// AddClientCommandCallback("CC_MenuGiveAimTrainerWeapon", CC_MenuGiveAimTrainerWeapon ) 
+		// AddClientCommandCallback("CC_AimTrainer_SelectWeaponSlot", CC_AimTrainer_SelectWeaponSlot )
+		// AddClientCommandCallback("CC_AimTrainer_WeaponSelectorClose", CC_AimTrainer_CloseWeaponSelector )
 
 		AddCallback_OnPlayerRespawned( WinterExpress_OnPlayerRespawned )
 
@@ -431,8 +431,8 @@ void function WinterExpress_Init()
 	
 	#if SERVER
 		//(mk):Gamemode uses 1v1 features for weapons/ammo 
-		Gamemode1v1_SetWeaponAmmoStackAmount( GetCurrentPlaylistVarInt( "give_weapon_stack_count_amount", 0 ) )
-		PrimaryWeaponMetagame_Init()
+		// Gamemode1v1_SetWeaponAmmoStackAmount( GetCurrentPlaylistVarInt( "give_weapon_stack_count_amount", 0 ) )
+		// PrimaryWeaponMetagame_Init()
 	#endif
 	
 	//Flowstate custom
@@ -567,8 +567,8 @@ void function TurnOffArenaWalls( entity wall )
 #if CLIENT
 void function OnPlayerLoadoutChanged( EHI playerEHI, ItemFlavor flavour )
 {
-	if( settings.winter_express_show_player_cards )
-		FS_Scenarios_SetupPlayersCards( true )
+	// if( settings.winter_express_show_player_cards )
+		// FS_Scenarios_SetupPlayersCards( true )
 }
 
 void function Client_OnTeamChanged( entity player, int oldTeam, int newTeam )
@@ -643,10 +643,10 @@ void function OnEntitiesDidLoad_Client()
 
 	SurvivalCommentary_SetHost( eSurvivalHostType.MIRAGE )
 	
-	FS_Scenarios_InitPlayersCards()
+	// FS_Scenarios_InitPlayersCards()
 	if( GetGameState() == eGameState.Playing )
 	{
-		FS_Scenarios_SetupPlayersCards( false )
+		// FS_Scenarios_SetupPlayersCards( false )
 		FS_CreateScoreHUD()
 	}
 }
@@ -2093,7 +2093,7 @@ void function Flowstate_GivePlayerLoadoutOnGameStart_Copy( entity player, bool f
 		//this needs rework, fix spawning
 	} else
 	{
-		GiveRandomPrimaryWeaponMetagame( player )
+		// GiveRandomPrimaryWeaponMetagame( player )
 		//GiveRandomSecondaryWeaponMetagame( player )//TODO: FIX SECONDARY GUNS - OR BETTER, REWORK THE WHOLE GAMEMODE
 	}
 	
@@ -2167,7 +2167,7 @@ void function ResetPlayerInventoryAndLoadoutOnRespawn( entity player, bool shoul
 		player.SetNameVisibleToEnemy( true )
 	}
 
-	PlayerRestoreHP_1v1( player, 100, Equipment_GetDefaultShieldHP() )
+	// PlayerRestoreHP_1v1( player, 100, Equipment_GetDefaultShieldHP() )
 	DeployAndEnableWeapons( player )	
 	CheckAutoHealPassive( player )
 }
@@ -3526,7 +3526,7 @@ void function WinterExpress_CL_TryOpenLoadoutSelect( var button )
 	if ( GetGameState() != eGameState.Playing )
 		return
 
-	OpenFRChallengesSettingsWpnSelector()
+	// OpenFRChallengesSettingsWpnSelector()
 }
 
 void function OnWaitingForPlayers_Client()
@@ -3850,7 +3850,7 @@ void function DisplayRoundStart()
 
 	// foreach ( team, rui in file.squadOnObjectiveElements )
 		// RuiSetInt( rui, "roundState", eWinterExpressRoundState.OBJECTIVE_ACTIVE )
-	Flowstate_ShowRoundEndTimeUI( GetGlobalNetTime( "WinterExpress_RoundEnd" ) )
+	// Flowstate_ShowRoundEndTimeUI( GetGlobalNetTime( "WinterExpress_RoundEnd" ) )
 }
 
 void function DisplayRoundFinished()
@@ -3861,7 +3861,7 @@ void function DisplayRoundFinished()
 	// foreach ( team, rui in file.squadOnObjectiveElements )
 		// RuiSetInt( rui, "roundState", eWinterExpressRoundState.ABOUT_TO_CHANGE_STATIONS )
 	
-	Flowstate_ShowRoundEndTimeUI( -1 )
+	// Flowstate_ShowRoundEndTimeUI( -1 )
 }
 
 void function DisplayRoundChanging()
@@ -4008,8 +4008,8 @@ void function ServerCallback_CL_WinnerDetermined( int team )
 	StopSoundOnEntity( GetLocalClientPlayer(), "Music_LTM32_SpectateCam" )
 	
 	FS_UpdateScoreForTeam( team, 3 )
-	FS_Scenarios_TogglePlayersCardsVisibility( false, false )
-	Flowstate_ShowRoundEndTimeUI( -1 )
+	// FS_Scenarios_TogglePlayersCardsVisibility( false, false )
+	// Flowstate_ShowRoundEndTimeUI( -1 )
 }
 
 void function ServerCallback_CL_RespawnAnnouncement()
@@ -4022,7 +4022,7 @@ void function ServerCallback_CL_ObserverModeSetToTrain()
 	if ( !IsValid( GetLocalClientPlayer() ) )
 		return
 
-	FS_Scenarios_TogglePlayersCardsVisibility( false, false )
+	// FS_Scenarios_TogglePlayersCardsVisibility( false, false )
 	UpdateMainHudVisibility( GetLocalClientPlayer() )
 	DeathScreen_SpectatorTargetChanged( GetLocalClientPlayer(), null, null )
 
@@ -4626,8 +4626,8 @@ void function FS_ReloadScoreHUD()
 	
 	if( settings.winter_express_show_player_cards )
 	{
-		FS_Scenarios_InitPlayersCards()
-		FS_Scenarios_SetupPlayersCards( true )
+		// FS_Scenarios_InitPlayersCards()
+		// FS_Scenarios_SetupPlayersCards( true )
 	}
 }
 
@@ -4902,7 +4902,7 @@ void function CameraLerpHovertankThread( entity player, vector stationPos, vecto
 		
 					wait 1
 					
-					FS_Scenarios_TogglePlayersCardsVisibility( true, false )
+					// FS_Scenarios_TogglePlayersCardsVisibility( true, false )
 				}()
 		}
 	)
@@ -4983,7 +4983,7 @@ void function CameraLerpTrainThread( entity player, vector estimatedCameraStart,
 				cameraMover.Destroy()
 			}
 
-			FS_Scenarios_TogglePlayersCardsVisibility( true, false )
+			// FS_Scenarios_TogglePlayersCardsVisibility( true, false )
 		}
 	)
 

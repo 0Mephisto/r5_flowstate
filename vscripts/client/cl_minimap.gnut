@@ -48,6 +48,10 @@ global function UpdateImageAndScaleOnMinimapRUI
 global function Minimap_AddIconAtPosition
 global function FS_Scenarios_MinimapDeathFieldCreated
 
+global function HACK_TrackPlayerPositionOnScript
+global function SetCustomXYOffsetsMapScaleAndImageOnFullmapAndMinimap
+global function RefreshImageAndScaleOnMinimapAndFullmap
+
 #if DEVELOPER
 global function DumpMinimapHandles
 #endif
@@ -112,6 +116,11 @@ struct {
 	
 	float HALO_RADAR_MAX_SCAN_DISTANCE
 	float HALO_RADAR_UPDATE_TIME
+
+	float currentX_Offset = 0
+	float currentY_Offset = 0
+	asset currentMapImage
+	float mapscale
 } file
 
 
@@ -2092,4 +2101,51 @@ var function Minimap_CommonAdd_PlayerTrack( asset ruiAsset, int zOrder )
 	RuiSetVisible( rui, file.minimapEnabled)
 
 	return rui
+}
+
+// FS Custom minimaps
+void function SetCustomXYOffsetsMapScaleAndImageOnFullmapAndMinimap(asset image, float mapscale, float xoffset, float yoffset)
+{
+	file.currentMapImage = image 
+	file.mapscale = mapscale
+	
+	UpdateImageAndScaleOnFullmapRUI( image, mapscale) //fullmap
+	UpdateImageAndScaleOnMinimapRUI( image, mapscale) //minimap
+	
+	file.currentY_Offset = yoffset * mapscale
+	file.currentX_Offset = xoffset * mapscale
+}
+
+void function RefreshImageAndScaleOnMinimapAndFullmap()
+{
+	UpdateImageAndScaleOnFullmapRUI( file.currentMapImage, file.mapscale ) //fullmap
+	UpdateImageAndScaleOnMinimapRUI( file.currentMapImage, file.mapscale ) //minimap
+}
+
+void function HACK_TrackPlayerPositionOnScript(var rui, entity player, bool isFullmap) //used by fullmap and minimap to show player arrows on them without using RuiTrack so we can add offsets and use it with custom prop maps placed anywhere in the sky. Colombia
+{
+	if( !IsValid(player) ) return
+	
+	//EndSignal( player, "OnDeath" )
+
+	string ruiname1
+	string ruiname2
+	
+	if(isFullmap)
+	{
+		ruiname1 = "objectPos"
+		ruiname2 = "objectAngles"
+	} else 
+	{
+		ruiname1 = "playerPos"
+		ruiname2 = "playerAngles"
+	}
+	
+	while(IsValid(player))
+	{
+		RuiSetFloat3( rui, ruiname1, Vector( player.GetOrigin().x + file.currentX_Offset, player.GetOrigin().y + file.currentY_Offset, 0 ) )
+		RuiSetFloat3( rui, ruiname2, Vector( player.CameraAngles().x, player.CameraAngles().y, 0 ) )
+		
+		WaitFrame()
+	}
 }

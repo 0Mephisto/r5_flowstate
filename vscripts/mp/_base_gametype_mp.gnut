@@ -61,8 +61,8 @@ void function CodeCallback_OnClientConnectionCompleted( entity player )
 	
 	FinishClientScriptInitialization( player )
 
-	if( Gamemode() == eGamemodes.fs_snd )
-		_OnPlayerConnectedSND( player )
+	// if( Gamemode() == eGamemodes.fs_snd )
+		// _OnPlayerConnectedSND( player )
 }
 
 
