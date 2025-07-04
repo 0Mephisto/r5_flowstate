@@ -589,7 +589,7 @@ void function ConcussiveBreach_SonarThink( entity projectile )
 		thread ConcussiveBreach_PropScriptUpdate( projectile )
 	}
 
-	IncrementSonarPerTeamGrenade( team )
+	// IncrementSonarPerTeamGrenade( team )
 
 	/*
 	if ( IsValid( projectile ) && projectile.IsPlayer() )
@@ -627,7 +627,7 @@ void function ConcussiveBreach_SonarThink( entity projectile )
 			}
 			*/
 
-			DecrementSonarPerTeamGrenade( team )
+			// DecrementSonarPerTeamGrenade( team )
 			trigger.Destroy()
 		}
 	)
