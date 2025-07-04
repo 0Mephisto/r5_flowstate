@@ -2,6 +2,9 @@ global function OnWeaponPrimaryAttack_sonic_shout
 global function MpAbilitySonicShoutWeapon_Init
 global function MpAbilitySonicShoutWeapon_OnWeaponTossPrep
 
+global function MpAbilitySonicShoutWeapon_OnWeaponTossPrep_devices_jammer
+global function OnWeaponPrimaryAttack_sonic_shout_devices_jammer
+
 #if CLIENT
 	global function PlayScreenFXSonicShout
 #endif // CLIENT
@@ -45,6 +48,7 @@ void function MpAbilitySonicShoutWeapon_Init()
 		PrecacheImpactEffectTable( MEDIUM_SONIC_SHOUT_FX_TABLE )
 		PrecacheImpactEffectTable( LARGE_SONIC_SHOUT_FX_TABLE )
 		PrecacheImpactEffectTable( SONIC_SHOUT_FX_TABLE )
+		PrecacheParticleSystem( $"P_exp_artillery_plasma" )
 	#endif //SERVER
 
 	#if CLIENT
@@ -363,7 +367,40 @@ void function SonicShout_FireSonicRipple( vector origin, vector dir, float range
 
 }
 
-void function CleanUpRippleFX( entity fx )
+void function SpiesLegends_DevicesJammerFX( vector origin, float range )
+{
+    // how many radial spokes (you can bump this up for a smoother circle)
+    int numSpokes = 32;  
+	
+    // reuse your spacing logic
+    int fxPerSpoke = 10
+    float stepSize    = range / fxPerSpoke;
+	
+	// StartParticleEffectInWorld_ReturnEntity( GetParticleSystemIndex( $"P_exp_artillery_plasma" ), origin, <0,0,0> )
+
+    // for each spoke, sweep yaw from 0 to 360
+    for ( int s = 0; s < numSpokes; s++ )
+    {
+        float yawDeg   = (360.0 / numSpokes) * s;
+        // build a pure‐horizontal direction vector from that yaw
+        vector dirSpoke = Vector( 0, yawDeg, 0 );
+        // you may want the effect to face outward
+        vector fxAngles = VectorToAngles( dirSpoke );
+
+        // step out along this spoke
+        for ( int i = 0; i < fxPerSpoke; i++ )
+        {
+            float dist      = stepSize * i;
+            vector spawnPos = origin + (dirSpoke * dist);
+
+            int    fxID = GetParticleSystemIndex( SONIC_SHOUT_WORLD_REFRACT_FX );
+            entity fx   = StartParticleEffectInWorld_ReturnEntity( fxID, spawnPos, fxAngles );
+            thread CleanUpRippleFX( fx );
+        }
+    }
+}
+
+void function CleanUpRippleFX( entity fx, float duration = 3.0 )
 {
 	Assert ( IsNewThread(), "Must be threaded off." )
 	fx.EndSignal( "OnDestroy" )
@@ -378,13 +415,21 @@ void function CleanUpRippleFX( entity fx )
 		}
 	)
 
-	wait 3.0
+	wait duration
 }
 
 void function SonicShout_ImpactExplosion( entity player, vector pos )
 {
 	string fxTable = SONIC_SHOUT_FX_TABLE
-
+	
+	int damageId = eDamageSourceId.mp_ability_ground_slam
+	
+	if( Gamemode() == eGamemodes.fs_spieslegends )
+	{
+		damageId = eDamageSourceId.mp_ability_devices_jammer
+		fxTable = "exp_electric_smoke_grenade"
+	}
+	
 	Explosion(
 		pos,											//center,
 		player,											//attacker,
@@ -397,7 +442,7 @@ void function SonicShout_ImpactExplosion( entity player, vector pos )
 		pos,											//projectileLaunchOrigin,
 		1000.0,											//explosionForce,
 		damageTypes.explosive,							//scriptDamageFlags,
-		eDamageSourceId.mp_ability_ground_slam,			//scriptDamageSourceIdentifier,
+		damageId,			//scriptDamageSourceIdentifier,
 		fxTable )										//impactEffectTableName
 }
 
@@ -443,3 +488,107 @@ void function SonicShout_PushPlayer( entity target, vector velocity )
 		wait 3.0
 	}
 #endif
+
+
+//////////////////
+//////////////////
+// Spies legends
+
+void function MpAbilitySonicShoutWeapon_OnWeaponTossPrep_devices_jammer( entity weapon, WeaponTossPrepParams prepParams )
+{
+	entity weaponOwner = weapon.GetWeaponOwner()
+	weapon.SetScriptTime0( 0.0 )
+}
+
+var function OnWeaponPrimaryAttack_sonic_shout_devices_jammer( entity weapon, WeaponPrimaryAttackParams attackParams )
+{
+	SpiesLegends_jammer_devices( weapon, attackParams.pos, attackParams.dir )
+
+	return weapon.GetWeaponSettingInt( eWeaponVar.ammo_min_to_fire )
+}
+
+void function SpiesLegends_jammer_devices( entity weapon, vector pos, vector dir )
+{
+	entity owner = weapon.GetWeaponOwner()
+	#if CLIENT
+	if ( owner.IsPlayer() )
+		thread PlayScreenFXSonicShout( owner )
+	#endif //CLIENT
+	
+	#if SERVER
+	float punchSoft 	= SONIC_SHOUT_VIEW_PUNCH_SOFT
+	float punchHard 	= SONIC_SHOUT_VIEW_PUNCH_HARD
+	float punchRand 	= SONIC_SHOUT_VIEW_PUNCH_RAND
+	
+	owner.ViewPunch( owner.GetOrigin(), 5, 1, 1)
+	
+	SonicShout_ImpactExplosion( owner, owner.GetOrigin() )
+	SpiesLegends_DevicesJammerFX( pos, 1000.0 )
+
+	entity circle = CreateEntity( "prop_dynamic" )
+	circle.SetValueForModelKey( $"mdl/fx/ar_edge_sphere_512.rmdl" )
+	circle.kv.modelscale = 1.17 // 300
+	circle.kv.rendercolor = "255, 255, 255"
+	circle.SetOrigin( owner.GetOrigin() + <0.0, 0.0, -25>)
+	circle.SetAngles( <0, 0, 0> )
+	DispatchSpawn(circle)
+	thread CleanUpRippleFX( circle, 1.5 )
+	
+	
+	float destructionRadius = 300.0
+	
+	//Deshabilitar mercs devices
+	//Proximity Mines DONE
+	//Electric Smoke "smokeScreenInfoTarget" DONE
+	//Pulse Blade (or its ping effect) "grenadeSonarProjectile" DONE
+	//Rev Shell "Rev_shell" DONE
+	//Suppressor Turret "flowstateTurret" DONE
+	foreach( ent in GetTrackedEnts_Level() )
+	{
+		if( IsValid( ent ) && ent.GetScriptName() == "flowstateTurret" && Distance(ent.GetOrigin(), owner.GetOrigin() ) <= destructionRadius )
+		{
+			//Sound for zap
+			EmitSoundOnEntity( ent, "Wattson_Ultimate_J" )
+
+			//Effects for zap
+			entity zap = StartParticleEffectInWorld_ReturnEntity( GetParticleSystemIndex( $"P_wpn_trophy_imp_lite" ), ent.GetOrigin(), ent.GetAngles() )
+			EffectSetControlPointVector( zap, 1, ent.GetOrigin() )
+			
+			foreach(entity part in ent.e.turretparts)
+			{
+				if(IsValid(part)) 
+					part.Dissolve( ENTITY_DISSOLVE_CORE, <0, 0, 0>, 5000 )
+			}
+			
+			if( IsValid( ent ) )
+				ent.Destroy()
+			continue
+		}
+		
+		if( !IsValid( ent ) ||
+			ent.GetScriptName() != "proximityMine" && ent.GetScriptName() != "smokeScreenInfoTarget" && ent.GetScriptName() != "grenadeSonarProjectile" && ent.GetScriptName() != "Rev_shell"  ||
+			Distance(ent.GetOrigin(), owner.GetOrigin() ) > destructionRadius )
+			continue
+
+		//Sound for zap
+		EmitSoundOnEntity( ent, "Wattson_Ultimate_J" )
+
+		//Effects for zap
+		entity zap = StartParticleEffectInWorld_ReturnEntity( GetParticleSystemIndex( $"P_wpn_trophy_imp_lg" ), ent.GetOrigin(), ent.GetAngles() )
+		EffectSetControlPointVector( zap, 1, ent.GetOrigin() )
+		
+		entity zapp = StartParticleEffectInWorld_ReturnEntity( GetParticleSystemIndex( $"P_tesla_trap_link_CP" ), owner.GetAttachmentOrigin( owner.LookupAttachment( "R_HAND" ) ), <0, 0, 0> )
+		EffectSetControlPointVector( zapp, 1, ent.GetOrigin() )
+		
+		thread function () : (zapp)
+		{
+			wait 1.5
+			if(IsValid(zapp))
+				zapp.Destroy()
+		}()
+		ent.Destroy()
+	}
+
+	
+	#endif //SERVER
+}

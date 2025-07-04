@@ -16,6 +16,7 @@ const float FLASHBANG_BLIND_FADE_DISTANCE_MAX = 1536.0//1280.0
 const int FLASH_BANG_DAMAGE = 5
 
 const asset FLASH_BANG_BLIND_TEMP_FX = $"P_emp_body_human"
+global bool FLASHBANG_AFFECTS_SPIES = false
 
 void function MpWeaponGrenadeFlashbang_Init()
 {
@@ -45,6 +46,9 @@ void function OnProjectileExplode_weapon_flashbang( entity projectile )
 	array<entity> livingPlayers = GetPlayerArray_Alive()
 	foreach ( entity player in livingPlayers  )
 	{
+		if( Gamemode() == eGamemodes.fs_spieslegends && !FLASHBANG_AFFECTS_SPIES && player.GetTeam() == gCurrentSpyTeam )
+			continue
+		
 		vector viewOrigin = player.EyePosition()
 		float distSqr = DistanceSqr( viewOrigin, flashOrigin )
 		if ( distSqr > ( FLASHBANG_BLIND_FADE_DISTANCE_MAX * FLASHBANG_BLIND_FADE_DISTANCE_MAX ) )
@@ -70,7 +74,7 @@ void function OnProjectileExplode_weapon_flashbang( entity projectile )
 			//printt( "DOT: " + dot )
 
 			float dist = Distance( viewOrigin, flashOrigin )
-
+			
 			thread FlashBang_Flash( player, dot, dist )
 		}
 	}
