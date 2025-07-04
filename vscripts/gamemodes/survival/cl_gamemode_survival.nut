@@ -119,6 +119,7 @@ global function ServerCallback_Scenarios_MatchEndAnnouncement
 global function FS_ForceCompass
 global function FS_DestroyCompass
 global function AddInWorldMinimapObject
+global function AddCallback_OnLocalPlayerUnitframeInit
 
 global struct NextCircleDisplayCustomData
 {
@@ -214,6 +215,8 @@ global struct SquadSummaryData
 
 struct
 {
+	array<void functionref( entity, var )> callbacks_onLocalPlayerUnitframeInit
+	
 	var titanLinkProgressRui
 	var dpadMenuRui
 	var pilotRui
@@ -452,6 +455,15 @@ void function ClGamemodeSurvival_Init()
 		RegisterSignal("NewKillChangeRui")
 }
 
+void function AddCallback_OnLocalPlayerUnitframeInit( void functionref(entity, var) func )
+{
+	Assert( file.callbacks_onLocalPlayerUnitframeInit.contains( func ) == false, "Callback (" + string( func ) + ") already registered for OnMapEditorPropSpawned" )
+	
+	if( file.callbacks_onLocalPlayerUnitframeInit.contains( func ) )
+		return
+	
+	file.callbacks_onLocalPlayerUnitframeInit.append( func )
+}
 
 void function Survival_EntitiesDidLoad()
 {
@@ -916,6 +928,12 @@ void function InitSurvivalHealthBar()
 	Assert( IsNewThread(), "Must be threaded off" )
 	entity player = GetLocalViewPlayer()
 
+	foreach ( callbackFunc in file.callbacks_onLocalPlayerUnitframeInit )
+	{
+		callbackFunc( player, file.pilotRui )
+		return
+	}
+	
 	if( IsFlowstateActive() )
 	{
 		MG_CustomPilotRUI( player, file.pilotRui )

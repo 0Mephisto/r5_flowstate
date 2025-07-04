@@ -19,6 +19,7 @@ global function ClearUnitFrameCustomColor
 
 global function SetUnitFrameDataFromOwner
 global function UpdateRUITest
+global function AddCallback_OnTeammateUnitframeInit
 
 #if DEVELOPER
 global function PrintUnitFrames
@@ -37,6 +38,8 @@ struct
 	table<entity, UnitFrameDef>       teamUnitFrames
 	array< void functionref(int) >    Callbacks_OnTeamUnitFrameCreated
 	array< void functionref(int) >    Callbacks_OnTeamUnitFrameDestroyed
+	array<void functionref( entity, var )> callbacks_onTeammateUnitframeInit
+	
 	table<entity, string> characterRefTable
 
 	table<entity, asset>  customPlayerInfoTreatment
@@ -56,6 +59,16 @@ void function ClUnitFrames_Init()
 
 	if ( IsRecruitMode() )
 		CL_RecruitModeUnitFrames_Init()
+}
+
+void function AddCallback_OnTeammateUnitframeInit( void functionref(entity, var) func )
+{
+	Assert( file.callbacks_onTeammateUnitframeInit.contains( func ) == false, "Callback (" + string( func ) + ") already registered for OnMapEditorPropSpawned" )
+	
+	if( file.callbacks_onTeammateUnitframeInit.contains( func ) )
+		return
+	
+	file.callbacks_onTeammateUnitframeInit.append( func )
 }
 
 
@@ -304,6 +317,12 @@ void function SetUnitFrameDataFromOwner( var rui, entity ent, bool forceUpdate =
 	RuiTrackGameTime( rui, "lastFireTime", ent, RUI_TRACK_LAST_FIRED_TIME )
 	RuiSetBool( rui, "isLocalPlayer", (ent == GetLocalViewPlayer()) )
 	RuiSetImage( rui, "icon", classIcon )
+
+	foreach ( callbackFunc in file.callbacks_onTeammateUnitframeInit )
+	{
+		callbackFunc( ent, rui )
+	}
+	
 	RuiTrackFloat( rui, "reviveEndTime", ent, RUI_TRACK_SCRIPT_NETWORK_VAR, GetNetworkedVariableIndex( "reviveEndTime" ) )
 	RuiTrackInt( rui, "reviveType", ent, RUI_TRACK_SCRIPT_NETWORK_VAR_INT, GetNetworkedVariableIndex( "reviveType" ) )
 	RuiTrackFloat( rui, "bleedoutEndTime", ent, RUI_TRACK_SCRIPT_NETWORK_VAR, GetNetworkedVariableIndex( "bleedoutEndTime" ) )
