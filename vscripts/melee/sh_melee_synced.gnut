@@ -245,9 +245,13 @@ void function ServerCallback_SyncedMeleeDone()
 #if SERVER
 void function DoSyncedMelee_Thread( entity attacker, entity target )
 {
-	bool targetWasBleedingOut = (target.IsPlayer() && Bleedout_IsBleedingOut( target ) && Gamemode() != eGamemodes.fs_spieslegends)
-	
-	if(!targetWasBleedingOut) return
+	if( Gamemode() != eGamemodes.fs_spieslegends )
+	{
+		bool targetWasBleedingOut = (target.IsPlayer() && Bleedout_IsBleedingOut( target ) )
+		
+		if(!targetWasBleedingOut) 
+			return
+	}
 
 	OnThreadEnd( function() : ( attacker, target) {
 		if ( IsValid( attacker ) )
