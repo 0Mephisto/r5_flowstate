@@ -352,11 +352,15 @@ void function ShItems_LevelInit_Finish()
 
 		if ( ItemFlavor_GetAsset( flavor ) == $"" )
 			continue
-
-		foreach( ItemFlavor tag in RegisterReferencedItemFlavorsFromArray( flavor, "tags", "flavor" ) )
+		if ( ItemFlavor_GetType( flavor ) == eItemType.music_pack )
+			continue
+		else
 		{
-			flavor._____INTERNAL_tagMap[tag] <- true
-			fileLevel.tagFlavorListMap[tag].append( flavor )
+			foreach( ItemFlavor tag in RegisterReferencedItemFlavorsFromArray( flavor, "tags", "flavor" ) )
+			{
+				flavor._____INTERNAL_tagMap[tag] <- true
+				fileLevel.tagFlavorListMap[tag].append( flavor )
+			}
 		}
 	}
 
@@ -1154,6 +1158,7 @@ array<ItemFlavor> function RegisterReferencedItemFlavorsFromArray( ItemFlavor pa
 	}
 	return loaded
 }
+
 
 
 table<ItemFlavor, bool> function MakeItemFlavorSet( array<ItemFlavor> list, table<ItemFlavor, int> sortOrdinalMap = {} )

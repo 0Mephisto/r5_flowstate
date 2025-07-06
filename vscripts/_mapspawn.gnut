@@ -285,11 +285,11 @@ void function PrecacheSDKWeapons()
 	PrecacheWeapon( $"mp_weapon_macks_knife_primary" )
 
 	//Titanfall Weapons
-	PrecacheModel( $"mdl/weapons/arms/buddypov.rmdl" )
-	PrecacheModel( $"mdl/weapons/arms/pov_titan_medium_cockpit.rmdl" )
-	PrecacheModel( $"mdl/titans/medium/titan_medium_rodeo_battery.rmdl" )
-	PrecacheWeapon( $"mp_titancore_flight_core" )
-	PrecacheWeapon( $"mp_titancore_laser_cannon" )
+	//PrecacheModel( $"mdl/weapons/arms/buddypov.rmdl" )
+	//PrecacheModel( $"mdl/weapons/arms/pov_titan_medium_cockpit.rmdl" )
+	//PrecacheModel( $"mdl/titans/medium/titan_medium_rodeo_battery.rmdl" )
+	//PrecacheWeapon( $"mp_titancore_flight_core" )
+	//PrecacheWeapon( $"mp_titancore_laser_cannon" )
 	PrecacheWeapon( $"mp_titanweapon_flightcore_rockets" ) // Not a loot
 }
 
@@ -306,7 +306,7 @@ void function PrecacheSDKEntities()
 	///////////////////////misc///////////////////////
 	PrecacheModel( $"mdl/vehicle/olympus_hovercraft/olympus_hovercraft_v2.rmdl")
 	PrecacheModel( $"mdl/communication/terminal_usable_imc_01.rmdl" )
-	PrecacheModel( $"mdl/titans/buddy/titan_buddy.rmdl" )
+	//PrecacheModel( $"mdl/titans/buddy/titan_buddy.rmdl" )
 
 	//////////////////////NPC CACHE/////////////////////
 	//PrecacheModel( $"mdl/robots/super_spectre/super_spectre_v1.rmdl")
