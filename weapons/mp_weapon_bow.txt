@@ -68,7 +68,7 @@
 
 
 	// Behavior
-	"fire_rate"                                 "3.0" //"3.0"
+	"fire_rate"                                 "2.500000"
 	"is_semi_auto"								"1"
 
 	"projectile_launch_speed"                               "10000"
@@ -117,7 +117,7 @@
 	"charge_allow_hold_when_full"               "1"
 	"charge_remain_full_when_fired"             "1"
 	"charge_attack_min_charge_required"         "0.15"
-	"charge_cooldown_time"						"0.21"  //these need to add up to about 1 / fire_rate
+	"charge_cooldown_time"						"0.300000"
 	"charge_cooldown_delay"   					"0.1"   //---
 	"charge_levels"                             "6"
 	"charge_level_base"                         "1"
@@ -144,22 +144,22 @@
 
 	"allow_headshots"                           "1"
     "headshot_distance" 						"11828"  // 300m
-    "damage_headshot_scale"                     "1.25"
+    "damage_headshot_scale"                     "1.600000"
     "damage_leg_scale"                          "0.8"
 
 	// Ammo
                   
 	    "uses_ammo_pool"                            "0"
-	    "ammo_default_total"                        "60"
-        "ammo_stockpile_max"                        "60"
+	    "ammo_default_total"                        "40"
+        "ammo_stockpile_max"                        "40"
         "ammo_clip_size"                            "0"
 
-        "damage_near_value"                         "30"
-        "damage_far_value"                          "30"
-        "damage_very_far_value"                     "30"
-        "damage_near_value_titanarmor"              "30"
-        "damage_far_value_titanarmor"               "30"
-        "damage_very_far_value_titanarmor"          "30"
+        "damage_near_value"                         "35"
+        "damage_far_value"                          "35"
+        "damage_very_far_value"                     "35"
+        "damage_near_value_titanarmor"              "35"
+        "damage_far_value_titanarmor"               "35"
+        "damage_very_far_value_titanarmor"          "35"
       
                                                     
                                                       
@@ -316,11 +316,11 @@
     "viewdrift_ads_delay"                       "1.0"
     "viewdrift_ads_delay_debounce_time"         "0.4"
 
-    "viewdrift_ads_speed_pitch"   				"0.3"
-    "viewdrift_ads_speed_yaw" 					"0.4"
+    "viewdrift_ads_speed_pitch"   				"0.500000"
+    "viewdrift_ads_speed_yaw" 					"0.700000"
 
-    "viewdrift_ads_stand_scale_pitch" 			"0.65"
-    "viewdrift_ads_stand_scale_yaw"   			"0.45"
+    "viewdrift_ads_stand_scale_pitch" 			"0.850000"
+    "viewdrift_ads_stand_scale_yaw"   			"0.650000"
     "viewdrift_ads_crouch_scale_pitch"  		"0.45"
     "viewdrift_ads_crouch_scale_yaw"			"0.35"
     "viewdrift_ads_air_scale_pitch"   			"1.2"

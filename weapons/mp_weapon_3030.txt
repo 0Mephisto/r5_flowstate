@@ -170,7 +170,7 @@
 
 	// Viewkick Spring
 	//
-	"viewkick_pattern"                          "3030"
+	"viewkick_pattern"                          "3030_repeater"
     "viewkick_spring" 						    "3030_vkp"
     "viewkick_spring_hot"                       "3030_vkp_hot"
 

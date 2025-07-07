@@ -42,12 +42,12 @@ WeaponData
 	"OnWeaponChargeBegin"					        "EnergyChargeWeapon_OnWeaponChargeBegin"
 	"OnWeaponChargeEnd"					            "OnWeaponChargeEnd_weapon_energy_shotgun"
 
-	"charge_time" 									"1.25"
+	"charge_time" 									"1.250000"
 	"charge_levels"									"4"
 	"charge_level_base"								"1"
 
-    "charge_cooldown_time"							"0.75"
-    "charge_cooldown_delay"   						"0.35"
+    "charge_cooldown_time"							"1.000000"
+    "charge_cooldown_delay"   						"0.000000"
 
 	"rui_crosshair_index"							"1"
 
