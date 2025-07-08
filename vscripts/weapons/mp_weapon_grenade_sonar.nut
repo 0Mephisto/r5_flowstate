@@ -60,6 +60,7 @@ void function OnProjectileCollision_weapon_grenade_sonar( entity projectile, vec
 	AddToTrackedEnts_Level( projectile )
 
 	bool result = PlantStickyEntity( projectile, collisionParams )
+	projectile.SetAngles(projectile.GetAngles() + <90,0,0>)
 
 	if ( IsHumanSized( hitEnt ) )//Don't stick on Pilots/Grunts/Spectres. Causes pulse blade to fall into ground
 		return
