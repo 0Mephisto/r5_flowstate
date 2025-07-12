@@ -794,6 +794,8 @@ Scripts:
 	client/cl_main_hud.nut
 	client/cl_rumble.gnut
 	client/cl_screenfade.gnut
+	client/cl_titan_cockpit.nut
+	client/cl_titan_cockpit_sounds.gnut
 	client/cl_spectator_mode_audio.gnut
 	client/cl_utility_menu.gnut
 	client/cl_utility_splash.gnut

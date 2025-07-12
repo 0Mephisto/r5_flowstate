@@ -134,13 +134,13 @@ void function Scorch_SelfDamageReduction( entity target, var damageInfo )
 	if ( target != attacker )
 		return
 
-	if ( IsMultiplayer() )
+	/*if ( IsMultiplayer() )
 	{
 		entity soul = attacker.GetTitanSoul()
 		if ( IsValid( soul ) && SoulHasPassive( soul, ePassives.PAS_SCORCH_SELFDMG ) )
 			DamageInfo_ScaleDamage( damageInfo, 0.0 )
 	}
-	else
+	else*/
 	{
 		DamageInfo_ScaleDamage( damageInfo, 0.20 )
 	}

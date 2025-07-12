@@ -431,7 +431,7 @@ void function Client_Init()
 	ClRisingWalls_Init()
 	ClBloodhound_TT_Init()
 	ClMirageVoyage_Init()
-
+	ClTitanCockpit_Init()
 	SmartAmmoClient_Init()
 	CLGoblinDropship_Init()
 	ClIntroscreen_Init()

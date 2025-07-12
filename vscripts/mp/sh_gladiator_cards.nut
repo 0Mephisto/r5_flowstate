@@ -2536,7 +2536,6 @@ void function DoGladiatorCardCharacterCapture( CharacterCaptureState ccs )
 	{
 		ccs.model.SetModel( bodyModel )
 		CharacterSkin_Apply( ccs.model, ccs.skin )
-		
 		if( ccs.model.GetModelName() != $"mdl/dev/empty_model.rmdl" )
 		{
 			entity player = FromEHI( ccs.playerEHI )
@@ -2586,7 +2585,8 @@ void function DoGladiatorCardCharacterCapture( CharacterCaptureState ccs )
 		ccs.model.SetModel( bodyModel )
 		CharacterSkin_Apply( ccs.model, ccs.skin )
 	}
-	
+	if( ccs.model.GetModelName() == $"mdl/titans/buddy/titan_buddy.rmdl" )
+		return
 	ccs.lightingRig = CreateClientSidePropDynamic( modelPos, modelAng, SCENE_CAPTURE_LIGHTING_RIG_MODEL )
 	ccs.lightingRig.MakeSafeForUIScriptHack()
 	string lightingRigMovingSeq = ""

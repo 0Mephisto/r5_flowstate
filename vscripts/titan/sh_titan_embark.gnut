@@ -13,10 +13,6 @@ global function GetRandomEmbarkAction
 //global function PlayerCanDisembarkTitan
 global function IsPlayerDisembarking
 
-#if CLIENT
-global function ServerCallback_TitanEmbark
-#endif
-
 #if SERVER
 	global function CodeCallback_EmbarkTitan
 	global function CodeCallback_EmbarkTitanFromGrapple
@@ -115,14 +111,6 @@ void function TitanEmbark_Init()
 		//AddClientCommandCallback( "TitanNextMode", ClientCommand_TitanNextMode ) //
 	#endif
 }
-
-
-#if CLIENT
-void function ServerCallback_TitanEmbark()
-{
-	TitanCockpit_PlayDialog( GetLocalViewPlayer(), "embark" )
-}
-#endif
 
 void function OverrideCockpitLightFX( asset fx )
 {
