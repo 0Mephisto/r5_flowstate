@@ -14,6 +14,15 @@ global function DEV_InitCodeDevMenu
 global function UpdateCheatsState
 global function AddLevelDevCommand
 global function ChangeToThisMenu
+global function UpdateDevMenuButtons
+global function OnDevButton_Activate
+global function OnDevButton_GetFocus
+global function OnDevButton_LoseFocus
+global function BackOnePage_Activate
+global function RepeatLastCommand_Activate
+global function BindCommandToGamepad_Activate
+global function ClearCodeDevMenu
+global function PushPageHistory
 
 global function AddUICallback_OnDevMenuLoaded
 global function GetCheatsState

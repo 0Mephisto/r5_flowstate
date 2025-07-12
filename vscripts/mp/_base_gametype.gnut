@@ -95,7 +95,7 @@ function BaseGametype_Init()
 
 	BaseGametype_Init_MPSP()
 
-	Safe_FS_InitCommunityHeirlooms()	
+	//Safe_FS_InitCommunityHeirlooms()	
 
 	if(GetCurrentPlaylistVarBool("enable_global_chat", true))
 	{

@@ -2879,12 +2879,12 @@ bool function Safe_isScenariosMode()
 {
 	// Default to false when Flowstate mod not available
 	// This ensures scenarios mode features are disabled when mod not present
-	return SafeCallFunctionBool( "isScenariosMode", false, [], "[SCENARIOS_MODE]" )
+	return false//SafeCallFunctionBool( "isScenariosMode", false, [], "[SCENARIOS_MODE]" )
 }
 
 bool function Safe_is1v1EnabledAndAllowed()
 {
-	return SafeCallFunctionBool( "is1v1EnabledAndAllowed", false, [], "[1v1_MODE]" )
+	return false//SafeCallFunctionBool( "is1v1EnabledAndAllowed", false, [], "[1v1_MODE]" )
 }
 
 void function Safe_FS_InitCommunityHeirlooms()
