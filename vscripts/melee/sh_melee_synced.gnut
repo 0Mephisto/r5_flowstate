@@ -361,6 +361,7 @@ void function DoSyncedMelee_Thread( entity attacker, entity target )
 	// Anim sequence setup
 	FirstPersonSequenceStruct attackSequence
 	FirstPersonSequenceStruct targetSequence
+	
 	{
 		// positioning
 		attackSequence.noParent = true

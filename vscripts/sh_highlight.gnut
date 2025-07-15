@@ -104,6 +104,8 @@ const HIGHLIGHT_OUTLINE_CUSTOM_COLOR_OBEY_Z = 121 // outline_default_custom_obey
 const HIGHLIGHT_OUTLINE_CUSTOM_COLOR_OCCLUDED_NOSCANLINES = 129
 global const HIGHLIGHT_OUTLINE_CUSTOM_COLOR_NOZ_NOSCANLINES = 169 //outline_custom_color_noz_noscanlines
 global const HIGHLIGHT_OUTLINE_SONAR = 103 // outline_sonar
+const HIGHLIGHT_OUTLINE_SONAR_EXECUTION = 116
+const HIGHLIGHT_FILL_SONAR_EXECUTION = 115
 global const HIGHLIGHT_OUTLINE_INTERACT_BUTTON = 105 // outline_interact_button
 global const HIGHLIGHT_FILL_INTERACT_BUTTON = 103 // inside_interact_button
 global const HIGHLIGHT_OUTLINE_OBJECTIVE = 125 // outline_objective
@@ -249,6 +251,14 @@ void function Highlight_Init()
 	//HighlightContext_SetDrawFunc( highlight, eHighlightDrawFunc.SONAR_DETECTED )
 	HighlightContext_SetDrawFunc( highlight, eHighlightDrawFunc.ALWAYS )
 	HighlightContext_SetADSFade( highlight, false )
+
+	highlight = RegisterHighlight( "enemy_sonar_execution" )
+	HighlightContext_SetOutline( highlight, HIGHLIGHT_OUTLINE_SONAR_EXECUTION )
+	HighlightContext_SetRadius( highlight, 5 )
+	HighlightContext_SetFill( highlight, HIGHLIGHT_FILL_SONAR_EXECUTION )
+	HighlightContext_SetDrawFunc( highlight, eHighlightDrawFunc.ALWAYS_LONG_FADE )
+	HighlightContext_SetADSFade( highlight, false )
+	HighlightContext_SetDisableDeathFade( highlight, true )
 
 	highlight = RegisterHighlight( "bloodhound_sonar" )
 	HighlightContext_SetOutline( highlight, HIGHLIGHT_OUTLINE_CUSTOM_COLOR_NOZ_NOSCANLINES )
