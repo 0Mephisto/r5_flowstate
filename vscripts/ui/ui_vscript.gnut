@@ -43,6 +43,8 @@ global struct TabDef
 global const int LEFT = 0
 global const int RIGHT = 1
 
+global bool ISAIMTRAINER = false //check if its in aim trainer main menu to change behavior of global settings menu.
+
 global struct InputDef
 {
 	int                          input

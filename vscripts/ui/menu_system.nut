@@ -425,7 +425,7 @@ void function UpdateSystemPanel( var panel )
 		} 
 		else
 		{
-			if(uiGlobal.isAimTrainer)
+			if(ISAIMTRAINER)
 				SetButtonData( panel, buttonIndex++, file.lobbyReturnButtonData[ panel ] )
 			else
 			{
@@ -549,7 +549,7 @@ void function SetButtonData( var panel, int buttonIndex, ButtonData buttonData )
 
 void function OnSystemMenu_Close()
 {
-	if( uiGlobal.isAimTrainer && IsConnected() && Playlist() == ePlaylists.fs_aimtrainer ){
+	if( ISAIMTRAINER && IsConnected() && Playlist() == ePlaylists.fs_aimtrainer ){
 		CloseAllMenus()
 		RunClientScript("ServerCallback_OpenFRChallengesMainMenu", PlayerKillsForChallengesUI)
 	}
@@ -560,7 +560,7 @@ void function OnSystemMenu_NavigateBack()
 {
 	Assert( GetActiveMenu() == file.menu )
 	CloseActiveMenu()
-	if( uiGlobal.isAimTrainer && IsConnected() && Playlist() == ePlaylists.fs_aimtrainer ){
+	if( ISAIMTRAINER && IsConnected() && Playlist() == ePlaylists.fs_aimtrainer ){
 		CloseAllMenus()
 		RunClientScript("ServerCallback_OpenFRChallengesMainMenu", PlayerKillsForChallengesUI)
 	}

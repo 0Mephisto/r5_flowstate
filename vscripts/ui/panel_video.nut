@@ -316,7 +316,7 @@ void function UICodeCallback_ResolutionChanged( bool askForConfirmation )
 	foreach ( func in uiGlobal.resolutionChangedCallbacks )
 			func()
 
-	if(uiGlobal.isAimTrainer){
+	if(ISAIMTRAINER){
 		CloseAllMenus()
 		RunClientScript("ServerCallback_OpenFRChallengesMainMenu", PlayerKillsForChallengesUI)
 	} else {
@@ -341,7 +341,7 @@ void function RevertVideoSettingsThread()
 	WaitFrame()
 	VideoOptions_FillInCurrent( file.videoPanel )
 	uiGlobal.videoSettingsChanged = false
-	if(uiGlobal.isAimTrainer){
+	if(ISAIMTRAINER){
 		CloseAllMenus()
 		RunClientScript("ServerCallback_OpenFRChallengesMainMenu", PlayerKillsForChallengesUI)
 	}
