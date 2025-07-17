@@ -2129,6 +2129,10 @@ void function SURVIVAL_Loot_UpdateHighlightForLoot( entity prop )
 					case SNIPER_AMMO:
 						highlight = "survival_item_ammo_a"
 						break
+						
+					case ARROWS_AMMO:
+						highlight = "survival_item_ammo_a"
+						break
 
 					default:
 						highlight = "survival_item_ammo_a"

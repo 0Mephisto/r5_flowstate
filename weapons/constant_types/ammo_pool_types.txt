@@ -9,6 +9,7 @@
 	highcal
 	shotgun
 	sniper
+	arrows
 
 	//_count
 /////////////////////////////

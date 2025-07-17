@@ -424,6 +424,8 @@ int function EmptyCommsAction_AttachmentForParent( string equipmentSlot, string 
 					return eCommsAction.INVENTORY_NEED_ATTACHMENT_MAG_SHOTGUN
 				case "sniper":
 					return eCommsAction.INVENTORY_NEED_ATTACHMENT_MAG_SNIPER
+				case "arrow":
+					return eCommsAction.INVENTORY_NEED_ATTACHMENT_MAG_ARROW
 				default:
 					Warning( format( "%s() - Unhandled ammo type: '%s'.", FUNC_NAME(), weaponData.ammoType ) )
 					return eCommsAction.BLANK
@@ -579,6 +581,13 @@ int function FilledCommsAction_Weapon( string equipmentSlotRef, string itemRef, 
 				// return eCommsAction.INVENTORY_NO_AMMO_SNIPER
         
 			return eCommsAction.INVENTORY_NEED_AMMO_SNIPER
+			
+		case ARROWS_AMMO:
+                           
+			// if ( GetLocalClientPlayer().AmmoPool_GetCount( eAmmoPoolType.arrow ) <= 0 )
+				// return eCommsAction.INVENTORY_NO_AMMO_ARROW
+        
+			return eCommsAction.INVENTORY_NEED_AMMO_ARROW
 	}
 
 	Warning( "GetCommsActionForEquipmentSlot() - Unhandled ammo type '" + ammotype + "'" )

@@ -34,7 +34,7 @@
     "holster_offset"                            "8 0 0"
     "holster_angles_offset"                     "90 90 90"
 
-	"heartbeat_sensor_size"                     "65"
+    "ammo_pool_type"                            "arrows"
 
 	// UI - HUD
 	"hud_icon"                                  "rui/weapon_icons/r5/weapon_bow"
@@ -149,10 +149,10 @@
 
 	// Ammo
                   
-	    "uses_ammo_pool"                            "0"
+	    "uses_ammo_pool"                            "1"
 	    "ammo_default_total"                        "40"
         "ammo_stockpile_max"                        "40"
-        "ammo_clip_size"                            "0"
+        "ammo_clip_size"                            "40"
 
         "damage_near_value"                         "35"
         "damage_far_value"                          "35"
@@ -327,73 +327,73 @@
     "viewdrift_ads_air_scale_yaw" 				"1.4"
 
 	// Viewmodel - Sway Hip
-    // "sway_rotate_attach"  					    "SWAY_ROTATE"
-    // "sway_min_x"  								 "-0.5"
-    // "sway_min_y"  								 "-0.5"
-    // "sway_min_z"  								 "-0.6"
-    // "sway_max_x"  								 "0.5"
-    // "sway_max_y"  								 "0.5"
-    // "sway_max_z"  								 "0.6"
-    // "sway_min_pitch"  						     "-3"
-    // "sway_max_pitch"  							 "3"
-    // "sway_min_yaw"								 "-2.5"
-    // "sway_max_yaw"								 "2.5"
-    // "sway_min_roll"   							 "-4"
-    // "sway_max_roll"   							 "4"
-    // "sway_translate_gain" 						 "2.5"
-    // "sway_rotate_gain"							 "7"
-    // "sway_move_forward_translate_x"   			 "-0.1"
-    // "sway_move_forward_translate_z"   			 "-0.5"
-    // "sway_move_back_translate_x"  				 "0.2"
-    // "sway_move_back_translate_z"  				 "-0.2"
-    // "sway_move_left_translate_y"  				 "-1"
-    // "sway_move_left_translate_z"  				 "-0.5"
-    // "sway_move_left_rotate_roll"  				 "-4"
-    // "sway_move_right_translate_y" 				 "1"
-    // "sway_move_right_translate_z" 				 "-0.5"
-    // "sway_move_right_rotate_roll" 				 "4"
-    // "sway_move_up_translate_z"					 "-1"
-    // "sway_move_down_translate_z"  				 "1"
-    // "sway_turn_left_rotate_yaw"   				 "-2.5"
-    // "sway_turn_right_rotate_yaw"  				 "2.5"
+    "sway_rotate_attach"  					    "SWAY_ROTATE"
+    "sway_min_x"  								 "-0.5"
+    "sway_min_y"  								 "-0.5"
+    "sway_min_z"  								 "-0.6"
+    "sway_max_x"  								 "0.5"
+    "sway_max_y"  								 "0.5"
+    "sway_max_z"  								 "0.6"
+    "sway_min_pitch"  						     "-3"
+    "sway_max_pitch"  							 "3"
+    "sway_min_yaw"								 "-2.5"
+    "sway_max_yaw"								 "2.5"
+    "sway_min_roll"   							 "-4"
+    "sway_max_roll"   							 "4"
+    "sway_translate_gain" 						 "2.5"
+    "sway_rotate_gain"							 "7"
+    "sway_move_forward_translate_x"   			 "-0.1"
+    "sway_move_forward_translate_z"   			 "-0.5"
+    "sway_move_back_translate_x"  				 "0.2"
+    "sway_move_back_translate_z"  				 "-0.2"
+    "sway_move_left_translate_y"  				 "-1"
+    "sway_move_left_translate_z"  				 "-0.5"
+    "sway_move_left_rotate_roll"  				 "-4"
+    "sway_move_right_translate_y" 				 "1"
+    "sway_move_right_translate_z" 				 "-0.5"
+    "sway_move_right_rotate_roll" 				 "4"
+    "sway_move_up_translate_z"					 "-1"
+    "sway_move_down_translate_z"  				 "1"
+    "sway_turn_left_rotate_yaw"   				 "-2.5"
+    "sway_turn_right_rotate_yaw"  				 "2.5"
 
-    // "sway_turn_left_translate_y"  				 ".5"
-    // "sway_turn_right_translate_y"  				 "-.5"
-    // "sway_turn_up_translate_z"  				 ".2"
-    // "sway_turn_down_translate_z"  				 "-.2"
-    // "sway_turn_up_translate_x"  				 ".1"
-    // "sway_turn_down_translate_x"  				 "-.1"
+    "sway_turn_left_translate_y"  				 ".5"
+    "sway_turn_right_translate_y"  				 "-.5"
+    "sway_turn_up_translate_z"  				 ".2"
+    "sway_turn_down_translate_z"  				 "-.2"
+    "sway_turn_up_translate_x"  				 ".1"
+    "sway_turn_down_translate_x"  				 "-.1"
 
-    // "sway_turn_left_rotate_roll"   				 "4"
-    // "sway_turn_right_rotate_roll"  				 "-4"
-    // "sway_turn_up_rotate_pitch"   				 "3"
-    // "sway_turn_down_rotate_pitch" 				 "-3"
-    // "sway_turn_up_rotate_roll"   				 "-0.8"
-    // "sway_turn_down_rotate_roll" 				 "0.8"
+    "sway_turn_left_rotate_roll"   				 "4"
+    "sway_turn_right_rotate_roll"  				 "-4"
+    "sway_turn_up_rotate_pitch"   				 "3"
+    "sway_turn_down_rotate_pitch" 				 "-3"
+    "sway_turn_up_rotate_roll"   				 "-0.8"
+    "sway_turn_down_rotate_roll" 				 "0.8"
 
 
     // Viewmodel - Sway ADS
-    // "sway_rotate_attach_zoomed"					 "SWAY_ROTATE_ZOOMED"
-    // "sway_rotate_attach_blend_time_zoomed"		 "0.2"
-    // "sway_rotate_gain_zoomed"					 "5"
+    "sway_rotate_attach_zoomed"					 "SWAY_ROTATE_ZOOMED"
+    "sway_rotate_attach_blend_time_zoomed"		 "0.2"
+    "sway_rotate_gain_zoomed"					 "5"
 
-    // "sway_min_yaw_zoomed"						 "-0.0275"
-    // "sway_max_yaw_zoomed"					     "0.0275"
-    // "sway_turn_left_rotate_yaw_zoomed"			 "-0.085"
-    // "sway_turn_right_rotate_yaw_zoomed"			 "0.085"
+    "sway_min_yaw_zoomed"						 "-0.0275"
+    "sway_max_yaw_zoomed"					     "0.0275"
+    "sway_turn_left_rotate_yaw_zoomed"			 "-0.085"
+    "sway_turn_right_rotate_yaw_zoomed"			 "0.085"
 
-    // "sway_min_roll_zoomed"   					 "-1"
-    // "sway_max_roll_zoomed"   					 "1"
-    // "sway_turn_left_rotate_roll_zoomed"   		 "-1"
-    // "sway_turn_right_rotate_roll_zoomed"  		 "1"
+    "sway_min_roll_zoomed"   					 "-1"
+    "sway_max_roll_zoomed"   					 "1"
+    "sway_turn_left_rotate_roll_zoomed"   		 "-1"
+    "sway_turn_right_rotate_roll_zoomed"  		 "1"
 
-    // "sway_move_right_rotate_roll_zoomed" 		 "0.2"
-    // "sway_move_left_rotate_roll_zoomed"  		 "-0.2"
+    "sway_move_right_rotate_roll_zoomed" 		 "0.2"
+    "sway_move_left_rotate_roll_zoomed"  		 "-0.2"
 
-    // "sway_min_pitch_zoomed"  					 "-0.0065"
-    // "sway_max_pitch_zoomed"  					 "0.008"
-    // "sway_turn_up_rotate_pitch_zoomed"			 "0.07"
-    // "sway_turn_down_rotate_pitch_zoomed"		 "-0.07"
+    "sway_min_pitch_zoomed"  					 "-0.0065"
+    "sway_max_pitch_zoomed"  					 "0.008"
+    "sway_turn_up_rotate_pitch_zoomed"			 "0.07"
+    "sway_turn_down_rotate_pitch_zoomed"		 "-0.07"
 
     // Bob - Hipfire
     "bob_cycle_time"  							 "0.4"
@@ -445,8 +445,8 @@
 
 
     // FX - Muzzle Flash
-    "fx_muzzle_flash_view"                       ""
-    "fx_muzzle_flash_world"                      ""
+    "fx_muzzle_flash_view"                       "wpn_muzzleflash_pistol_sup_FP"
+    "fx_muzzle_flash_world"                      "wpn_muzzleflash_pistol_sup"
     "fx_muzzle_flash_attach"                     "muzzle_flash"
 
     // FX - Shell Eject
@@ -455,13 +455,13 @@
     "fx_shell_eject_attach"						 "shell"
 
     // FX - Impact
-    "impact_effect_table" 						 "impact_throwing_knife" //"bow"
+    "impact_effect_table" 						 "bow"
 
 	// FX - Projectile
 	"projectilemodel"                            "mdl/weapons/bullets/w_arrow_projectile.rmdl"
 
-    // "projectile_trail_effect_0_1p"               "P_tracer_proj_arrow"
-    // "projectile_trail_effect_0_3p"               "P_tracer_proj_arrow"
+    "projectile_trail_effect_0"               "P_tracer_proj_sniper_piercer"
+    "projectile_trail_effect_0_3p"               "P_tracer_proj_sniper_piercer"
 
     // FX - Bow Custom
     "fx_bow_light_ironsights_0_1p"                          "P_bow_charge_light_01"
@@ -1066,57 +1066,35 @@
             readyFrac                   progress_ready_to_fire_frac
             teamColor					crosshair_team_color
             isAmped						weapon_is_amped
-            // chargeFrac                  player_chargeFrac_curved
             crosshairMovementX          crosshair_movement_x
             crosshairMovementY          crosshair_movement_y
         }
 
         Crosshair_1
         {
-            "ui"						"ui/crosshair_dot"
+            "ui"						"ui/crosshair_plus"
             "base_spread"				"0.0"
             Args
             {
 				isFiring				weapon_is_firing
-                // arrowType                           weapon_script_int_0
-                // ammo                                weapon_ammoPool
-                // marksmansTempoCountMax              weapon_script_float_0
-                // marksmansTempoCount                 weapon_script_int_1
-                // marksmansTempoLastPerfectTime       weapon_script_time_1
-                // marksmansTempoGraceTime             eWeaponVar.explosion_shake_amplitude
-                // marksmansTempoGraceTimeInTempo      eWeaponVar.explosion_shake_frequency
-                // lastFireTime                        weapon_last_primary_attack_time
-                // shatterPatternScale                 eWeaponVar.blast_pattern_default_scale
-                // playerFov             player_fov
             }
         }
     }
 
 
-	// // ironsights
-	// "ui1_enable"		"1"
-	// "ui1_draw_cloaked"	"1"
-	// UiData1
-	// {
-		// "ui"						    "ui/compound_bow_reticle"
-		// //"ui"    						"ui/bow_hcog_classic_sights"
-		// "mesh"						    "models/weapons/attachments/compound_bow_rui_upper"
-		// Args
-		// {
-			// vis							        player_zoomfrac
-			// centerOffset				        weapon_ads_center_offset
-			// adjustedChargeFrac			        player_chargeFrac_curved
-			// crossDist					        distance_to_crosshair_target
-			// arrowType					        weapon_script_int_0
-			// ammo                                weapon_ammoPool
-			// marksmansTempoCountMax		        weapon_script_float_0
-			// marksmansTempoCountCur		        weapon_script_int_1
-			// marksmansTempoLastPerfectTime       weapon_script_time_1
-			// marksmansTempoGraceTime             eWeaponVar.explosion_shake_amplitude
-            // marksmansTempoGraceTimeInTempo      eWeaponVar.explosion_shake_frequency
-            // lastFireTime                        weapon_last_primary_attack_time
-		// }
-	// }
+	"ui1_enable"		"1"
+	"ui1_draw_cloaked"	"1"
+	UiData1
+	{
+		"ui"							"ui/car_smg_ammo_counter_small"
+		"mesh"							"models/weapons/attachments/compound_bow_rui_upper"
+		Args
+		{
+			vis							player_zoomfrac
+			ammo						weapon_ammo
+			clipSize					weapon_clipSize
+		}
+	}
 
 	// // bow weapon rui
 	// "ui2_enable"		"1"

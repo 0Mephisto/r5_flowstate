@@ -881,8 +881,8 @@ int function GetCommsActionForBackpackItem( var button, int position )
 				case eAmmoPoolType.sniper:
 					return eCommsAction.INVENTORY_NEED_AMMO_SNIPER
 					
-				case eAmmoPoolType.explosive:
-					return eCommsAction.INVENTORY_NEED_AMMO_EXPLOSIVE
+				case eAmmoPoolType.arrow:
+					return eCommsAction.INVENTORY_NEED_AMMO_ARROW
 			}
 		}
 	}
@@ -2070,6 +2070,14 @@ void function GroundItemsInit( entity player, array<entity> loot )
 	sniper.guids.append( 0 )
 	sniper.isRelevant = true
 	sniper.isUpgrade = false
+	
+	GroundLootData arrows
+	allItems[ "arrows" ] <- arrows
+	arrows.lootData = SURVIVAL_Loot_GetLootDataByRef( "arrows" )
+	arrows.count = 1
+	arrows.guids.append( 0 )
+	arrows.isRelevant = true
+	arrows.isUpgrade = false
 			
 	for ( int groundIndex = 0; groundIndex < loot.len(); groundIndex++ )
 	{
