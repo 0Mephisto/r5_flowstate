@@ -25,6 +25,7 @@ global const array<asset> CHARACTER_ASSETS =
 	$"settings/itemflav/character/dummie.rpak",
 	$"settings/itemflav/character/random.rpak",
 	$"settings/itemflav/character/rampart.rpak",
+	//$"settings/itemflav/character/pilot.rpak",
 ]
 
 global const array<asset> CAL_EVENT_ASSET_LIST =
@@ -77,30 +78,26 @@ global const array<asset> LOADSCREEN_ASSET_LIST =
 
 global const array<asset> MUSIC_PACK_ASSET_LIST =
 [
+	$"settings/itemflav/musicpack/default.rpak",
+	$"settings/itemflav/musicpack/random.rpak",
+	$"settings/itemflav/musicpack/season02_event01.rpak",
+	$"settings/itemflav/musicpack/s03e01.rpak",
 	$"settings/itemflav/musicpack/bangalore.rpak",
 	$"settings/itemflav/musicpack/bloodhound.rpak",
 	$"settings/itemflav/musicpack/caustic.rpak",
-	$"settings/itemflav/musicpack/default.rpak",
-	$"settings/itemflav/musicpack/favorite.rpak",
 	$"settings/itemflav/musicpack/lifeline.rpak",
 	$"settings/itemflav/musicpack/mirage.rpak",
 	$"settings/itemflav/musicpack/octane.rpak",
 	$"settings/itemflav/musicpack/pathfinder.rpak",
-	$"settings/itemflav/musicpack/random.rpak",
-	$"settings/itemflav/musicpack/s03bp_crypto.rpak",
-	$"settings/itemflav/musicpack/s03bp_gibraltar.rpak",
-	$"settings/itemflav/musicpack/s03e01.rpak",
-	$"settings/itemflav/musicpack/s03e02.rpak",
-	$"settings/itemflav/musicpack/s04bp_assimilation.rpak",
-	$"settings/itemflav/musicpack/s04bp_revenant.rpak",
-	$"settings/itemflav/musicpack/s04e01.rpak",
-	$"settings/itemflav/musicpack/s04e02.rpak",
-	$"settings/itemflav/musicpack/s05bp_loba.rpak",
-	$"settings/itemflav/musicpack/s05bp_season5.rpak",
-	$"settings/itemflav/musicpack/s05e01.rpak",
-	$"settings/itemflav/musicpack/season02_event01.rpak",
 	$"settings/itemflav/musicpack/wattson.rpak",
 	$"settings/itemflav/musicpack/wraith.rpak",
+	$"settings/itemflav/musicpack/s03bp_crypto.rpak",
+	$"settings/itemflav/musicpack/s03bp_gibraltar.rpak",
+	$"settings/itemflav/musicpack/s03e02.rpak",//PORTED
+	$"settings/itemflav/musicpack/s04bp_revenant.rpak",//PORTED
+	$"settings/itemflav/musicpack/s04bp_assimilation.rpak",//PORTED
+	$"settings/itemflav/musicpack/s04e02.rpak",//PORTED
+	$"settings/itemflav/musicpack/s04e01.rpak",//PORTED
 ]
 
 
