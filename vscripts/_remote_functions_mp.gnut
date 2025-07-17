@@ -1,4 +1,4 @@
-untyped //Required for string to functionref convertion to work
+untyped //Required for string to functionref conversion to work
 
 global function RemoteFunctions_Init_Begin
 global function RemoteFunctions_Init_Finish
@@ -32,7 +32,7 @@ const int DAMAGE_TYPE_MIN		= 1 << 31
 
 struct
 {
-	table< string, void functionref() > functionrefs	//the actual func ref
+	table functionrefs	//the actual func ref mapped by function name --  string <- functionref()
 	table< int, string > intToFunctionRef				//for client to map: func index -> func name
 	table< string, int > functionrefsToInt 				//for server to call by func name
 	
@@ -65,96 +65,82 @@ int function SetupRemoteFuncAliases()
 	//###############################################
 	// Unified string array for all VMs - functions resolved dynamically using compilestring
 	array<string> functions = 
-		[
-			"Minimap_EnableDraw_Internal",
-			"Minimap_DisableDraw_Internal",
-			"ServerCallback_DeleteSpawnedClientSideDynamicLights",
-			"UpdateRUITest",
-			"ServerCallback_KillReplayHud_Activate",
-			"ServerCallback_KillReplayHud_Deactivate",
-			"FS_CreateTeleportFirstPersonEffectOnPlayer",
-			"TridentBoost_Visuals",
-			"RefreshImageAndScaleOnMinimapAndFullmap",
-			"ServerCallback_UpdateHeroStats",
-			"SCB_WeaponInspectHint",
-			"ServerCallback_PlayMatchEndMusic",
-			"ServerCallback_DestroyEndAnnouncement",
-			"ServerCallback_ShowDeathScreen",
-			"ServerCallback_DeathScreenSwitchTab",
-			"ServerCallback_ShowFlowstateDeathRecapNoSpectate",
-			"ServerCallback_RespawnDNAHint",
-			"ServerCallback_PlayerBootsOnGround",
-			"ServerCallback_RefreshDeathBoxHighlight",
-			"ServerCallback_RefreshLootbinHighlight",
-			"ServerCallback_ClearHints",
-			"ServerCallback_AnnounceCircleClosing",
-			"ServerCallback_PlayScreenFXWarpJump",
-			"ServerCallback_GameModeAnnouncement",
-			"SCB_AbortCurrentDialogue", /* sh_sp_dialogue.gnut */
-			"ClearMatchPoints",
-			"AddRoundPointToWinner_IMC",
-			"AddRoundPointToWinner_Militia",
-			"AddRoundPointTied",
-			"SND_UpdateUIScore",
-			"FlowstateSND_CustomBuyMenu_Stop",
-			"ServerCallback_BuyRejected",
-			"ServerCallback_FSDM_CoolCamera",
-			"SND_ForceUpdatePlayerCount",
-			"Consumable_UseBomb",
-			"ServerCallback_CTF_HideCustomUI",
-			"Tracker_ShowChampion",
-			"ServerToClient_DisplayCancelReviveHintForPlayer",
-			"ServerToClient_RemoveCancelReviveHintForPlayer",
-			"ServerCallback_FlashScreenForPlayer",
-			"ServerCallback_PlayPhaseGateSoundSuite",
-			"FS_CreateIntroScreen",
-			"FSIntro_ForceEnd",
-			"ServerCallback_CTF_CheckUpdatePlayerLegend",
-			"ForceScoreboardLoseFocus",
-			"ForceScoreboardFocus",
-			"UpdateDpadHud_Copy",
-			"ServerCallback_Scenarios_MatchEndAnnouncement",
-			"Tracker_StatRequestFailed",
-			"FS_ForceCompass",
-			"FS_DestroyCompass",
-			"FS4DIntroSequence",
-			"ServerCallback_ShowWinningSquadSequence",
-			"FS_ShowRoundStartTimeUI",
-			"FS_ShowRoundStartSelectingTeamTimeUI",
-			"ServerCallback_Ash_OnPlayerDash",
-			"ServerCallback_Ash_OnPlayerLanded",
-			"ServerCallback_PlayerOutOfVent",
-			"ServerCallback_PlayerInVent"
-			// HaloBrIntroSequence,
-			// ServerCallback_ShotgunKickNoAmmoMessage
-		]
+	[
+		"Minimap_EnableDraw_Internal",
+		"Minimap_DisableDraw_Internal",
+		"ServerCallback_DeleteSpawnedClientSideDynamicLights",
+		"UpdateRUITest",
+		"ServerCallback_KillReplayHud_Activate",
+		"ServerCallback_KillReplayHud_Deactivate",
+		"FS_CreateTeleportFirstPersonEffectOnPlayer",
+		"TridentBoost_Visuals",
+		"RefreshImageAndScaleOnMinimapAndFullmap",
+		"ServerCallback_UpdateHeroStats",
+		"SCB_WeaponInspectHint",
+		"ServerCallback_PlayMatchEndMusic",
+		"ServerCallback_DestroyEndAnnouncement",
+		"ServerCallback_ShowDeathScreen",
+		"ServerCallback_DeathScreenSwitchTab",
+		"ServerCallback_ShowFlowstateDeathRecapNoSpectate",
+		"ServerCallback_RespawnDNAHint",
+		"ServerCallback_PlayerBootsOnGround",
+		"ServerCallback_RefreshDeathBoxHighlight",
+		"ServerCallback_RefreshLootbinHighlight",
+		"ServerCallback_ClearHints",
+		"ServerCallback_AnnounceCircleClosing",
+		"ServerCallback_PlayScreenFXWarpJump",
+		"ServerCallback_GameModeAnnouncement",
+		"SCB_AbortCurrentDialogue", /* sh_sp_dialogue.gnut */
+		"ClearMatchPoints",
+		"AddRoundPointToWinner_IMC",
+		"AddRoundPointToWinner_Militia",
+		"AddRoundPointTied",
+		"SND_UpdateUIScore",
+		"FlowstateSND_CustomBuyMenu_Stop",
+		"ServerCallback_BuyRejected",
+		"ServerCallback_FSDM_CoolCamera",
+		"SND_ForceUpdatePlayerCount",
+		"Consumable_UseBomb",
+		"ServerCallback_CTF_HideCustomUI",
+		"Tracker_ShowChampion",
+		"ServerToClient_DisplayCancelReviveHintForPlayer",
+		"ServerToClient_RemoveCancelReviveHintForPlayer",
+		"ServerCallback_FlashScreenForPlayer",
+		"ServerCallback_PlayPhaseGateSoundSuite",
+		"FS_CreateIntroScreen",
+		"FSIntro_ForceEnd",
+		"ServerCallback_CTF_CheckUpdatePlayerLegend",
+		"ForceScoreboardLoseFocus",
+		"ForceScoreboardFocus",
+		"UpdateDpadHud_Copy",
+		"ServerCallback_Scenarios_MatchEndAnnouncement",
+		"Tracker_StatRequestFailed",
+		"FS_ForceCompass",
+		"FS_DestroyCompass",
+		"FS4DIntroSequence",
+		"ServerCallback_ShowWinningSquadSequence",
+		"FS_ShowRoundStartTimeUI",
+		"FS_ShowRoundStartSelectingTeamTimeUI",
+		"ServerCallback_Ash_OnPlayerDash",
+		"ServerCallback_Ash_OnPlayerLanded",
+		"ServerCallback_PlayerOutOfVent",
+		"ServerCallback_PlayerInVent"
+		// HaloBrIntroSequence,
+		// ServerCallback_ShotgunKickNoAmmoMessage
+	]
 	
 	int iter = 1
 	
 	foreach( string func in functions )
 	{
-		#if CLIENT
-			// Create wrapper function that resolves the string to functionref at runtime
-			void functionref() wrapperFunc = void function() : (func) {
-				try {
-					// Directly call the function by name at execution time
-					compilestring(func + "()", "RemoteFunctions")()
-				} catch( error ) {
-					printw( "[REMOTE] Warning: Could not execute remote function '" + func + "': " + error )
-				}
-			}
-			
-			file.functionrefs[ func ] <- wrapperFunc
-			file.functionrefsToInt[ func ] <- iter
-			file.intToFunctionRef[ iter ] <- func
-		#endif 
-		
-		#if SERVER 
-			file.functionrefsToInt[ func ] <- iter
-			file.intToFunctionRef[ iter ] <- func
+		#if CLIENT		
+			file.functionrefs[ func ] <- MakeFunctionRefFromString( func )
 		#endif
 		
-		iter++;
+		file.functionrefsToInt[ func ] <- iter
+		file.intToFunctionRef[ iter ] <- func
+		
+		iter++
 	}
 	
 	// Store core function count for external registration system
@@ -194,17 +180,9 @@ string function FindFuncName_ByID( int funcID )
 		}
 		
 		if( funcName in file.functionrefs )
-		{
-			try {
-				file.functionrefs[ funcName ]()
-			} catch( error ) {
-				printw( "[REMOTE] Error executing remote function '" + funcName + "': " + error )
-			}
-		}
+			file.functionrefs[ funcName ]()
 		else
-		{
 			printw( "[REMOTE] Warning: Remote function '" + funcName + "' (ID: " + funcID + ") not found in function registry" )
-		}
 	}
 #endif
 
@@ -249,32 +227,18 @@ void function RegisterExternalRemoteFunction_ByRef( string functionName, string 
 	
 	// Register the external function
 	file.externalRemoteFunctions.append( functionName )
-	file.externalFunctionModSources[functionName] <- modSource
+	file.externalFunctionModSources[ functionName ] <- modSource
 	
 	// Calculate the new function ID
 	int functionId = file.coreFunctionCount + file.externalRemoteFunctions.len()
 	
 	// Register in lookup tables
-	#if CLIENT
-		// Create wrapper function that resolves the string to functionref at runtime
-		void functionref() wrapperFunc = void function() : (functionName) {
-			try {
-				// Directly call the function by name at execution time
-				compilestring(functionName + "()", "ExternalRemoteFunctions")()
-			} catch( error ) {
-				printw( "[REMOTE] Warning: Could not execute external remote function '" + functionName + "': " + error )
-			}
-		}
-		
-		file.functionrefs[ functionName ] <- wrapperFunc
-		file.functionrefsToInt[ functionName ] <- functionId
-		file.intToFunctionRef[ functionId ] <- functionName
-	#endif 
-	
-	#if SERVER 
-		file.functionrefsToInt[ functionName ] <- functionId
-		file.intToFunctionRef[ functionId ] <- functionName
+	#if CLIENT	
+		file.functionrefs[ functionName ] <- MakeFunctionRefFromString( functionName )
 	#endif
+	
+	file.functionrefsToInt[ functionName ] <- functionId
+	file.intToFunctionRef[ functionId ] <- functionName
 	
 	printw( "[REMOTE] Registered external remote function: '" + functionName + "' from mod '" + modSource + "' with ID: " + functionId )
 }
@@ -282,9 +246,7 @@ void function RegisterExternalRemoteFunction_ByRef( string functionName, string 
 void function RegisterExternalRemoteFunction_ByRef_Array( array<string> functionNames, string modSource )
 {
 	foreach( string functionName in functionNames )
-	{
 		RegisterExternalRemoteFunction_ByRef( functionName, modSource )
-	}
 }
 
 bool function IsExternalRemoteFunction( string functionName )
@@ -672,7 +634,7 @@ void function RemoteFunctions_Init_Begin()
 	#if CLIENT
 		ShRanked_RegisterNetworkFunctions()
 	#endif
-	ScriptRemote_RegisterClientFunction( "ServerCallback_TitanCockpitBoot" ) // all this does is reset the tone mapping
+	ScriptRemote_RegisterClientFunction( "ServerCallback_TitanCockpitBoot" ) // all this does is reset the tone mapping //(mk): Why not use byref?
 
 	#if CLIENT
 		CLSurvival_RegisterNetworkFunctions()
@@ -916,8 +878,8 @@ void function RemoteFunctions_Init_Finish()
 		printw( "[REMOTE] External functions registered:" )
 		foreach( string funcName in file.externalRemoteFunctions )
 		{
-			string modSource = file.externalFunctionModSources[funcName]
-			int funcId = file.functionrefsToInt[funcName]
+			string modSource = file.externalFunctionModSources[ funcName ]
+			int funcId = file.functionrefsToInt[ funcName ]
 			printw( "  - " + funcName + " (ID: " + funcId + ", Mod: " + modSource + ")" )
 		}
 	}
