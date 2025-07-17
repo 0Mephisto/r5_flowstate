@@ -55,7 +55,7 @@ WeaponData
 	"stat_rof"						            "80"
 
 	// Models
-	"viewmodel"   									"mdl/testdev/nemesis_base_v.rmdl"
+	"viewmodel"   									"mdl/techart/mshop/weapons/class/assault/nemesis/nemesis_base_v.rmdl"
 	"playermodel" 									"mdl/weapons/beam_ar/w_beam_ar.rmdl"
 	"holster_type"						        "rifle"
 
