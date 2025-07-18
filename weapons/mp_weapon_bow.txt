@@ -2,12 +2,6 @@
 #base "_base_character_mods.txt"
 #base "_base_projectile_ricochet.txt"
 #base "_base_assault_rifle_optics.txt"
-
-// #base "ap_settings/_ap_weapon_base.txt"
-// #base "ap_settings/_ap_weapon_range_long.txt"
-
-                    
-// #base "_base_hopup_golden_horse_purple.txt"
       
 
 "WeaponData"
@@ -16,8 +10,8 @@
 	// General
 	//
 
-	"printname"                                 "Bocek Bow"
-	"shortprintname"                            "Bocek Bow"
+	"printname"                                 "WPN_BOW"
+	"shortprintname"                            "WPN_BOW_SHORT"
 	"description"                               "WPN_BOW_DESC"
 	"longdesc"                                  "WPN_BOW_LONGDESC"
 
@@ -56,15 +50,15 @@
 
 
 	// Script - Callbacks
-	// "OnWeaponActivate"                          "OnWeaponActivate_weapon_bow"
-	// "OnWeaponDeactivate"                        "OnWeaponDeactivate_weapon_bow"
-    // "OnWeaponPrimaryAttack"                     "OnWeaponPrimaryAttack_weapon_bow"
-    // "OnProjectileCollision"                     "OnProjectileCollision_weapon_bow"
-    // "OnWeaponChargeBegin"                       "OnWeaponChargeBegin_weapon_bow"
-    // "OnWeaponChargeEnd"                         "OnWeaponChargeEnd_weapon_bow"
-    // "OnWeaponChargeLevelIncreased"              "OnWeaponChargeLevelIncreased_weapon_bow"
-    // "OnWeaponCustomActivityStart"               "OnWeaponCustomActivityStart_weapon_bow"
-    // "OnWeaponCustomActivityEnd"                 "OnWeaponCustomActivityEnd_weapon_bow"
+	"OnWeaponActivate"                          "OnWeaponActivate_weapon_bow"
+	"OnWeaponDeactivate"                        "OnWeaponDeactivate_weapon_bow"
+    "OnWeaponPrimaryAttack"                     "OnWeaponPrimaryAttack_weapon_bow"
+    "OnProjectileCollision"                     "OnProjectileCollision_weapon_bow"
+    "OnWeaponChargeBegin"                       "OnWeaponChargeBegin_weapon_bow"
+    "OnWeaponChargeEnd"                         "OnWeaponChargeEnd_weapon_bow"
+    "OnWeaponChargeLevelIncreased"              "OnWeaponChargeLevelIncreased_weapon_bow"
+    "OnWeaponCustomActivityStart"               "OnWeaponCustomActivityStart_weapon_bow"
+    "OnWeaponCustomActivityEnd"                 "OnWeaponCustomActivityEnd_weapon_bow"
 
 
 	// Behavior
@@ -122,6 +116,7 @@
 	"charge_levels"                             "6"
 	"charge_level_base"                         "1"
     "charge_curve_coefficients"                 "1.4205 -1.1607 .7338"
+    "unlimited_charge_time" "1"
 	//"charge_allow_midway_charge"                "0"
 
     "red_crosshair_range" 						"0"
@@ -149,7 +144,7 @@
 
 	// Ammo
                   
-	    "uses_ammo_pool"                            "1"
+	    "uses_ammo_pool"                            "0"
 	    "ammo_default_total"                        "40"
         "ammo_stockpile_max"                        "40"
         "ammo_clip_size"                            "40"
@@ -531,16 +526,6 @@
 
 	"trophy_system_ignores"                          "always"
 
-                    
-	"golden_horse_purple_chance"            "0.15"
-	"golden_horse_purple_growth"            "0.05"
-	"golden_horse_purple_whiff"             "6.0"
-      
-	"sway_rotate_attach_zoomed" "SWAY_ROTATE_ZOOMED"
-	"sway_rotate_attach" "SWAY_ROTATE"
-
-
-	"headshot_distance"	"11828"
 	"Mods"
 	{
 		crate	    {}
@@ -1113,130 +1098,35 @@
 		// }
 	// }
 
-	// // optic_cq_hcog_classic
-	// "UiData11"
-	// {
-		// //"ui"	  "ui/hcog_classic_sights_bow"
-		// "ui"	"ui/bow_hcog_classic_sights"
-		// "mesh" 	"models/weapons/attachments/hcog_classic_sights"
+	// optic_cq_hcog_classic
+	"UiData11"
+	{
+		//"ui"	  "ui/hcog_classic_sights_bow"
+		"ui"	"ui/hcog_classic_sights"
+		"mesh" 	"models/weapons/attachments/hcog_classic_sights"
 
-		// Args
-	    // {
-	        // vis							        player_zoomfrac
-	        // centerOffset		                weapon_ads_center_offset
-			// adjustedChargeFrac                  player_chargeFrac_curved
-			// crossDist			                distance_to_crosshair_target
-			// arrowType                           weapon_script_int_0
-			// ammo                                weapon_ammoPool
-			// marksmansTempoCountMax              weapon_script_float_0
-            // marksmansTempoCountCur              weapon_script_int_1
-            // marksmansTempoLastPerfectTime       weapon_script_time_1
-            // marksmansTempoGraceTime             eWeaponVar.explosion_shake_amplitude
-            // marksmansTempoGraceTimeInTempo      eWeaponVar.explosion_shake_frequency
-            // lastFireTime                        weapon_last_primary_attack_time
-	    // }
-	// }
+		Args
+	    {
+				vis                 player_zoomfrac
+				ammo                weapon_ammo
+				clipSize            weapon_clipSize
+				centerOffset        weapon_ads_center_offset
+	    }
+	}
 
-	// // optic_cq_hcog_bruiser
-	// "UiData12"
-	// {
-		// "ui"	"ui/bow_hcog_bruiser_sights"
-		// "mesh"	"models/weapons/attachments/hcog_classic_sights"
-		// // mat: models/weapons/attachments/hopup_sights_hcog_ranged
+	// optic_cq_holosight_variable
+	"UiData14"
+	{
+		"ui"	"ui/holo_variable_sights"
+		"mesh"	"models/weapons/attachments/holo_variable_sights"
 
-		// Args
-		// {
-	        // vis							        player_zoomfrac
-	        // centerOffset		                weapon_ads_center_offset
-			// adjustedChargeFrac                  player_chargeFrac_curved
-			// crossDist			                distance_to_crosshair_target
-			// arrowType                           weapon_script_int_0
-			// ammo                                weapon_ammoPool
-			// marksmansTempoCountMax              weapon_script_float_0
-            // marksmansTempoCountCur              weapon_script_int_1
-            // marksmansTempoLastPerfectTime       weapon_script_time_1
-            // marksmansTempoGraceTime             eWeaponVar.explosion_shake_amplitude
-            // marksmansTempoGraceTimeInTempo      eWeaponVar.explosion_shake_frequency
-            // lastFireTime                        weapon_last_primary_attack_time
-		// }
-	// }
-
-	// // optic_cq_holosight
-	// "UiData13"
-	// {
-		// "ui"	"ui/bow_holo_sights"
-		// "mesh"	"models/weapons/attachments/holo_rui_upper"
-
-		// Args
-		// {
-	        // vis							        player_zoomfrac
-	        // centerOffset		                weapon_ads_center_offset
-			// adjustedChargeFrac                  player_chargeFrac_curved
-			// crossDist			                distance_to_crosshair_target
-			// arrowType                           weapon_script_int_0
-			// ammo                                weapon_ammoPool
-			// marksmansTempoCountMax              weapon_script_float_0
-            // marksmansTempoCountCur              weapon_script_int_1
-            // marksmansTempoLastPerfectTime       weapon_script_time_1
-            // marksmansTempoGraceTime             eWeaponVar.explosion_shake_amplitude
-            // marksmansTempoGraceTimeInTempo      eWeaponVar.explosion_shake_frequency
-            // lastFireTime                        weapon_last_primary_attack_time
-		// }
-	// }
-
-	// // optic_cq_holosight_variable
-	// "UiData14"
-	// {
-		// "ui"	"ui/bow_variable_holo_sights"
-		// "mesh"	"models/weapons/attachments/holo_variable_sights"
-
-		// Args
-		// {
-	        // vis							        player_zoomfrac
-	        // centerOffset		                weapon_ads_center_offset
-			// adjustedChargeFrac                  player_chargeFrac_curved
-			// crossDist			                distance_to_crosshair_target
-			// zoomFOV                		        weapon_zoom_fov
-			// arrowType                           weapon_script_int_0
-			// ammo                                weapon_ammoPool
-			// marksmansTempoCountMax              weapon_script_float_0
-            // marksmansTempoCountCur              weapon_script_int_1
-            // marksmansTempoLastPerfectTime       weapon_script_time_1
-            // marksmansTempoGraceTime             eWeaponVar.explosion_shake_amplitude
-            // marksmansTempoGraceTimeInTempo      eWeaponVar.explosion_shake_frequency
-            // lastFireTime                        weapon_last_primary_attack_time
-		// }
-	// }
-
-	// // optic_ranged_hcog
-	// "UiData15"
-	// {
-		// "ui"	"ui/bow_hcog_ranged_sights"
-		// "mesh"	"models/weapons/attachments/acgs_rui_upper"
-
-		// Args
-		// {
-	        // vis							        player_zoomfrac
-	        // centerOffset		                weapon_ads_center_offset
-			// adjustedChargeFrac                  player_chargeFrac_curved
-			// crossDist			                distance_to_crosshair_target
-			// arrowType                           weapon_script_int_0
-			// ammo                                weapon_ammoPool
-			// marksmansTempoCountMax              weapon_script_float_0
-            // marksmansTempoCountCur              weapon_script_int_1
-            // marksmansTempoLastPerfectTime       weapon_script_time_1
-            // marksmansTempoGraceTime             eWeaponVar.explosion_shake_amplitude
-            // marksmansTempoGraceTimeInTempo      eWeaponVar.explosion_shake_frequency
-            // lastFireTime                        weapon_last_primary_attack_time
-		// }
-	// }
-
-	// ap_min_burst                        "0.7"
-    // ap_max_burst                        "0.8"
-    // ap_rest_time_between_bursts_min     "0.2"
-    // ap_rest_time_between_bursts_max     "0.4"
-    // ap_min_close_range_burst            "0.7"
-    // ap_max_close_range_burst            "0.7"
-    // ap_max_range_for_close_burst        "500"
-
+		Args
+		{
+			vis						player_zoomfrac
+			ammo					weapon_ammo
+			clipSize				weapon_clipSize
+			zoomFOV                 weapon_zoom_fov
+			centerOffset			weapon_ads_center_offset
+		}
+	}
 }
