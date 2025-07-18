@@ -94,9 +94,7 @@ function BaseGametype_Init()
 	AddCallback_EntitiesDidLoad( BaseGametypeEntitiesDidLoad )
 
 	BaseGametype_Init_MPSP()
-
-	//Safe_FS_InitCommunityHeirlooms()	
-
+	
 	if(GetCurrentPlaylistVarBool("enable_global_chat", true))
 	{
 		SetConVarBool("sv_overrideTeamChatRestriction", true)

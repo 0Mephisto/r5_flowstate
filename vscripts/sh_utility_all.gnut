@@ -2843,17 +2843,18 @@ entity function SafeCallFunctionEntity( string functionName, entity defaultValue
 	}
 }
 
+#if SERVER || CLIENT
 // Safe wrappers for Flowstate team functions
 int function Safe_GetAttackerTeam()
 {
 	// Default to IMC team (typically team 2) when Flowstate mod not available
-	return SafeCallFunctionInt( "Sh_GetAttackerTeam", TEAM_IMC, [], "[TEAM_SAFE]" )
+	return ModCallbacks_CallIntCallback( "GetAttackerTeam", TEAM_IMC )
 }
 
 int function Safe_GetDefenderTeam()
 {
 	// Default to Militia team (typically team 3) when Flowstate mod not available  
-	return SafeCallFunctionInt( "Sh_GetDefenderTeam", TEAM_MILITIA, [], "[TEAM_SAFE]" )
+	return ModCallbacks_CallIntCallback( "GetDefenderTeam", TEAM_MILITIA )
 }
 
 // Safe wrapper for Flowstate ball carrier function
@@ -2861,17 +2862,18 @@ entity function Safe_GetBallCarrier()
 {
 	// Return null entity when Flowstate mod not available
 	// This ensures comparisons like "Safe_GetBallCarrier() == player" will be false
-	return SafeCallFunctionEntity( "GetBallCarrier", null, [], "[BALL_CARRIER]" )
+	return ModCallbacks_CallEntityCallback( "GetBallCarrier", null )
 }
 
 // Safe wrapper for Flowstate movement map dummy creation (threaded function)
 void function Safe_CreateMovementMapDummieFromMapLoad( vector pos, vector ang )
 {
-	// Convert vector parameters to string format for compilestring
-	string posStr = format( "<%f,%f,%f>", pos.x, pos.y, pos.z )
-	string angStr = format( "<%f,%f,%f>", ang.x, ang.y, ang.z )
+	// Create parameter array using the new parameter system
+	array<CallbackParam> params = ModCallbacks_CreateParams()
+	ModCallbacks_AddVectorParam( params, pos )
+	ModCallbacks_AddVectorParam( params, ang )
 	
-	SafeCallFunction( "CreateMovementMapDummieFromMapLoad", [posStr, angStr], "Movement map dummy creation not available - Flowstate mod not loaded", "[MOVEMENT_DUMMY]" )
+	ModCallbacks_CallVoidCallbackWithParams( "CreateMovementMapDummieFromMapLoad", params )
 }
 
 // Safe wrapper for Flowstate scenarios mode check
@@ -2879,80 +2881,83 @@ bool function Safe_isScenariosMode()
 {
 	// Default to false when Flowstate mod not available
 	// This ensures scenarios mode features are disabled when mod not present
-	return false//SafeCallFunctionBool( "isScenariosMode", false, [], "[SCENARIOS_MODE]" )
+	return ModCallbacks_CallBoolCallback("isScenariosMode", false)
 }
 
 bool function Safe_is1v1EnabledAndAllowed()
 {
-	return false//SafeCallFunctionBool( "is1v1EnabledAndAllowed", false, [], "[1v1_MODE]" )
-}
-
-void function Safe_FS_InitCommunityHeirlooms()
-{
-	SafeCallFunction( "FS_InitCommunityHeirlooms", [], "", "" )
+	return ModCallbacks_CallBoolCallback("is1v1EnabledAndAllowed", false)
 }
 
 void function Safe_StartUpdatingArmorSwapLastTime()
 {
-	SafeCallFunction( "StartUpdatingArmorSwapLastTime", [], "", "" )
+	ModCallbacks_CallVoidCallback( "StartUpdatingArmorSwapLastTime" )
 }
 
 // Safe wrapper for Flowstate scenarios big door data saving
 void function Safe_FS_Scenarios_SaveBigDoorData( entity door )
 {
-	// Pass entity index as integer parameter
-	string doorIndexStr = string( door.GetEntIndex() )
+	// Create parameter array using the new parameter system
+	array<CallbackParam> params = ModCallbacks_CreateParams()
+	ModCallbacks_AddEntityParam( params, door )
 	
-	SafeCallFunction( "FS_Scenarios_SaveBigDoorData_SafeWrapper", [doorIndexStr], "Big door data saving not available - Flowstate mod not loaded", "[SCENARIOS_DOOR]" )
+	ModCallbacks_CallVoidCallbackWithParams( "FS_Scenarios_SaveBigDoorData", params )
 }
 
 // Safe wrapper for Flowstate scenarios loot dropping
 void function Safe_DropLoot_RefScenarios( entity player )
 {
-	// Pass entity index as integer parameter
-	string playerIndexStr = string( player.GetEntIndex() )
+	// Create parameter array using the new parameter system
+	array<CallbackParam> params = ModCallbacks_CreateParams()
+	ModCallbacks_AddEntityParam( params, player )
 	
-	SafeCallFunction( "DropLoot_RefScenarios_SafeWrapper", [playerIndexStr], "Scenarios loot dropping not available - Flowstate mod not loaded", "[SCENARIOS_LOOT]" )
+	ModCallbacks_CallVoidCallbackWithParams( "DropLoot_RefScenarios", params )
 }
 
 // Safe wrapper for Flowstate scenarios tracked entities
 void function Safe_AddToTrackedEnts_RefScenarios( entity player, entity ent )
 {
-	// Pass entity indices as integer parameters
-	string playerIndexStr = string( player.GetEntIndex() )
-	string entIndexStr = string( ent.GetEntIndex() )
+	// Create parameter array using the new parameter system
+	array<CallbackParam> params = ModCallbacks_CreateParams()
+	ModCallbacks_AddEntityParam( params, player )
+	ModCallbacks_AddEntityParam( params, ent )
 	
-	SafeCallFunction( "AddToTrackedEnts_RefScenarios_SafeWrapper", [playerIndexStr, entIndexStr], "Scenarios tracked entities not available - Flowstate mod not loaded", "[SCENARIOS_TRACKED]" )
+	ModCallbacks_CallVoidCallbackWithParams( "AddToTrackedEnts_RefScenarios", params )
 }
 
 // Safe wrapper for Flowstate spies victim backwards check
 bool function Safe_FS_Spies_IsVictimBackwardsToAttacker( entity attacker, entity victim, vector position )
 {
-	// Pass entity indices and vector as parameters
-	string attackerIndexStr = string( attacker.GetEntIndex() )
-	string victimIndexStr = string( victim.GetEntIndex() )
-	string positionStr = format( "<%f,%f,%f>", position.x, position.y, position.z )
+	// Create parameter array using the new parameter system
+	array<CallbackParam> params = ModCallbacks_CreateParams()
+	ModCallbacks_AddEntityParam( params, attacker )
+	ModCallbacks_AddEntityParam( params, victim )
+	ModCallbacks_AddVectorParam( params, position )
 	
 	// Default to false when Flowstate mod not available (disables special spies mechanics)
-	return SafeCallFunctionBool( "FS_Spies_IsVictimBackwardsToAttacker", false, [attackerIndexStr, victimIndexStr, positionStr], "[SPIES_BACKWARDS]" )
+	return ModCallbacks_CallBoolCallbackWithParams( "FS_Spies_IsVictimBackwardsToAttacker", params, false )
 }
 
 // Safe wrapper for Flowstate scenarios player ping check
 bool function Safe_FS_Scenarios_PlayerCanPing( entity player )
 {
-	// Pass entity index as parameter
-	string playerIndexStr = string( player.GetEntIndex() )
+	// Create parameter array using the new parameter system
+	array<CallbackParam> params = ModCallbacks_CreateParams()
+	ModCallbacks_AddEntityParam( params, player )
 	
 	// Default to true when Flowstate mod not available (allows normal pinging)
-	return SafeCallFunctionBool( "FS_Scenarios_PlayerCanPing", true, [playerIndexStr], "[SCENARIOS_PING]" )
+	return ModCallbacks_CallBoolCallbackWithParams( "FS_Scenarios_PlayerCanPing", params, true )
 }
 
 void function Safe_FS_Scenarios_SaveLootbinData( entity player )
 {
-	string playerIndexStr = string( player.GetEntIndex() )
+	// Create parameter array using the new parameter system
+	array<CallbackParam> params = ModCallbacks_CreateParams()
+	ModCallbacks_AddEntityParam( params, player )
 	
-	SafeCallFunction( "FS_Scenarios_SaveLootbinData", [playerIndexStr], "", "" )
+	ModCallbacks_CallVoidCallbackWithParams( "FS_Scenarios_SaveLootbinData", params )
 }
+#endif
 
 bool function IsEverythingUnlocked()
 {

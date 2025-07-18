@@ -36,6 +36,7 @@ Scripts:
 [
 	flowstate_globals.gnut
 	sh_damage_history.gnut // needs to come before _entitystructs
+	sh_mod_callbacks.gnut
 ]
 
 When: "UI || SERVER"
