@@ -526,6 +526,8 @@
 
 	"trophy_system_ignores"                          "always"
 
+	"sway_rotate_attach_zoomed" "SWAY_ROTATE_ZOOMED"
+	"sway_rotate_attach" "SWAY_ROTATE"
 	"Mods"
 	{
 		crate	    {}
