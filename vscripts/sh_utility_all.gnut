@@ -3672,24 +3672,4 @@ bool function IsSafeString( string str, int strlen = -1, string pattern = "" )
 	
 	return ( RegexpFindAll( str, pattern ).len() != 0 )
 }
-#endif //SERVER
-
-function MakeFunctionRefFromString( string funcName )
-{
-	if( funcName == "" )
-		mAssert( 0, "funcName cannot be empty" )
-		
-	local funcRef = null
-	string wrapperCode = format( "%s()", funcName )
-	
-	try
-	{
-		funcRef = compilestring( wrapperCode, "RemoteFunctionByRef" )	
-	}
-	catch( e )
-	{
-		mAssert( 0, "Function \"%s\" does not exist in this context. Make sure it is global for the relevant VM", funcName )
-	}
-	
-    return funcRef
-}
+#endif
