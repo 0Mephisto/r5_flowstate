@@ -2182,9 +2182,7 @@ bool function IsValidPlayerForR5RDevBadge( entity player ) //deprecated
 		return false
 	
 	if( !GetServerVar( "tracker_enabled" ) )
-	{
 		return IsValidPlayerForR5RDevBadge_NoTracker( player )
-	}
 	
 	//not needed, isDev is preloaded on clients when player is created.
 	// if( !Tracker_StatExists( player, "isDev" ) )
