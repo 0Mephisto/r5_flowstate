@@ -248,13 +248,6 @@ void function PrecacheSDKWeapons()
 	PrecacheWeapon( $"mp_weapon_melee_boxing_ring" )
 	PrecacheWeapon( $"melee_boxing_ring" ) // Olympus ring
 	
-	PrecacheWeapon( $"mp_weapon_satchel" )
-	PrecacheWeapon( $"mp_weapon_grenade_sonar" )
-	PrecacheWeapon( $"mp_weapon_deployable_cover" )
-	PrecacheWeapon( $"mp_weapon_grenade_electric_smoke" )
-	PrecacheWeapon( $"mp_ability_cloak" )
-	PrecacheWeapon( $"mp_ability_3dash" )
-	
 	PrecacheWeapon( $"npc_weapon_lstar" )
 	PrecacheWeapon( $"npc_weapon_hemlok" )
 	PrecacheWeapon( $"npc_weapon_energy_shotgun" )
