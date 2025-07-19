@@ -2184,26 +2184,7 @@ bool function IsValidPlayerForR5RDevBadge( entity player ) //deprecated
 	if( !GetServerVar( "tracker_enabled" ) )
 		return IsValidPlayerForR5RDevBadge_NoTracker( player )
 	
-	//not needed, isDev is preloaded on clients when player is created.
-	// if( !Tracker_StatExists( player, "isDev" ) )
-	// {
-		// Tracker_PreloadStat( player, "isDev" )
-		
-		// float startTime = Time()
-		// while( !Tracker_StatExists( player, "isDev" ) )
-		// {
-			// WaitFrame()
-			// if( Time() > startTime + MAX_PRELOAD_TIMEOUT )
-			// {
-				// #if DEVELOPER 
-					// printw( "Timeout while waiting for isDev stat from player", player )
-				// #endif 
-				
-				// break
-			// }
-		// }
-	// }
-	
+	//isDev is preloaded on clients when player is created.
 	var isDev = Tracker_FetchStat( player, "isDev" )
 	
 	if( isDev != null )
