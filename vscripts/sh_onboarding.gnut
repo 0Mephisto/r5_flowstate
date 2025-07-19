@@ -952,7 +952,7 @@ void function Sequence_WaitingForPlayers()
 		}
 	}
 	
-	#if TRACKER
+	#if TRACKER //todo(mk): add OnWaitingForPlayersEnd callbacks
 		if( bLog() && !Tracker_IsBatchStatsLoaded() && Flowstate_IsTrackerSupportedMode() )
 			waitthread WaitSignalOrTimeout( tracker.signalEnt, Tracker_GetMaxWaitForBatchLoad(), "BatchFetchComplete" )
 	

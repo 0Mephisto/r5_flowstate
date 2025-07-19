@@ -262,7 +262,7 @@ var function __FetchPlayerStatInThread( entity player, string stat )
 	{
 		#if DEVELOPER && DEBUG_CL_STATS
 			printw( "Waiting for player stats to load for lookup: \"" + stat + "\" Player:", player )
-		#endif 
+		#endif
 		
 		WaitFrames( 5 )
 		

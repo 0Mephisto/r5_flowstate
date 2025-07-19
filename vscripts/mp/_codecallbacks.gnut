@@ -373,7 +373,7 @@ void function CodeCallback_DamagePlayerOrNPC( entity ent, var damageInfo )
 	if ( DamageInfo_GetCustomDamageType( damageInfo ) & DF_DOOMED_HEALTH_LOSS )
 		DamageInfo_AddDamageFlags( damageInfo, DAMAGEFLAG_NOPAIN )
 
-	#if TRACKER && SERVER && MP
+	#if TRACKER && SERVER && MP //todo(mk): revisit
 			__TrackerStatsHook_Damage( ent, damageInfo )
 	#endif
 	
@@ -557,7 +557,7 @@ void function CodeCallback_DamagePlayerOrNPC( entity ent, var damageInfo )
 				
 				__IncrementPlayerNetInt( attacker, "kills" )
 				
-				#if TRACKER
+				#if TRACKER //(mk)todo: add OnPlayerKilledNpc callbacks
 					Tracker_EndFight( ent, attacker, damageInfo )
 				#endif
 			}

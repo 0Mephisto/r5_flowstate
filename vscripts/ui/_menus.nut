@@ -664,7 +664,7 @@ void function UICodeCallback_LevelShutdown()
 
 	TEMP_CircularReferenceCleanup()
 	
-	#if TRACKER && HAS_TRACKER_DLL
+	#if TRACKER && HAS_TRACKER_DLL //(mk): what was I doing here..
 	//TODO: state !ready waitframe 
 	//while( SQ_GetLogstate() )
 	#endif
