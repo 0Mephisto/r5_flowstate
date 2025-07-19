@@ -973,6 +973,7 @@ Scripts:
 	ui/panel_legend.nut
 	ui/menu_survival_ground_list.nut
 	ui/menu_survival_quick_swap.nut
+	ui/menu_modmenu.nut
 	
 	
 	lobby/sh_lobby.gnut
