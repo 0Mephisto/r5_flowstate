@@ -984,10 +984,11 @@ void function StartRound()
 	
 	#if TRACKER
 		if( winners.len() )
-			Tracker_SetShouldShip( true )		
+			Tracker_SetShouldShip( true )	
+
+		Tracker_RoundEnd( file.currentRound )
 	#endif
 		
-	PIN_RoundEnd( file.currentRound )
 	file.currentRound++
 	
 	// if( Flowstate_IsHaloMode() && 

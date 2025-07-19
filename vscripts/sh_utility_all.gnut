@@ -3540,7 +3540,7 @@ bool function IsStringNumeric( string str, int ornull min = null, int ornull max
 	if ( !IsStringNumber( str ) ) 
         return false
     
-    if ( str[0] == '-' ) 
+    if ( str[0] == '-' )
 	{
         if ( stringcmp( str.slice( 1 ), minStr.slice( 1 ) ) > 0 ) 
             return false

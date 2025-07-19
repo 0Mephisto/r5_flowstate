@@ -24,7 +24,7 @@ void function SetRegisterCoreStats( bool b )
 	file.RegisterCoreStats = b	
 }
 
-void function Tracker_Init()
+void function Tracker_Internal_Init()
 {
 	file.bStatsIs1v1Type = g_bIs1v1GameType()
 	

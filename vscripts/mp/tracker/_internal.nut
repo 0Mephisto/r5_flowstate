@@ -118,8 +118,8 @@ var function Stats__RawGetStat( UIDString player_oid, string statname, bool onli
 {
 	table< UIDString, StatsTable > statsTable = online ? file.onlineStatsTables : file.localStatsTables
 
-	if (player_oid in statsTable && statname in statsTable[player_oid])
-		return statsTable[player_oid][statname]
+	if ( player_oid in statsTable && statname in statsTable[ player_oid ] )
+		return statsTable[ player_oid ][ statname ]
 	else
 		return null
 }
