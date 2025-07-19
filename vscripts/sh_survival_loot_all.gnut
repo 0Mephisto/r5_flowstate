@@ -66,20 +66,6 @@ global enum eLootTier
 	_count
 }
 
-global struct CustomHopupData
-{
-	string className,
-	string displayName,
-	string desc,
-	int tier,
-	asset icon,
-	asset model = $"mdl/weapons_r5/loot/_master/w_loot_wep_mods_chip.rmdl",
-	string attachmentSlot = "hopup",
-	float lowWeight = 5.0,
-	float medWeight = 10.0,
-	float highWeight = 25.0
-}
-
 global struct LootData
 {
 	string        ref
@@ -129,6 +115,47 @@ global struct LootData
 	array<string> fakeMods
 
 	bool functionref( entity, entity, int ) extraCanUseFunction = null
+}
+
+global struct CustomHopupData
+{
+	string className,
+	string displayName,
+	string desc,
+	int tier,
+	asset icon,
+	asset model = $"mdl/weapons_r5/loot/_master/w_loot_wep_mods_chip.rmdl",
+	string attachmentSlot = "hopup",
+	float lowWeight = 5.0,
+	float medWeight = 10.0,
+	float highWeight = 25.0
+}
+
+global struct CustomGrenadeData
+{
+	string className,
+	int countPerDrop,
+	int stackSize,
+	int tier,
+	float chance,
+	float carePackageChance
+}
+
+global struct CustomWeaponData
+{
+	string className,
+	int tier,
+	array<string> baseMods,
+	array<string> supportedAttachments,
+	string pickupSound1p,
+	string pickupSound3p,
+	string weaponType,
+	float lowWeaponChance,
+	float medWeaponChance,
+	float highWeaponChance,
+	string hudIcon,
+	string name,
+	bool isCP
 }
 
 global enum eWeaponLockedSet
@@ -234,15 +261,6 @@ struct
 } file
 
 
-struct CustomGrenadeData
-{
-	string className,
-	int countPerDrop,
-	int stackSize,
-	int tier,
-	float chance,
-	float carePackageChance
-}
 
 array<string> attachmentSortOrder = ["barrel", "mag", "sight", "grip", "hopup", "hopupMulti_a", "hopupMulti_b"]
 
@@ -660,22 +678,6 @@ void function SURVIVAL_Loot_RegFromDataTable(var dt)
 	#endif
 }
 
-struct CustomWeaponData
-{
-	string className,
-	int tier,
-	array<string> baseMods,
-	array<string> supportedAttachments,
-	string pickupSound1p,
-	string pickupSound3p,
-	string weaponType,
-	float lowWeaponChance,
-	float medWeaponChance,
-	float highWeaponChance,
-	string hudIcon,
-	string name,
-	bool isCP
-}
 
 void function RegisterCustomWeapons()
 {	
