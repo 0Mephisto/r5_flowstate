@@ -23,7 +23,7 @@
 	// Models
 	"viewmodel"   								"mdl/weapons/3030repeater/ptpov_3030repeater.rmdl"
 	"playermodel" 								"mdl/weapons/3030repeater/w_3030repeater.rmdl"
-	"holster_offset"						    "8 0 2"
+	//"holster_offset"						    "8 0 2"
 
 	"chroma_color"								"1 .6 .2"
 

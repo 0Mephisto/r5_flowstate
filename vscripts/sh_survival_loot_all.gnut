@@ -13,6 +13,7 @@ global function SURVIVAL_Loot_GetLootTypeFromString
 global function SURVIVAL_Loot_GetAttachmentType_Enum
 global function SURVIVAL_Loot_GetByTier
 global function SURVIVAL_Loot_GetSortedStringArrayFromSupportedAttachmentsString
+global function SURVIVAL_Loot_RegFromDataTable
 global function FS_HaloSurvival_GetRandomItemFromPool
 
 global function SURVIVAL_Loot_IsUniqueAmmoWeapon
@@ -375,15 +376,6 @@ bool function IsNewLootEnabled( string ref )
 			return false
 		}
 	}
-
-	if( Playlist() != ePlaylists.survival_firingrange )
-	{
-		switch( ref )
-		{
-			case "mp_weapon_3030":
-			return false
-		}
-	}
 		
 	switch( ref )
 	{
@@ -404,47 +396,17 @@ bool function IsNewLootEnabled( string ref )
 			else 
 				return true
 		break
-		case "mp_weapon_nemesis":
-		case "mp_weapon_dragon_lmg":
-		case "mp_weapon_bow":
 		case "armor_pickup_lv0_evolving":
 		case "armor_pickup_lv1_evolving":
 		case "armor_pickup_lv2_evolving":
 		case "armor_pickup_lv3_evolving":
 		case "armor_pickup_lv5_evolving":
-		case "mp_weapon_throwingknife":
-		// case "mp_weapon_raygun":
-		// if( Gamemode() == eGamemodes.fs_infected && ref == "mp_weapon_raygun" )
-			// return true
-		// case "laser_sight_l1":
-		// case "laser_sight_l2": 
-		// case "laser_sight_l3":
-		// case "bullets_mag_l4":
-		// case "highcal_mag_l4":
-		// case "energy_mag_l4":
-		// case "sniper_mag_l4":
-		// case "shotgun_bolt_l4":
-		//case "hopup_selectfire":
-		case "hopup_double_tap":
-		case "mp_ability_void_ring":
-		case "mp_ability_redeploy_balloon":
 		case "hopup_smart_reload":
 		case "hopup_dual_loader":
-		//case "backpack_pickup_lv4_revive_boost":
 		
 		return false
 	}
-	
-	if( GetCurrentPlaylistVarBool( "is_halo_gamemode", false ) ) 
-	{
-		switch( ref )
-		{
-			case "mp_weapon_thermite_grenade":
-			case "mp_weapon_grenade_emp":
-			case "mp_weapon_frag_grenade":
-			return false
-		}
-	}
+
 	return true
 }
 

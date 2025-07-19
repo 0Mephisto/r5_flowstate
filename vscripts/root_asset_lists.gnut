@@ -1,7 +1,7 @@
 //=========================================================
 //	root_asset_lists.gnut
 //=========================================================
-
+global function ShLoadWeaponAssetsInit
 //////////////////////
 //////////////////////
 //// Global Types ////
@@ -127,7 +127,7 @@ global const array<asset> SHARED_BANNERFRAMES_ASSET_LIST = [
 ]
 
 
-global const array<asset> WEAPON_ASSETS =
+global array<asset> WEAPON_ASSETS =
 [
 	$"settings/itemflav/loot/main_weapon/alternator.rpak",
 	$"settings/itemflav/loot/main_weapon/autopistol.rpak",
@@ -154,3 +154,19 @@ global const array<asset> WEAPON_ASSETS =
 	$"settings/itemflav/loot/main_weapon/sentinel.rpak",
 	$"settings/itemflav/loot/main_weapon/volt_smg.rpak",
 ]
+
+void function ShLoadWeaponAssetsInit()
+{
+    WEAPON_ASSETS.clear()
+
+    var dataTable = GetDataTable( $"datatable/weapon_itemflavor_sdk.rpak" )
+    int numRows = GetDatatableRowCount( dataTable )
+    int weaponColumn = GetDataTableColumnByName( dataTable, "weaponflavor" )
+
+    for ( int i = 0; i < numRows; i++ )
+    {
+        string assetPathString = GetDataTableString( dataTable, i, weaponColumn )
+        asset assetPath = GetAssetFromString( assetPathString )
+        WEAPON_ASSETS.append( assetPath )
+    }
+}
