@@ -7,10 +7,10 @@
 WeaponData
 {
 	// General
-	"printname"   									"RAMPAGE"
-	"shortprintname"								"RAMPAGE"
-	"description" 									"RAMPAGE"
-	"longdesc"										"RAMPAGE"
+	"printname"   									"#WPN_DRAGON_LMG"
+	"shortprintname"								"#WPN_DRAGON_LMG_SHORT"
+	"description" 									"#WPN_DRAGON_LMG_DESC"
+	"longdesc"										"#WPN_DRAGON_LMG_LONGDESC"
 
 	"weapon_type_flags"								"WPT_PRIMARY"
 	"ammo_pool_type"								"highcal"
@@ -18,7 +18,6 @@ WeaponData
 	"menu_icon"										"rui/weapon_icons/r5/weapon_dragon"
 	"hud_icon"										"rui/weapon_icons/r5/weapon_dragon"
 
-	"weaponClass" 									"human"
 	"weaponSubClass" 								"lmg"
 	"body_type"										"heavy"
 	"fire_mode"   									"automatic"
@@ -27,7 +26,7 @@ WeaponData
 	"minimap_reveal_distance"						"32000"
 	"leveled_pickup"								"1"
 
-	"damage_flags"									"DF_BULLET | DF_INSTANT | DF_DISMEMBERMENT"
+	"damage_flags"									"DF_BULLET | DF_DISMEMBERMENT"
 
 	// Menu
 	"menu_category"                                 "lmg"
@@ -37,14 +36,13 @@ WeaponData
 	"stat_accuracy"   								"39"
 	"stat_rof"										"47"
 
-
 	dof_zoom_focusArea_horizontal					0.023
 	dof_zoom_focusArea_top							0.052
 	dof_zoom_focusArea_bottom						-0.018
 
 	// Models
-	"viewmodel"   									"mdl/weapons/lmg_hemlok/ptpov_lmg_hemlok.rmdl"
-	"playermodel" 									"mdl/weapons/lmg_hemlok/w_lmg_hemlok.rmdl"
+	"viewmodel"   									"mdl/techart/mshop/weapons/class/lmg/dragon/dragon_base_v.rmdl"
+	"playermodel" 									"mdl/techart/mshop/weapons/class/lmg/dragon/dragon_base_W.rmdl"
 	"holster_type"									"rifle"
 
 	"projectilemodel" 								"mdl/dev/empty_model.rmdl"
@@ -84,40 +82,44 @@ WeaponData
 	"vortex_absorb_sound_1P_VS_3P"					"Vortex_Shield_AbsorbBulletSmall_1P_VS_3P"
 	"projectile_adjust_to_gun_barrel"				"1"
 
-	"fx_muzzle_flash_view"							""
-	"fx_muzzle_flash_world"							""
+	"fx_muzzle_flash_view"							"wpn_muzzleflash_lmg_FP"
+	"fx_muzzle_flash_world"							"wpn_muzzleflash_lmg"
 	"fx_muzzle_flash_attach"						"muzzle_flash"
 
 	"chroma_color"									".6 1 .6"
 
-	//Sounds
-	"fire_sound_1_player_1p"						"weapon_xo16_single_1p"
-	"fire_sound_1_player_3p"						"weapon_xo16_single_3p"
-	"fire_sound_2_player_1p"						"weapon_lmg_firstshot_1p_int"
-	"fire_sound_2_player_3p"						 "weapon_r97_fire_first_3p"
-	"fire_sound_2_npc"								"Weapon_RE45Auto_secondshot_npc"
-	"sound_zoom_in"									"Weapon_LMG_ADS_In"
-	"sound_zoom_out"								"Weapon_LMG_ADS_Out"
+	//Sounds   
+    "fire_sound_1_player_1p"						"weapon_rampage_lmg_shell"
+    "fire_sound_1_player_3p"						"weapon_rampage_lmg_shell"
+    "fire_sound_2_player_1p"						"weapon_rampage_lmg_secondshot_1p"
+    "fire_sound_2_player_3p"						"weapon_rampage_lmg_secondshot_3p"
+	"fire_sound_2_npc"								"weapon_rampage_lmg_secondshot_3p"
+    "sound_zoom_in"									"Weapon_LMG_ADS_In"
+    "sound_zoom_out"								"Weapon_LMG_ADS_Out"
 
-	// "looping_sounds"								"1"
+    "looping_sounds"								"1"
+	
+	"burst_or_looping_fire_sound_start_1p"			"weapon_rampage_lmg_firstshot_1p"
+	"burst_or_looping_fire_sound_middle_1p"			"weapon_rampage_lmg_loop_1p"
+	"burst_or_looping_fire_sound_end_1p"			"weapon_rampage_lmg_loopend_1p"
+    
+	"burst_or_looping_fire_sound_start_3p"			""
+	"burst_or_looping_fire_sound_middle_3p"			"weapon_rampage_lmg_loop_3p"
+	"burst_or_looping_fire_sound_end_3p"			""
+    
+	"burst_or_looping_fire_sound_start_npc"			""
+	"burst_or_looping_fire_sound_middle_npc"		"weapon_rampage_lmg_loop_3p"
+	"burst_or_looping_fire_sound_end_npc"			""
 
-	// "burst_or_looping_fire_sound_start_1p"			"Weapon_LMG_FirstShot_1P"
-	// "burst_or_looping_fire_sound_middle_1p"			"Weapon_LMG_Loop_1P"
-	// "burst_or_looping_fire_sound_end_1p"			"Weapon_LMG_LoopEnd_1P"
+	//Sounds - Low Amm
+	
+    "low_ammo_sound_name_1"							"rampage_lmg_lowammo_shot1"
+    //"low_ammo_sound_name_2"							"rampage_lmg_lowammo_shot2"
+    //"low_ammo_sound_name_3"							"rampage_lmg_lowammo_shot3"
 
-	// "burst_or_looping_fire_sound_start_3p"			""
-	// "burst_or_looping_fire_sound_middle_3p"			"Weapon_LMG_Loop_3P"
-	// "burst_or_looping_fire_sound_end_3p"			"Weapon_LMG_LoopEnd_3P"
-
-	// "burst_or_looping_fire_sound_start_npc"			""
-	// "burst_or_looping_fire_sound_middle_npc"		"Weapon_LMG_Loop_3P_NPC_A"
-	// "burst_or_looping_fire_sound_end_npc"			""
-
-	"low_ammo_sound_name_1"							"lmg_LowAmmo_Shot1"
-
-	"sound_dryfire"									"hemlok_dryfire"
-	"sound_pickup"									"wpn_pickup_MG_1P"
-	"sound_trigger_pull"							"Weapon_LMG_Trigger"
+    "sound_dryfire"									"hemlok_dryfire"
+    "sound_pickup"									"wpn_pickup_MG_1P"
+    "sound_trigger_pull"							"Weapon_LMG_Trigger"
 
 	"fx_shell_eject_view"							"wpn_shelleject_rifle_assault_FP"
 	"fx_shell_eject_world"							"wpn_shelleject_rifle_assault"
@@ -196,7 +198,6 @@ WeaponData
 	"zoom_time_in"                                  "0.34"
 	"zoom_time_out"                                 "0.3"
 	"zoom_fov"										"55"
-
 
 	"reload_time" 									"3.1"
 	"reload_time_late1"								"2.0"
@@ -402,7 +403,8 @@ WeaponData
 	"sprintcycle_time"								"0"
 
 	// Bodygroups:
-
+	"bodygroup1_name"	"sight_rear_on"
+	"bodygroup1_set"	"1"
 	"anim_alt_idleAttack"	"0"
 
 	"clip_bodygroup"						"clip"
@@ -415,10 +417,74 @@ WeaponData
 
     "low_ammo_fraction" 							"0.3"
 
+	"viewmodel_ads_rui_bottomleft_attachment"	"RUI_BL_CROSSHAIR_LMG_DRAGON"
+	"viewmodel_ads_centerpoint_attachment"      "ADS_CENTER_SIGHT_LMG_DRAGON"
 
 	"headshot_distance"	"2500"
 	Mods
 	{
+		crate	    {}
+		has_been_energized
+		{
+	        //"activitymodifier1p"                            "has_been_energized"
+		}
+	    energized
+        {
+
+            //Gameplay
+            //"damage_near_value"   							"28"
+            //"damage_far_value"								"28"
+            //"damage_very_far_value"							"28"
+            //"damage_near_value_titanarmor"					"28"
+            //"damage_far_value_titanarmor" 					"28"
+            //"damage_very_far_value_titanarmor" 				"28"
+
+            "fire_rate"   									"6.5"
+
+	        "tracer_effect"   								"weapon_tracers_shotgun"
+
+            // FX - Impacts
+            //"impact_effect_table"                           "default_far"
+
+            // FX - Projectile
+            "projectile_trail_effect_0"                	"P_tracer_proj_smg_hammer_point"
+            //"projectile_trail_effect_1"                	"P_drg_proj_tracer_ignited"
+
+            // FX - Muzzle Flash
+            //"fx_muzzle_flash_attach"						"muzzle_flash"
+
+            // Sounds
+			"fire_sound_1_player_1p"						"weapon_rampage_lmg_shell"
+			"fire_sound_1_player_3p"						"weapon_rampage_lmg_shell"
+			"fire_sound_2_player_1p"						"weapon_rampage_lmg_secondshot_1p_alt"
+			"fire_sound_2_player_3p"						"weapon_rampage_lmg_secondshot_3p_alt"
+			"fire_sound_2_npc"								"weapon_rampage_lmg_secondshot_3p_alt"
+			"sound_zoom_in"									"Weapon_LMG_ADS_In"
+			"sound_zoom_out"								"Weapon_LMG_ADS_Out"
+
+			"looping_sounds"								"1"
+
+			"burst_or_looping_fire_sound_start_1p"			"weapon_rampage_lmg_firstshot_1p_alt"
+			"burst_or_looping_fire_sound_middle_1p"			"weapon_rampage_lmg_loop_1p_alt"
+			"burst_or_looping_fire_sound_end_1p"			"weapon_rampage_lmg_loopend_1p_alt"
+            
+			"burst_or_looping_fire_sound_start_3p"			""
+			"burst_or_looping_fire_sound_middle_3p"			"weapon_rampage_lmg_loop_3p_alt"
+			"burst_or_looping_fire_sound_end_3p"			""
+		    
+			"burst_or_looping_fire_sound_start_npc"			""
+			"burst_or_looping_fire_sound_middle_npc"		"weapon_rampage_lmg_loop_3p_alt"
+			"burst_or_looping_fire_sound_end_npc"			""
+			
+			
+            // Sound - Low Ammo
+            "low_ammo_sound_name_1"                        "rampage_lmg_lowammo_shot1_alt"
+            "low_ammo_sound_name_2"                        "rampage_lmg_lowammo_shot2"
+            "low_ammo_sound_name_3"                        "rampage_lmg_lowammo_shot3"
+
+            "ui3_enable"		                            "0"
+            "ui4_enable"		                            "1"
+        }
 	    vkp
 	    {
             "spread_stand_hip"								"2.0"
@@ -448,32 +514,32 @@ WeaponData
 
 		optic_cq_hcog_classic
 		{
-			"ui2_enable"		"0"
+			"ui1_enable"		"0"
 		}
 
 		optic_cq_hcog_bruiser
 		{
-			"ui2_enable"		"0"
+			"ui1_enable"		"0"
 		}
 
 		optic_cq_holosight
 		{
-			"ui2_enable"		"0"
+			"ui1_enable"		"0"
 		}
 
 		optic_cq_holosight_variable
 		{
-			"ui2_enable"		"0"
+			"ui1_enable"		"0"
 		}
 
 		optic_ranged_hcog
 		{
-			"ui2_enable"		"0"
+			"ui1_enable"		"0"
 		}
 
 		optic_ranged_aog_variable
 		{
-			"ui2_enable"		"0"
+			"ui1_enable"		"0"
 		}
 
 
@@ -496,6 +562,10 @@ WeaponData
 			"fx_muzzle_flash_world"							""
 			"fx_muzzle_flash_attach"						""
 		}
+        highcal_mag_l4
+        {
+            "ammo_clip_size"   							"50"
+        }
 
 		npc_stalker
 		{
@@ -555,18 +625,21 @@ WeaponData
 	UiData1
 	{
 		"ui"								"ui/spitfire_crosshair"
-		"mesh"							"models/weapons/attachments/spitfire_rui_upper"
+		"mesh"							"models/weapons/attachments/dragon_rui_upper"
 		Args
 		{
 			vis							player_zoomfrac
+			ammo						weapon_ammo
+			clipSize					weapon_clipSize
+			centerOffset				weapon_ads_center_offset
 		}
 	}
 
 	"ui2_enable"		"1"
 	UiData2
 	{
-		"ui"								"ui/spitfire_ammo_counter"
-		"mesh"							"models/weapons/attachments/spitfire_rui_lower"
+		"ui"								"ui/peacekeeper_rui_lower"
+		"mesh"							"models/weapons/attachments/dragon_rui_lower"
 		Args
 		{
 			vis							player_zoomfrac
@@ -594,7 +667,7 @@ WeaponData
 		    crosshairMovementY          crosshair_movement_y
 		}
 
-		Crosshair_1
+		Crosshair_0
 		{
 			"ui"						"ui/crosshair_plus"
 			"base_spread"				"0.0"
