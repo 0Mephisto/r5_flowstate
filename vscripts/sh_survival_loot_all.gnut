@@ -40,6 +40,16 @@ global function GetFXRarityColorForUnlockable
 global function IsCustomAttachment
 global function IsCustomWeapon
 
+//Mod registration functions
+global function RegisterModWeapon
+global function RegisterModHopup
+global function RegisterModGrenade
+global function RegisterModConsumable
+
+//Ground loot control functions
+global function AddItemToGroundLootExclusion
+global function IsModItemExcludedFromGroundLoot
+
 #if CLIENT || SERVER
 global function SURVIVAL_Loot_IsAmmoSpawningDisabled
 #endif
@@ -220,6 +230,7 @@ struct
 	#endif
 	
 	bool ENABLE_DEFINED_SETS
+	array<string> modItemsExcludedFromGroundLoot
 } file
 
 
@@ -314,6 +325,10 @@ void function SURVIVAL_Loot_All_InitShared()
 
 bool function IsEnabledForGroundLoot( string ref )
 {
+	//Check mod exclusions first
+	if(IsModItemExcludedFromGroundLoot(ref))
+		return false
+	
 	if( Playlist() == ePlaylists.fs_haloMod_survival )
 	{
 		switch( ref )
@@ -875,6 +890,158 @@ void function RegisterCustomConsumable(CustomGrenadeData grenadeData)
 	AddCustomItemToLootPool( data.ref, "ordnance", grenadeData.chance)
 	AddCustomItemToLootPool( data.ref, "ordnance_drops", grenadeData.carePackageChance)
 	#endif
+}
+
+//Mod registration utility functions for mods to use without playlist dependencies
+void function RegisterModWeapon(CustomWeaponData weaponData, bool enableGroundLoot = true)
+{
+	//Validate required fields
+	if(weaponData.className == "")
+	{
+		#if DEVELOPER
+			printw("[MOD WEAPON] Error: Weapon className cannot be empty")
+		#endif
+		return
+	}
+	
+	//Set default values for optional fields
+	if(weaponData.name == "")
+		weaponData.name = "Custom Weapon"
+	if(weaponData.hudIcon == "")
+		weaponData.hudIcon = "$\"\""
+	if(weaponData.weaponType == "")
+		weaponData.weaponType = "assault"
+	if(weaponData.pickupSound1p == "")
+		weaponData.pickupSound1p = "survival_loot_pickup_weapon_rspn101"
+	if(weaponData.pickupSound3p == "")
+		weaponData.pickupSound3p = "survival_loot_pickup_3p_weapon_rspn101"
+	if(weaponData.tier == 0)
+		weaponData.tier = eLootTier.COMMON
+	if(weaponData.supportedAttachments.len() == 0)
+		weaponData.supportedAttachments = ["barrel", "mag", "sight", "grip"]
+	
+	#if DEVELOPER
+		printt("[MOD WEAPON] Registering weapon:", weaponData.className, "- Name:", weaponData.name, "- Ground Loot:", enableGroundLoot)
+	#endif
+	
+	//Handle ground loot exclusion
+	if(!enableGroundLoot)
+		AddItemToGroundLootExclusion(weaponData.className)
+	
+	//Call existing registration function
+	RegisterWeapon(weaponData)
+}
+
+void function RegisterModHopup(CustomHopupData hopupData, bool enableGroundLoot = true)
+{
+	//Validate required fields
+	if(hopupData.className == "")
+	{
+		#if DEVELOPER
+			printw("[MOD HOPUP] Error: Hopup className cannot be empty")
+		#endif
+		return
+	}
+	
+	//Set default values for optional fields
+	if(hopupData.displayName == "")
+		hopupData.displayName = "Custom Hopup"
+	if(hopupData.desc == "")
+		hopupData.desc = "Custom hop-up description"
+	if(hopupData.tier == 0)
+		hopupData.tier = eLootTier.COMMON
+	if(hopupData.attachmentSlot == "")
+		hopupData.attachmentSlot = "hopup"
+	
+	#if DEVELOPER
+		printt("[MOD HOPUP] Registering hopup:", hopupData.className, "- Name:", hopupData.displayName, "- Ground Loot:", enableGroundLoot)
+	#endif
+	
+	//Handle ground loot exclusion
+	if(!enableGroundLoot)
+		AddItemToGroundLootExclusion(hopupData.className)
+	
+	//Call existing registration function
+	CreateCustomHopup(hopupData)
+}
+
+void function RegisterModGrenade(CustomGrenadeData grenadeData, bool enableGroundLoot = true)
+{
+	//Validate required fields
+	if(grenadeData.className == "")
+	{
+		#if DEVELOPER
+			printw("[MOD GRENADE] Error: Grenade className cannot be empty")
+		#endif
+		return
+	}
+	
+	//Set default values for optional fields
+	if(grenadeData.tier == 0)
+		grenadeData.tier = eLootTier.COMMON
+	if(grenadeData.countPerDrop == 0)
+		grenadeData.countPerDrop = 1
+	if(grenadeData.stackSize == 0)
+		grenadeData.stackSize = 2
+	
+	#if DEVELOPER
+		printt("[MOD GRENADE] Registering grenade:", grenadeData.className, "- Ground Loot:", enableGroundLoot)
+	#endif
+	
+	//Handle ground loot exclusion
+	if(!enableGroundLoot)
+		AddItemToGroundLootExclusion(grenadeData.className)
+	
+	//Call existing registration function
+	RegisterCustomGrenade(grenadeData)
+}
+
+void function RegisterModConsumable(CustomGrenadeData consumableData, bool enableGroundLoot = true)
+{
+	//Validate required fields
+	if(consumableData.className == "")
+	{
+		#if DEVELOPER
+			printw("[MOD CONSUMABLE] Error: Consumable className cannot be empty")
+		#endif
+		return
+	}
+	
+	//Set default values for optional fields
+	if(consumableData.tier == 0)
+		consumableData.tier = eLootTier.COMMON
+	if(consumableData.countPerDrop == 0)
+		consumableData.countPerDrop = 1
+	if(consumableData.stackSize == 0)
+		consumableData.stackSize = 2
+	
+	#if DEVELOPER
+		printt("[MOD CONSUMABLE] Registering consumable:", consumableData.className, "- Ground Loot:", enableGroundLoot)
+	#endif
+	
+	//Handle ground loot exclusion
+	if(!enableGroundLoot)
+		AddItemToGroundLootExclusion(consumableData.className)
+	
+	//Call existing registration function
+	RegisterCustomConsumable(consumableData)
+}
+
+//Ground loot control functions
+void function AddItemToGroundLootExclusion(string itemRef)
+{
+	if(!file.modItemsExcludedFromGroundLoot.contains(itemRef))
+	{
+		file.modItemsExcludedFromGroundLoot.append(itemRef)
+		#if DEVELOPER
+			printt("[GROUND LOOT] Excluded item from ground loot:", itemRef)
+		#endif
+	}
+}
+
+bool function IsModItemExcludedFromGroundLoot(string itemRef)
+{
+	return file.modItemsExcludedFromGroundLoot.contains(itemRef)
 }
 
 #if CLIENT
