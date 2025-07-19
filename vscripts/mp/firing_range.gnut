@@ -237,6 +237,7 @@ void function FiringRangeProps()
 {
 	// Init
 	CreateLegendaryRack()//Create 6th weapon rack to support sniper ammo
+	CreateBowRack()//Create 7th weapon rack to support arrows
 	array<entity> movers = GetEntArrayByScriptName("script_mover_lightweight")
 
 	foreach(entity e in GetEntArrayByScriptName("weapon_racks"))
@@ -269,6 +270,16 @@ entity function CreateLegendaryRack()
 	Rack_Index_Six.SetScriptName( "weapon_racks" )
 	DispatchSpawn( Rack_Index_Six )
 	return Rack_Index_Six
+}
+
+entity function CreateBowRack()
+{
+	entity Rack_Index_Seven = CreateEntity( "info_target" )
+	Rack_Index_Seven.SetOrigin( <30655, -5283, -29164> )
+	Rack_Index_Seven.SetAngles( <0,0,0> )
+	Rack_Index_Seven.SetScriptName( "weapon_racks" )
+	DispatchSpawn( Rack_Index_Seven )
+	return Rack_Index_Seven
 }
 
 bool function ClientCommand_ToggleFriendlyFire( entity player, array<string> args )
@@ -403,6 +414,9 @@ void function FillAttachmentTable()
 {
 	foreach ( string ammoType, array<LootData> weapons in file.weaponsPerAmmoType )
 	{
+		if ( ammoType == "arrows" )
+			continue
+			
 		if ( ammoType.len() == 0 )
 			continue
 
@@ -484,7 +498,10 @@ void function SpawnOrdnance()
 	const float itemOffsetZ = 4.0
 	foreach(RackGroup rackGroup in file.rackSpawns)
 	{
-		if(rackGroup.ammoType == "")
+		if( rackGroup.ammoType == "" )
+			continue
+			
+		if ( rackGroup.ammoType == "arrows" )
 			continue
 
 		entity rack = rackGroup.point
@@ -562,7 +579,10 @@ void function SpawnItems()
 	const float itemOffsetY = 24.0
 	foreach(RackGroup rackGroup in file.rackSpawns)
 	{
-		if(rackGroup.ammoType == "")
+		if( rackGroup.ammoType == "" )
+			continue
+		
+		if ( rackGroup.ammoType == "arrows" )
 			continue
 
 		entity rack = rackGroup.point
@@ -601,7 +621,10 @@ void function SpawnEquipments()
 	const float itemOffsetY = 24.0
 	foreach(RackGroup rackGroup in file.rackSpawns)
 	{
-		if(rackGroup.ammoType == "")
+		if( rackGroup.ammoType == "" )
+			continue
+			
+		if ( rackGroup.ammoType == "arrows" )
 			continue
 		
 		entity rack = rackGroup.point
@@ -637,6 +660,9 @@ void function SpawnAttachments()
 		foreach(string ammoType2, array<string> refs in file.attachmentsPerAmmoType)
 		{
 			if( ammoType != ammoType2 || ammoType == "" )
+				continue
+				
+			if ( ammoType == "arrows" )
 				continue
 
 			entity r = file.rackSpawns[ammoIndex].point
