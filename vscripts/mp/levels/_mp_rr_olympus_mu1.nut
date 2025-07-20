@@ -24,10 +24,10 @@ void function CodeCallback_MapInit()
 	SURVIVAL_SetMapCenter( <-6900, 2940, 0> )
 	// SURVIVAL_SetMapDelta( 50000 )
 
-	if (MapName() == eMaps.mp_rr_olympus_tt )
-		MapZones_RegisterDataTable( $"datatable/map_zones/zones_mp_rr_olympus_tt.rpak" )
-	else
+	if (MapName() == eMaps.mp_rr_olympus )
 		MapZones_RegisterDataTable( $"datatable/map_zones/zones_mp_rr_olympus.rpak" )
+	else
+		MapZones_RegisterDataTable( $"datatable/map_zones/zones_mp_rr_olympus_tt.rpak" )
 	
 	//Clean up unused ents
 	AddCallback_EntitiesDidLoad( Olympus_OnEntitiesDidLoad )

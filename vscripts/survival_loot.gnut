@@ -3005,15 +3005,6 @@ entity function SpawnGenericLoot( string ref, vector origin, vector overrideAngl
 	if ( lootData.lootType == eLootType.ARMOR )
 		ent.SetSurvivalProperty( SURVIVAL_GetArmorShieldCapacity( lootData.tier ) )
 
-	if( isHaloModWeaponFromRack && Flowstate_IsHaloMode() )
-	{
-		ent.SetScriptName( "flowstate_halo_mod_weapon" )
-	}
-	
-	if( Playlist() == ePlaylists.fs_haloMod_oddball && ref == "fs_ball" )
-	{
-		ent.SetScriptName( "fs_ball" )
-	}
 	DispatchSpawn( ent )
 
 	// MarkEntForCleanupOnRoundEnd( ent )

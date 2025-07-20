@@ -10,10 +10,10 @@ void function ClientCodeCallback_MapInit()
 
 void function MinimapLabelsOlympus()
 {
-	if (MapName() == eMaps.mp_rr_olympus_tt )
-		MapZones_RegisterDataTable( $"datatable/map_zones/zones_mp_rr_olympus_tt.rpak" )
-	else
+	if (MapName() == eMaps.mp_rr_olympus )
 		MapZones_RegisterDataTable( $"datatable/map_zones/zones_mp_rr_olympus.rpak" )
+	else
+		MapZones_RegisterDataTable( $"datatable/map_zones/zones_mp_rr_olympus_tt.rpak" )
 
 
 	SURVIVAL_AddMinimapLevelLabel( GetZoneMiniMapNameForZoneId( MapZones_GetZoneIdForTriggerName( "Z_12_A" ) ), 0.51, 0.85, 0.6 ) //Downtown
