@@ -9,7 +9,7 @@ global function LootMarvin_OnDispenseLootAnimEvent
 global function ClientCallback_PromptPingLootMarvin
 #endif
 
-#if SERVER && DEV
+#if SERVER && DEVELOPER
 global function CreateMarvin_Loot
 global function CreateMarvin_Story
 global function SeeMarvinSpawnLocations
@@ -150,21 +150,6 @@ struct
 
 void function ShLootMarvin_Init()
 {
-	/*if( !GameMode_IsActive( eGameModes.SURVIVAL ) )
-	{
-		#if SERVER
-			// enable this callback so we can delete the dummy props already in the map
-			AddSpawnCallbackEditorClass( "prop_dynamic", "script_loot_marvin", LootMarvin_OnScriptTargetSpawned )
-		#endif
-		return
-	}*/
-
-	//PrecacheScriptString( STORY_MARVIN_SCRIPTNAME )
-	//"PrecacheScriptString( LOOT_MARVIN_SCRIPTNAME )
-	
-	//RegisterCSVDialogue( STORY_MARVIN_CSV_DIALOGUE )
-
-	return // TODO: ENABLE THIS WHEN WE GET ANIMATIONS FOR MARVINS - LorryLeKral
 	PrecacheParticleSystem( VFX_LOT_MARVIN_DISPERSE )
 	PrecacheParticleSystem( VFX_LOT_MARVIN_SPARK_ARM )
 
@@ -309,7 +294,7 @@ void function ProcessLevelEdMarvinNode( entity node, bool isStoryMarvin, bool ha
 // =================================================================================================================================
 
 
-#if SERVER && DEV
+#if SERVER && DEVELOPER
 void function CreateMarvin_Loot( bool hasDetachableArm = false )
 {
 	entity player             = gp()[0]
@@ -322,7 +307,7 @@ void function CreateMarvin_Loot( bool hasDetachableArm = false )
 #endif // SERVER && DEV
 
 
-#if SERVER && DEV
+#if SERVER && DEVELOPER
 void function CreateMarvin_Story()
 {
 	entity player             = gp()[0]
@@ -335,26 +320,27 @@ void function CreateMarvin_Story()
 #endif // SERVER && DEV
 
 
-#if SERVER && DEV
+#if SERVER && DEVELOPER
 void function SeeMarvinSpawnLocations()
 {
 	bool storyMarvinExists = false
 	foreach ( entity marvin, MarvinData data in file.spawnedMarvinData )
 	{
+		gp()[0].SetOrigin(marvin.GetOrigin())
 		if ( IsAlive( marvin ) )
 		{
 			if ( data.hasDetachableArm )
 			{
-				DebugDrawSphere( marvin.GetOrigin(), 256, COLOR_BLUE, true, 45.0 )
+				//DebugDrawSphere( marvin.GetOrigin(), 256, COLOR_BLUE, true, 45.0 )
 			}
 			else if ( data.isStoryMarvin )
 			{
-				DebugDrawSphere( marvin.GetOrigin(), 256, COLOR_GREEN, true, 45.0 )
+				//DebugDrawSphere( marvin.GetOrigin(), 256, COLOR_GREEN, true, 45.0 )
 				storyMarvinExists = true
 			}
 			else
 			{
-				DebugDrawSphere( marvin.GetOrigin(), 256, COLOR_YELLOW, true, 45.0 )
+			//	DebugDrawSphere( marvin.GetOrigin(), 256, COLOR_YELLOW, true, 45.0 )
 			}
 		}
 	}
@@ -446,7 +432,7 @@ void function CreateMarvin( vector origin, vector angles, entity lootMarvinParen
 	}
 	else
 	{
-		//marvin.SetBodygroupModelByIndex( marvin.FindBodygroup( BODYGROUP_RIGHT_ARM ), BODYGROUP_RIGHT_ARM_INDEX_DETACHED )
+		//marvin.SetBodygroupModelByIndex( marvin.FindBodygroup( "removableHead" ), BODYGROUP_RIGHT_ARM_INDEX_DETACHED )
 
 		if ( hasDetachableArm )
 		{
@@ -466,11 +452,17 @@ void function CreateMarvin( vector origin, vector angles, entity lootMarvinParen
 
 		thread PlayAnimLootMarvin( marvin, data.startPoint, ANIM_LOOT_MARVIN_POWERDOWN_IDLE )
 
-		//marvin.SetActivityModifier( ACT_MODIFIER_POWERED_DOWN, true )
+		//marvin.SetActivityModifier( ACT_MODIFIER_STAGGER, true )
 
-		/*data.trigger = CreateTriggerCylinder( marvin.GetOrigin(), LOOT_MARVIN_TRIGGER_RADIUS, 72, 16 )
-		data.trigger.SetEnterCallback( CreateOnEnterLootMarvinTriggerFunc( marvin, data ) )
-		data.trigger.SetLeaveCallback( CreateOnLeaveLootMarvinTriggerFunc( marvin, data ) )*/
+		entity trigger = CreateEntity( "trigger_cylinder" )//
+		trigger.SetRadius( LOOT_MARVIN_TRIGGER_RADIUS )//CreateTriggerCylinder( marvin.GetOrigin(), LOOT_MARVIN_TRIGGER_RADIUS, 72, 16 )
+		trigger.SetOrigin( marvin.GetOrigin() )
+		trigger.SetAboveHeight( 72 )
+		trigger.SetBelowHeight( 16 )
+		DispatchSpawn( trigger )
+		trigger.SetEnterCallback( CreateOnEnterLootMarvinTriggerFunc( marvin, data ) )
+		trigger.SetLeaveCallback( CreateOnLeaveLootMarvinTriggerFunc( marvin, data ) )
+		DebugDrawCylinder( trigger.GetOrigin() , < -90, 0, 0 >, LOOT_MARVIN_TRIGGER_RADIUS, trigger.GetAboveHeight(), 0, 165, 255, true, 9999.9 )
 	}
 }
 #endif //SERVER
@@ -606,9 +598,11 @@ bool function IsPlayerPathfinder( entity player )
 #if SERVER
 void functionref( entity trigger, entity ent ) function CreateOnEnterLootMarvinTriggerFunc( entity marvin, MarvinData data )
 {
+	printl("e")
 	return void function( entity trigger, entity ent ) : ( marvin, data )
 	{
 		OnEnterLootMarvinTrigger( trigger, ent, marvin, data )
+		printl("e")
 	}
 }
 #endif //SERVER
@@ -633,13 +627,15 @@ void function OnEnterLootMarvinTrigger( entity trigger, entity ent, entity marvi
 
 	if ( !IsAlive( marvin ) )
 		return
+		
+	printt("hello")
 
 	//marvin.SetThinkDuringAnimation( true )
 
 	Signal( marvin, SIGNAL_PLAYER_ENTERED_MARVIN_TRIGGER )
 
-	if ( data.marvinState != eMarvinState.READY_FOR_POWERUP )
-		return
+	//if ( data.marvinState != eMarvinState.READY_FOR_POWERUP )
+		//return
 
 	PIN_Interact ( ent, "loot_marvin_power_up" ) //have checked that ent is a player above
 
@@ -721,21 +717,21 @@ void function TryMarvinPowerUp( entity marvin, MarvinData data )
 
 	EndSignal( marvin, "OnDeath" )
 
-	if ( data.marvinState == eMarvinState.POWERING_UP )
-		return
+	//if ( data.marvinState == eMarvinState.POWERING_UP )
+		//return
 
 	data.marvinState = eMarvinState.POWERING_UP
 
 	GradeFlagsClear( marvin, eGradeFlags.IS_OPEN ) // clear the recharging use prompt
 	GradeFlagsSet( marvin, eGradeFlags.IS_BUSY ) // busy use prompt
 
-	if ( data.hasDetachableArm )
+	/*if ( data.hasDetachableArm )
 	{
 		int particleIdx  = GetParticleSystemIndex( VFX_LOT_MARVIN_SPARK_ARM )
 		int vfxAttachIdx = marvin.LookupAttachment( "FX_L_FOREARM" )
 		data.armSparkFx = StartParticleEffectOnEntity_ReturnEntity( marvin, particleIdx, FX_PATTACH_POINT_FOLLOW, vfxAttachIdx )
 		EmitSoundOnEntity( marvin, SFX_MARVIN_SPARKS )
-	}
+	}*/
 
 	waitthread PlayAnimLootMarvin( marvin, data.startPoint, ANIM_LOOT_MARVIN_POWERUP )
 
@@ -832,7 +828,7 @@ void function TryPowerDownMarvin( entity marvin, MarvinData data, bool shouldCoo
 void function InstanceMarvinCooldownCreatedWP( entity wp )
 {
 	entity marvin = wp.GetWaypointEntity( 0 )
-	//marvin.ai.secondaryWaypoint = wp
+	marvin.ai.secondaryWaypoint = wp
 }
 #endif
 
@@ -886,7 +882,7 @@ void function LootAndStoryMarvin_OnKilled( entity marvin, var damageInfo )
 			params.throwVelocityRange[0] = 25.0
 			params.throwVelocityRange[1] = 50.0
 
-			//entity loot = SURVIVAL_ThrowLootFromPointEx( params )
+			entity loot = SURVIVAL_ThrowLootFromPoint( armOrigin, direction, ITEM_MARVIN_ARM_REF, 1 )
 		}
 
 		if ( IsValid( data.trigger ) )
@@ -1159,7 +1155,7 @@ void function LootMarvin_OnDispenseLootAnimEvent( entity marvin )
 	EmitSoundOnEntity( marvin, SFX_LOOT_MARVIN_DISPERSE )
 	thread PlayLootDisperseFx_Thread ( marvin, data.currentEmoticonIdx )
 
-	vector chestOrigin  = marvin.GetAttachmentOrigin( marvin.LookupAttachment( "SCREEN_CENTER" ) )
+	vector chestOrigin  = marvin.GetAttachmentOrigin( marvin.LookupAttachment( "CHESTFOCUS" ) )
 	int lootThrowVecIdx = 0
 	array<vector> lootThrowVectors
 	lootThrowVectors.append( FlattenVec( RotateVector( marvin.GetForwardVector(), <0, -45, 0> ) ) )
@@ -1188,7 +1184,7 @@ void function LootMarvin_OnDispenseLootAnimEvent( entity marvin )
 		params.throwVelocityRange[0] = 25.0
 		params.throwVelocityRange[1] = 150.0
 
-		//entity loot = SURVIVAL_ThrowLootFromPointEx( params )
+		entity loot = SURVIVAL_ThrowLootFromPointEx( params )
 
 		lootThrowVecIdx++
 		if ( lootThrowVecIdx > lootThrowVectors.len() - 1 )
@@ -1207,7 +1203,7 @@ void function PlayLootDisperseFx_Thread ( entity marvin, int currentEmoticonIdx 
 	int vfxAttachIdx   = marvin.LookupAttachment( "SCREEN_CENTER" )
 
 	//Given ( entity, particleSystemIndex, FX_PATTACH_ attachType, attachmentIndex ),
-	entity fxHandle    = StartParticleEffectOnEntity_ReturnEntity( marvin, particleIdx, FX_PATTACH_POINT_FOLLOW, vfxAttachIdx )
+	entity fxHandle    = StartParticleEffectOnEntity_ReturnEntity( marvin, particleIdx, FX_PATTACH_POINT_FOLLOW, marvin.LookupAttachment( "CHESTFOCUS" ) )
 
 	vector rarityColor = GetFXRarityColorForTier( lootRarity )
 	EffectSetControlPointVector( fxHandle, 1, rarityColor )
@@ -1375,15 +1371,15 @@ void function TrackNearestChestScreen( entity player )
 {
 	const float MAYA_SCREEN_WIDTH = 5.686
 	const float MAYA_SCREEN_HEIGHT = 4.512
-	//const asset SCREEN_RUI_ASSET = $"ui/marvin_chest_slot_machine.rpak"
+	const asset SCREEN_RUI_ASSET = $"ui/ready_up_box.rpak"
 
 	EndSignal( player, "OnDeath" )
 
 	if ( file.chestScreenTopo == null )
 		file.chestScreenTopo = CreateRUITopology_Worldspace( <0, 0, 0>, <0, 0, 0>, MAYA_SCREEN_WIDTH, MAYA_SCREEN_HEIGHT )
 
-	//if ( file.chestScreenRui == null )
-		//file.chestScreenRui = RuiCreate( SCREEN_RUI_ASSET, file.chestScreenTopo, RUI_DRAW_WORLD, 0 )
+	if ( file.chestScreenRui == null )
+		file.chestScreenRui = RuiCreate( SCREEN_RUI_ASSET, file.chestScreenTopo, RUI_DRAW_WORLD, 0 )
 
 	float cycleLength = GetCurrentPlaylistVarFloat( "marvin_slot_cycle_length", SLOT_MACHINE_CYCLE_LENGTH )
 	//RuiSetFloat( file.chestScreenRui, "cycleLength", cycleLength )
@@ -1436,7 +1432,7 @@ void function TrackNearestCooldownIndicator( entity player )
 
 	/*if ( file.cooldownRui == null )
 	{
-		file.cooldownRui = CreateCockpitRui( $"ui/wattson_ult_cooldown_timer_world.rpak", 1 )
+		file.cooldownRui = CreateCockpitRui( $"ui/death_protection_status.rpak", 1 )
 		RuiSetFloat3( file.cooldownRui, "worldPosOffset", <0, 0, 0> )
 		RuiSetBool( file.cooldownRui, "shouldDesaturate", true )
 	}
@@ -1446,13 +1442,13 @@ void function TrackNearestCooldownIndicator( entity player )
 		{
 			RuiSetBool( file.cooldownRui, "isVisible", false )
 		}
-	)*/
+	)
 
 	while( true )
 	{
-		//if ( IsValid( file.topPriorityLootMarvin ) && IsValid( file.topPriorityLootMarvin.ai.secondaryWaypoint ) )
+		if ( IsValid( file.topPriorityLootMarvin ) && IsValid( file.topPriorityLootMarvin.ai.secondaryWaypoint ) )
 		{
-			/*entity wp = file.topPriorityLootMarvin.ai.secondaryWaypoint
+			entity wp = file.topPriorityLootMarvin.ai.secondaryWaypoint
 			RuiTrackFloat3( file.cooldownRui, "worldPos", wp, RUI_TRACK_ABSORIGIN_FOLLOW )
 			RuiSetGameTime( file.cooldownRui, "startTime", wp.GetWaypointGametime( 0 ) )
 			RuiSetGameTime( file.cooldownRui, "endTime", wp.GetWaypointGametime( 1 ) )
@@ -1472,15 +1468,15 @@ void function TrackNearestCooldownIndicator( entity player )
 			else
 			{
 				RuiSetBool( file.cooldownRui, "isVisible", true )
-			}*/
+			}
 		}
-		//else
+		else
 		{
-			//RuiSetBool( file.cooldownRui, "isVisible", false )
+			RuiSetBool( file.cooldownRui, "isVisible", false )
 		}
 
 		WaitFrame()
-	}
+	}*/
 }
 #endif
 

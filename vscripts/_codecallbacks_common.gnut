@@ -1331,7 +1331,7 @@ void function CodeCallback_OnServerAnimEvent( entity ent, string eventName )
 			break
 		                   
 		case "loot_marvin_dispense_loot":
-			//LootMarvin_OnDispenseLootAnimEvent( ent )
+			LootMarvin_OnDispenseLootAnimEvent( ent )
 			break
 
 		case "spawn_prop_in_world":

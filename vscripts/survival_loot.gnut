@@ -42,7 +42,7 @@ global function Survival_SetInventoryEnabled
 global function LootZones_GetRefForOrigin
 global function CodeCallback_WeaponDropped
 global function CodeCallback_WeaponLoadoutPickup
-
+global function SURVIVAL_ThrowLootFromPointEx
 global function CreateLootForFlyerDeathBox
 global function SURVIVAL_AutoEquipOrdnanceFromInventory
 global function SURVIVAL_EquipOrdnanceFromInventory
@@ -2109,6 +2109,7 @@ void function SURVIVAL_ThrowLootFromPlayer( entity player, string ref, int count
 	// The inventoryDrop callback doesn't cover this - let's do that ourselves.
 	// LiveAPI_SendInventoryAction( eLiveAPI_EventTypes.inventoryDrop, player, ref, null, count )
 }
+
 
 entity function SURVIVAL_ThrowLootFromPointEx( ThrowLootParams params )
 {
