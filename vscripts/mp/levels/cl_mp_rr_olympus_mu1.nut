@@ -9,7 +9,7 @@ void function ClientCodeCallback_MapInit()
 
 void function MinimapLabelsCloudcity()
 {
-		MapZones_RegisterDataTable( $"datatable/map_zones/zones_mp_rr_olympus.rpak" )
+		MapZones_RegisterDataTable( $"datatable/map_zones/zones_mp_rr_olympus_mu1.rpak" )
 
 		SURVIVAL_AddMinimapLevelLabel( GetZoneMiniMapNameForZoneId( MapZones_GetZoneIdForTriggerName( "Z_12_A" ) ), 0.51, 0.85, 0.6 ) //Downtown
 		SURVIVAL_AddMinimapLevelLabel( GetZoneMiniMapNameForZoneId( MapZones_GetZoneIdForTriggerName( "Z_15_A" ) ), 0.80, 0.72, 0.6 ) //RND
