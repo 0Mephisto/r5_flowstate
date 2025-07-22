@@ -58,6 +58,14 @@ void function Olympus_OnEntitiesDidLoad()
 	array<entity> props
 	entity first = Entities_FindByClassname( null, "prop_dynamic" )
 
+	array<entity> vault = GetEntArrayByScriptName( "ship_vault_corpse" )
+	foreach( entity key in vault )
+	file.vaultKeys.append( key )
+
+	SpawnWeaponsonRacks()
+	if (MapName() == eMaps.mp_rr_olympus_mu1 )
+		SetupKeyForShipVault()
+
 	while( IsValid( first ) )
 	{
 		props.append( first )
@@ -71,30 +79,16 @@ void function Olympus_OnEntitiesDidLoad()
 			file.adScreenEnt = ent
 			printt( "Saved AD screen ent" )
 		}
-		else if( ent.GetScriptName() == "path_tt_jumbo_screen_ko" )
+		if( ent.GetScriptName() == "path_tt_jumbo_screen_ko" )
 		{
 			file.koScreenEnt = ent
 			printt( "Saved KO screen ent" )
-		} else if( ent.GetScriptName() == "ship_vault_corpse" )
-		{
-			file.vaultKeys.append( ent )
 		}
-
-		if( ent.GetTargetName() == "vehicle_platform" )
-		{
-			//printt( "Removed vehicle platform" )
-			//ent.Destroy()
-		}
-		
 		if( ent.GetModelName() == $"mdl/industrial/gun_rack_arm_down.rmdl" )
 		{
 			file.racks.append( ent )
 		}
 	}
-
-	SpawnWeaponsonRacks()
-	if (MapName() == eMaps.mp_rr_olympus_mu1 )
-		SetupKeyForShipVault()
 
 	PrecacheModel( $"mdl/fx/oly_sphere_edges.rmdl" )		
 	PrecacheModel( $"mdl/fx/oly_sphere_inner_LG.rmdl" )		
@@ -133,13 +127,6 @@ void function SpawnWeaponsonRacks()
 void function SetupKeyForShipVault()
 {
 	entity chosenKey = file.vaultKeys.getrandom()
-	foreach( key in file.vaultKeys )
-	{
-		if( key == chosenKey )
-			continue
-		
-		key.Destroy()
-	}
 	
 	SpawnGenericLoot( "data_knife", chosenKey.GetOrigin(), chosenKey.GetAngles(), 1 )
 	printt( "Spawned key for Ship Bridge Vault at ", chosenKey.GetOrigin() )
