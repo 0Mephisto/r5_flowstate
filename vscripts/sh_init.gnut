@@ -65,15 +65,6 @@ void function SV_CL_Init()
 	
 	//(cafe) Proper order of loading remote functions, mods, and gamemodes
 	RemoteFunctions_Init_Begin()
-
-	//Loot has to be registered before mod callbacks init so we can register custom loot from mods using RegisterModWeapon, RegisterModHopup, etc...
-	SURVIVAL_Loot_All_InitShared()
-	SURVIVAL_Loot_InitShared()
-	SURVIVAL_LootActions_InitShared()
-	SURVIVAL_LootTypes_InitShared()
-	SURVIVAL_EquipmentSlot_InitShared()
-	SURVIVAL_LootDistribution_InitShared()
-	
 	ModSystem_RunCallbacks()// MOD SYSTEM CALLBACKS, has to run as soon as remote functions start registering
 	GameMode_VerifyModes() // Has to run after mod system callbacks
 	Settings_Init() // Should run after gamemodes are verified
@@ -182,6 +173,12 @@ void function SV_CL_Init()
 	//ShGruntChatter_MP_Init()
 	//ShSpectreChatter_MP_Init()
 
+	SURVIVAL_Loot_All_InitShared()
+	SURVIVAL_Loot_InitShared()
+	SURVIVAL_LootActions_InitShared()
+	SURVIVAL_LootTypes_InitShared()
+	SURVIVAL_EquipmentSlot_InitShared()
+    SURVIVAL_LootDistribution_InitShared()
 	ShSurvivalTraining_Init()
 	FiringRangeGameMode_Init()
 	ShGas_Init()

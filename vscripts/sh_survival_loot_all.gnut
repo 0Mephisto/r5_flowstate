@@ -55,6 +55,8 @@ global function IsModItemExcludedFromGroundLoot
 global function SURVIVAL_Loot_IsAmmoSpawningDisabled
 #endif
 
+global function AddCallback_OnLootDatatablesLoaded
+
 global enum eLootTier
 {
 	NONE
@@ -250,7 +252,8 @@ struct
 	#if CLIENT || UI
 	array<string functionref( string, entity , string)> editLootDescCallbacks
 	#endif
-
+	array<void functionref( )> lootDatatablesLoadedCallbacks
+	
 	#if(UI)
 		bool                                                      overrideDeathBoxRUI_Initialized = false
 		table<string, OverrideDeathBoxRUI_NetworkOptimizedStruct> overrideDeathBoxRUIProfilesTable
@@ -259,6 +262,11 @@ struct
 	
 	bool ENABLE_DEFINED_SETS
 	array<string> modItemsExcludedFromGroundLoot
+	
+	array<CustomWeaponData> CustomModWeapons
+	array<CustomHopupData> CustomModHopups
+	array<CustomGrenadeData> CustomModGrenades
+	array<CustomGrenadeData> CustomModConsumables
 } file
 
 
@@ -322,15 +330,12 @@ void function SURVIVAL_Loot_All_InitShared()
 	else
 	{
 		SURVIVAL_Loot_RegFromDataTable( GetDataTable( $"datatable/survival_loot_sdk.rpak" ) )
-		//SURVIVAL_Loot_RegFromDataTable( GetDataTable( $"datatable/titanfall_loot_sdk.rpak" ) )
 		
-		if (IsFlowstateActive())
-			SURVIVAL_Loot_RegFromDataTable( GetDataTable( $"datatable/flowstate_all_new.rpak" ) )
+		foreach ( callbackFunc in file.lootDatatablesLoadedCallbacks ) //To load loot datatables from mods
+			callbackFunc()
 		
-		if( Gamemode() == eGamemodes.fs_snd )
-			SURVIVAL_Loot_RegFromDataTable( GetDataTable( $"datatable/flowstate_all_new_snd.rpak" ) )
-		
-		RegisterCustomWeapons()
+		RegisterCustomWeapons() //JANU's Framework - Load custom items from playlist.
+		RegisterCustomModItems() //Items added from Mods. Similar to JANU's but from Mod Init scripts.
 	}
 
 	#if(UI)
@@ -642,10 +647,7 @@ void function SURVIVAL_Loot_RegFromDataTable(var dt)
 
 
 void function RegisterCustomWeapons()
-{	
-	if( GetCurrentPlaylistVarBool( "custom_loot", false ) )
-		return
-
+{
 	array<string> customWeaponClassNames = split(GetCurrentPlaylistVarString("custom_weapon_list", ""), " ")
 	
 	#if DEVELOPER //(mk): added for confirmation, added hudIcon, added name, added registering damagedef	
@@ -856,6 +858,21 @@ void function RegisterCustomConsumable(CustomGrenadeData grenadeData)
 	#endif
 }
 
+void function RegisterCustomModItems()
+{
+	foreach( weapon in file.CustomModWeapons )
+		RegisterWeapon( weapon )
+		
+	foreach( hopup in file.CustomModHopups )
+		CreateCustomHopup( hopup )
+	
+	foreach( grenade in file.CustomModGrenades )
+		RegisterCustomGrenade( grenade )
+	
+	foreach( consumable in file.CustomModConsumables )
+		RegisterCustomConsumable( consumable )	
+}
+
 //Mod registration utility functions for mods to use without playlist dependencies
 void function RegisterModWeapon(CustomWeaponData weaponData, bool enableGroundLoot = true)
 {
@@ -892,8 +909,7 @@ void function RegisterModWeapon(CustomWeaponData weaponData, bool enableGroundLo
 	if(!enableGroundLoot)
 		AddItemToGroundLootExclusion(weaponData.className)
 	
-	//Call existing registration function
-	RegisterWeapon(weaponData)
+	file.CustomModWeapons.append( weaponData )
 }
 
 void function RegisterModHopup(CustomHopupData hopupData, bool enableGroundLoot = true)
@@ -925,8 +941,7 @@ void function RegisterModHopup(CustomHopupData hopupData, bool enableGroundLoot 
 	if(!enableGroundLoot)
 		AddItemToGroundLootExclusion(hopupData.className)
 	
-	//Call existing registration function
-	CreateCustomHopup(hopupData)
+	file.CustomModHopups.append( hopupData )
 }
 
 void function RegisterModGrenade(CustomGrenadeData grenadeData, bool enableGroundLoot = true)
@@ -956,8 +971,7 @@ void function RegisterModGrenade(CustomGrenadeData grenadeData, bool enableGroun
 	if(!enableGroundLoot)
 		AddItemToGroundLootExclusion(grenadeData.className)
 	
-	//Call existing registration function
-	RegisterCustomGrenade(grenadeData)
+	file.CustomModGrenades.append( grenadeData )
 }
 
 void function RegisterModConsumable(CustomGrenadeData consumableData, bool enableGroundLoot = true)
@@ -987,8 +1001,7 @@ void function RegisterModConsumable(CustomGrenadeData consumableData, bool enabl
 	if(!enableGroundLoot)
 		AddItemToGroundLootExclusion(consumableData.className)
 	
-	//Call existing registration function
-	RegisterCustomConsumable(consumableData)
+	file.CustomModConsumables.append( consumableData )
 }
 
 //Ground loot control functions
@@ -1635,6 +1648,16 @@ void function SURVIVAL_UI_OnLevelInit()
 	thread SURVIVAL_UI_GatherFriendInfo()
 }
 #endif
+
+void function AddCallback_OnLootDatatablesLoaded( void functionref() callback )
+{
+	Assert( !file.lootDatatablesLoadedCallbacks.contains( callback ), "Tried to add a callback that was already added" )
+
+	if( file.lootDatatablesLoadedCallbacks.contains( callback ) )
+		return
+	
+	file.lootDatatablesLoadedCallbacks.append( callback )
+}
 
 #if CLIENT || UI
 void function AddCallback_EditLootDesc( string functionref( string, entity, string ) callback )
