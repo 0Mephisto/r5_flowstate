@@ -561,9 +561,10 @@ void function UICodeCallback_FullyConnected( string levelname )
 	ShEHI_LevelInit_End()
 
 	//InitItems()
+	
+	SURVIVAL_Loot_All_InitShared()//Loot has to be registered before mod callbacks init so we can register custom loot from mods using RegisterModWeapon, RegisterModHopup, etc...
 	ModSystem_RunCallbacks()//MOD SYSTEM CALLBACK
 	
-	SURVIVAL_Loot_All_InitShared()
 	//ShWeaponXP_Init()
 	//ShFactionXP_Init()
 
