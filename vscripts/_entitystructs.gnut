@@ -998,8 +998,8 @@ global struct ServerPlayerStruct
 	bool touchingTopTrigger = false
 	bool ForceEject = false
 
-	string weapon = "mp_weapon_wingman"
-	array<string> mods = ["optic_cq_hcog_classic"]
+	string weapon = "mp_weapon_lightninggun_nomodel" //"mp_weapon_wingman"
+	array<string> mods = []//["optic_cq_hcog_classic"]
 	string weapon2 = ""
 	array<string> mods2 = []
 	int weaponSkin = -1
