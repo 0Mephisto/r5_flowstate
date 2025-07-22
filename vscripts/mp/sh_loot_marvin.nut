@@ -462,7 +462,7 @@ void function CreateMarvin( vector origin, vector angles, entity lootMarvinParen
 		DispatchSpawn( trigger )
 		trigger.SetEnterCallback( CreateOnEnterLootMarvinTriggerFunc( marvin, data ) )
 		trigger.SetLeaveCallback( CreateOnLeaveLootMarvinTriggerFunc( marvin, data ) )
-		DebugDrawCylinder( trigger.GetOrigin() , < -90, 0, 0 >, LOOT_MARVIN_TRIGGER_RADIUS, trigger.GetAboveHeight(), 0, 165, 255, true, 9999.9 )
+		//DebugDrawCylinder( trigger.GetOrigin() , < -90, 0, 0 >, LOOT_MARVIN_TRIGGER_RADIUS, trigger.GetAboveHeight(), 0, 165, 255, true, 9999.9 )
 	}
 }
 #endif //SERVER
