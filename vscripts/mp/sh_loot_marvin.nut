@@ -598,11 +598,9 @@ bool function IsPlayerPathfinder( entity player )
 #if SERVER
 void functionref( entity trigger, entity ent ) function CreateOnEnterLootMarvinTriggerFunc( entity marvin, MarvinData data )
 {
-	printl("e")
 	return void function( entity trigger, entity ent ) : ( marvin, data )
 	{
 		OnEnterLootMarvinTrigger( trigger, ent, marvin, data )
-		printl("e")
 	}
 }
 #endif //SERVER
