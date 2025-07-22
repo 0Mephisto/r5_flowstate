@@ -1,15 +1,9 @@
 global function ClientCodeCallback_MapInit
 
-struct
-{
-
-}
-file
 
 void function ClientCodeCallback_MapInit()
 {
 	MinimapLabelsCloudcity()
-	PathTT_Init()
 	Olympus_MapInit_Common()
 }
 

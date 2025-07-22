@@ -90,12 +90,9 @@ void function Olympus_OnEntitiesDidLoad()
 		}
 	}
 
-	if( Gamemode() == eGamemodes.SURVIVAL )
-	{
-		SpawnWeaponsonRacks()
-		//if (MapName() == eMaps.mp_rr_olympus_mu1 )
-			//SetupKeyForShipVault()
-	}
+	SpawnWeaponsonRacks()
+	if (MapName() == eMaps.mp_rr_olympus_mu1 )
+		SetupKeyForShipVault()
 
 	PrecacheModel( $"mdl/fx/oly_sphere_edges.rmdl" )		
 	PrecacheModel( $"mdl/fx/oly_sphere_inner_LG.rmdl" )		

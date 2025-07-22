@@ -12,7 +12,7 @@ void function MinimapLabelsOlympus()
 {
 	if (MapName() == eMaps.mp_rr_olympus )
 		MapZones_RegisterDataTable( $"datatable/map_zones/zones_mp_rr_olympus.rpak" )
-	else
+	else if (MapName() == eMaps.mp_rr_olympus_tt )
 		MapZones_RegisterDataTable( $"datatable/map_zones/zones_mp_rr_olympus_tt.rpak" )
 
 

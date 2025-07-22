@@ -84,6 +84,7 @@ global enum eMaps
 	mp_rr_arena_empty, //25
 	mp_rr_salham, //26
 	mp_lobby, //27
+	mp_rr_olympus_mu1,
 	mp_rr_eden,
 	
 	
