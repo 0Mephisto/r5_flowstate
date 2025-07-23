@@ -1292,7 +1292,7 @@ void function UI_OnCharacterSelectMenu_NavBack()
 		CloseAllMenus()
 		RunClientScript("CloseCharacterSelectNewMenu_AimTrainer" )
 		
-		if( uiGlobal.isAimTrainer )
+		if( ISAIMTRAINER )
 		{
 			RunClientScript("ServerCallback_OpenFRChallengesSettings")
 			RunClientScript("ServerCallback_CoolCameraOnMenu")
