@@ -3216,8 +3216,8 @@ void function UpdatePlayerAnim( ItemFlavor character, int currentMenuState )
 				fileLevel.backgroundRuiTopo = null
 			}
 
-			var nameRuiTopo = CreateRUITopology_Worldspace( fileLevel.camera.GetOrigin() + (fileLevel.camera.GetForwardVector() * 200) + (fileLevel.camera.GetRightVector() * 15) + (fileLevel.camera.GetUpVector() * 15 ), fileLevel.camera.GetAngles(), RUI_NAME_PLATE_WIDTH, RUI_NAME_PLATE_HEIGHT )
-			fileLevel.backgroundRui = RuiCreate( $"ui/character_select_name_plate_new.rpak", nameRuiTopo, RUI_DRAW_WORLD, 0 )
+			fileLevel.backgroundRuiTopo = CreateRUITopology_Worldspace( fileLevel.camera.GetOrigin() + (fileLevel.camera.GetForwardVector() * 200) + (fileLevel.camera.GetRightVector() * 15) + (fileLevel.camera.GetUpVector() * 15 ), fileLevel.camera.GetAngles(), RUI_NAME_PLATE_WIDTH, RUI_NAME_PLATE_HEIGHT )
+			fileLevel.backgroundRui = RuiCreate( $"ui/character_select_name_plate_new.rpak", fileLevel.backgroundRuiTopo, RUI_DRAW_WORLD, 0 )
 			
 			RuiSetString( fileLevel.backgroundRui, "nameString", Localize( ItemFlavor_GetLongName( character ) ) )
 			RuiSetString( fileLevel.backgroundRui, "footnoteString", Localize( CharacterClass_GetCharacterSelectSubtitle( character ) ) )
@@ -3248,8 +3248,8 @@ void function UpdatePlayerAnim( ItemFlavor character, int currentMenuState )
 				fileLevel.backgroundRuiTopo = null
 			}
 
-			var nameRuiTopo = CreateRUITopology_Worldspace( fileLevel.camera.GetOrigin() + (fileLevel.camera.GetForwardVector() * 200) + (fileLevel.camera.GetRightVector() * 10) + (fileLevel.camera.GetUpVector() * 15 ), fileLevel.camera.GetAngles(), RUI_NAME_PLATE_WIDTH, RUI_NAME_PLATE_HEIGHT )
-			fileLevel.backgroundRui = RuiCreate( $"ui/character_select_name_plate_new.rpak", nameRuiTopo, RUI_DRAW_WORLD, 0 )
+			fileLevel.backgroundRuiTopo = CreateRUITopology_Worldspace( fileLevel.camera.GetOrigin() + (fileLevel.camera.GetForwardVector() * 200) + (fileLevel.camera.GetRightVector() * 10) + (fileLevel.camera.GetUpVector() * 15 ), fileLevel.camera.GetAngles(), RUI_NAME_PLATE_WIDTH, RUI_NAME_PLATE_HEIGHT )
+			fileLevel.backgroundRui = RuiCreate( $"ui/character_select_name_plate_new.rpak", fileLevel.backgroundRuiTopo, RUI_DRAW_WORLD, 0 )
 			
 			RuiSetString( fileLevel.backgroundRui, "nameString", Localize( ItemFlavor_GetLongName( character ) ) )
 			RuiSetString( fileLevel.backgroundRui, "footnoteString", Localize( CharacterClass_GetCharacterSelectSubtitle( character ) ) )
