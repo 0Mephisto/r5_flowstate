@@ -31,6 +31,8 @@ scripts/resource/ui/menus/dev.menu
 
 		MenuTitle
 		{
+			xpos					40
+			ypos					20
 			ControlName				Label
 			InheritProperties		MenuTitle
 			labelText				"Dev"
@@ -38,25 +40,28 @@ scripts/resource/ui/menus/dev.menu
 
 		ImgTopBar
 		{
+			xpos					0
+			ypos					90
 			ControlName				ImagePanel
 			InheritProperties		MenuTopBar
 		}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+		// Column 0 (Buttons 0-19)
 		BtnDev0
 		{
 			ControlName				RuiButton
 			InheritProperties		RuiSmallButton
 			classname				DevButtonClass
 			scriptID				0
-			xpos					96
-			ypos					177
+			xpos					30
+			ypos					127
 			tabPosition				1
-			navUp					BtnDev14
+			navUp					BtnDev19
 			navDown					BtnDev1
-			navRight				BtnDev15
-			navLeft					BtnDev31
+			navRight				BtnDev20
+			navLeft					BtnDev60
 		}
 		BtnDev1
 		{
@@ -69,8 +74,8 @@ scripts/resource/ui/menus/dev.menu
 			pin_to_sibling_corner	BOTTOM_LEFT
 			navUp					BtnDev0
 			navDown					BtnDev2
-			navRight				BtnDev16
-			navLeft					BtnDev32
+			navRight				BtnDev21
+			navLeft					BtnDev61
 		}
 		BtnDev2
 		{
@@ -83,8 +88,8 @@ scripts/resource/ui/menus/dev.menu
 			pin_to_sibling_corner	BOTTOM_LEFT
 			navUp					BtnDev1
 			navDown					BtnDev3
-			navRight				BtnDev17
-			navLeft					BtnDev33
+			navRight				BtnDev22
+			navLeft					BtnDev62
 		}
 		BtnDev3
 		{
@@ -97,8 +102,8 @@ scripts/resource/ui/menus/dev.menu
 			pin_to_sibling_corner	BOTTOM_LEFT
 			navUp					BtnDev2
 			navDown					BtnDev4
-			navRight				BtnDev18
-			navLeft					BtnDev34
+			navRight				BtnDev23
+			navLeft					BtnDev63
 		}
 		BtnDev4
 		{
@@ -111,8 +116,8 @@ scripts/resource/ui/menus/dev.menu
 			pin_to_sibling_corner	BOTTOM_LEFT
 			navUp					BtnDev3
 			navDown					BtnDev5
-			navRight				BtnDev19
-			navLeft					BtnDev35
+			navRight				BtnDev24
+			navLeft					BtnDev64
 		}
 		BtnDev5
 		{
@@ -125,8 +130,8 @@ scripts/resource/ui/menus/dev.menu
 			pin_to_sibling_corner	BOTTOM_LEFT
 			navUp					BtnDev4
 			navDown					BtnDev6
-			navRight				BtnDev20
-			navLeft					BtnDev36
+			navRight				BtnDev25
+			navLeft					BtnDev65
 		}
 		BtnDev6
 		{
@@ -139,8 +144,8 @@ scripts/resource/ui/menus/dev.menu
 			pin_to_sibling_corner	BOTTOM_LEFT
 			navUp					BtnDev5
 			navDown					BtnDev7
-			navRight				BtnDev21
-			navLeft					BtnDev37
+			navRight				BtnDev26
+			navLeft					BtnDev66
 		}
 		BtnDev7
 		{
@@ -153,8 +158,8 @@ scripts/resource/ui/menus/dev.menu
 			pin_to_sibling_corner	BOTTOM_LEFT
 			navUp					BtnDev6
 			navDown					BtnDev8
-			navRight				BtnDev22
-			navLeft					BtnDev38
+			navRight				BtnDev27
+			navLeft					BtnDev67
 		}
 		BtnDev8
 		{
@@ -167,8 +172,8 @@ scripts/resource/ui/menus/dev.menu
 			pin_to_sibling_corner	BOTTOM_LEFT
 			navUp					BtnDev7
 			navDown					BtnDev9
-			navRight				BtnDev23
-			navLeft					BtnDev39
+			navRight				BtnDev28
+			navLeft					BtnDev68
 		}
 		BtnDev9
 		{
@@ -181,8 +186,8 @@ scripts/resource/ui/menus/dev.menu
 			pin_to_sibling_corner	BOTTOM_LEFT
 			navUp					BtnDev8
 			navDown					BtnDev10
-			navRight				BtnDev24
-			navLeft					BtnDev40
+			navRight				BtnDev29
+			navLeft					BtnDev69
 		}
 		BtnDev10
 		{
@@ -195,8 +200,8 @@ scripts/resource/ui/menus/dev.menu
 			pin_to_sibling_corner	BOTTOM_LEFT
 			navUp					BtnDev9
 			navDown					BtnDev11
-			navRight				BtnDev25
-			navLeft					BtnDev41
+			navRight				BtnDev30
+			navLeft					BtnDev70
 		}
 		BtnDev11
 		{
@@ -209,8 +214,8 @@ scripts/resource/ui/menus/dev.menu
 			pin_to_sibling_corner	BOTTOM_LEFT
 			navUp					BtnDev10
 			navDown					BtnDev12
-			navRight				BtnDev26
-			navLeft					BtnDev42
+			navRight				BtnDev31
+			navLeft					BtnDev71
 		}
 		BtnDev12
 		{
@@ -223,8 +228,8 @@ scripts/resource/ui/menus/dev.menu
 			pin_to_sibling_corner	BOTTOM_LEFT
 			navUp					BtnDev11
 			navDown					BtnDev13
-			navRight				BtnDev27
-			navLeft					BtnDev43
+			navRight				BtnDev32
+			navLeft					BtnDev72
 		}
 		BtnDev13
 		{
@@ -237,8 +242,8 @@ scripts/resource/ui/menus/dev.menu
 			pin_to_sibling_corner	BOTTOM_LEFT
 			navUp					BtnDev12
 			navDown					BtnDev14
-			navRight				BtnDev28
-			navLeft					BtnDev44
+			navRight				BtnDev33
+			navLeft					BtnDev73
 		}
 		BtnDev14
 		{
@@ -250,26 +255,23 @@ scripts/resource/ui/menus/dev.menu
 			pin_corner_to_sibling	TOP_LEFT
 			pin_to_sibling_corner	BOTTOM_LEFT
 			navUp					BtnDev13
-			navDown					BtnDev0
-			navRight				BtnDev29
-			navLeft					BtnDev45
+			navDown					BtnDev15
+			navRight				BtnDev34
+			navLeft					BtnDev74
 		}
-
-//////////////////////////////////////
-
 		BtnDev15
 		{
 			ControlName				RuiButton
 			InheritProperties		RuiSmallButton
 			classname				DevButtonClass
 			scriptID				15
-			pin_to_sibling			BtnDev0
+			pin_to_sibling			BtnDev14
 			pin_corner_to_sibling	TOP_LEFT
-			pin_to_sibling_corner	TOP_RIGHT
-			navUp					BtnDev30
+			pin_to_sibling_corner	BOTTOM_LEFT
+			navUp					BtnDev14
 			navDown					BtnDev16
-			navRight				BtnDev31
-			navLeft					BtnDev0
+			navRight				BtnDev35
+			navLeft					BtnDev75
 		}
 		BtnDev16
 		{
@@ -282,8 +284,8 @@ scripts/resource/ui/menus/dev.menu
 			pin_to_sibling_corner	BOTTOM_LEFT
 			navUp					BtnDev15
 			navDown					BtnDev17
-			navRight				BtnDev32
-			navLeft					BtnDev1
+			navRight				BtnDev36
+			navLeft					BtnDev76
 		}
 		BtnDev17
 		{
@@ -296,8 +298,8 @@ scripts/resource/ui/menus/dev.menu
 			pin_to_sibling_corner	BOTTOM_LEFT
 			navUp					BtnDev16
 			navDown					BtnDev18
-			navRight				BtnDev33
-			navLeft					BtnDev2
+			navRight				BtnDev37
+			navLeft					BtnDev77
 		}
 		BtnDev18
 		{
@@ -310,8 +312,8 @@ scripts/resource/ui/menus/dev.menu
 			pin_to_sibling_corner	BOTTOM_LEFT
 			navUp					BtnDev17
 			navDown					BtnDev19
-			navRight				BtnDev34
-			navLeft					BtnDev3
+			navRight				BtnDev38
+			navLeft					BtnDev78
 		}
 		BtnDev19
 		{
@@ -323,23 +325,25 @@ scripts/resource/ui/menus/dev.menu
 			pin_corner_to_sibling	TOP_LEFT
 			pin_to_sibling_corner	BOTTOM_LEFT
 			navUp					BtnDev18
-			navDown					BtnDev20
-			navRight				BtnDev35
-			navLeft					BtnDev4
+			navDown					BtnDev0
+			navRight				BtnDev39
+			navLeft					BtnDev79
 		}
+
+		// Column 1 (Buttons 20-39)
 		BtnDev20
 		{
 			ControlName				RuiButton
 			InheritProperties		RuiSmallButton
 			classname				DevButtonClass
 			scriptID				20
-			pin_to_sibling			BtnDev19
+			pin_to_sibling			BtnDev0
 			pin_corner_to_sibling	TOP_LEFT
-			pin_to_sibling_corner	BOTTOM_LEFT
-			navUp					BtnDev19
+			pin_to_sibling_corner	TOP_RIGHT
+			navUp					BtnDev39
 			navDown					BtnDev21
-			navRight				BtnDev36
-			navLeft					BtnDev5
+			navRight				BtnDev40
+			navLeft					BtnDev0
 		}
 		BtnDev21
 		{
@@ -352,8 +356,8 @@ scripts/resource/ui/menus/dev.menu
 			pin_to_sibling_corner	BOTTOM_LEFT
 			navUp					BtnDev20
 			navDown					BtnDev22
-			navRight				BtnDev37
-			navLeft					BtnDev6
+			navRight				BtnDev41
+			navLeft					BtnDev1
 		}
 		BtnDev22
 		{
@@ -366,8 +370,8 @@ scripts/resource/ui/menus/dev.menu
 			pin_to_sibling_corner	BOTTOM_LEFT
 			navUp					BtnDev21
 			navDown					BtnDev23
-			navRight				BtnDev38
-			navLeft					BtnDev7
+			navRight				BtnDev42
+			navLeft					BtnDev2
 		}
 		BtnDev23
 		{
@@ -380,8 +384,8 @@ scripts/resource/ui/menus/dev.menu
 			pin_to_sibling_corner	BOTTOM_LEFT
 			navUp					BtnDev22
 			navDown					BtnDev24
-			navRight				BtnDev39
-			navLeft					BtnDev8
+			navRight				BtnDev43
+			navLeft					BtnDev3
 		}
 		BtnDev24
 		{
@@ -394,8 +398,8 @@ scripts/resource/ui/menus/dev.menu
 			pin_to_sibling_corner	BOTTOM_LEFT
 			navUp					BtnDev23
 			navDown					BtnDev25
-			navRight				BtnDev40
-			navLeft					BtnDev9
+			navRight				BtnDev44
+			navLeft					BtnDev4
 		}
 		BtnDev25
 		{
@@ -408,8 +412,8 @@ scripts/resource/ui/menus/dev.menu
 			pin_to_sibling_corner	BOTTOM_LEFT
 			navUp					BtnDev24
 			navDown					BtnDev26
-			navRight				BtnDev41
-			navLeft					BtnDev10
+			navRight				BtnDev45
+			navLeft					BtnDev5
 		}
 		BtnDev26
 		{
@@ -422,8 +426,8 @@ scripts/resource/ui/menus/dev.menu
 			pin_to_sibling_corner	BOTTOM_LEFT
 			navUp					BtnDev25
 			navDown					BtnDev27
-			navRight				BtnDev42
-			navLeft					BtnDev11
+			navRight				BtnDev46
+			navLeft					BtnDev6
 		}
 		BtnDev27
 		{
@@ -436,8 +440,8 @@ scripts/resource/ui/menus/dev.menu
 			pin_to_sibling_corner	BOTTOM_LEFT
 			navUp					BtnDev26
 			navDown					BtnDev28
-			navRight				BtnDev43
-			navLeft					BtnDev12
+			navRight				BtnDev47
+			navLeft					BtnDev7
 		}
 		BtnDev28
 		{
@@ -450,8 +454,8 @@ scripts/resource/ui/menus/dev.menu
 			pin_to_sibling_corner	BOTTOM_LEFT
 			navUp					BtnDev27
 			navDown					BtnDev29
-			navRight				BtnDev44
-			navLeft					BtnDev13
+			navRight				BtnDev48
+			navLeft					BtnDev8
 		}
 		BtnDev29
 		{
@@ -464,8 +468,8 @@ scripts/resource/ui/menus/dev.menu
 			pin_to_sibling_corner	BOTTOM_LEFT
 			navUp					BtnDev28
 			navDown					BtnDev30
-			navRight				BtnDev45
-			navLeft					BtnDev14
+			navRight				BtnDev49
+			navLeft					BtnDev9
 		}
 		BtnDev30
 		{
@@ -477,26 +481,23 @@ scripts/resource/ui/menus/dev.menu
 			pin_corner_to_sibling	TOP_LEFT
 			pin_to_sibling_corner	BOTTOM_LEFT
 			navUp					BtnDev29
-			navDown					BtnDev15
-			navRight				BtnDev46
-			navLeft					BtnDev14
+			navDown					BtnDev31
+			navRight				BtnDev50
+			navLeft					BtnDev10
 		}
-
-//////////////////////////////////////
-
 		BtnDev31
 		{
 			ControlName				RuiButton
 			InheritProperties		RuiSmallButton
 			classname				DevButtonClass
 			scriptID				31
-			pin_to_sibling			BtnDev15
+			pin_to_sibling			BtnDev30
 			pin_corner_to_sibling	TOP_LEFT
-			pin_to_sibling_corner	TOP_RIGHT
-			navUp					BtnDev46
+			pin_to_sibling_corner	BOTTOM_LEFT
+			navUp					BtnDev30
 			navDown					BtnDev32
-			navRight				BtnDev0
-			navLeft					BtnDev15
+			navRight				BtnDev51
+			navLeft					BtnDev11
 		}
 		BtnDev32
 		{
@@ -509,8 +510,8 @@ scripts/resource/ui/menus/dev.menu
 			pin_to_sibling_corner	BOTTOM_LEFT
 			navUp					BtnDev31
 			navDown					BtnDev33
-			navRight				BtnDev1
-			navLeft					BtnDev16
+			navRight				BtnDev52
+			navLeft					BtnDev12
 		}
 		BtnDev33
 		{
@@ -523,8 +524,8 @@ scripts/resource/ui/menus/dev.menu
 			pin_to_sibling_corner	BOTTOM_LEFT
 			navUp					BtnDev32
 			navDown					BtnDev34
-			navRight				BtnDev2
-			navLeft					BtnDev17
+			navRight				BtnDev53
+			navLeft					BtnDev13
 		}
 		BtnDev34
 		{
@@ -537,8 +538,8 @@ scripts/resource/ui/menus/dev.menu
 			pin_to_sibling_corner	BOTTOM_LEFT
 			navUp					BtnDev33
 			navDown					BtnDev35
-			navRight				BtnDev3
-			navLeft					BtnDev18
+			navRight				BtnDev54
+			navLeft					BtnDev14
 		}
 		BtnDev35
 		{
@@ -551,8 +552,8 @@ scripts/resource/ui/menus/dev.menu
 			pin_to_sibling_corner	BOTTOM_LEFT
 			navUp					BtnDev34
 			navDown					BtnDev36
-			navRight				BtnDev4
-			navLeft					BtnDev19
+			navRight				BtnDev55
+			navLeft					BtnDev15
 		}
 		BtnDev36
 		{
@@ -565,8 +566,8 @@ scripts/resource/ui/menus/dev.menu
 			pin_to_sibling_corner	BOTTOM_LEFT
 			navUp					BtnDev35
 			navDown					BtnDev37
-			navRight				BtnDev5
-			navLeft					BtnDev20
+			navRight				BtnDev56
+			navLeft					BtnDev16
 		}
 		BtnDev37
 		{
@@ -579,8 +580,8 @@ scripts/resource/ui/menus/dev.menu
 			pin_to_sibling_corner	BOTTOM_LEFT
 			navUp					BtnDev36
 			navDown					BtnDev38
-			navRight				BtnDev6
-			navLeft					BtnDev21
+			navRight				BtnDev57
+			navLeft					BtnDev17
 		}
 		BtnDev38
 		{
@@ -593,8 +594,8 @@ scripts/resource/ui/menus/dev.menu
 			pin_to_sibling_corner	BOTTOM_LEFT
 			navUp					BtnDev37
 			navDown					BtnDev39
-			navRight				BtnDev7
-			navLeft					BtnDev22
+			navRight				BtnDev58
+			navLeft					BtnDev18
 		}
 		BtnDev39
 		{
@@ -606,23 +607,25 @@ scripts/resource/ui/menus/dev.menu
 			pin_corner_to_sibling	TOP_LEFT
 			pin_to_sibling_corner	BOTTOM_LEFT
 			navUp					BtnDev38
-			navDown					BtnDev40
-			navRight				BtnDev8
-			navLeft					BtnDev23
+			navDown					BtnDev20
+			navRight				BtnDev59
+			navLeft					BtnDev19
 		}
+
+		// Column 2 (Buttons 40-59)
 		BtnDev40
 		{
 			ControlName				RuiButton
 			InheritProperties		RuiSmallButton
 			classname				DevButtonClass
 			scriptID				40
-			pin_to_sibling			BtnDev39
+			pin_to_sibling			BtnDev20
 			pin_corner_to_sibling	TOP_LEFT
-			pin_to_sibling_corner	BOTTOM_LEFT
-			navUp					BtnDev39
+			pin_to_sibling_corner	TOP_RIGHT
+			navUp					BtnDev59
 			navDown					BtnDev41
-			navRight				BtnDev9
-			navLeft					BtnDev24
+			navRight				BtnDev60
+			navLeft					BtnDev20
 		}
 		BtnDev41
 		{
@@ -635,8 +638,8 @@ scripts/resource/ui/menus/dev.menu
 			pin_to_sibling_corner	BOTTOM_LEFT
 			navUp					BtnDev40
 			navDown					BtnDev42
-			navRight				BtnDev10
-			navLeft					BtnDev25
+			navRight				BtnDev61
+			navLeft					BtnDev21
 		}
 		BtnDev42
 		{
@@ -649,8 +652,8 @@ scripts/resource/ui/menus/dev.menu
 			pin_to_sibling_corner	BOTTOM_LEFT
 			navUp					BtnDev41
 			navDown					BtnDev43
-			navRight				BtnDev11
-			navLeft					BtnDev26
+			navRight				BtnDev62
+			navLeft					BtnDev22
 		}
 		BtnDev43
 		{
@@ -663,8 +666,8 @@ scripts/resource/ui/menus/dev.menu
 			pin_to_sibling_corner	BOTTOM_LEFT
 			navUp					BtnDev42
 			navDown					BtnDev44
-			navRight				BtnDev12
-			navLeft					BtnDev27
+			navRight				BtnDev63
+			navLeft					BtnDev23
 		}
 		BtnDev44
 		{
@@ -677,8 +680,8 @@ scripts/resource/ui/menus/dev.menu
 			pin_to_sibling_corner	BOTTOM_LEFT
 			navUp					BtnDev43
 			navDown					BtnDev45
-			navRight				BtnDev13
-			navLeft					BtnDev28
+			navRight				BtnDev64
+			navLeft					BtnDev24
 		}
 		BtnDev45
 		{
@@ -691,8 +694,8 @@ scripts/resource/ui/menus/dev.menu
 			pin_to_sibling_corner	BOTTOM_LEFT
 			navUp					BtnDev44
 			navDown					BtnDev46
-			navRight				BtnDev14
-			navLeft					BtnDev29
+			navRight				BtnDev65
+			navLeft					BtnDev25
 		}
 		BtnDev46
 		{
@@ -704,9 +707,473 @@ scripts/resource/ui/menus/dev.menu
 			pin_corner_to_sibling	TOP_LEFT
 			pin_to_sibling_corner	BOTTOM_LEFT
 			navUp					BtnDev45
-			navDown					BtnDev31
-			navRight				BtnDev14
+			navDown					BtnDev47
+			navRight				BtnDev66
+			navLeft					BtnDev26
+		}
+		BtnDev47
+		{
+			ControlName				RuiButton
+			InheritProperties		RuiSmallButton
+			classname				DevButtonClass
+			scriptID				47
+			pin_to_sibling			BtnDev46
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	BOTTOM_LEFT
+			navUp					BtnDev46
+			navDown					BtnDev48
+			navRight				BtnDev67
+			navLeft					BtnDev27
+		}
+		BtnDev48
+		{
+			ControlName				RuiButton
+			InheritProperties		RuiSmallButton
+			classname				DevButtonClass
+			scriptID				48
+			pin_to_sibling			BtnDev47
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	BOTTOM_LEFT
+			navUp					BtnDev47
+			navDown					BtnDev49
+			navRight				BtnDev68
+			navLeft					BtnDev28
+		}
+		BtnDev49
+		{
+			ControlName				RuiButton
+			InheritProperties		RuiSmallButton
+			classname				DevButtonClass
+			scriptID				49
+			pin_to_sibling			BtnDev48
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	BOTTOM_LEFT
+			navUp					BtnDev48
+			navDown					BtnDev50
+			navRight				BtnDev69
+			navLeft					BtnDev29
+		}
+		BtnDev50
+		{
+			ControlName				RuiButton
+			InheritProperties		RuiSmallButton
+			classname				DevButtonClass
+			scriptID				50
+			pin_to_sibling			BtnDev49
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	BOTTOM_LEFT
+			navUp					BtnDev49
+			navDown					BtnDev51
+			navRight				BtnDev70
 			navLeft					BtnDev30
+		}
+		BtnDev51
+		{
+			ControlName				RuiButton
+			InheritProperties		RuiSmallButton
+			classname				DevButtonClass
+			scriptID				51
+			pin_to_sibling			BtnDev50
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	BOTTOM_LEFT
+			navUp					BtnDev50
+			navDown					BtnDev52
+			navRight				BtnDev71
+			navLeft					BtnDev31
+		}
+		BtnDev52
+		{
+			ControlName				RuiButton
+			InheritProperties		RuiSmallButton
+			classname				DevButtonClass
+			scriptID				52
+			pin_to_sibling			BtnDev51
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	BOTTOM_LEFT
+			navUp					BtnDev51
+			navDown					BtnDev53
+			navRight				BtnDev72
+			navLeft					BtnDev32
+		}
+		BtnDev53
+		{
+			ControlName				RuiButton
+			InheritProperties		RuiSmallButton
+			classname				DevButtonClass
+			scriptID				53
+			pin_to_sibling			BtnDev52
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	BOTTOM_LEFT
+			navUp					BtnDev52
+			navDown					BtnDev54
+			navRight				BtnDev73
+			navLeft					BtnDev33
+		}
+		BtnDev54
+		{
+			ControlName				RuiButton
+			InheritProperties		RuiSmallButton
+			classname				DevButtonClass
+			scriptID				54
+			pin_to_sibling			BtnDev53
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	BOTTOM_LEFT
+			navUp					BtnDev53
+			navDown					BtnDev55
+			navRight				BtnDev74
+			navLeft					BtnDev34
+		}
+		BtnDev55
+		{
+			ControlName				RuiButton
+			InheritProperties		RuiSmallButton
+			classname				DevButtonClass
+			scriptID				55
+			pin_to_sibling			BtnDev54
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	BOTTOM_LEFT
+			navUp					BtnDev54
+			navDown					BtnDev56
+			navRight				BtnDev75
+			navLeft					BtnDev35
+		}
+		BtnDev56
+		{
+			ControlName				RuiButton
+			InheritProperties		RuiSmallButton
+			classname				DevButtonClass
+			scriptID				56
+			pin_to_sibling			BtnDev55
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	BOTTOM_LEFT
+			navUp					BtnDev55
+			navDown					BtnDev57
+			navRight				BtnDev76
+			navLeft					BtnDev36
+		}
+		BtnDev57
+		{
+			ControlName				RuiButton
+			InheritProperties		RuiSmallButton
+			classname				DevButtonClass
+			scriptID				57
+			pin_to_sibling			BtnDev56
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	BOTTOM_LEFT
+			navUp					BtnDev56
+			navDown					BtnDev58
+			navRight				BtnDev77
+			navLeft					BtnDev37
+		}
+		BtnDev58
+		{
+			ControlName				RuiButton
+			InheritProperties		RuiSmallButton
+			classname				DevButtonClass
+			scriptID				58
+			pin_to_sibling			BtnDev57
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	BOTTOM_LEFT
+			navUp					BtnDev57
+			navDown					BtnDev59
+			navRight				BtnDev78
+			navLeft					BtnDev38
+		}
+		BtnDev59
+		{
+			ControlName				RuiButton
+			InheritProperties		RuiSmallButton
+			classname				DevButtonClass
+			scriptID				59
+			pin_to_sibling			BtnDev58
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	BOTTOM_LEFT
+			navUp					BtnDev58
+			navDown					BtnDev40
+			navRight				BtnDev79
+			navLeft					BtnDev39
+		}
+
+		// Column 3 (Buttons 60-79)
+		BtnDev60
+		{
+			ControlName				RuiButton
+			InheritProperties		RuiSmallButton
+			classname				DevButtonClass
+			scriptID				60
+			pin_to_sibling			BtnDev40
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	TOP_RIGHT
+			navUp					BtnDev79
+			navDown					BtnDev61
+			navRight				BtnDev0
+			navLeft					BtnDev40
+		}
+		BtnDev61
+		{
+			ControlName				RuiButton
+			InheritProperties		RuiSmallButton
+			classname				DevButtonClass
+			scriptID				61
+			pin_to_sibling			BtnDev60
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	BOTTOM_LEFT
+			navUp					BtnDev60
+			navDown					BtnDev62
+			navRight				BtnDev1
+			navLeft					BtnDev41
+		}
+		BtnDev62
+		{
+			ControlName				RuiButton
+			InheritProperties		RuiSmallButton
+			classname				DevButtonClass
+			scriptID				62
+			pin_to_sibling			BtnDev61
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	BOTTOM_LEFT
+			navUp					BtnDev61
+			navDown					BtnDev63
+			navRight				BtnDev2
+			navLeft					BtnDev42
+		}
+		BtnDev63
+		{
+			ControlName				RuiButton
+			InheritProperties		RuiSmallButton
+			classname				DevButtonClass
+			scriptID				63
+			pin_to_sibling			BtnDev62
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	BOTTOM_LEFT
+			navUp					BtnDev62
+			navDown					BtnDev64
+			navRight				BtnDev3
+			navLeft					BtnDev43
+		}
+		BtnDev64
+		{
+			ControlName				RuiButton
+			InheritProperties		RuiSmallButton
+			classname				DevButtonClass
+			scriptID				64
+			pin_to_sibling			BtnDev63
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	BOTTOM_LEFT
+			navUp					BtnDev63
+			navDown					BtnDev65
+			navRight				BtnDev4
+			navLeft					BtnDev44
+		}
+		BtnDev65
+		{
+			ControlName				RuiButton
+			InheritProperties		RuiSmallButton
+			classname				DevButtonClass
+			scriptID				65
+			pin_to_sibling			BtnDev64
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	BOTTOM_LEFT
+			navUp					BtnDev64
+			navDown					BtnDev66
+			navRight				BtnDev5
+			navLeft					BtnDev45
+		}
+		BtnDev66
+		{
+			ControlName				RuiButton
+			InheritProperties		RuiSmallButton
+			classname				DevButtonClass
+			scriptID				66
+			pin_to_sibling			BtnDev65
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	BOTTOM_LEFT
+			navUp					BtnDev65
+			navDown					BtnDev67
+			navRight				BtnDev6
+			navLeft					BtnDev46
+		}
+		BtnDev67
+		{
+			ControlName				RuiButton
+			InheritProperties		RuiSmallButton
+			classname				DevButtonClass
+			scriptID				67
+			pin_to_sibling			BtnDev66
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	BOTTOM_LEFT
+			navUp					BtnDev66
+			navDown					BtnDev68
+			navRight				BtnDev7
+			navLeft					BtnDev47
+		}
+		BtnDev68
+		{
+			ControlName				RuiButton
+			InheritProperties		RuiSmallButton
+			classname				DevButtonClass
+			scriptID				68
+			pin_to_sibling			BtnDev67
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	BOTTOM_LEFT
+			navUp					BtnDev67
+			navDown					BtnDev69
+			navRight				BtnDev8
+			navLeft					BtnDev48
+		}
+		BtnDev69
+		{
+			ControlName				RuiButton
+			InheritProperties		RuiSmallButton
+			classname				DevButtonClass
+			scriptID				69
+			pin_to_sibling			BtnDev68
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	BOTTOM_LEFT
+			navUp					BtnDev68
+			navDown					BtnDev70
+			navRight				BtnDev9
+			navLeft					BtnDev49
+		}
+		BtnDev70
+		{
+			ControlName				RuiButton
+			InheritProperties		RuiSmallButton
+			classname				DevButtonClass
+			scriptID				70
+			pin_to_sibling			BtnDev69
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	BOTTOM_LEFT
+			navUp					BtnDev69
+			navDown					BtnDev71
+			navRight				BtnDev10
+			navLeft					BtnDev50
+		}
+		BtnDev71
+		{
+			ControlName				RuiButton
+			InheritProperties		RuiSmallButton
+			classname				DevButtonClass
+			scriptID				71
+			pin_to_sibling			BtnDev70
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	BOTTOM_LEFT
+			navUp					BtnDev70
+			navDown					BtnDev72
+			navRight				BtnDev11
+			navLeft					BtnDev51
+		}
+		BtnDev72
+		{
+			ControlName				RuiButton
+			InheritProperties		RuiSmallButton
+			classname				DevButtonClass
+			scriptID				72
+			pin_to_sibling			BtnDev71
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	BOTTOM_LEFT
+			navUp					BtnDev71
+			navDown					BtnDev73
+			navRight				BtnDev12
+			navLeft					BtnDev52
+		}
+		BtnDev73
+		{
+			ControlName				RuiButton
+			InheritProperties		RuiSmallButton
+			classname				DevButtonClass
+			scriptID				73
+			pin_to_sibling			BtnDev72
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	BOTTOM_LEFT
+			navUp					BtnDev72
+			navDown					BtnDev74
+			navRight				BtnDev13
+			navLeft					BtnDev53
+		}
+		BtnDev74
+		{
+			ControlName				RuiButton
+			InheritProperties		RuiSmallButton
+			classname				DevButtonClass
+			scriptID				74
+			pin_to_sibling			BtnDev73
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	BOTTOM_LEFT
+			navUp					BtnDev73
+			navDown					BtnDev75
+			navRight				BtnDev14
+			navLeft					BtnDev54
+		}
+		BtnDev75
+		{
+			ControlName				RuiButton
+			InheritProperties		RuiSmallButton
+			classname				DevButtonClass
+			scriptID				75
+			pin_to_sibling			BtnDev74
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	BOTTOM_LEFT
+			navUp					BtnDev74
+			navDown					BtnDev76
+			navRight				BtnDev15
+			navLeft					BtnDev55
+		}
+		BtnDev76
+		{
+			ControlName				RuiButton
+			InheritProperties		RuiSmallButton
+			classname				DevButtonClass
+			scriptID				76
+			pin_to_sibling			BtnDev75
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	BOTTOM_LEFT
+			navUp					BtnDev75
+			navDown					BtnDev77
+			navRight				BtnDev16
+			navLeft					BtnDev56
+		}
+		BtnDev77
+		{
+			ControlName				RuiButton
+			InheritProperties		RuiSmallButton
+			classname				DevButtonClass
+			scriptID				77
+			pin_to_sibling			BtnDev76
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	BOTTOM_LEFT
+			navUp					BtnDev76
+			navDown					BtnDev78
+			navRight				BtnDev17
+			navLeft					BtnDev57
+		}
+		BtnDev78
+		{
+			ControlName				RuiButton
+			InheritProperties		RuiSmallButton
+			classname				DevButtonClass
+			scriptID				78
+			pin_to_sibling			BtnDev77
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	BOTTOM_LEFT
+			navUp					BtnDev77
+			navDown					BtnDev79
+			navRight				BtnDev18
+			navLeft					BtnDev58
+		}
+		BtnDev79
+		{
+			ControlName				RuiButton
+			InheritProperties		RuiSmallButton
+			classname				DevButtonClass
+			scriptID				79
+			pin_to_sibling			BtnDev78
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	BOTTOM_LEFT
+			navUp					BtnDev78
+			navDown					BtnDev60
+			navRight				BtnDev19
+			navLeft					BtnDev59
 		}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -715,7 +1182,8 @@ scripts/resource/ui/menus/dev.menu
 		{
 			ControlName				CNestedPanel
 			InheritProperties       FooterButtons
-			ypos					r180
+			xpos					-15
+			ypos					980
 		}
         FooterHelpTxt
         {

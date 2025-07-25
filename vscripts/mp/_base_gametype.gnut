@@ -197,8 +197,6 @@ void function CodeCallback_OnPrecache()
 	{
 		SetGameState( eGameState.WaitingForPlayers )
 	}
-
-	level.ui.disableDev = IsMatchmakingServer()
 }
 
 function AddFlinch( entity attackedEnt, damageInfo )

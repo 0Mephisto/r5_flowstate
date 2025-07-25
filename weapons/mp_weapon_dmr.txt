@@ -237,7 +237,7 @@
 			"viewkick_ads_weaponFraction_vmScale"      "0.5"
 		}
 
-		"optic_sniper_threat"
+		optic_sniper_threat
 		{
 		    "viewkick_ads_weaponFraction"              "0.5"
 			"viewkick_ads_weaponFraction_vmScale"      "0.5"

@@ -317,59 +317,56 @@ void function SetupDefaultDevCommandsMP()
 
 	if( GetCheatsState() )
 	{
-		SetupDevMenu( "Custom Cosmetics", SetDevMenu_CustomCosmetics )
-		
 		SetupDevMenu( "Equip Legend Abilities", SetDevMenu_Abilities )
-		SetupDevMenu( "Equip Custom Abilities", SetDevMenu_CustomAbilities )
-		SetupDevMenu( "Equip Weapons", SetDevMenu_Weapons )
-		if( Playlist() != ePlaylists.survival_firingrange )
-			SetupDevMenu( "Equip Titanfall Weapons", SetDevMenu_R2Weapons )
+		//SetupDevMenu( "Equip Custom Abilities", SetDevMenu_CustomAbilities )
+		SetupDevMenu( "Equip Apex Weapons", SetDevMenu_Weapons )
+		//if( Playlist() != ePlaylists.survival_firingrange )
+			//SetupDevMenu( "Equip Titanfall Weapons", SetDevMenu_R2Weapons )
 
 		if ( IsSurvivalMenuEnabled() )
 		{
-			SetupDevMenu( "Change Character", SetDevMenu_SurvivalCharacter )
-			SetupDevMenu( "Survival", SetDevMenu_Survival )
+			SetupDevCommand( "", "give blank" )
+			SetupDevMenu( "Change Character Class", SetDevMenu_SurvivalCharacter )
+			SetupDevMenu( "Survival: Dev Tools", SetDevMenu_Survival )
 			SetupDevMenu( "Survival: Weapons", SetDevMenu_SurvivalLoot, "main_weapon" )
 			SetupDevMenu( "Survival: Attachments", SetDevMenu_SurvivalLoot, "attachment" )
-			SetupDevMenu( "Survival: Helmets", SetDevMenu_SurvivalLoot, "helmet" )
-			SetupDevMenu( "Survival: Armors", SetDevMenu_SurvivalLoot, "armor" )
-			SetupDevMenu( "Survival: Backpacks", SetDevMenu_SurvivalLoot, "backpack" )
-			SetupDevMenu( "Survival: Incap Shields", SetDevMenu_SurvivalLoot, "incapshield" )
-			string itemsString = "ordnance ammo health custom_pickup data_knife"
+			string GearsString = "helmet armor backpack incapshield"
+			SetupDevMenu( "Survival: Gears", SetDevMenu_SurvivalLoot, GearsString )
+			string itemsString = "ordnance ammo health custom_pickup data_knife ship_keycard marvin_arm"
 			SetupDevMenu( "Survival: Consumables", SetDevMenu_SurvivalLoot, itemsString )
+			SetupDevCommand( "", "give blank" )
 		}
 
 		if( GetCurrentPlaylistVarBool( "custom_loot", true ) )
 		{
 			SetupDevMenu( "Custom: Weapons (All)", SetDevMenu_SurvivalLoot, "weapon_custom" )
 			SetupDevMenu( "Custom: Attachments", SetDevMenu_SurvivalLoot, "attachment_custom" )
-			//SetupDevMenu( "Custom: Player Models", SetDevMenu_CustomPRModel )
-		} //TODO: CAFE NEEDS TO FIX MISSING OR BROKEN ASSETS - LorryLeKral
-
-		SetupDevMenu( "Respawn Player(s)", SetDevMenu_RespawnPlayers )
+			SetupDevCommand( "", "give blank" )
+		}
+		SetupDevMenu( "Equip Custom Loadouts", SetDevMenu_CustomCosmetics )
 		SetupDevMenu( "Equip Custom Heirlooms", SetDevMenu_CustomHeirlooms )
+		SetupDevCommand( "", "give blank" )
+		SetupDevMenu( "Respawn Players", SetDevMenu_RespawnPlayers )
 		SetupDevCommand( "Recharge Abilities", "recharge" )
+		SetupDevCommand( "Start Skydive", "script thread SkydiveTest()" )
+		SetupDevCommand( "", "give blank" )
 
 		SetupDevMenu( "Spawn NPC at Crosshair [Friendly]", SetDevMenu_AISpawnFriendly )
 		SetupDevMenu( "Spawn NPC at Crosshair [Enemy]", SetDevMenu_AISpawnEnemy )
 
+		SetupDevCommand( "", "give blank" )
+
 		SetupDevCommand( "Toggle NoClip", "noclip" )
-		SetupDevCommand( "Toggle Skybox View", "script thread ToggleSkyboxView()" )
-		SetupDevCommand( "Toggle HUD", "ToggleHUD" )
-		SetupDevCommand( "Start Skydive", "script thread SkydiveTest()" )
-		SetupDevCommand( "Spawn Deathbox", "SpawnDeathboxAtCrosshair" )
-
-		SetupDevCommand( "Summon Players to player 0", "script summonplayers()" )
-
-		SetupDevCommand( "Enable God Mode", "script EnableDemigod( gp()[0] )" )
-		SetupDevCommand( "Disable God Mode", "script DisableDemigod( gp()[0] )" )
+		SetupDevCommand( "Toggle Infinite Ammo", "infinite_ammo" )
+		SetupDevCommand( "Toggle HUD", "ToggleHUD" )		
+		SetupDevCommand( "Toggle God Mode", "demigod" )
 		SetupDevCommand( "Toggle Third Person Mode", "ToggleThirdPerson" )
 
-		SetupDevMenu( "Prototypes", SetDevMenu_Prototypes )
+		SetupDevCommand( "", "give blank" )
 
-
-
-		SetupDevMenu( "More...", SetDevMenu_MoreCommands ) //last
+		SetupDevCommand( "===============DEV ONLY===============", "give blank" )
+		SetupDevMenu( "Prototypes & Misc", SetDevMenu_Prototypes )
+		SetupDevCommand( "=========================================", "give blank" )
 	}
 	else
 	{
@@ -880,24 +877,32 @@ void function SetDevMenu_Prototypes( var _ )
 
 void function SetupPrototypesDevMenu()
 {
-	SetupDevCommand( "Toggle Akimbo With Current Weapon", "script DEV_ToggleAkimboWeapon(gp()[0])" )
-	SetupDevCommand( "Toggle Akimbo With Holstered Weapon", "script DEV_ToggleAkimboWeaponAlt(gp()[0])" )
-	//SetupDevCommand( "Give akimbo retail behavior test", "script GiveP2020AkimboTest()" )
-	SetupDevCommand( "Developer: Cubemap Viewer", "give weapon_cubemap" )
-	SetupDevCommand( "Change to Shadow", "script DEV_GiveShadowZombieAbilities( GP() )" )
-	SetupDevCommand( "Change back from Shadow to Legend", "script RemoveShadowZombieAbilities(gp()[0])" )
+	SetupDevCommand( "Toggle Akimbo Weapon", "script DEV_ToggleAkimboWeapon(gp()[0])" )
+	//SetupDevCommand( "Toggle Akimbo With Holstered Weapon", "script DEV_ToggleAkimboWeaponAlt(gp()[0])" )
+	SetupDevCommand( "Cubemap Viewer", "give weapon_cubemap" )
+	SetupDevCommand( "Toggle Shadow Form", "ShadowForm" )
+	SetupDevCommand( "Teleport to Skybox Camera", "script thread ToggleSkyboxView()" )
+	SetupDevCommand( "Spawn Deathbox With Random Loots", "script DEV_SpawnDeathBoxWithRandomLoot(gp()[0])" )
+	SetupDevMenu( "Loot Marvin Debug (Olympus Only)", SetDevMenu_LootMarvin )
+	SetupDevCommand( "Summon Players to player 0", "script summonplayers()" )
+	//SetupDevMenu( "Incap Shield Debugging", SetDevMenu_SurvivalIncapShieldBots )
 }
 
-void function SetDevMenu_MoreCommands( var _ )
+void function SetDevMenu_LootMarvin( var _ )
 {
-	ChangeToThisMenu( SetupMoreCommandsDevMenu )
+	thread ChangeToThisMenu( SetDevMenu_LootMarvinPanel )
 }
 
-void function SetupMoreCommandsDevMenu()
+void function SetDevMenu_LootMarvinPanel()
 {
-	SetupDevCommand( "Enable Infinite Ammo", "script DEV_ToggleInfiniteAmmo()" )
-	SetupDevCommand( "Disable Infinite Ammo", "script DEV_ToggleInfiniteAmmo( false )" )
+	SetupDevCommand( "See All Marvin Locations", "script SeeMarvinSpawnLocations()" )
+	SetupDevCommand( "Teleport to Random Marvin", "script TeleportToRandomMarvinLocations()" )
+	SetupDevCommand( "Ping Nearest Marvin", "script AttemptPingNearestValidMarvinForPlayer(gp()[0])" )
+	SetupDevCommand( "Create Loot Marvin At Crosshair", "script CreateMarvin_Loot()" )
+	SetupDevCommand( "Create Loot Marvin With Detachable Arm At Crosshair", "script CreateMarvin_Loot( true )" )
+	SetupDevCommand( "Create Story Marvin At Crosshair", "script CreateMarvin_Story()" )
 }
+
 
 void function RunCodeDevCommandByAlias( string alias )
 {

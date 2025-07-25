@@ -148,8 +148,6 @@ const int OF_NO_TEAM_COLOR = 1 << 9
 
 void function RegisterMinimapPackage( string entityClassname, int customStateIndex, asset minimapAsset, void functionref( entity, var ) initFunction, asset fullmapAsset = $"", void functionref( entity, var ) fullmapInitFunction = null )
 {
-	//if( GetCurrentPlaylistVarBool( "r5reloaded_aimtrainer", false ) ) return
-
 	if( Playlist() == ePlaylists.fs_aimtrainer )
 		return
 
@@ -1890,7 +1888,6 @@ MapFeature function SetMapFeatureItem( int priority, string titleText, string de
 
 	return mapFeature
 }
-
 
 const int MAX_MAP_FEATURES = 5
 void function UpdateMapFeatures()

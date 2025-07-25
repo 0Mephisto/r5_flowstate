@@ -1830,6 +1830,10 @@ void function OnClientConnected( entity player )
 				player.SetOrigin( <-29181.76, -794.35, -4312.06> )
 				player.SetAngles( <-1.20, 17.66, 0> )
 			break
+			case eMaps.mp_rr_olympus_mu1:
+				player.SetOrigin( <373.503815, -20330.4629, -4138.41504> )
+				player.SetAngles( <0, 68.0721817, 0> )
+			break
 			case eMaps.mp_rr_canyonlands_64k_x_64k:
 			case eMaps.mp_rr_canyonlands_mu1:
 			case eMaps.mp_rr_canyonlands_mu2:

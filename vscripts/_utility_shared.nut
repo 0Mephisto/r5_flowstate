@@ -4077,6 +4077,54 @@ array<vector> function GetPointsOnCircle( vector origin, vector angles, float ra
 
 	return pointsOnCircle
 }
+
+
+// Returns an array of equidistant points along a line dictated by start & end positions. If count == 1, returns midpoint between start and end.
+array< vector > function GetPointsAlongLine( vector start, vector end, int count, bool debugDraw = false )
+{
+	Assert( count > 0, FUNC_NAME() + "(): ERROR! Count Must Be > 0." )
+
+	array< vector > result = []
+
+	vector rowStartEdge = start
+	vector rowEndEdge = end
+	float rowWidth = Distance( rowStartEdge, rowEndEdge )
+	vector nextItemDir = ( rowEndEdge - rowStartEdge )/rowWidth
+
+
+	vector itemPos
+
+	if( count < 2 )
+	{
+		itemPos = ( rowEndEdge + rowStartEdge ) / 2
+		result.append( itemPos )
+	}
+	else // count >= 2
+	{
+		float distBtwnItems = rowWidth / ( count - 1 )
+		itemPos = rowStartEdge
+		vector nextItemDelta = nextItemDir * distBtwnItems
+
+		for( int i = 0; i < count; i++ )
+		{
+			result.append( itemPos )
+			itemPos = itemPos + nextItemDelta
+		}
+	}
+
+	#if DEVELOPER
+		if( debugDraw )
+		{
+			for( int i = 0; i < result.len(); i++ )
+			{
+				DebugDrawText( result[ i ], string( i ), false, 60 )
+			}
+		}
+	#endif // DEVELOPER
+
+	return result
+}
+
 #if SERVER
 void function Embark_Allow( entity player )
 {

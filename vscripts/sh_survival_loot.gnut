@@ -200,7 +200,6 @@ global function IsValidAndStandardGrabbableLootEnt
 
 global function GetFadeDistForLoot
 
-global function GetNameOfTeammateWithVaultKey
 global const string WEAPON_LOCKEDSET_SUFFIX_GOLD = "_gold"
 global const string WEAPON_LOCKEDSET_MOD_GOLD = "gold"
 global const string WEAPON_LOCKEDSET_SUFFIX_WHITESET = "_whiteset"
@@ -1179,7 +1178,10 @@ string function SURVIVAL_Loot_GetDetailTypeStringFromRef( string ref )
 		case eLootType.HELMET:
 			return "#ITEM_TYPE_DEFENSE"
 		case eLootType.DATAKNIFE:
+		case eLootType.SHIPKEYCARD:
 			return "#ITEM_TYPE_SPECIAL"
+		case eLootType.MARVIN_ARM:
+			return ""
 		case eLootType.RESOURCE:
 			return "#ITEM_TYPE_SHIELDS"
 		case eLootType.BLANK:
@@ -1211,6 +1213,9 @@ string function SURVIVAL_Loot_GetGeneralTypeStringFromType( int lootType )
 		case eLootType.CUSTOMPICKUP:
 			return ""
 		case eLootType.DATAKNIFE:
+		case eLootType.SHIPKEYCARD:
+			return "#SURVIVAL_SPECIAL"
+		case eLootType.MARVIN_ARM:
 			return "#SURVIVAL_SPECIAL"
 		case eLootType.RESOURCE:
 			return "#SURVIVAL_RECOVERY"
@@ -3298,6 +3303,11 @@ LootActionStruct function SURVIVAL_BuildStringForAction( entity player, int cont
 				{
 					as.displayString = Localize( "#LOOT_ACTION", buttonString, actionString )
 				}
+				
+				else if ( actionLoot.lootType == eLootType.MARVIN_ARM )
+				{
+					as.displayString = Localize( "#LOOT_ACTION", buttonString, actionString )
+				}
 			}
 
 			break
@@ -3557,14 +3567,11 @@ string function Dev_GetNextBotLootWeapon()
 array<entity> s_incapBots
 void function Dev_SpawnBotWithIncapShieldToView( int shieldTier )
 {
-	ServerCommand( "bot -team 2" )
+	ServerCommand( "sv_addbot bot 1" )
 
 	array< entity > team2 = GetPlayerArrayOfTeam_Alive( 2 )
 	if ( team2.len() < 2 )
-		ServerCommand( "bot -team 2" )
-
-	ServerCommand( "bot_randomAttackChance_survival 1" )
-	ServerCommand( "bot_flipout 1" )
+		ServerCommand( "sv_addbot bot 2" )
 
 	if( shieldTier == -1 )
 		shieldTier = RandomIntRange( 1, 5 )
@@ -4266,11 +4273,12 @@ int function GetPriorityForLootType( LootData lootData )
 
 		case eLootType.ORDNANCE:
 		case eLootType.HEALTH:
-
-		case eLootType.CUSTOMPICKUP:
-                      
-		case eLootType.DATAKNIFE:
 			return eLootSortCategories.CONSUMABLES
+		case eLootType.CUSTOMPICKUP:
+		case eLootType.DATAKNIFE:
+		case eLootType.SHIPKEYCARD:
+		case eLootType.MARVIN_ARM:
+			return eLootSortCategories.SPECIAL
 
 		case eLootType.HELMET:
 		case eLootType.ARMOR:
@@ -4299,6 +4307,7 @@ int function GetPriorityForLootType( LootData lootData )
 string function GetCategoryTitleFromPriority( int cat )
 {
 	table<int, string> catToTitle = {}
+	catToTitle[ eLootSortCategories.SPECIAL ] <- "#LOOT_CAT_SPECIAL"
 	catToTitle[ eLootSortCategories.CONSUMABLES ] <- "#LOOT_CAT_CONSUMABLE"
 	catToTitle[ eLootSortCategories.ATTACHMENTS ] <- "#LOOT_CAT_ATTACHMENTS"
 	catToTitle[ eLootSortCategories.EQUIPMENT ] <- "#LOOT_CAT_EQUIPMENT"
@@ -4796,30 +4805,6 @@ int function SURVIVAL_GetInventorySlotCountForPlayer( entity player, LootData da
 	}
 
 	return result
-}
-
-string function GetNameOfTeammateWithVaultKey( int team )
-{
-	foreach( player in GetPlayerArrayOfTeam( team ) )
-	{
-		if( !IsValid( player ) || !IsAlive( player) )
-			continue
-		
-		array<ConsumableInventoryItem> playerInventory = SURVIVAL_GetPlayerInventory( player )
-		
-		bool playerHasKey
-		foreach ( invItem in playerInventory )
-		{
-			LootData data = SURVIVAL_Loot_GetLootDataByIndex( invItem.type )
-			if( data.ref == "data_knife" )
-				playerHasKey = true
-		}
-		
-		if( playerHasKey )
-			return player.GetPlayerName()
-	}
-
-	return ""
 }
 
 #if CLIENT

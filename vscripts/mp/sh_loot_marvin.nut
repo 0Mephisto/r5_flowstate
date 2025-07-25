@@ -7,17 +7,20 @@ global function ServerCallback_PromptPingLootMarvin
 #if SERVER
 global function LootMarvin_OnDispenseLootAnimEvent
 global function ClientCallback_PromptPingLootMarvin
+global function AttemptPingNearestValidMarvinForPlayer
+global function LootMarvinArm_OnPickup
 #endif
 
 #if SERVER && DEVELOPER
 global function CreateMarvin_Loot
 global function CreateMarvin_Story
 global function SeeMarvinSpawnLocations
+global function TeleportToRandomMarvinLocations
 #endif
 
 global const string STORY_MARVIN_SCRIPTNAME = "story_marvin"
 global const string LOOT_MARVIN_SCRIPTNAME = "loot_marvin"
-const string ITEM_MARVIN_ARM_REF = "loot_marvin_arm"
+global const string ITEM_MARVIN_ARM_REF = "loot_marvin_arm"
 
 const int MAX_NUM_MARVINS = 24
 const int MAX_NUM_ARM_MARVINS = 5
@@ -32,8 +35,8 @@ const string WAYPOINTTYPE_SCREEN = "waypointType_MarvinScreen"
 const float SLOT_MACHINE_CYCLE_LENGTH = 0.3
 
 const asset STORY_MARVIN_CSV_DIALOGUE = $"datatable/dialogue/story_marvin_dialogue.rpak"
-const asset VFX_LOT_MARVIN_DISPERSE = $"P_marvin_loot_CP"
-const asset VFX_LOT_MARVIN_SPARK_ARM = $"P_sparks_marvin_arm"
+const asset VFX_LOT_MARVIN_DISPERSE = $"P_armor_3P_break_CP"
+const asset VFX_LOT_MARVIN_SPARK_ARM = $"P_sparks_dir_SM_LOOP"
 
 #if SERVER
 const int LOOT_MARVIN_TRIGGER_RADIUS = 384
@@ -150,6 +153,15 @@ struct
 
 void function ShLootMarvin_Init()
 {
+	if( Gamemode() != eGamemodes.SURVIVAL )
+	{
+		#if SERVER
+			// enable this callback so we can delete the dummy props already in the map
+			AddSpawnCallbackEditorClass( "prop_dynamic", "script_loot_marvin", LootMarvin_OnScriptTargetSpawned )
+		#endif
+		return
+	}
+	RegisterCSVDialogue( STORY_MARVIN_CSV_DIALOGUE )
 	PrecacheParticleSystem( VFX_LOT_MARVIN_DISPERSE )
 	PrecacheParticleSystem( VFX_LOT_MARVIN_SPARK_ARM )
 
@@ -177,8 +189,8 @@ void function ShLootMarvin_Init()
 
 void function EntitiesDidLoad()
 {
-	/*if( !GameMode_IsActive( eGameModes.SURVIVAL ) )
-		return*/
+	if( Gamemode() != eGamemodes.SURVIVAL )
+		return
 
 	int maxNumMarvins      = GetCurrentPlaylistVarInt( "marvins_max_num", MAX_NUM_MARVINS )
 	int maxNumArmedMarvins = GetCurrentPlaylistVarInt( "marvins_max_num_armed", MAX_NUM_ARM_MARVINS )
@@ -240,11 +252,11 @@ void function EntitiesDidLoad()
 #if SERVER
 void function LootMarvin_OnScriptTargetSpawned( entity ent )
 {
-	/*if( !GameMode_IsActive( eGameModes.SURVIVAL ) )
+	if( Gamemode() != eGamemodes.SURVIVAL )
 	{
 		ent.Destroy()
 		return
-	}*/
+	}
 
 	bool storyMarvinsEnabled = GetCurrentPlaylistVarBool( "story_marvins_enabled", false )
 
@@ -326,21 +338,20 @@ void function SeeMarvinSpawnLocations()
 	bool storyMarvinExists = false
 	foreach ( entity marvin, MarvinData data in file.spawnedMarvinData )
 	{
-		gp()[0].SetOrigin(marvin.GetOrigin())
 		if ( IsAlive( marvin ) )
 		{
 			if ( data.hasDetachableArm )
 			{
-				//DebugDrawSphere( marvin.GetOrigin(), 256, COLOR_BLUE, true, 45.0 )
+				DebugDrawSphere( marvin.GetOrigin(), 256, 0, 0, 255 , true, 45.0 )
 			}
 			else if ( data.isStoryMarvin )
 			{
-				//DebugDrawSphere( marvin.GetOrigin(), 256, COLOR_GREEN, true, 45.0 )
+				DebugDrawSphere( marvin.GetOrigin(), 256, 0, 255, 0, true, 45.0 )
 				storyMarvinExists = true
 			}
 			else
 			{
-			//	DebugDrawSphere( marvin.GetOrigin(), 256, COLOR_YELLOW, true, 45.0 )
+				DebugDrawSphere( marvin.GetOrigin(), 256, 255, 255, 0, true, 45.0 )
 			}
 		}
 	}
@@ -349,7 +360,18 @@ void function SeeMarvinSpawnLocations()
 
 	printf( "Number of alive loot marvins: %i", numAliveMarvins )
 }
-#endif // SERVER && DEV
+
+void function TeleportToRandomMarvinLocations()
+{
+	bool storyMarvinExists = false
+	array<entity> allMarvins = GetEntArrayByScriptName( LOOT_MARVIN_SCRIPTNAME )
+	entity marvin = allMarvins.getrandom()
+	{
+		gp()[0].SetOrigin(marvin.GetOrigin())
+	}
+	printf( "Teleporting" + gp()[0] + "to Random Marvin Location" )
+}
+#endif // SERVER && DEVELOPER
 
 
 #if SERVER
@@ -432,7 +454,7 @@ void function CreateMarvin( vector origin, vector angles, entity lootMarvinParen
 	}
 	else
 	{
-		//marvin.SetBodygroupModelByIndex( marvin.FindBodygroup( "removableHead" ), BODYGROUP_RIGHT_ARM_INDEX_DETACHED )
+		marvin.SetBodygroupModelByIndex( marvin.FindBodygroup( BODYGROUP_RIGHT_ARM ), BODYGROUP_RIGHT_ARM_INDEX_DETACHED )
 
 		if ( hasDetachableArm )
 		{
@@ -452,17 +474,16 @@ void function CreateMarvin( vector origin, vector angles, entity lootMarvinParen
 
 		thread PlayAnimLootMarvin( marvin, data.startPoint, ANIM_LOOT_MARVIN_POWERDOWN_IDLE )
 
-		//marvin.SetActivityModifier( ACT_MODIFIER_STAGGER, true )
+		marvin.SetActivityModifier( ACT_MODIFIER_STAGGER, true )
 
-		entity trigger = CreateEntity( "trigger_cylinder" )//
-		trigger.SetRadius( LOOT_MARVIN_TRIGGER_RADIUS )//CreateTriggerCylinder( marvin.GetOrigin(), LOOT_MARVIN_TRIGGER_RADIUS, 72, 16 )
-		trigger.SetOrigin( marvin.GetOrigin() )
-		trigger.SetAboveHeight( 72 )
-		trigger.SetBelowHeight( 16 )
-		DispatchSpawn( trigger )
-		trigger.SetEnterCallback( CreateOnEnterLootMarvinTriggerFunc( marvin, data ) )
-		trigger.SetLeaveCallback( CreateOnLeaveLootMarvinTriggerFunc( marvin, data ) )
-		//DebugDrawCylinder( trigger.GetOrigin() , < -90, 0, 0 >, LOOT_MARVIN_TRIGGER_RADIUS, trigger.GetAboveHeight(), 0, 165, 255, true, 9999.9 )
+		data.trigger = CreateEntity( "trigger_cylinder" )//
+		data.trigger.SetRadius( LOOT_MARVIN_TRIGGER_RADIUS )//CreateTriggerCylinder( marvin.GetOrigin(), LOOT_MARVIN_TRIGGER_RADIUS, 72, 16 )
+		data.trigger.SetOrigin( marvin.GetOrigin() )
+		data.trigger.SetAboveHeight( 72 )
+		data.trigger.SetBelowHeight( 16 )
+		DispatchSpawn( data.trigger )
+		data.trigger.SetEnterCallback( CreateOnEnterLootMarvinTriggerFunc( marvin, data ) )
+		data.trigger.SetLeaveCallback( CreateOnLeaveLootMarvinTriggerFunc( marvin, data ) )
 	}
 }
 #endif //SERVER
@@ -565,12 +586,12 @@ void function OnUseStoryMarvin_Thread( entity marvin, entity playerUser )
 #if SERVER || CLIENT
 bool function IsPlayerPathfinder( entity player )
 {
-	/*ItemFlavor character = LoadoutSlot_GetItemFlavor( ToEHI( player ), Loadout_Character() )
-	string characterRef  = ItemFlavor_GetCharacterRef( character ).tolower()
+	ItemFlavor character = LoadoutSlot_GetItemFlavor( ToEHI( player ), Loadout_CharacterClass() )
+	string characterRef  = ItemFlavor_GetHumanReadableRef( character ).tolower()
 
 	if ( characterRef != "character_pathfinder" )
 		return false
-*/
+
 	return true
 }
 #endif
@@ -625,8 +646,6 @@ void function OnEnterLootMarvinTrigger( entity trigger, entity ent, entity marvi
 
 	if ( !IsAlive( marvin ) )
 		return
-		
-	printt("hello")
 
 	//marvin.SetThinkDuringAnimation( true )
 
@@ -723,13 +742,13 @@ void function TryMarvinPowerUp( entity marvin, MarvinData data )
 	GradeFlagsClear( marvin, eGradeFlags.IS_OPEN ) // clear the recharging use prompt
 	GradeFlagsSet( marvin, eGradeFlags.IS_BUSY ) // busy use prompt
 
-	/*if ( data.hasDetachableArm )
+	if ( data.hasDetachableArm )
 	{
 		int particleIdx  = GetParticleSystemIndex( VFX_LOT_MARVIN_SPARK_ARM )
 		int vfxAttachIdx = marvin.LookupAttachment( "FX_L_FOREARM" )
 		data.armSparkFx = StartParticleEffectOnEntity_ReturnEntity( marvin, particleIdx, FX_PATTACH_POINT_FOLLOW, vfxAttachIdx )
 		EmitSoundOnEntity( marvin, SFX_MARVIN_SPARKS )
-	}*/
+	}
 
 	waitthread PlayAnimLootMarvin( marvin, data.startPoint, ANIM_LOOT_MARVIN_POWERUP )
 
@@ -739,7 +758,7 @@ void function TryMarvinPowerUp( entity marvin, MarvinData data )
 	thread PlayAnimLootMarvin( marvin, data.startPoint, ANIM_LOOT_MARVIN_ACTIVE_LOOP )
 	thread SlotMachineCycleThink( marvin, data )
 
-	//marvin.SetActivityModifier( ACT_MODIFIER_POWERED_DOWN, false )
+	marvin.SetActivityModifier( ACT_MODIFIER_STAGGER, false )
 	GradeFlagsClear( marvin, eGradeFlags.IS_BUSY )
 }
 #endif //SERVER
@@ -868,7 +887,7 @@ void function LootAndStoryMarvin_OnKilled( entity marvin, var damageInfo )
 
 			StopSoundOnEntity( marvin, SFX_MARVIN_SPARKS )
 
-			//marvin.SetBodygroupModelByIndex( marvin.FindBodygroup( BODYGROUP_LEFT_ARM ), BODYGROUP_LEFT_ARM_INDEX_DETACHED )
+			marvin.SetBodygroupModelByIndex( marvin.FindBodygroup( BODYGROUP_LEFT_ARM ), BODYGROUP_LEFT_ARM_INDEX_DETACHED )
 
 			ThrowLootParams params
 			params.dropOrg               = armOrigin
@@ -880,7 +899,7 @@ void function LootAndStoryMarvin_OnKilled( entity marvin, var damageInfo )
 			params.throwVelocityRange[0] = 25.0
 			params.throwVelocityRange[1] = 50.0
 
-			entity loot = SURVIVAL_ThrowLootFromPoint( armOrigin, direction, ITEM_MARVIN_ARM_REF, 1 )
+			entity loot = SURVIVAL_ThrowLootFromPointEx( params )
 		}
 
 		if ( IsValid( data.trigger ) )
@@ -897,14 +916,13 @@ void function LootAndStoryMarvin_OnKilled( entity marvin, var damageInfo )
 #endif //SERVER
 
 #if SERVER
-bool function LootMarvinArm_OnPickup( entity marvinArm, entity playerUser, int pickupFlags, entity deathBox, int ornull desiredCount, LootData lootData )
+bool function LootMarvinArm_OnPickup( entity marvinArm, entity playerUser, int pickupFlags, entity deathBox, int ornull desiredCount )
 {
-	/*bool result = PickupBackpackItem( marvinArm, playerUser, pickupFlags, deathBox, desiredCount )
+	bool result = PickupBackpackItem( marvinArm, playerUser, pickupFlags, deathBox, desiredCount )
 
-	if ( result )
-		Remote_CallFunction_NonReplay(playerUser, "ServerCallback_PromptPingLootMarvin", playerUser)*/
-
-	return false//result
+	//Remote_CallFunction_NonReplay(playerUser, "ServerCallback_PromptPingLootMarvin", playerUser)
+	AttemptPingNearestValidMarvinForPlayer(playerUser)
+	return result
 }
 #endif //SERVER
 
@@ -912,8 +930,8 @@ bool function LootMarvinArm_OnPickup( entity marvinArm, entity playerUser, int p
 #if CLIENT
 void function ServerCallback_PromptPingLootMarvin ( entity player )
 {
-	/*AddOnscreenPromptFunction( "quickchat", void function( entity player ) {
-		Remote_ServerCallFunction("ClientCallback_PromptPingLootMarvin")
+	/*AddPingBlockingFunction( "quickchat", void function( entity player ) {
+		Remote_CallFunction_NonReplay("ClientCallback_PromptPingLootMarvin")
 	}, 6.0, "#PING_LOOT_MARVIN")*/
 }
 #endif
@@ -951,21 +969,22 @@ void function AttemptPingNearestValidMarvinForPlayer( entity player )
 	{
 		entity marvin = allResults[i].ent
 
-		/*if ( !SURVIVAL_DeathFieldIsValid( Survival_GetPlayerRealm( player ) ) )
+		if ( !SURVIVAL_DeathFieldIsValid() )
 		{
 			nearestMarvin = marvin
 			break
 		}
 
-		if ( SURVIVAL_PosInSafeZone( Survival_GetPlayerRealm( player ), marvin.GetOrigin() ) )
+		if ( SURVIVAL_PosInSafeZone( marvin.GetOrigin() ) )
 		{
 			nearestMarvin = marvin
 			break
-		}*/
+		}
 	}
 
 	if ( !IsValid( nearestMarvin ) )
 		return
+
 
 	// ping the nearest valid marvin, only visible to the player who picked up the arm
 	entity wp = CreateWaypoint_Ping_Location( player, ePingType.LOOT_MARVIN, nearestMarvin, nearestMarvin.GetOrigin(), -1, false )
@@ -1046,7 +1065,7 @@ void function DispenseLootFromMarvin( entity marvin, entity player, MarvinData d
 
 	if ( shouldAttachArm )
 	{
-		//marvin.SetBodygroupModelByIndex( marvin.FindBodygroup( BODYGROUP_RIGHT_ARM ), BODYGROUP_RIGHT_ARM_INDEX_ATTACHED_SPECIAL )
+		marvin.SetBodygroupModelByIndex( marvin.FindBodygroup( BODYGROUP_RIGHT_ARM ), BODYGROUP_RIGHT_ARM_INDEX_ATTACHED_SPECIAL )
 		data.hasMissingArmBeenAttached = true
 		SURVIVAL_RemoveFromPlayerInventory( player, ITEM_MARVIN_ARM_REF, 1 )
 	}
@@ -1079,7 +1098,7 @@ void function DispenseLootFromMarvin( entity marvin, entity player, MarvinData d
 	{
 		waitthread PlayAnimLootMarvin( marvin, data.startPoint, ANIM_LOOT_MARVIN_SLOT_CRANK )
 		thread PlayAnimLootMarvin( marvin, data.startPoint, ANIM_LOOT_MARVIN_ACTIVE_LOOP )
-		//marvin.SetActivityModifier( ACT_MODIFIER_POWERED_DOWN, false )
+		marvin.SetActivityModifier( ACT_MODIFIER_STAGGER, false )
 	}
 
 	while( !data.hasSlotMachineSettled )
@@ -1107,7 +1126,7 @@ void function DispenseLootFromMarvin( entity marvin, entity player, MarvinData d
 			break
 	}
 
-	//marvin.SetActivityModifier( ACT_MODIFIER_POWERED_DOWN, true )
+	marvin.SetActivityModifier( ACT_MODIFIER_STAGGER, true )
 	waitthread PlayAnimLootMarvin( marvin, data.startPoint, dispenseAnim )
 
 	string pinActionName = data.hasMissingArmBeenAttached ? "loot_marvin_dispense_arm" : "loot_marvin_dispense"
@@ -1153,7 +1172,7 @@ void function LootMarvin_OnDispenseLootAnimEvent( entity marvin )
 	EmitSoundOnEntity( marvin, SFX_LOOT_MARVIN_DISPERSE )
 	thread PlayLootDisperseFx_Thread ( marvin, data.currentEmoticonIdx )
 
-	vector chestOrigin  = marvin.GetAttachmentOrigin( marvin.LookupAttachment( "CHESTFOCUS" ) )
+	vector chestOrigin  = marvin.GetAttachmentOrigin( marvin.LookupAttachment( "SCREEN_CENTER" ) )
 	int lootThrowVecIdx = 0
 	array<vector> lootThrowVectors
 	lootThrowVectors.append( FlattenVec( RotateVector( marvin.GetForwardVector(), <0, -45, 0> ) ) )
@@ -1201,7 +1220,7 @@ void function PlayLootDisperseFx_Thread ( entity marvin, int currentEmoticonIdx 
 	int vfxAttachIdx   = marvin.LookupAttachment( "SCREEN_CENTER" )
 
 	//Given ( entity, particleSystemIndex, FX_PATTACH_ attachType, attachmentIndex ),
-	entity fxHandle    = StartParticleEffectOnEntity_ReturnEntity( marvin, particleIdx, FX_PATTACH_POINT_FOLLOW, marvin.LookupAttachment( "CHESTFOCUS" ) )
+	entity fxHandle    = StartParticleEffectOnEntity_ReturnEntity( marvin, particleIdx, FX_PATTACH_POINT_FOLLOW, vfxAttachIdx )
 
 	vector rarityColor = GetFXRarityColorForTier( lootRarity )
 	EffectSetControlPointVector( fxHandle, 1, rarityColor )

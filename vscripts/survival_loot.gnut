@@ -46,10 +46,10 @@ global function SURVIVAL_ThrowLootFromPointEx
 global function CreateLootForFlyerDeathBox
 global function SURVIVAL_AutoEquipOrdnanceFromInventory
 global function SURVIVAL_EquipOrdnanceFromInventory
-
 global function SURVIVAL_Death_DropLoot
 global function SURVIVAL_IsFallDeath
 global function SURVIVAL_IsCrushDeath
+global function SpawnVaultKey
 global function SURVIVAL_DropLoot_IncrementThrowAngle
 
 global function ShouldForceUseSafeSpotForDeathBox_AddPlayer
@@ -58,6 +58,7 @@ global function ShouldForceUseSafeSpotForDeathBox_RemovePlayer
 global function AddCallback_LootPhysicsParented
 global function RemoveCallback_LootPhysicsParented
 global function GetRefOrRefFromGroup
+global function GiveLoot
 
 global function Dev_ForceDropDeathbox
 global function SURVIVAL_Death_DropLoot_Internal
@@ -76,6 +77,10 @@ global function AddCallback_OnPlayerWeaponAttachmentChanged
 global function RemoveCallback_OnPlayerWeaponAttachmentChanged 
 
 global function GetGroundPosition
+
+#if DEVELOPER
+global function DEV_SpawnDeathBoxWithRandomLoot
+#endif
 
 const int GIVE_FULL_AMMO_MARKER = 1337
 
@@ -1613,34 +1618,11 @@ void function SURVIVAL_PlayerPickedupItem( entity pickup, entity player, int uni
 
 	pickup.Signal( "OnItemPickup", { player = player } )
 
-	// if( pickupData.ref == "snd_bomb" && Gamemode() == eGamemodes.fs_snd && GetGameState() == eGameState.Playing )
-	// {
-		// player.p.playerHasBomb = true
-		// SetBombState(bombState.CARRIED)
-		// SetBombEntity(null)
-		
-		// #if DEVELOPER
-			// printt( "new bomb carrier " + player + player.p.playerHasBomb )
-		// #endif
-
-		// foreach(sPlayer in GetPlayerArrayOfTeam( Safe_GetAttackerTeam() ))
-		// {
-			// if( !IsValid(sPlayer) || sPlayer == player ) continue
-			
-			// Remote_CallFunction_NonReplay( sPlayer, "SND_HintCatalog_WithEntity", 0, player) //a player have the bomb
-		// }
-		
-		// Remote_CallFunction_NonReplay( player, "SND_HintCatalog", 14, 0 )
-	// }
-	
-	// if( pickupData.ref == "fs_ball" && GetGameState() == eGameState.Playing )
-	// {
-		// SetBallEntity( null )
-		// SetBallCarrier( player )
-	// }
-
-	// foreach ( callbackFunc in file.Callbacks_OnPlayerLootPickup )
-		// callbackFunc( player, pickup, ref, unitsPickedUp, !dontDestroy, deathBox, pickupFlags )
+	if( pickupData.ref == ITEM_MARVIN_ARM_REF )
+	{
+		printf(pickupData.ref + pickup)
+		LootMarvinArm_OnPickup(pickup, player, pickupFlags, deathBox, unitsPickedUp  )
+	}
 
 	if ( dontDestroy )
 		return
@@ -2019,6 +2001,18 @@ void function SURVIVAL_TryTakeDefaultMeleePrimary( entity player )
 void function TrackingVision_CreatePOIForPickedUpLoot( entity player, int lootType, string ref, vector origin, int team, entity idk )
 {
 
+}
+
+void function GiveLoot( entity player, string refOrGroup, int countOverride = -1 )
+{
+	string ref = GetRefOrRefFromGroup( refOrGroup )
+	if ( ref == "blank" )
+		return
+
+	int countNatural = SURVIVAL_Loot_GetLootDataByRef( ref ).countPerDrop
+	int count        = ((countOverride >= 0) ? countOverride : countNatural)
+	entity item      = SpawnGenericLoot( ref, player.GetOrigin() + <0, 0, 32>, <-1, -1, -1>, count )
+	Survival_PickupItem( item, player, 0 )
 }
 
 string function GetRefOrRefFromGroup( string refOrGroup )
@@ -3517,6 +3511,16 @@ int function CalculateRemainingLootTier( int remainingLootTier, array<string> lo
 	return remainingLootTier
 }
 
+entity function SpawnVaultKey( string vaultKeyRef, vector origin )
+{
+	vector newOrigin = origin + <0, 0, 2>
+	entity vaultKey = SpawnGenericLoot( vaultKeyRef, newOrigin )
+
+	SURVIVAL_Loot_DisableNetworkDistanceCullingManaged( vaultKey )
+
+	return vaultKey
+}
+
 void function FakePhysicsThrow( entity player, entity drop, vector forward, float DestroyTimer = -1, bool isCargoBot = false )
 {
 	entity physics = CreatePropPhysics( drop.GetModelName(), drop.GetOrigin(), drop.GetAngles() )
@@ -4778,37 +4782,11 @@ void function VaultKey_Decrement( entity player, string ref, int count )
 {
 	SURVIVAL_RemoveFromPlayerInventory( player, ref, count )
 
-	// if ( SURVIVAL_CountItemsInInventory( player, ref ) == 0 )
-	// {
-		// HideDataVaultsFromPlayer( player )
-	// }
-	
-	//remove this when retail vault is implemented. Cafe
-	bool mateHasAnotherKey = false
-	foreach( mate in GetPlayerArrayOfTeam( player.GetTeam() ) )
+	if ( SURVIVAL_CountItemsInInventory( player, ref ) == 0 )
 	{
-		if( mate == player ) continue
-		
-		if( VaultPanel_HasPlayerDataKnife( mate ) )
-			mateHasAnotherKey= true
+		HideDataVaultsFromPlayer( player )
 	}
 
-	foreach( mate in GetPlayerArrayOfTeam( player.GetTeam() ) )
-	{	
-		if( !mateHasAnotherKey )
-		{
-			foreach( minimapObj in VaultPanel_GetAllMinimapObjs() )
-				SetMinimapObjectVisibleToPlayer( mate, minimapObj, false )
-				
-			foreach( paneldata in GetAllVaultPanelsData() )
-				if( paneldata.openByTeamNumber == player.GetTeam() && paneldata.panelState == ePanelState.UNLOCKED )
-					SetMinimapObjectVisibleToPlayer( mate, paneldata.openMinimapObj, true )
-		} else
-		{
-			foreach( minimapObj in VaultPanel_GetBestMinimapObjs() )
-				SetMinimapObjectVisibleToPlayer( mate, minimapObj, true )
-		}
-	}
 	if ( player.p.isInExtendedUse )
 		player.Signal( "OnContinousUseStopped" )
 }
@@ -5782,3 +5760,123 @@ void function Loot_RemoveCallback_OnGiveMainWeapon( void functionref(entity, ent
 	Assert( file.Callbacks_OnGiveMainWeapon.contains( callbackFunc ), "Can't remove callback that wasn't added " + string( callbackFunc ) + " with Loot_RemoveCallback_OnGiveMainWeapon" )
 	file.Callbacks_OnGiveMainWeapon.fastremovebyvalue( callbackFunc )
 }
+
+#if DEVELOPER
+entity function DEV_SpawnDeathBoxWithRandomLoot( entity player )
+{
+	if ( !IsValid( player ) )
+		player = GP()
+
+	table<string, int> contents = {}
+
+	array<LootData> lootFlavs = []
+	foreach ( string ref, LootData lootFlav in SURVIVAL_Loot_GetLootDataTable() )
+	{
+		if ( ref != "blank" )
+			lootFlavs.append( lootFlav )
+	}
+
+	int maxLootFlavs = 40			// Stops us from hitting limit on items parented to the deathbox
+	int numFlavs = RandomInt( minint( lootFlavs.len(), maxLootFlavs) )
+	lootFlavs.randomize()
+	for ( int flavIdx = 0; flavIdx < numFlavs; flavIdx++ )
+	{
+		LootData lootFlav = lootFlavs[flavIdx]
+		int count         = lootFlav.inventorySlotCount
+		contents[lootFlav.ref] <- count
+	}
+
+	return DEV_SpawnDeathBox( player, contents )
+}
+
+entity function DEV_SpawnDeathBox( entity player, table<string, int> contents )
+{
+	if ( !IsValid( player ) )
+		player = GP()
+
+	entity deathBox = CreateDeathBox( EyeTraceVec( player ), <0, player.EyeAngles().y, 0> )
+	deathBox.SetOwner( player )
+	deathBox.SetNetInt( "ownerEHI", player.GetEncodedEHandle() )
+	deathBox.ClearParent()
+	deathBox.Solid()
+	deathBox.SetUsable()
+	deathBox.SetUsableByGroup( "pilot" )
+	deathBox.SetUsePrompts( "#DEATHBOX_HINT", "#DEATHBOX_HINT" )
+	deathBox.AddUsableValue( USABLE_CUSTOM_HINTS )
+
+	thread FakePhysicsThrow_Retail( player, deathBox, <0, 0, -100>, false )
+
+	DEV_AddToDeathBox( deathBox, contents )
+
+	UpdateDeathBoxHighlight( deathBox, true )
+
+	return deathBox
+}
+
+entity function DEV_AddToDeathBox( entity deathBox, table<string, int> contents )
+{
+	if ( !IsValid( deathBox ) )
+	{
+		entity player   = GP()
+		TraceResults tr = TraceLine( player.EyePosition(), player.EyePosition() + 1000.0 * player.GetViewForward(), [ player ] )
+		deathBox = tr.hitEnt
+	}
+	if ( !IsValid( deathBox ) )
+		return null
+
+	deathBox.e.blockActive = true
+	//foreach ( string lootRef in lootRefs )
+	foreach ( string ref, int count in contents )
+	{
+		string lootRef = ""
+		if ( SURVIVAL_Loot_IsRefValid( ref ) )
+		{
+			lootRef = ref
+		}
+		else
+		{
+			foreach ( string _, LootData lootFlavor in SURVIVAL_Loot_GetLootDataTable() )
+			{
+				if ( lootFlavor.ref == ref )
+				{
+					lootRef = ref
+					break
+				}
+			}
+			if ( lootRef == "" )
+			{
+				foreach ( string _, LootData lootFlavor in SURVIVAL_Loot_GetLootDataTable() )
+				{
+					if ( lootFlavor.ref.find( ref ) >= 0 )
+					{
+						if ( lootRef == "" )
+							lootRef = lootFlavor.ref
+						else
+							Warning( "Multiple matches for \"%s\" (%s, %s)", ref, lootRef, lootFlavor.ref )
+					}
+				}
+			}
+		}
+		if ( lootRef == "" )
+		{
+			Warning( "Couldn't match \"%s\"", ref )
+			continue
+		}
+
+		int placedCount = 0
+		while ( placedCount < count )
+		{
+			LootData lootFlavor = SURVIVAL_Loot_GetLootDataByRef( lootRef )
+			int toPlace         = minint( lootFlavor.countPerDrop, count - placedCount )
+			entity loot         = SpawnGenericLoot( lootRef, deathBox.GetOrigin(), < -1, -1, -1>, toPlace )
+			AddToDeathBox( loot, deathBox )
+			placedCount += toPlace
+		}
+	}
+	deathBox.e.blockActive = false
+
+	UpdateDeathBoxHighlight( deathBox, true )
+
+	return deathBox
+}
+#endif

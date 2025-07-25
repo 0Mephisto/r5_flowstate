@@ -13,8 +13,9 @@ void function ClientCommands_Init()
 	AddClientCommandCallback( "finite_ammo", ClientCommand_finite_ammo )
 	AddClientCommandCallback( "ToggleThirdPerson", ClientCommand_ToggleThirdPerson )
 	AddClientCommandCallback( "ToggleHUD", ClientCommand_ToggleHUD )
-
+	AddClientCommandCallback( "ShadowForm", ClientCommand_ShadowForm )
 	AddClientCommandCallback( "recharge", ClientCommand_recharge )
+	AddClientCommandCallback( "demigod", ClientCommand_demigod )
 }
 
 bool function ClientCommand_noclip( entity player, array<string> args )
@@ -32,6 +33,38 @@ bool function ClientCommand_noclip( entity player, array<string> args )
 		player.SetPhysics( MOVETYPE_WALK )
 	else
 		player.SetPhysics( MOVETYPE_NOCLIP )
+			
+	return true
+}
+
+bool function ClientCommand_demigod( entity player, array<string> args )
+{
+	if ( GetConVarInt( "sv_cheats" ) != 1 )
+		return true
+	
+	if ( IsDemigod(player) )
+		DisableDemigod(player)
+	else
+		EnableDemigod(player)
+			
+	return true
+}
+
+bool function ClientCommand_ShadowForm( entity player, array<string> args )
+{
+	if ( GetConVarInt( "sv_cheats" ) != 1 )
+		return true
+	
+	if ( IsValid( player.GetParent() ) )
+		return false
+				
+	if ( player.IsPhaseShifted() )
+		return false
+
+	if ( !IsPlayerShadowZombie( player ) )
+		DEV_GiveShadowZombieAbilities( player )
+	else
+		RemoveShadowZombieAbilities(player)
 			
 	return true
 }
@@ -89,6 +122,8 @@ bool function ClientCommand_infinite_ammo( entity player, array<string> args )
 	{
 		if( weapon.HasMod( "survival_finite_ammo" ) )
 			weapon.RemoveMod( "survival_finite_ammo" )
+		else
+			weapon.AddMod( "survival_infinite_ammo" )
 	}
 	
 	return true

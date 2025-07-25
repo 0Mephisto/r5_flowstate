@@ -756,6 +756,10 @@ void function RemoteFunctions_Init_Begin()
 	ScriptRemote_RegisterClientFunction( "ServerCallback_WatchForSyncedMeleeCancelPeriod", "float", 0.0, 10.0, 24 )
 	ScriptRemote_RegisterClientFunction( "ServerCallback_SyncedMeleeDone" )
 	ScriptRemote_RegisterClientFunction( "ServerCallback_SetWeaponPreviewState", "bool" )
+
+	// Loot Marvin Init
+	ScriptRemote_RegisterUntypedFunction_deprecated( "ClientCallback_PromptPingLootMarvin" )
+	ScriptRemote_RegisterClientFunction( "ServerCallback_PromptPingLootMarvin", "entity" )
 	
 	// Client-side helper (not permissive)
 	ScriptRegisterNetworkedVariable( "IsAdmin", SNDC_PLAYER_EXCLUSIVE, SNVT_BOOL, false )

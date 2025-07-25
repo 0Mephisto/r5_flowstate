@@ -1855,6 +1855,22 @@ entity function CreateTriggerCylinderNetworked_NoObjectPlacementSpecial( vector 
 	return trigger
 }
 
+entity function CreateTriggerCylinderNetworked_NoRadiusNoObjectPlacementSpecial( vector origin, float radius, float aboveHeight, float belowHeight, vector angles = <0,0,0> )
+{
+	entity trigger = Entities_CreateByClassname( "trigger_cylinder" )//( "trigger_networked_no_ops" )
+	trigger.SetRadius( radius )
+	trigger.SetAboveHeight( aboveHeight )
+	trigger.SetBelowHeight( belowHeight )
+	trigger.kv.triggerFilterNpc = "none"
+	trigger.kv.triggerFilterPlayer = "all"
+	trigger.kv.triggerFilterNonCharacter = 0
+	trigger.SetOrigin( origin )
+	trigger.SetAngles( angles )
+	DispatchSpawn( trigger )
+
+	return trigger
+}
+
 //-----------------------------------------------------------
 // CreateTriggerCylinderNetworked_OutOfBounds( origin, radius, height ) - create a networked cylinder blocks both object placement and object placement special
 //------------------------------------------------------------

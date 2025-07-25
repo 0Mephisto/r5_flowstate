@@ -7,6 +7,7 @@ global function SURVIVAL_ApplyLootAction
 global function PickupMainWeapon
 global function SwapMainWeapon
 global function AttachToWeapon
+global function PickupBackpackItem
 
 global enum eLootAction
 {

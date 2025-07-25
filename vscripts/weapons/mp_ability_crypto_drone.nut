@@ -3450,7 +3450,7 @@ float function GetNeurolinkRange( entity player )
 
 bool function DroneCanOpenDoor( entity drone, entity door )
 {
-	if ( HACK_IsVaultDoor( door ) )
+	if ( IsVaultDoor( door ) )
 		return false
 
 	// if( IsReinforced( door ) && !IsFriendlyTeam( drone.GetTeam(), door.GetTeam() ) )

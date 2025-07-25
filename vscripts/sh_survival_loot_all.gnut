@@ -203,8 +203,10 @@ global enum eLootType
 	HELMET
 	BLANK
 	DATAKNIFE
+	SHIPKEYCARD
 	RESOURCE
 	GADGET
+	MARVIN_ARM
 
 	_count
 }
@@ -1304,12 +1306,21 @@ int function SURVIVAL_Loot_GetLootTypeFromString( string lootTypeString )
 
 		case "data_knife":
 			return eLootType.DATAKNIFE
+			
+		case "ship_keycard":
+			return eLootType.SHIPKEYCARD
 
 		case "blank":
 			return eLootType.BLANK
 
 		case "resource":
 			return eLootType.RESOURCE
+			
+		case "gadget":
+			return eLootType.GADGET
+			
+		case "marvin_arm":
+			return eLootType.MARVIN_ARM
 
 		default:
 			//

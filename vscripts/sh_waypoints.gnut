@@ -2413,6 +2413,10 @@ float function GetDefaultTimeoutForPingType( entity player, int pingType )
 			return BOOSTZONE_ALIVE_TIME
 		case ePingType.SND_BOMB:
 			return 3
+			
+		case ePingType.STORY_MARVIN:
+		case ePingType.LOOT_MARVIN:
+			return 30.0
 	}
 	
 	if(IsValid(player))

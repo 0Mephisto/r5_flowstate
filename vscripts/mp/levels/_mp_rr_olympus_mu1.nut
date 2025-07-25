@@ -63,8 +63,8 @@ void function Olympus_OnEntitiesDidLoad()
 	file.vaultKeys.append( key )
 
 	SpawnWeaponsonRacks()
-	if (MapName() == eMaps.mp_rr_olympus_mu1 )
-		SetupKeyForShipVault()
+	//if (MapName() == eMaps.mp_rr_olympus_mu1 )
+		//SetupKeyForShipVault()
 
 	while( IsValid( first ) )
 	{
@@ -128,7 +128,7 @@ void function SetupKeyForShipVault()
 {
 	entity chosenKey = file.vaultKeys.getrandom()
 	
-	SpawnGenericLoot( "data_knife", chosenKey.GetOrigin(), chosenKey.GetAngles(), 1 )
+	SpawnGenericLoot( "ship_keycard", chosenKey.GetOrigin(), chosenKey.GetAngles(), 1 )
 	printt( "Spawned key for Ship Bridge Vault at ", chosenKey.GetOrigin() )
 	chosenKey.Destroy()
 }
