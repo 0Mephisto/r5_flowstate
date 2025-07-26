@@ -506,7 +506,7 @@ bool function KeyCardPickUp_Use( entity pickup, entity player, int pickupFlags =
 	{
 		#if CLIENT
 		if( player == GetLocalViewPlayer() )
-			AddPlayerHint( 5.0, 0.25, $"", "#PING_LOOT_BRIDGE_REVEAL" )
+			AddPlayerHint( 5.0, 0.25, $"", "Bridge location added to map." )
 		#endif
 		#if SERVER
 		PlayBattleChatterLineToSpeakerAndTeam( player, "bc_keyCardGot" )
