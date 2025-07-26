@@ -884,6 +884,7 @@ void function SetupPrototypesDevMenu()
 	SetupDevCommand( "Teleport to Skybox Camera", "script thread ToggleSkyboxView()" )
 	SetupDevCommand( "Spawn Deathbox With Random Loots", "script DEV_SpawnDeathBoxWithRandomLoot(gp()[0])" )
 	SetupDevMenu( "Loot Marvin Debug (Olympus Only)", SetDevMenu_LootMarvin )
+	SetupDevMenu( "Vault System Debug", SetDevMenu_VaultDebug )
 	SetupDevCommand( "Summon Players to player 0", "script summonplayers()" )
 	//SetupDevMenu( "Incap Shield Debugging", SetDevMenu_SurvivalIncapShieldBots )
 }
@@ -895,7 +896,7 @@ void function SetDevMenu_LootMarvin( var _ )
 
 void function SetDevMenu_LootMarvinPanel()
 {
-	SetupDevCommand( "See All Marvin Locations", "script SeeMarvinSpawnLocations()" )
+	SetupDevCommand( "Debug Draw Marvin Locations", "script SeeMarvinSpawnLocations()" )
 	SetupDevCommand( "Teleport to Random Marvin", "script TeleportToRandomMarvinLocations()" )
 	SetupDevCommand( "Ping Nearest Marvin", "script AttemptPingNearestValidMarvinForPlayer(gp()[0])" )
 	SetupDevCommand( "Create Loot Marvin At Crosshair", "script CreateMarvin_Loot()" )
@@ -903,6 +904,19 @@ void function SetDevMenu_LootMarvinPanel()
 	SetupDevCommand( "Create Story Marvin At Crosshair", "script CreateMarvin_Story()" )
 }
 
+void function SetDevMenu_VaultDebug( var _ )
+{
+	thread ChangeToThisMenu( SetDevMenu_VaultDebugPanel )
+}
+
+void function SetDevMenu_VaultDebugPanel()
+{
+	SetupDevCommand( "Debug Draw Vault Loot", "script DEV_ShowVaults()" )
+	SetupDevCommand( "Debug Draw Vault Keys", "script DEV_ShowVaultKeys()" )
+	SetupDevCommand( "Teleport to Available Vault Key", "script DEV_TPToVaultKeys()" )
+	SetupDevCommand( "Equip Every Vault Key", "script DEV_GiveVaultKeys(gp()[0])" )
+	SetupDevCommand( "Debug Draw Vault Panel Infos", "script DEV_ShowVaultPanelInfos()" )
+}
 
 void function RunCodeDevCommandByAlias( string alias )
 {

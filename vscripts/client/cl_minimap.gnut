@@ -151,6 +151,7 @@ void function RegisterMinimapPackage( string entityClassname, int customStateInd
 	if( Playlist() == ePlaylists.fs_aimtrainer )
 		return
 
+	Assert( (entityClassname != "prop_dynamic"), "prop_dynamic should be registered with RegisterMinimapPackage_PropDynamic" )
 	Assert( (entityClassname in minimapAssetMap), "minimap is not currently setup to handle this type of entity: " + entityClassname )
 
 	MinmapPackage minimapPackage
@@ -179,7 +180,9 @@ void function RegisterMinimapPackage( string entityClassname, int customStateInd
 			minimapAssetMap[entityClassname][customStateIndex] = minimapPackage
 			break
 
+		case "prop_control_panel":
 		case "prop_script":
+		case "prop_loot_grabber":
 		case "item_flag":
 			Assert( customStateIndex > 0 && customStateIndex < eMinimapObject_prop_script.COUNT )
 			minimapAssetMap[entityClassname].resize( eMinimapObject_prop_script.COUNT )
@@ -272,6 +275,9 @@ void function ClMinimap_Init()
 	RegisterMinimapPackage( "prop_script", eMinimapObject_prop_script.LTS_SITE_A, MINIMAP_OBJECT_RUI, MinimapPackage_LTSBombSiteA )
 	RegisterMinimapPackage( "prop_script", eMinimapObject_prop_script.LTS_SITE_B, MINIMAP_OBJECT_RUI, MinimapPackage_LTSBombSiteB )
 	/*
+	
+	RegisterMinimapPackage( "prop_script", eMinimapObject_prop_script.VAULT_PANEL, MINIMAP_OBJECT_RUI, MinimapPackage_VaultPanel )
+	RegisterMinimapPackage( "prop_script", eMinimapObject_prop_script.VAULT_PANEL_OPEN, MINIMAP_OBJECT_RUI, MinimapPackage_VaultPanelOpen )
 	{
 		MinmapPackage atAreaPacakage
 		atAreaPacakage.minimapAsset = MINIMAP_OBJ_AREA_RUI

@@ -24,6 +24,8 @@ global function HasVaultKey
 
 #if CLIENT
 global function VaultPanel_ServerToClient_SetVaultMarkerClientEnt
+global function MinimapPackage_VaultPanel
+global function MinimapPackage_VaultPanelOpen
 #endif
 
 #if SERVER
@@ -51,6 +53,7 @@ global function DEV_ShowVaults
 global function DEV_ShowVaultKeys
 global function DEV_GiveVaultKeys
 global function DEV_ShowVaultPanelInfos
+global function DEV_TPToVaultKeys
 #endif
 
 const string LOOT_VAULT_PANEL_SCRIPTNAME = "LootVaultPanel"
@@ -122,7 +125,7 @@ struct SpecialVolumeDimensions
 	float heightAbove
 	float heightBelow
 }
-#endif // DEV
+#endif // DEVELOPER
 
 global struct UniqueVaultData
 {
@@ -290,11 +293,9 @@ void function Sh_Loot_Vault_Panel_Init()
                           
 		AddCreateCallback( "prop_dynamic", VaultPanelSpawned )
 		AddCreateCallback( "prop_door", VaultDoorSpawned )
-		//RegisterMinimapPackage( "prop_script", eMinimapObject_prop_script.VAULT_PANEL, MINIMAP_OBJECT_RUI, MinimapPackage_VaultPanel, FULLMAP_OBJECT_RUI, MinimapPackage_VaultPanel )
-		//RegisterMinimapPackage( "prop_script", eMinimapObject_prop_script.VAULT_PANEL_OPEN, MINIMAP_OBJECT_RUI, MinimapPackage_VaultPanelOpen, FULLMAP_OBJECT_RUI, MinimapPackage_VaultPanelOpen )
 
-		//if( VaultPanels_PingFromMap_Enabled() )
-			//AddCallback_OnFindFullMapAimEntity( GetVaultUnderAim, PingVaultUnderAim )
+		if( VaultPanels_PingFromMap_Enabled() )
+			AddCallback_OnFindFullMapAimEntity( GetVaultUnderAim, PingVaultUnderAim )
 	#endif //CLIENT
 
 	if( VaultPanels_PingFromMap_Enabled() )
@@ -402,16 +403,16 @@ void function SetupVaultPanels()
 		minimapObj.Minimap_SetCustomState( eMinimapObject_prop_script.VAULT_PANEL )
 		minimapObj.Minimap_SetZOrder( MINIMAP_Z_OBJECT )
 		SetVaultPanelMinimapObj( panel, minimapObj )
-		//foreach ( player in GetPlayerArray() )
-			//minimapObj.Minimap_Hide( 0, player )
+		foreach ( player in GetPlayerArray() )
+			minimapObj.Minimap_Hide( 0, player )
 
 		entity openMinimapObj = CreatePropScript( $"mdl/dev/empty_model.rmdl", panel.GetOrigin() )
 		SetTargetName( openMinimapObj, "VaultPanel" )
 		openMinimapObj.Minimap_SetCustomState( eMinimapObject_prop_script.VAULT_PANEL_OPEN )
 		openMinimapObj.Minimap_SetZOrder( MINIMAP_Z_OBJECT )
 		SetVaultPanelOpenMinimapObj( panel, openMinimapObj )
-		//foreach ( player in GetPlayerArray() )
-			//openMinimapObj.Minimap_Hide( 0, player )
+		foreach ( player in GetPlayerArray() )
+			openMinimapObj.Minimap_Hide( 0, player )
 	}
 }
 
@@ -435,8 +436,8 @@ void function HideDataVaultsFromTeam( int team )
 		entity minimapObj = GetVaultPanelMinimapObj( panel )
 		foreach ( player in GetPlayerArrayOfTeam( team ) )
 		{
-			//if ( IsValid( minimapObj ) )
-				//minimapObj.Minimap_Hide( 0, player )
+			if ( IsValid( minimapObj ) )
+				minimapObj.Minimap_Hide( 0, player )
 		}
 	}
 }
@@ -664,10 +665,7 @@ UniqueVaultData function GetUniqueVaultDataByLootItem( int lootType )
 	                  
 	else if ( lootType == eLootType.SHIPKEYCARD )
 		data = SHIP_VAULT_DATA
-		
-	//else if ( lootType == eLootType.MARVIN_ARM )
-		//LootMarvinArm_OnPickup
-		
+
 
 	return data
 }
@@ -1469,10 +1467,10 @@ void function ShipVaultKeyPickupRandomVO( entity player )
 
 void function SetMinimapObjectVisibleToPlayer( entity player, entity minimapObj, bool visible )
 {
-	/*if( visible )
+	if( visible )
 		minimapObj.Minimap_AlwaysShow( 0, player )
 	else
-		minimapObj.Minimap_Hide( 0, player )*/
+		minimapObj.Minimap_Hide( 0, player )
 }
 
 #endif // SERVER
@@ -1495,6 +1493,21 @@ void function DEV_ShowVaultKeys()
 		if( IsValid( vaultKey ) )
 		{
 			DebugDrawSphere( vaultKey.GetOrigin(), 64, 102,0,204, true, 60 )
+		}
+		else
+		{
+			file.dev_VaultKeys.fastremovebyvalue( vaultKey )
+		}
+	}
+}
+
+void function DEV_TPToVaultKeys()
+{
+	foreach( vaultKey in file.dev_VaultKeys )
+	{
+		if( IsValid( vaultKey ) )
+		{
+			gp()[0].SetOrigin(vaultKey.GetOrigin())
 		}
 		else
 		{

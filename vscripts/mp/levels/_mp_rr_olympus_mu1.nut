@@ -58,13 +58,7 @@ void function Olympus_OnEntitiesDidLoad()
 	array<entity> props
 	entity first = Entities_FindByClassname( null, "prop_dynamic" )
 
-	array<entity> vault = GetEntArrayByScriptName( "ship_vault_corpse" )
-	foreach( entity key in vault )
-	file.vaultKeys.append( key )
-
 	SpawnWeaponsonRacks()
-	//if (MapName() == eMaps.mp_rr_olympus_mu1 )
-		//SetupKeyForShipVault()
 
 	while( IsValid( first ) )
 	{

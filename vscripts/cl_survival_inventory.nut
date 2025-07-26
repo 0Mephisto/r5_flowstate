@@ -2156,6 +2156,8 @@ void function GroundItemsInit( entity player, array<entity> loot )
 			case eLootType.CUSTOMPICKUP:
 			case eLootType.BLANK:
 			case eLootType.DATAKNIFE:
+			case eLootType.MARVIN_ARM:
+			case eLootType.SHIPKEYCARD:
 			case eLootType.RESOURCE:
 			attachments.append( gd )
 			break

@@ -192,6 +192,9 @@ bool function TryPickupItem( int action, entity pickup, entity player, int picku
 		case eLootType.DATAKNIFE:
 			pickedUp = DataKnifePickUp_Use( pickup, player, pickupFlags )
 			break
+		case eLootType.SHIPKEYCARD:
+			pickedUp = KeyCardPickUp_Use( pickup, player, pickupFlags )
+			break
 		case eLootType.RESOURCE:
 			pickedUp = PickupResource( pickup, player, pickupFlags, deathBox, desiredCount )
 			//printt("eLT AMMO", pickedUp)
@@ -477,25 +480,39 @@ bool function DataKnifePickUp_Use( entity pickup, entity player, int pickupFlags
 	if ( SURVIVAL_AddToPlayerInventory( player, data.ref, 1 ) > 0 )
 	{
 		#if CLIENT
-		/*if( player == GetLocalViewPlayer() && MapName() == eMaps.mp_rr_olympus_mu1 )
-			AddPlayerHint( 5.0, 0.25, $"", "#PING_LOOT_BRIDGE_REVEAL" )
-		else */if( player == GetLocalViewPlayer() )
+		if( player == GetLocalViewPlayer() )
 			AddPlayerHint( 5.0, 0.25, $"", "#PING_LOOT_VAULT_REVEAL" )
 		#endif
 		#if SERVER
 		PlayBattleChatterLineToSpeakerAndTeam( player, "bc_vaultKeyGot" )
 		
-		foreach( mate in GetPlayerArrayOfTeam( player.GetTeam() ) )
-		{
-			foreach( minimapObj in VaultPanel_GetAllMinimapObjs() )
-			SetMinimapObjectVisibleToPlayer( mate, minimapObj, false )
-		}
+		ShowDataVaultsToTeam( player.GetTeam())
+		#endif
+		return true
+	}
+	else
+	{
+		return false
+	}
 
-		foreach( mate in GetPlayerArrayOfTeam( player.GetTeam() ) )
-		{
-			foreach( minimapObj in VaultPanel_GetBestMinimapObjs() )
-			SetMinimapObjectVisibleToPlayer( mate, minimapObj, true )
-		}
+	unreachable
+}
+
+bool function KeyCardPickUp_Use( entity pickup, entity player, int pickupFlags = 0, entity deathBox = null )
+{
+	LootData data = SURVIVAL_Loot_GetLootDataByIndex( pickup.GetSurvivalInt() )
+
+	if ( SURVIVAL_AddToPlayerInventory( player, data.ref, 1 ) > 0 )
+	{
+		#if CLIENT
+		if( player == GetLocalViewPlayer() )
+			AddPlayerHint( 5.0, 0.25, $"", "#PING_LOOT_BRIDGE_REVEAL" )
+		#endif
+		#if SERVER
+		PlayBattleChatterLineToSpeakerAndTeam( player, "bc_keyCardGot" )
+		
+		ShowDataVaultsToTeam( player.GetTeam())
+
 		#endif
 		return true
 	}

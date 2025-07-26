@@ -21,6 +21,7 @@ global function ServerCallback_RefreshDeathBoxHighlight
 
 global function AddCallback_OnUpdateShowButtonHints
 global function AddCallback_OnVictoryCharacterModelSpawned
+global function AddCallback_OnFindFullMapAimEntity
 
 global function OnHealthPickupTypeChanged
 
@@ -310,6 +311,7 @@ struct
 	table<entity, var> playerArrows
 	var fullmaprui
 	VictorySoundPackage functionref() victorySoundPackageCallback
+	table<entity functionref( vector, float ), bool functionref( entity )> fullMapAimTargetCallbacks
 } file
 
 void function ClGamemodeSurvival_Init()
@@ -342,15 +344,12 @@ void function ClGamemodeSurvival_Init()
 	FlagInit( "SquadEliminated" )
 
 	ClGameState_RegisterGameStateAsset( $"ui/gamestate_info_survival.rpak" )
-	#if(true)
-		//
-		//
-		if ( IsFallLTM() )
-		{
-			ClGameState_RegisterGameStateAsset( $"ui/gamestate_info_shadow_squad.rpak" )
-			ClGameState_RegisterGameStateFullmapAsset( $"ui/gamestate_info_fullmap_shadow_squad.rpak" )
-		}
-	#endif
+
+	if ( IsFallLTM() )
+	{
+		ClGameState_RegisterGameStateAsset( $"ui/gamestate_info_shadow_squad.rpak" )
+		ClGameState_RegisterGameStateFullmapAsset( $"ui/gamestate_info_fullmap_shadow_squad.rpak" )
+	}
 
 	AddCallback_OnClientScriptInit( OverrideMinimapPackages )
 
@@ -484,6 +483,11 @@ void function Survival_EntitiesDidLoad()
 	file.toposInitialized = true
 }
 
+void function AddCallback_OnFindFullMapAimEntity( entity functionref( vector, float ) targetCallback, bool functionref( entity ) actionCallback )
+{
+	Assert( !( targetCallback in file.fullMapAimTargetCallbacks ), "Already added " + string( targetCallback ) + " with AddCallback_OnFindFullMapAimEntity" )
+	file.fullMapAimTargetCallbacks[ targetCallback ] <- actionCallback
+}
 
 void function Flowstate_CheckForLaserSightsAndApplyEffect()
 {
@@ -1174,7 +1178,6 @@ void function OverrideMinimapPackages( entity player )
 	RegisterMinimapPackage( "prop_script", eMinimapObject_prop_script.FD_HARVESTER, MINIMAP_OBJECT_RUI, MinimapPackage_PlaneInit )
 	RegisterMinimapPackage( "prop_script", eMinimapObject_prop_script.AT_BANK, MINIMAP_OBJECT_RUI, MinimapPackage_MarkerInit )
 	RegisterMinimapPackage( "npc_titan", eMinimapObject_npc_titan.AT_BOUNTY_BOSS, MINIMAP_OBJECT_RUI, FD_NPCTitanInit )
-	RegisterMinimapPackage( "prop_script", eMinimapObject_prop_script.VAULT_KEY, MINIMAP_OBJECT_RUI, MinimapPackage_VaultKey )
 	RegisterMinimapPackage( "prop_script", eMinimapObject_prop_script.VAULT_PANEL, MINIMAP_OBJECT_RUI, MinimapPackage_VaultPanel, FULLMAP_OBJECT_RUI, MinimapPackage_VaultPanel )
 	RegisterMinimapPackage( "prop_script", eMinimapObject_prop_script.VAULT_PANEL_OPEN, MINIMAP_OBJECT_RUI, MinimapPackage_VaultPanelOpen, FULLMAP_OBJECT_RUI, MinimapPackage_VaultPanelOpen )
 	RegisterMinimapPackage( "prop_script", eMinimapObject_prop_script.SURVEY_BEACON, MINIMAP_OBJECT_RUI, MinimapPackage_SurveyBeacon )
@@ -1193,24 +1196,6 @@ void function FD_NPCTitanInit( entity ent, var rui )
 {
 	RuiSetImage( rui, "defaultIcon", $"" )
 	RuiSetImage( rui, "clampedDefaultIcon", $"" )
-}
-
-void function MinimapPackage_VaultPanel( entity ent, var rui )
-{
-	RuiSetImage( rui, "defaultIcon", $"rui/hud/gametype_icons/survival/data_knife_vault" )
-	RuiSetFloat3( rui, "iconColor", (GetKeyColor( COLORID_LOOT_TIER5 )/255.0) )
-	RuiSetImage( rui, "clampedDefaultIcon", $"" )
-	RuiSetBool( rui, "useTeamColor", false )
-}
-
-void function MinimapPackage_VaultPanelOpen( entity ent, var rui )
-{
-	RuiSetImage( rui, "defaultIcon", $"rui/hud/gametype_icons/survival/data_knife_vault_open" )
-	RuiSetImage( rui, "smallIcon", $"rui/hud/gametype_icons/survival/data_knife_vault_small" )
-	RuiSetBool( rui, "hasSmallIcon", true )
-	RuiSetFloat3( rui, "iconColor", (GetKeyColor( COLORID_LOOT_TIER5 )/255.0) )
-	RuiSetImage( rui, "clampedDefaultIcon", $"" )
-	RuiSetBool( rui, "useTeamColor", false )
 }
 
 void function MinimapPackage_VaultKey( entity ent, var rui )
