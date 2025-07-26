@@ -882,7 +882,7 @@ int function GetCommsActionForBackpackItem( var button, int position )
 					return eCommsAction.INVENTORY_NEED_AMMO_SNIPER
 					
 				case eAmmoPoolType.arrow:
-					return eCommsAction.INVENTORY_NEED_AMMO_ARROW
+					return eCommsAction.INVENTORY_NEED_AMMO_ARROWS
 			}
 		}
 	}

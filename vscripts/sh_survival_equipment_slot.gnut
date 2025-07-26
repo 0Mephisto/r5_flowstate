@@ -587,7 +587,7 @@ int function FilledCommsAction_Weapon( string equipmentSlotRef, string itemRef, 
 			// if ( GetLocalClientPlayer().AmmoPool_GetCount( eAmmoPoolType.arrow ) <= 0 )
 				// return eCommsAction.INVENTORY_NO_AMMO_ARROW
         
-			return eCommsAction.INVENTORY_NEED_AMMO_ARROW
+			return eCommsAction.INVENTORY_NEED_AMMO_ARROWS
 	}
 
 	Warning( "GetCommsActionForEquipmentSlot() - Unhandled ammo type '" + ammotype + "'" )
