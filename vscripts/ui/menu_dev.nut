@@ -1285,13 +1285,13 @@ void function SetupRetailWeapons()
 	SetupDevCommand( "Pistol: P2020", "give mp_weapon_semipistol" )
 	SetupDevCommand( "Pistol: RE-45", "give mp_weapon_autopistol" )
 	SetupDevCommand( "Pistol: Wingman", "give mp_weapon_wingman" )
+	SetupDevCommand( "", "give blank" )
 
 	// SMGs
 	SetupDevCommand( "Submachine Gun: Alternator", "give mp_weapon_alternator_smg" )
 	SetupDevCommand( "Submachine Gun: Prowler", "give mp_weapon_pdw" )
 	SetupDevCommand( "Submachine Gun: R-99", "give mp_weapon_r97" )
 	SetupDevCommand( "Submachine Gun: Volt SMG", "give mp_weapon_volt_smg" )
-	SetupDevCommand( "", "give blank" )
 
 	// Rifles
 	SetupDevCommand( "Assault Rifle: Flatline", "give mp_weapon_vinson" )
@@ -1304,7 +1304,6 @@ void function SetupRetailWeapons()
 	SetupDevCommand( "Shotgun: EVA-8 Auto", "give mp_weapon_shotgun" )
 	SetupDevCommand( "Shotgun: Mastiff", "give mp_weapon_mastiff" )
 	SetupDevCommand( "Shotgun: Mozambique", "give mp_weapon_shotgun_pistol" )
-	SetupDevCommand( "", "give blank" )
 	SetupDevCommand( "", "give blank" )
 	SetupDevCommand( "", "give blank" )
 
@@ -1550,7 +1549,6 @@ void function SetupAbilities()
 	SetupDevCommand( "Lifeline Ultimate", "give mp_ability_care_package" )
 	SetupDevCommand( "Mirage Tactical", "give mp_ability_holopilot" )
 	SetupDevCommand( "Mirage Ultimate", "give mp_ability_mirage_ultimate" )
-	SetupDevCommand( " ", "give dontgiveanything" ) // blank line so Octance is in the same column
 	SetupDevCommand( "Octane Tactical", "give mp_ability_heal" )
 	SetupDevCommand( "Octane Ultimate", "give mp_weapon_jump_pad" )
 	SetupDevCommand( "Pathfinder Tactical", "give mp_ability_grapple" )

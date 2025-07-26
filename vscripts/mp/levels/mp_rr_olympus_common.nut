@@ -68,7 +68,7 @@ void function Olympus_MapInit_Common()
 		AddSpawnCallbackEditorClass( "prop_dynamic", "script_survival_crafting_harvester", EditorSpawnCallbackRemoveEnts )
 		AddSpawnCallbackEditorClass( "prop_dynamic", "script_survival_crafting_workbench_cluster", EditorSpawnCallbackRemoveEnts )//TODO: REMOVE THESE!!!
 		AddSpawnCallbackEditorClass( "func_brush", "func_brush_control_wall", EditorSpawnCallbackRemoveEnts )
-		AddSpawnCallbackEditorClass( "func_brush", "vehicle_fence_01", EditorSpawnCallbackRemoveEnts )
+		InitVehicleARBarriers()
 	#endif
 
 	#if SERVER
@@ -102,6 +102,19 @@ void function EditorSpawnCallbackRemoveEnts( entity ent )
 
 
 #if SERVER
+void function InitVehicleARBarriers()
+{
+	AddSpawnCallback( "func_brush", void function ( entity brush )
+	{
+		//printf( "Vehicle AR Barriers - tn:'%s', ec:'%s'", brush.GetTargetName(), GetEditorClass( brush ) )
+		if ( brush.GetScriptName() != "vehicle_fence_01" )
+			return
+
+		brush.NotSolid()
+		brush.Destroy()//TODO: Recover this function once we get tridents -LorryLeKral
+	} )
+}
+
 ///// Olympus rift /////
 
 void function Rift_Init( entity ent )
