@@ -45,7 +45,7 @@ global const STEAL_PISTOL_MODEL = $"mdl/weapons/p2011/w_p2011.rmdl"
 global const WINGMAN_MODEL = $"mdl/weapons/b3wing/w_b3wing.rmdl"
 global const AWALL_MODEL = $"mdl/weapons/sentry_shield/sentry_shield_proj.rmdl"
 global const AWALL_WALL = $"mdl/fx/pilot_shield_wall.rmdl"
-global const PULSE_BLADE_MODEL = $"mdl/weapons/kunai/w_kunai.rmdl"
+global const PULSE_BLADE_MODEL = $"mdl/weapons/b3wing/w_b3wing.rmdl"//$"mdl/weapons/kunai/w_kunai.rmdl" - TODO: Port the correct model later -Kral
 
 void function Anim_Init()
 {

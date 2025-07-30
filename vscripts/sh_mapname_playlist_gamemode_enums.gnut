@@ -73,6 +73,7 @@ global enum eMaps
 	mp_rr_desertlands_mu1, //15
 	mp_rr_desertlands_mu1_tt, //16
 	mp_rr_desertlands_mu2, //17
+	mp_rr_desertlands_mu3, //17
 	mp_rr_olympus, //18
 	mp_rr_olympus_mu2, //18
 	mp_rr_olympus_tt, //19
