@@ -1499,6 +1499,8 @@ global struct ServerProjectileStruct
 	bool hasBouncedOffVortex = false
 	bool isPlanted = false
 
+	bool ignoreOwnerForPlaceStickyEnt = false
+
 	// r5 stuff
 	vector savedDir
 	float savedShotTime

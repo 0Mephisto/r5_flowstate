@@ -130,6 +130,7 @@ global enum eDamageSourceId
 	mp_weapon_wrecking_ball
 	mp_weapon_epg
 	mp_weapon_smr
+	mp_weapon_car
 	mp_weapon_rocket_launcher
 	mp_weapon_grenade_electric_smoke
 	mp_weapon_grenade_gravity

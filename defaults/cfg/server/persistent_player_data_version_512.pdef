@@ -240,6 +240,12 @@ $STRUCT_START sLoadoutsData
 	int weapon_charm_for_SAID01408780340
 	int weapon_skin_for_SAID01644528094
 	int weapon_charm_for_SAID01644528094
+	int weapon_skin_for_SAID01644521094
+	int weapon_charm_for_SAID01644521094
+	int weapon_skin_for_SAID02050922236
+	int weapon_charm_for_SAID02050922236
+	int weapon_skin_for_SAID01981891556
+	int weapon_charm_for_SAID01981891556
 	int loadscreen_selection
 	int music_pack_selection
 $STRUCT_END

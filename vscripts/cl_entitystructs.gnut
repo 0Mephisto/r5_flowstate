@@ -297,6 +297,9 @@ global struct ClientProjectileStruct
 	vector PROTO_guidedMortarStartPos
 	vector PROTO_guidedMortarTarget
 	bool PROTO_guidedMortarStillGuidable
+	
+	bool ignoreOwnerForPlaceStickyEnt = false
+	bool isPlanted = false
 
 	void functionref( entity, DeployableCollisionParams ) bounceFunc
 	void functionref( entity, DeployableCollisionParams ) deployFunc

@@ -18,6 +18,7 @@ global function GetWeaponBurnMods
 global function InitMissileForRandomDriftForVortexLow
 global function IsPilotShotgunWeapon
 global function PlantStickyEntity
+global function PlantStickyEntity_Retail
 global function PlantStickyEntityThatBouncesOffWalls
 global function PlantStickyEntityOnWorldThatBouncesOffWalls
 global function PlantStickyGrenade
@@ -1312,6 +1313,145 @@ bool function PlantStickyEntity( entity ent, table collisionParams, vector angle
 	return true
 }
 
+bool function PlantStickyEntity_Retail( entity ent, DeployableCollisionParams cp, vector angleOffset = ZERO_VECTOR, bool ignoreHullTrace = false, bool moveOnNoHitTrace = true )
+{
+	if ( !EntityShouldStickEx( ent, cp ) )
+		return false
+	Assert( !ent.IsMarkedForDeletion(), "" )
+	Assert( !cp.hitEnt.IsMarkedForDeletion(), "" )
+
+	// Update normal from last bounce so when it explodes it can orient the effect properly
+	if ( LengthSqr( cp.normal ) <= FLT_EPSILON )
+	{
+		Warning( "PlantStickyEntity: normal vector " + cp.normal + " is a zero vector. Entity: '" + ent + "' is sticking to HitEnt: '" + cp.hitEnt + "' at position: " + cp.pos )
+		cp.normal = UP_VECTOR
+	}
+
+	vector plantAngles = AnglesCompose( VectorToAngles( cp.normal ), angleOffset )
+	vector plantPosition
+	if ( ignoreHullTrace )
+	{
+		plantPosition = cp.pos
+	}
+	else
+	{
+		#if DEV
+		if ( DEBUG_DRAW_PLANT_STICKY )
+		{
+			DebugDrawSphere( cp.pos, 5, COLOR_YELLOW, false, 60 )
+			DebugDrawArrow( cp.pos, cp.pos + cp.normal*20, 10, COLOR_YELLOW, false, 60 )
+		}
+		#endif
+		vector traceDir    = cp.normal * -1
+		vector mins        = cp.ignoreHullSize ? ZERO_VECTOR: ent.GetBoundingMins()
+		vector maxs        = cp.ignoreHullSize ? ZERO_VECTOR: ent.GetBoundingMaxs()
+		vector entPos 	   = cp.pos
+		int traceMask 	   = TRACE_MASK_SHOT
+		array<entity> ignoreEnts = [ent]
+		if ( ent.IsProjectile() && ent.proj.ignoreOwnerForPlaceStickyEnt && IsValid( ent.GetOwner() ) )
+			ignoreEnts.append( ent.GetOwner() )
+
+		TraceResults trace
+		if( ( cp.hitEnt.IsPlayer() || cp.hitEnt.IsNPC() ) && ent.IsProjectile() && ent.ProjectileGetWeaponClassName() == "mp_weapon_cluster_bomb_launcher" )
+		{
+			vector center = cp.hitEnt.GetWorldSpaceCenter()
+			center.z = entPos.z
+			trace = TraceLineHighDetail( entPos, center, ignoreEnts, traceMask, TRACE_COLLISION_GROUP_NONE )
+		}
+		else
+		{
+			trace = TraceHull( entPos, ( entPos + ( traceDir * cp.traceLength ) ), mins, maxs, ignoreEnts, ( traceMask & ~CONTENTS_HITBOX ), TRACE_COLLISION_GROUP_NONE, cp.normal )
+		}
+
+		if( moveOnNoHitTrace || trace.fraction < 1.0 )
+		{
+			plantPosition = trace.endPos
+		
+			#if DEV
+			if ( DEBUG_DRAW_PLANT_STICKY )
+			{
+				DebugDrawSphere( plantPosition, 3, COLOR_RED, false, 60 )
+			}
+			#endif
+		}
+		else
+		{
+			plantPosition = cp.pos
+			
+			#if DEV
+			if ( DEBUG_DRAW_PLANT_STICKY )
+			{
+				DebugDrawSphere( plantPosition, 3, COLOR_BLUE, false, 60 )
+			}
+			#endif
+		}
+
+		if ( !LegalOrigin( plantPosition ) )
+			return false
+
+		if ( trace.startSolid && IsValid( trace.hitEnt ) && !trace.hitEnt.IsWorld() && ent.IsProjectile() && ent.GetProjectileWeaponSettingBool( eWeaponVar.grenade_mover_destroy_when_planted ) )
+		{
+			#if SERVER
+				ent.Destroy()
+			#endif
+			return false
+		}
+	}
+
+	if ( IsOriginInvalidForPlacingPermanentOnto( plantPosition ) )
+		return false
+
+	#if SERVER
+		ent.SetAbsOrigin( plantPosition )
+		ent.SetAbsAngles( plantAngles )
+		if ( ent.IsProjectile() )
+			ent.proj.isPlanted = true
+	#else
+		ent.SetOrigin( plantPosition )
+		ent.SetAngles( plantAngles )
+	#endif
+	ent.SetVelocity( ZERO_VECTOR )
+
+	//run these checks again, since ent can get marked for deletion due to the above movement commands
+	if ( !EntityShouldStickEx( ent, cp ) )
+		return false
+	Assert( !ent.IsMarkedForDeletion(), "" )
+	Assert( !cp.hitEnt.IsMarkedForDeletion(), "" )
+
+	//printt( " - Hitbox is:", cp.hitbox, " IsWorld:", cp.hitEnt )
+	if ( cp.hitEnt.IsWorld() )
+	{
+		ent.SetVelocity( ZERO_VECTOR )
+		ent.StopPhysics()
+	}
+	else
+	{
+		if ( cp.hitBox > 0 )
+			ent.SetParentWithHitbox( cp.hitEnt, cp.hitBox, true )
+		else
+			ent.SetParent( cp.hitEnt )	// Hit something else (like a func_brush or even another grenade)
+
+		if ( cp.hitEnt.IsPlayer() || IsDoor( cp.hitEnt ))
+			thread HandleDisappearingParent( ent, cp.hitEnt )
+	}
+
+	CommonOnSuccessfulStickyPlant( ent, cp )
+	return true
+}
+
+void function CommonOnSuccessfulStickyPlant( entity ent, DeployableCollisionParams cp )
+{
+	if ( IsABaseGrenade( ent ) )
+	{
+		ent.MarkAsAttached()
+	}
+	if ( ent.IsProjectile() )
+	{
+		ent.proj.isPlanted = true
+		if ( ent.proj.deployFunc != null )
+			ent.proj.deployFunc( ent, cp )
+	}
+}
 
 bool function PlantStickyGrenade( entity ent, vector pos, vector normal, entity hitEnt, int hitbox, float depth = 0.0, bool allowBounce = true, bool allowEntityStick = true, bool onlyTitansAllowed = true )
 {
