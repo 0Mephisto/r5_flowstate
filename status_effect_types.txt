@@ -126,5 +126,7 @@
 	trophy_tactical_charge
 	trophy_shield_repair
 	bubble_bunker
+	sonar_round_embedded
+	healing_denied
 /////////////////////////////
 //}

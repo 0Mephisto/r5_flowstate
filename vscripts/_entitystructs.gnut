@@ -850,6 +850,8 @@ global struct ServerPlayerStruct
 	int currentZoneId
 	entity DEV_lastDroppedSurvivalWeaponProp
 	bool hasStagingAreaDamageProtection = false
+	
+	entity sonarRoundsAttacker
 
 	int squadRank
 	bool 		  hasDropSettings = false

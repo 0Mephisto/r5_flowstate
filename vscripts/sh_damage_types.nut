@@ -103,6 +103,7 @@ global enum eDamageSourceId
 	mp_weapon_volt_smg
 	mp_weapon_defender
 	mp_ability_mobile_respawn_beacon
+	mp_ability_sniper_ult
 	// End S3 Defaults
 
 	// Crate Weapons
