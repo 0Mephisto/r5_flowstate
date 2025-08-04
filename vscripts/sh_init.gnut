@@ -69,6 +69,7 @@ void function SV_CL_Init()
 	GameMode_VerifyModes() // Has to run after mod system callbacks
 	Settings_Init() // Should run after gamemodes are verified
 	
+	ShHoverVehicle_Init()
 	CryptoTT_Init()
 	ShGamepad_LevelInit()
 	Thirdperson_Init()
