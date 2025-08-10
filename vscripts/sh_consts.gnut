@@ -2807,6 +2807,8 @@ global const float MAP_KILL_VOLUME_OFFSET_OLYMPUS = -28320.0
 global const float MAP_KILL_VOLUME_OFFSET_CANYONLANDS = -2048.0
 global const float MAP_KILL_VOLUME_OFFSET_DESERTLANDS = -22290.0
 global const float MAP_KILL_VOLUME_OFFSET_DIVIDED_MOON = -2400.0
+global const int TEAM_TICK = 110
+
 global int PLAYER_STRYDER_CHAR_DATA_ARRAY_VERSION = 0 // be careful changing this
 
 global enum ePlayerStryderCharDataArraySlots
@@ -2854,7 +2856,6 @@ Assert( ePlayerStryderCharDataArraySlots.COUNT == 32 )
 // ===============================================================================
 // references to variables that are defined in the game code should be at the end
 // ===============================================================================
-global const int TEAM_TICK = 110
 global const TEAM_BOTH = 4 // used to be (TEAM_NPC == 4)
 global const int PROP_IS_VALID_FOR_TURRET_PLACEMENT = SPF_CUSTOM_SCRIPT_3
 

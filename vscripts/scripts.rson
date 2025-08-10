@@ -45,6 +45,26 @@ Scripts:
 	ui/ui_vars.gnut
 ]
 
+When: "SERVER || CLIENT"
+Scripts:
+[
+	sh_treasure_extraction.nut
+	sh_treasure_extraction_precache.nut
+	freelance/freelance_mode_s05_end.gnut
+	freelance/freelance_npcs.gnut
+	freelance/sh_freelance.nut
+	mp/_hatch_bunkers.gnut
+	freelance/freelance_mode.gnut
+	sh_s05_end_precache.nut
+]
+
+When: "SERVER"
+Scripts:
+[
+	//objectives/system/_objectives.gnut
+	//freelance/sv_freelance.nut
+]
+
 When: "SERVER || CLIENT || UI"
 Scripts:
 [

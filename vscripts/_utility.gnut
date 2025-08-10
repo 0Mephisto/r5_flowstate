@@ -2536,16 +2536,23 @@ void function DebugDamageInfo( entity ent, var damageInfo )
 
 vector function RandomVecInDome( vector dir )
 {
-	vector angles = VectorToAngles( dir )
-	vector forward = AnglesToForward( angles )
-	vector right = AnglesToRight( angles )
-	vector up = AnglesToUp( angles )
+	return RandomVecInDomeWithFOV( dir, 180 )
+}
 
-	float offsetRight = RandomFloatRange( -1, 1 )
-	float offsetUp = RandomFloatRange( -1, 1 )
+vector function RandomVecInDomeWithFOV( vector dir, float fov )
+{
+	float fovScalar = -deg_sin( fov / 2 )
+
+	vector angles  = VectorToAngles( dir )
+	vector forward = AnglesToForward( angles )
+	vector right   = AnglesToRight( angles )
+	vector up      = AnglesToUp( angles )
+
+	float offsetRight   = RandomFloatRange( -fovScalar, fovScalar )
+	float offsetUp      = RandomFloatRange( -fovScalar, fovScalar )
 	float offsetForward = RandomFloat( 1.0 )
 
-	vector endPos = < 0, 0, 0 >
+	vector endPos = <0, 0, 0>
 	endPos += forward * offsetForward
 	endPos += up * offsetUp
 	endPos += right * offsetRight
@@ -2553,6 +2560,7 @@ vector function RandomVecInDome( vector dir )
 
 	return endPos
 }
+
 
 float function GetAnimEventTime( asset modelname, string anim, string event )
 {

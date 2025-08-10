@@ -41,6 +41,7 @@ global function CreateWaypoint_BasicLocation
 global function CreateWaypoint_BasicEntLocation
 global function CreateWaypoint_ObjectiveEntLocation
 global function DEV_WaypointConfirm
+global function CreateWaypoint_ObjectivePos
 //
 global function CreateWaypoint_BreadcrumbTrail
 //

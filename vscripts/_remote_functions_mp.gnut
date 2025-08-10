@@ -480,6 +480,10 @@ void function RemoteFunctions_Init_Begin()
 	ScriptRegisterNetworkedVariable( "characterSelectLockstepPlayerIndex", SNDC_PLAYER_GLOBAL, SNVT_INT, -1 )
 	ScriptRegisterNetworkedVariable( "characterSelectFocusIndex", SNDC_PLAYER_GLOBAL, SNVT_BIG_INT, -1 )
 	
+	if ( IsPVEMode() ){
+	RegisterNetworkedVariable( NV_MODE_PHASE, SNDC_GLOBAL, SNVT_UNSIGNED_INT, 0, 0, eFreelanceModePhase._count )
+	RegisterNetworkedVariable( NV_MODE_PHASE_STARTEDTIME, SNDC_GLOBAL, SNVT_TIME, -1 )
+	RegisterNetworkedVariable( NV_MODE_PHASE_GOALTIME, SNDC_GLOBAL, SNVT_TIME, -1 )}
 
 	if( Playlist() != ePlaylists.fs_scenarios )
 	{
@@ -496,7 +500,7 @@ void function RemoteFunctions_Init_Begin()
 	ScriptRegisterNetworkedVariable( "championEEH", SNDC_GLOBAL, SNVT_BIG_INT, EncodedEHandle_null )
 	ScriptRegisterNetworkedVariable( "championSquad1EEH", SNDC_GLOBAL, SNVT_BIG_INT, EncodedEHandle_null )
 	ScriptRegisterNetworkedVariable( "championSquad2EEH", SNDC_GLOBAL, SNVT_BIG_INT, EncodedEHandle_null )
-
+	RegisterNetworkedVariable( "isMapZoneDisplayTextDisabled", SNDC_GLOBAL, SNVT_BOOL, false )
 	//ScriptRegisterNetworkedVariable( "ultimateCredits", SNDC_PLAYER_GLOBAL, SNVT_UNSIGNED_INT, 0 )
 	ScriptRemote_RegisterClientFunction( "ServerCallback_Mirage_DecoysDeployed", "bool" )
 	ScriptRemote_RegisterClientFunction( "ServerCallback_MatchEndAnnouncement", "bool", "int", TEAM_INVALID, 127 ) //Audit 2-22-2025
@@ -518,6 +522,8 @@ void function RemoteFunctions_Init_Begin()
 	ScriptRemote_RegisterClientFunction( "ServerCallback_RespawnPodStarted", "float", 0.0, 5000.0, 32 )
 	
 	Ability_Shadow_Zombie_RegisterNetworking()//Todo(mk): revisit conditional disables.
+	if ( IsPVEFinalMode() )
+		RegisterNetworkedVariable( NV_LIVESLEFT, SNDC_PLAYER_GLOBAL, SNVT_INT, 0 )
 
 	//ScriptRegisterNetworkedVariable( "hasDataKnife", SNDC_PLAYER_GLOBAL, SNVT_BOOL, false )
 
@@ -571,7 +577,7 @@ void function RemoteFunctions_Init_Begin()
 	MapZones_RegisterNetworking() //1 func
 	Ultimates_RegisterNetworking() //1 func
 	ClientMusic_RegisterNetworking() ////Audit 2-22-2025 3 funcs, was 4, 1 is now a toggle.
-
+	SCB_RegisterNetworking()
 	ScriptRegisterNetworkedVariable( "currentDeathFieldStage", SNDC_GLOBAL, SNVT_INT, -1 )
 	ScriptRegisterNetworkedVariable( "nextCircleStartTime", SNDC_GLOBAL, SNVT_TIME, -1 )
 	ScriptRegisterNetworkedVariable( "circleCloseTime", SNDC_GLOBAL, SNVT_TIME, -1 )

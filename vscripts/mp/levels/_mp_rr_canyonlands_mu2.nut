@@ -1,4 +1,5 @@
 global function CodeCallback_MapInit
+global function BunkerDoor_CreateZipline
 
 const asset BUNKER_MODEL_SCALE_DOWN = $"mdl/props/bunker_hatch/bunker_hatch_scale_down.rmdl"
 const asset BUNKER_BUTTON_MODEL = $"mdl/props/global_access_panel_button/global_access_panel_button_console.rmdl"
@@ -100,7 +101,7 @@ void function KCMU2_OnEntitiesDidLoad()
 {
 	printt( "KCMU2_OnEntitiesDidLoad" )
 
-	array<entity> scriptRefs = GetEntArrayByClass_Expensive( "script_ref" )
+	/*array<entity> scriptRefs = GetEntArrayByClass_Expensive( "script_ref" )
 	foreach( ref in scriptRefs )
 		InitScriptRef( ref )
 
@@ -110,12 +111,12 @@ void function KCMU2_OnEntitiesDidLoad()
 
 	array<entity> props = GetEntArrayByClass_Expensive( "prop_dynamic" )
 	foreach( prop in props )
-		InitPropDynamic( prop )
+		InitPropDynamic( prop )*/
 
 	if (MapName() == eMaps.mp_rr_canyonlands_mu2_tt )
 		thread CryptoTT_Init()
 
-	SetupBunkersDoors()
+	//SetupBunkersDoors()
 }
 
 void function InitPropDynamic( entity prop )

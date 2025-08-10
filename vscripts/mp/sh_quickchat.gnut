@@ -14,6 +14,7 @@ global function GetPingAssetForCommsAction
 global function ShouldMuteCommsActionForCooldown
 global function SetCommsDialogueEnabled
 global function PlaySoundForCommsAction
+global function GetEffectiveDeltaSince
 #endif // CLIENT
 
 #if SERVER

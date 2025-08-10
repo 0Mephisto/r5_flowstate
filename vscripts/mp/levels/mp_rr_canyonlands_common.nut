@@ -108,6 +108,13 @@ struct
 
 void function Canyonlands_MapInit_Common()
 {
+	if ( MapName() == eMaps.mp_rr_canyonlands_mu2_tt )
+	{
+		InitHatchBunkers()
+		QuestS05EndInit()
+		ShPrecacheS05Ending()
+		
+	}
 	printt( "Canyonlands_MapInit_Common" )
 	SetVictorySequencePlatformModel( $"mdl/rocks/victory_platform.rmdl", < 0, 0, -10 >, < 0, 0, 0 > )
 	

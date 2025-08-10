@@ -2,6 +2,14 @@ untyped
 
 globalize_all_functions
 
+global struct IntroCameraSettings
+{
+	vector origin = ZERO_VECTOR
+	vector angles = ZERO_VECTOR
+	float fov = 70.0
+}
+
+global typedef CustomIntroCameraSettingsFunc void functionref( entity, IntroCameraSettings )
 global typedef ExtendedPostDeathLogic		 void functionref( entity )
 global typedef ShouldSpawnPlayerOnConnect	 bool functionref( entity )
 global typedef OnPostDeathLogicEnd			 void functionref( entity )
@@ -612,6 +620,12 @@ void function CodeCallback_OnPlayerKilled( entity player, var damageInfo )
 	svGlobal.levelEnt.Signal( "PlayerKilled", { player = player } )
 }
 
+CustomIntroCameraSettingsFunc s_cameraSettingsFunc = null
+void function SetCustomIntroCameraSettingsFunction( CustomIntroCameraSettingsFunc func )
+{
+	Assert( (s_cameraSettingsFunc == null), format( "Function was already set to: '%s'", string( s_cameraSettingsFunc ) ) )
+	s_cameraSettingsFunc = func
+}
 void function PostDeathThread( entity player, var damageInfo )
 {
 	player.p.postDeathThreadStartTime = Time()

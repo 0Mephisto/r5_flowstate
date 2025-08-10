@@ -3,7 +3,7 @@ global function ClMinimap_Init
 global function ClientCodeCallback_MinimapEntitySpawned
 
 global function Minimap_AddCustomLayer
-
+global function MiniMapIsDisabled
 global function RegisterMinimapPackage
 global function FullMap_AddEnemyLocation
 global function FS_Minimap_AddEnemyToMinimap_HACK

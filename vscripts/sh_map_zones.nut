@@ -9,6 +9,7 @@ global function GetDevNameForZoneId
 #if CLIENT
 global function SCB_OnPlayerEntersMapZone
 global function MapZones_ZoneIntroText
+global function MapZones_ZoneIntroTextFullscreenWithSubtext
 global function MapZones_GetChromaBackgroundForZoneId
 #endif
 
@@ -656,6 +657,35 @@ void function MapZones_ZoneIntroText( entity player, string zoneDisplayName, int
 	RuiSetString( rui, "titleText", zoneDisplayName )
 	RuiSetInt( rui, "zoneTier", zoneTier )
 	s_zoneIntroRui = rui
+}
+void function MapZones_ZoneIntroText_( entity player, string zoneDisplayName, int zoneTier, string zoneDisplaySubText, bool doFullscreenRui )
+{
+	if ( GetGlobalNetBool( "isMapZoneDisplayTextDisabled" ) )
+		return
+
+	if ( s_zoneIntroRui != null )
+		RuiDestroyIfAlive( s_zoneIntroRui )
+
+	var rui
+	if ( doFullscreenRui )
+		rui = CreateFullscreenRui( $"ui/map_zone_intro_title.rpak", 0 )
+	else
+		rui = CreateCockpitRui( $"ui/map_zone_intro_title.rpak", 0 )
+
+	string currentPlaylist = GetCurrentPlaylistName()
+
+	RuiSetString( rui, "titleText", zoneDisplayName )
+	if ( GetPlaylistVarBool( currentPlaylist, "loot_display_zone_tier", true ) )
+	{
+		//RuiSetString( rui, "subTextDefault", zoneDisplaySubText )
+		RuiSetInt( rui, "zoneTier", zoneTier )
+	}
+	//RuiSetBool( rui, "minimapIsDisabled", MiniMapIsDisabled() )
+	s_zoneIntroRui = rui
+}
+void function MapZones_ZoneIntroTextFullscreenWithSubtext( entity player, string zoneDisplayName, int zoneTier, string subText )
+{
+	MapZones_ZoneIntroText_( player, zoneDisplayName, zoneTier, subText, true )
 }
 
 array<string> s_lastZoneDisplayNames = ["", ""]

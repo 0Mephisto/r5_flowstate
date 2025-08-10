@@ -18,6 +18,10 @@ global function ClientToUI_ShowScoreboardWithTPPrompt
 global function ClientToUI_HideScoreboard
 #endif
 
+#if SERVER
+global function EnableScoreboardForPlayer
+global function DisableScoreboardForPlayer
+#endif
 
 ///////////////////////
 ///////////////////////
@@ -31,6 +35,7 @@ struct
 		array<void functionref()> scoreboardHideCallbacks
 
 		bool wantsToShowScoreboard = false
+		bool scoreboardEnabled = true
 	#endif
 } file
 
@@ -95,6 +100,53 @@ void function ToggleScoreboard()
 {
 	file.wantsToShowScoreboard = !IsScoreboardShown()
 	UpdateScoreboardVisibility()
+}
+#endif
+
+
+#if CLIENT
+void function EnableScoreboardStatusChanged( entity player, bool newVal )
+{
+	bool shouldDisable = !newVal
+
+	if ( shouldDisable )
+	{
+		HideScoreboard()
+		file.scoreboardEnabled = false
+	}
+	else
+	{
+		file.scoreboardEnabled = true
+	}
+}
+#endif
+
+
+#if CLIENT
+bool function IsScoreboardEnabled()
+{
+	return file.scoreboardEnabled
+}
+#endif
+
+
+#if SERVER
+void function EnableScoreboardForPlayer( entity player )
+{
+	player.p.disableScoreboardStackCount--
+	if ( player.p.disableScoreboardStackCount <= 0 )
+		player.SetPlayerNetBool( "isScoreboardEnabled", true )
+
+	Assert( player.p.disableScoreboardStackCount >= 0, "Warning! Called EnableScoreboard() but the scoreboard/big map isn't disabled!" )
+}
+#endif
+
+
+#if SERVER
+void function DisableScoreboardForPlayer( entity player )
+{
+	player.SetPlayerNetBool( "isScoreboardEnabled", false )
+	player.p.disableScoreboardStackCount++
 }
 #endif
 

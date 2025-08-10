@@ -619,21 +619,12 @@ bool function IsLastPlaylistSolo( entity player )
 
 bool function IsPVEMode()
 {
-	#if UI
-		{
-			string playlistName = GetCurrentPlaylistName()
-			if ( playlistName.find( "freelance" ) == 0 )
-				return true
+	return GetCurrentPlaylistVarInt( "freelance", 0 ) == 1
+}
 
-			return false
-		}
-	#else
-		#if MP_PVEMODE
-			return true
-		#else
-			return false
-		#endif
-	#endif //
+bool function IsPVEFinalMode()
+{
+	return GetCurrentPlaylistVarInt( "freelance_s05_quest_finale", 0 ) == 1
 }
 
 bool function UseSoloModeIntroPresentation()

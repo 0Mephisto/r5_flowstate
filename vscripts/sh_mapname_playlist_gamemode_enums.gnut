@@ -148,6 +148,7 @@ global enum ePlaylists
 	fs_knockbackknockout, //50
 	fs_onlyup, //51
 	fs_nextbots, //52
+	s05_quest_finale,
 	
 	_PLAYLISTS_COUNT //LAST
 }

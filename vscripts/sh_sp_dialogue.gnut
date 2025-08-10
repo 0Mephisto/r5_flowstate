@@ -27,12 +27,14 @@ global function PlayBTDialogue
 global function PlayGabbyDialogue
 global function StopDialogue
 global function StopDialogueForPlayer
+global function PlayCharacterDialogueToEveryone
 global function PlayDialogueForPlayer_NoWait
 global function PlayDialogueForPlayer
 global function PlayDialogueForPlayer_Retail
 global function PlayRadioDialogueToAll
 global function PlayRadioDialogueToTeam
 global function PlayRadioDialogueToPlayer
+global function PlayCharacterOrRadioDialogueToSetsOfPlayers
 global function RequestCustomDialogueQueueIndex
 #endif //SERVER
 
@@ -179,6 +181,7 @@ struct DialogueData
 	string voice
 	bool   radioIntercept
 	string DEV_DialogueText
+	float  dialogueTextDuration
 	asset  vduVideo
 
 	DialogueEntryGroup& group
@@ -811,6 +814,16 @@ void function PlayRadioDialogueTo_Internal( string alias, array<entity> players 
 	}*/
 }
 
+void function PlayRadioDialogueIDToPlayers( int aliasID, array<entity> players, int dialogueFlags = 0 )
+{
+	foreach ( entity player in players )
+	{
+		if ( !IsValid( player ) )
+			continue
+		PlayDialogue_Internal( aliasID, (dialogueFlags | eDialogueFlags.NO_ON_FINISHED_NOTIFY | eDialogueFlags.SHORT_DELAY_AFTER_PLAYING), player, svGlobal.worldspawn )
+	}
+}
+
 void function PlayRadioDialogueToAll( string alias )
 {
 	array<entity> players = GetPlayerArray()
@@ -906,6 +919,75 @@ void function PlayAliasIdForPlayer( int aliasID, entity player, entity speaker, 
 			break
 	}
 }
+
+void function PlayCharacterOrRadioDialogueToSetsOfPlayers( string alias, array<array<entity> > playerSets, int dialogueFlags = 0 )
+{
+	int aliasID = GetNextAliasIdForName( alias )
+	if ( aliasID < 0 )
+	{
+		Warning( "%s() - Dialogue line '%s' is not registered.", FUNC_NAME(), alias )
+		return
+	}
+
+	DialogueData data = GetDataForAliasId( aliasID )
+	foreach ( array<entity> players in playerSets )
+	{
+		entity speaker = null
+		foreach ( entity player in players )
+		{
+			if ( GetPlayerVoice( player ) == data.voice )
+			{
+				speaker = player
+				break
+			}
+			EmitSoundOnEntity( player, "SQ_UI_InGame_CommChime" )
+		}
+
+		if ( speaker == null )
+			PlayRadioDialogueIDToPlayers( aliasID, players, dialogueFlags )
+		else
+			PlayBattleChatterAliasIdToSpeakerAndPlayers( speaker, aliasID, players, dialogueFlags )
+	}
+}
+
+table<int, array<entity> > function GetTeamsToPlayersMap()
+{
+	table<int, array<entity> > result
+	foreach( entity player in GetPlayerArray() )
+	{
+		int team = player.GetTeam()
+		if ( !(team in result) )
+			result[team] <- []
+		result[team].append( player )
+	}
+
+	return result
+}
+
+void function PlayBattleChatterAliasIdToPlayer( int aliasID, entity listeningPlayer, entity speakingPlayer, int dialogueFlags = 0 )
+{
+	if ( !ShouldPlayBattleChatter( "NON_EMPTY_STRING", listeningPlayer, speakingPlayer ) )
+		return
+
+	PlayDialogueIdForPlayer_NoWait( aliasID, listeningPlayer, speakingPlayer, dialogueFlags )
+}
+
+void function PlayBattleChatterAliasIdToSpeakerAndPlayers( entity speakingPlayer, int aliasID, array<entity> players, int dialogueFlags = 0 )
+{
+	foreach ( player in players )
+		PlayBattleChatterAliasIdToPlayer( aliasID, player, speakingPlayer, dialogueFlags )
+}
+
+void function PlayCharacterDialogueToEveryone( string alias )
+{
+	table<int, array<entity> > teamPlayersMap = GetTeamsToPlayersMap()
+	array<array<entity> > playerSets
+	foreach( int team, array<entity> players in teamPlayersMap ){
+		playerSets.append( players )}
+
+	PlayCharacterOrRadioDialogueToSetsOfPlayers( alias, playerSets, eDialogueFlags.MUTE_PLAYER_PING_DIALOGUE_FOR_DURATION )
+}
+
 
 void function PlayDialogueForPlayer( string name, entity player, entity speaker, float delay = 0, int dialogueFlags = 0, string responseName = "", entity responseSpeaker = null )
 {
@@ -1506,28 +1588,28 @@ void function PlayClientDialogue_Internal( int aliasID, int dialogueFlags, array
 		printf( "Playing Dialogue - '%s'#%d -> '%s', priority:%d, from:'%s'  %s", data.group.groupName, data.indexInGroup, milesAlias, data.priority, string( data.group.sourceDataTable ), (isDevText ? " (dev text)" : "") )
 	#endif
 
-	// if ( milesAlias.find( "_cond" ) >= 0 || milesAlias.find( "_flavor" ) >= 0 )  {
-		// PIN_DynamicDialogue( milesAlias )
-	// }
+	if ( milesAlias.find( "_cond" ) >= 0 || milesAlias.find( "_flavor" ) >= 0 )  {
+		//PIN_DynamicDialogue( milesAlias )
+	}
 
 	float duration
 	float extraWait = 0.0
 	string speakerName
-	// if ( isDevText )
-	// {
-		// duration = data.dialogueTextDuration
-		// if ( duration < FLT_EPSILON )
-			// duration = max( data.dialogueText.len() * 0.07, 1.5 )
-		// printt( "len, duration", data.dialogueText.len(), duration )
-		// if ( speakers.len() == 0 || !IsValid( speakers[0] ) )
-			// speakerName = ((radioDisplayName.len() > 0) ? Localize( radioDisplayName ) : "non_NPC")
-		// else
-			// speakerName = speakers[0].GetScriptName()
-	// }
-	// else
-	// {
+	if ( isDevText )
+	{
+		duration = data.dialogueTextDuration
+		if ( duration < FLT_EPSILON )
+			duration = max( data.DEV_DialogueText.len() * 0.07, 1.5 )
+		printt( "len, duration", data.DEV_DialogueText.len(), duration )
+		if ( speakers.len() == 0 || !IsValid( speakers[0] ) )
+			speakerName = ((radioDisplayName.len() > 0) ? Localize( radioDisplayName ) : "non_NPC")
+		else
+			speakerName = speakers[0].GetScriptName()
+	}
+	else
+	{
 		duration = GetSoundDuration( milesAlias )
-	// }
+	}
 
 	if ( ( dialogueFlags & eDialogueFlags.SHORT_DELAY_AFTER_PLAYING ) )
 		extraWait = 0.40
@@ -1535,10 +1617,10 @@ void function PlayClientDialogue_Internal( int aliasID, int dialogueFlags, array
 	var waveformRUI = null
 	if ( (radioDisplayName != "") && (specificImage != $"") && file.useVDU )
 	{
-		// waveformRUI = CreateDialogPopup( radioDisplayName, duration + extraWait, specificImage, data.dialogueText )
+		waveformRUI = CreateDialogPopup( radioDisplayName, duration + extraWait, specificImage, data.DEV_DialogueText )
 
-		// foreach ( void functionref() cb in file.dialoguePopupCreatedCallbacks )
-			// cb()
+		foreach ( void functionref() cb in file.dialoguePopupCreatedCallbacks )
+			cb()
 
 		if ( data.vduVideo != $"" )
 			StartVideoOnChannel( file.videoChannel, data.vduVideo, false, 0.0 )
@@ -1602,12 +1684,12 @@ void function PlayClientDialogue_Internal( int aliasID, int dialogueFlags, array
 		{
 			if ( IsValid( speaker ) )
 			{
-				// if ( isDevText )
-				// {
-					// if ( waveformRUI == null )
-						// thread DevDialogueWithoutSoundAlias( speakerName, data.dialogueText, duration )
-				// }
-				// else 
+				if ( isDevText )
+				{
+					if ( waveformRUI == null )
+						thread DevDialogueWithoutSoundAlias( speakerName, data.DEV_DialogueText, duration )
+				}
+				else 
 				if ( ( dialogueFlags & eDialogueFlags.EMIT_FROM_FIXED_POSITION ) )
 				{
 					file.currentDialoguePlayingHandle = EmitSoundAtPosition( speaker.GetTeam(), speaker.GetOrigin(), milesAlias )
@@ -1618,21 +1700,21 @@ void function PlayClientDialogue_Internal( int aliasID, int dialogueFlags, array
 					file.currentDialoguePlayingHandle = EmitSoundOnEntity( speaker, milesAlias ) //EmitSoundOnEntityWithSelector( speaker, milesAlias, selector )
 					file.currentDialoguePlayingName = data.name
 
-					// SetPlayThroughPOVTransitions( file.currentDialoguePlayingHandle )
+					//SetPlayThroughPOVTransitions( file.currentDialoguePlayingHandle )
 				}
 			}
 			else if ( pos != <0, 0, 0> )
 			{
-				// if ( isDevText )
-				// {
-					// if ( waveformRUI == null )
-						// thread DevDialogueWithoutSoundAlias( speakerName, data.dialogueText, duration )
-				// }
-				// else
-				// {
+				if ( isDevText )
+				{
+					if ( waveformRUI == null )
+						thread DevDialogueWithoutSoundAlias( speakerName, data.DEV_DialogueText, duration )
+				}
+				else
+				{
 					file.currentDialoguePlayingHandle = EmitSoundAtPosition( TEAM_UNASSIGNED, pos, milesAlias )
 					file.currentDialoguePlayingName = data.name
-				// }
+				}
 			}
 		}
 	}

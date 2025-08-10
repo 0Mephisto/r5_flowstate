@@ -85,6 +85,8 @@ void function SV_CL_Init()
 	MinimapShared_Init()
 	NetworkMarkerShared_Init()
 	PlayerLeechingShared_Init()
+	ShTreasureExtractionInit()
+	ShPrecacheTreasureExtractionAssets()
 
 	// TriggerFunctions_Init()
 	InitWeaponScripts()

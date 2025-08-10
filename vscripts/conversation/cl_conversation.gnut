@@ -14,7 +14,7 @@ global function CancelConversation
 global function AddSpeakerToBlacklist
 global function RemoveSpeakerFromBlacklist
 global function AbortConversationDueToPriority
-
+global function CreateDialogPopup
 global function CreateWaveform
 global function CreateWaveformVideo
 global function WaveformVideoSwitchTest
@@ -1555,6 +1555,28 @@ var function CreateWaveform( string title, float duration, asset specificImage =
 	file.waveformRUI = waveformRUI
 	return waveformRUI
 }
+
+var function CreateDialogPopup( string title, float duration, asset portraitImage, string displayText )
+{
+	if ( file.waveformRUI != null )
+		DestroyWaveform( file.waveformRUI, false )
+
+	var rui = RuiCreate( $"ui/ingame_dialogue_popup.rpak", clGlobal.topoFullScreen, RUI_DRAW_HUD, 500 )
+
+	entity player = GetLocalClientPlayer()
+	if ( IsValid( player ) )
+		EmitSoundOnEntity( player, "SQ_UI_InGame_CommChime" )
+
+	RuiSetImage( rui, "portraitImage", portraitImage )
+	RuiSetString( rui, "speakerName", title )
+	RuiSetString( rui, "displayText", displayText )
+	RuiSetFloat( rui, "soundDuration", duration )
+	RuiSetResolutionToScreenSize( rui )
+
+	file.waveformRUI = rui
+	return rui
+}
+
 
 void function DestroyWaveform_Immediate( var rui )
 {

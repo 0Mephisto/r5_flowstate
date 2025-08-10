@@ -621,6 +621,8 @@ global struct ServerPlayerStruct
 	// float 						nextATShieldRegenTime
 	bool 						demigod
 	// bool						partyMember
+	
+	int disableScoreboardStackCount = 0
 
 	bool[OFFHAND_COUNT]			offhandSlotLocked = [ false, false, false, false, false, false ]
 	float[OFFHAND_COUNT]		lastPilotOffhandUseTime = [ -99.0, -99.0, -99.0, -99.0, -99.0, -99.0 ]

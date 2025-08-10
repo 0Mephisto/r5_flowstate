@@ -19,15 +19,10 @@ void function ClientCodeCallback_MapInit()
 	AddCallback_GameStateEnter( eGameState.WinnerDetermined, MU1_OnWinnerDetermined )
 			AddCallback_EntitiesDidLoad( EntitiesDidLoad )
 /*
-                   
-	ShPrecacheS05Ending()
                          
 	ShPrecacheEvacShipAssets()
 	ShPrecacheBreachAndClearAssets()
 	ShPrecacheTreasureExtractionAssets()
-
-	
-	InitHatchBunkers()
 
 	ClCanyonlandsStoryEvents_Init()
 	ClCommonStoryEvents_Init()*/

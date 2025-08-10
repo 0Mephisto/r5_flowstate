@@ -25,6 +25,7 @@ global function FakePhysicsThrow_NewTestBomb
 global function FakePhysicsThrow_Retail
 global function SURVIVAL_GivePlayerEquipment
 global function SpawnWeaponAndAmmo
+global function SpawnWeaponAndAmmoNoRealm
 global function SpawnArmor
 global function SpawnNothing
 global function SpawnAllOptics
@@ -58,6 +59,7 @@ global function ShouldForceUseSafeSpotForDeathBox_RemovePlayer
 global function AddCallback_LootPhysicsParented
 global function RemoveCallback_LootPhysicsParented
 global function GetRefOrRefFromGroup
+global function SURVIVAL_GetAllRefsInLootGroup
 global function GiveLoot
 
 global function Dev_ForceDropDeathbox
@@ -180,6 +182,8 @@ struct {
 
 	table< string, bool functionref(entity, string, int) > specialCaseRefCountFunctions
 	table< string, void functionref(entity, string, int) > specialCaseRefDecrementFunctions
+	
+	table<string, string> lootGroupRemappings
 
 	array< void functionref(entity, entity, string, int, bool, entity, int) >       Callbacks_OnPlayerLootPickup
 	array< void functionref(entity, LootData, int) >                                Callbacks_OnLootSpawn
@@ -3931,7 +3935,7 @@ void function SURVIVAL_GivePlayerEquipment( entity player, string ref, int prope
 		PlayPickupSound( player, ref )
 }
 
-entity function SpawnWeaponAndAmmo( string weaponName, vector origin, int realm )
+entity function SpawnWeaponAndAmmo( string weaponName, vector origin, int realm)
 {
 	vector newOrigin = origin + <0, 0, 2>
 
@@ -3942,6 +3946,41 @@ entity function SpawnWeaponAndAmmo( string weaponName, vector origin, int realm 
 		weapon.RemoveFromAllRealms()
 		weapon.AddToRealm( realm )
 	}
+	//Check for moving geo
+	TraceResults trace = TraceLineHighDetail( weapon.GetOrigin(), weapon.GetOrigin() - <0, 0, 88>, weapon, LOOT_TRACE, LOOT_COLLISION_GROUP )
+	if ( IsValid( trace.hitEnt ) && trace.hitEnt.HasPusherAncestor() )
+	{
+		string parentTargetName = trace.hitEnt.GetTargetName()
+		if ( parentTargetName in file.Callbacks_OnLootSpawnParented )
+		{
+			foreach ( func in file.Callbacks_OnLootSpawnParented[parentTargetName] )
+				func( trace.hitEnt, weapon )
+		}
+
+		weapon.SetParent( trace.hitEnt, "", true, 0 )
+	}
+	
+	LootData data = SURVIVAL_Loot_GetLootDataByRef( weaponName )
+
+	if ( SURVIVAL_Loot_IsAmmoSpawningDisabled() )
+		return weapon
+
+	if ( GetWeaponInfoFileKeyField_GlobalBool( data.baseWeapon, "uses_ammo_pool" ) )
+	{
+		string ammoType = GetWeaponAmmoType( weaponName )
+
+		thread DelayedSpawnAmmo( weapon, ammoType, newOrigin, GetCurrentPlaylistVarFloat( "survival_ammo_spawn_scale_" + ammoType, 2.0 ) )
+	}
+
+	return weapon
+}
+
+entity function SpawnWeaponAndAmmoNoRealm( string weaponName, vector origin )
+{
+	vector newOrigin = origin + <0, 0, 2>
+
+	entity weapon = SpawnGenericLoot( weaponName, newOrigin, < 0, RandomFloatRange( 0, 360 ), 90 >, -1 )
+
 	//Check for moving geo
 	TraceResults trace = TraceLineHighDetail( weapon.GetOrigin(), weapon.GetOrigin() - <0, 0, 88>, weapon, LOOT_TRACE, LOOT_COLLISION_GROUP )
 	if ( IsValid( trace.hitEnt ) && trace.hitEnt.HasPusherAncestor() )
@@ -4551,6 +4590,41 @@ void function SURVIVAL_TryGivePlayerDefaultMeleeWeapons( entity player )
 	{
 		player.SetActiveWeaponBySlot( eActiveInventorySlot.mainHand, WEAPON_INVENTORY_SLOT_PRIMARY_2 )
 	}
+}
+
+array<string> function SURVIVAL_GetAllRefsInLootGroup( string groupRef, bool checkForRemapping = false, array<string> dupesToCheck = [] )
+{
+	if ( checkForRemapping )
+	{
+		groupRef = CheckLootGroupRemapping( groupRef )
+	}
+	LootGroup groupData = file.lootGroups[ groupRef.tolower() ]
+	array<string> allRefs
+	foreach( string itemRef, float itemWeight in groupData.entries )
+	{
+		// if we've already got the ref in the previous recusion's dupesToCheck list, or in this function's allRefs list, skip it
+		if ( !dupesToCheck.contains( itemRef ) && !allRefs.contains( itemRef ) )
+		{
+			if ( SURVIVAL_Loot_IsRefValid( itemRef ) && !dupesToCheck.contains( itemRef ) )
+				allRefs.append( itemRef )
+			else if ( SURVIVAL_IsValidLootGroup( itemRef ) )
+				allRefs.extend( SURVIVAL_GetAllRefsInLootGroup( itemRef, checkForRemapping, dupesToCheck ) ) // the known refs are passed
+			else
+				Warning( "Could not resolve reference " + itemRef + " in " + groupRef )
+		}
+	}
+
+	return allRefs
+}
+
+string function CheckLootGroupRemapping( string groupName )
+{
+	string group = groupName.tolower()
+
+	if ( group in file.lootGroupRemappings )
+		return file.lootGroupRemappings[ group ]
+
+	return groupName
 }
 
 void function SURVIVAL_EquipOrdnanceFromInventory( entity player, string item, bool forceDontSwitch = false )
