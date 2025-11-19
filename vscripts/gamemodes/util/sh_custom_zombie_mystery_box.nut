@@ -1,6 +1,3 @@
-//Made by julefox (discord)
-//Fixes by @CafeFPS (X/twitter)
-
 global function ShZombieMysteryBox_Init
 global function GetMysteryBox
 global function GetMysteryBoxFromEnt
@@ -95,7 +92,7 @@ global enum eWeaponZombieIdx
 {
 	// Assault Rifles
 	FLATLINE,
-	RAYGUN,
+	// RAYGUN,
 	SCOUT,
 	HAVOC,
 	HEMLOK,
@@ -140,7 +137,7 @@ global enum eWeaponZombieIdx
 global table< int, asset > eWeaponZombieModel =
 {
 	[ eWeaponZombieIdx.FLATLINE ] = $"mdl/weapons/vinson/w_vinson.rmdl",
-	[ eWeaponZombieIdx.RAYGUN ] = $"mdl/Weapons/w_raygun/w_raygun.rmdl",
+	// [ eWeaponZombieIdx.RAYGUN ] = $"mdl/Weapons/w_raygun/w_raygun.rmdl",
 	[ eWeaponZombieIdx.SCOUT ] = $"mdl/weapons/g2/w_g2a4.rmdl",
 	[ eWeaponZombieIdx.HAVOC ] = $"mdl/weapons/beam_ar/w_beam_ar.rmdl",
 	[ eWeaponZombieIdx.HEMLOK ] = $"mdl/weapons/m1a1_hemlok/w_hemlok.rmdl",
@@ -174,7 +171,7 @@ global table< int, asset > eWeaponZombieModel =
 global table< int, array< string > > eWeaponZombieName =
 {
 	[ eWeaponZombieIdx.FLATLINE ] = [ "mp_weapon_vinson", "Flatline" ],
-	[ eWeaponZombieIdx.RAYGUN ] = [ "mp_weapon_raygun", "Ray Gun" ],
+	// [ eWeaponZombieIdx.RAYGUN ] = [ "mp_weapon_raygun", "Ray Gun" ],
 	[ eWeaponZombieIdx.SCOUT ] = [ "mp_weapon_g2", "G7 Scout" ],
 	[ eWeaponZombieIdx.HAVOC ] = [ "mp_weapon_energy_ar", "Havoc" ],
 	[ eWeaponZombieIdx.HEMLOK ] = [ "mp_weapon_hemlok", "Hemlok" ],

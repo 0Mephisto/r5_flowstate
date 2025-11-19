@@ -89,7 +89,7 @@ WeaponData
     "ammo_stockpile_max"							"18"
     "ammo_no_remove_from_stockpile"					"0"
 
-    "low_ammo_fraction" 							"0.3"
+    "low_ammo_fraction" 							"0.300000"
     "uses_ammo_pool"								"1"
 
 	// Ammo
@@ -98,9 +98,9 @@ WeaponData
 	"projectiles_per_shot" 							"8"
 	"blast_pattern"									"eva8"
 	"primary_attack_ignores_spread"					"1"
-	"blast_pattern_zero_distance"        			"512.0"
-	"blast_pattern_default_scale"        			"1.5"
-	"blast_pattern_npc_scale"            			"1.0"  // scales on top of the default scale
+	"blast_pattern_zero_distance"        			"512.000000"
+	"blast_pattern_default_scale"        			"1.500000"
+	"blast_pattern_npc_scale"            			"1.000000"
 
 	// Damage - When Used by Players
 	"damage_near_value"   							"7"
@@ -110,7 +110,7 @@ WeaponData
 	"damage_rodeo" 									"550"
 	"damage_near_distance"							"250"
 	"damage_far_distance" 							"850"
-	"damage_headshot_scale"							"1.25"
+	"damage_headshot_scale"							"1.000000"
 
 	// Damage - When Used by NPCs
 	"npc_damage_near_value"   						"25"
@@ -121,33 +121,33 @@ WeaponData
 	// Spread
 
 	// NOTE for projectile shotguns, set this to the size of the spread pattern at the intended engagement range
-	"spread_stand_hip"								"1.3"
-	"spread_stand_hip_run"							"1.3"
-	"spread_stand_hip_sprint"                       "1.3"
-	"spread_crouch_hip"   							"1.3"
-	"spread_air_hip"  								"1.3"
-	"spread_stand_ads"								"1.3"
-	"spread_crouch_ads"   							"1.3"
-	"spread_air_ads"  								"1.3"
-	"spread_wallrunning"  							"1.3"
-	"spread_wallhanging"  							"1.3"
+	"spread_stand_hip"								"1.200000"
+	"spread_stand_hip_run"							"1.200000"
+	"spread_stand_hip_sprint"                       "1.200000"
+	"spread_crouch_hip"   							"1.200000"
+	"spread_air_hip"  								"1.200000"
+	"spread_stand_ads"								"1.200000"
+	"spread_crouch_ads"   							"1.200000"
+	"spread_air_ads"  								"1.200000"
+	"spread_wallrunning"  							"1.200000"
+	"spread_wallhanging"  							"1.200000"
 
 	"spread_decay_rate"   							"500"
 	"spread_decay_delay"  							"0"
 
-	"spread_kick_on_fire_stand_hip"   				"0.0"
-	"spread_kick_on_fire_crouch_hip"  				"0.0"
-	"spread_kick_on_fire_air_hip" 					"0.0"
+	"spread_kick_on_fire_stand_hip"   				"0.000000"
+	"spread_kick_on_fire_crouch_hip"  				"0.000000"
+	"spread_kick_on_fire_air_hip" 					"0.000000"
 
-	"spread_kick_on_fire_stand_ads"   				"0.0"
-	"spread_kick_on_fire_crouch_ads"  				"0.0"
-	"spread_kick_on_fire_air_ads" 					"0.0"
+	"spread_kick_on_fire_stand_ads"   				"0.000000"
+	"spread_kick_on_fire_crouch_ads"  				"0.000000"
+	"spread_kick_on_fire_air_ads" 					"0.000000"
 
 	// NPC
-	"proficiency_poor_spreadscale"					"7.0"
-	"proficiency_average_spreadscale" 				"5.0"
-	"proficiency_good_spreadscale"					"4.5"
-	"proficiency_very_good_spreadscale"   			"3.7"
+	"proficiency_poor_spreadscale"					"7.000000"
+	"proficiency_average_spreadscale" 				"5.000000"
+	"proficiency_good_spreadscale"					"4.500000"
+	"proficiency_very_good_spreadscale"   			"3.700000"
 
 	"npc_min_engage_range"							"0"
 	"npc_max_engage_range"							"800"
@@ -158,71 +158,71 @@ WeaponData
 
 	"npc_min_burst"									"1"
 	"npc_max_burst"									"1"
-	"npc_rest_time_between_bursts_min"				"0.5"
-	"npc_rest_time_between_bursts_max"				"0.7"
+	"npc_rest_time_between_bursts_min"				"0.500000"
+	"npc_rest_time_between_bursts_max"				"0.700000"
 
 	"viewmodel_offset_ads"							"0 4.5 0"
-	"dof_zoom_nearDepthStart"						"0.5"
-	"dof_zoom_nearDepthEnd"							"5.0"
-	"dof_nearDepthStart"							"0.0"
-	"dof_nearDepthEnd"								"0.0"
+	"dof_zoom_nearDepthStart"						"0.500000"
+	"dof_zoom_nearDepthEnd"							"5.000000"
+	"dof_nearDepthStart"							"0.000000"
+	"dof_nearDepthEnd"								"0.000000"
 
 	// Behavior
-	"fire_rate"   									"2.4"
-	"reload_time" 									"2.75"
-	"reload_time_late1"								"1.45"
-	"reload_time_late2"								"0.25"
-	"reloadempty_time"								"3.0"
+	"fire_rate"   									"2.700000"
+	"reload_time" 									"2.750000"
+	"reload_time_late1"								"1.450000"
+	"reload_time_late2"								"0.250000"
+	"reloadempty_time"								"3.000000"
 	"reloadempty_time_late1"						"2"
 	"reloadempty_time_late2"						"1"
-	"reloadempty_time_late3"						"0.8"
+	"reloadempty_time_late3"						"0.800000"
 
-	"deployfirst_time"								"1.35"
+	"deployfirst_time"								"1.350000"
 
 	"ammo_suck_behavior"							"primary_weapons"
 
 	// View Kick
 	"viewkick_spring" 								"shotgun"
 
-	"viewkick_pitch_base" 							"-1.2"
-	"viewkick_pitch_random"   						"0.75"
-	"viewkick_pitch_softScale"						"0.3"
+	"viewkick_pitch_base" 							"-0.800000"
+	"viewkick_pitch_random"   						"0.500000"
+	"viewkick_pitch_softScale"						"0.300000"
 	"viewkick_pitch_hardScale"						"1"
 
-	"viewkick_yaw_base"   							"-0.65"
-	"viewkick_yaw_random" 							"0.38"
-	"viewkick_yaw_softScale"  						"0.38"
-	"viewkick_yaw_hardScale"  						"1.2"
+	"viewkick_yaw_base"   							"-0.500000"
+	"viewkick_yaw_random" 							"0.300000"
+	"viewkick_yaw_softScale"  						"0.380000"
+	"viewkick_yaw_hardScale"  						"1.200000"
 
 	"viewkick_roll_base"  							"0"
-	"viewkick_roll_randomMin" 						"0.6"
-	"viewkick_roll_randomMax" 						"0.8"
-	"viewkick_roll_softScale" 						"0.75"
-	"viewkick_roll_hardScale" 						"0.25"
+	"viewkick_roll_randomMin" 						"0.600000"
+	"viewkick_roll_randomMax" 						"0.800000"
+	"viewkick_roll_softScale" 						"0.750000"
+	"viewkick_roll_hardScale" 						"0.250000"
 
-	"viewkick_hipfire_weaponFraction" 				"0.1"
-	"viewkick_hipfire_weaponFraction_vmScale" 		"0.0"
-	"viewkick_ads_weaponFraction" 					"0.35"
-	"viewkick_ads_weaponFraction_vmScale" 			"0.25"
+	"viewkick_hipfire_weaponFraction" 				"0.100000"
+	"viewkick_hipfire_weaponFraction_vmScale" 		"0.000000"
+	"viewkick_ads_weaponFraction" 					"0.350000"
+	"viewkick_ads_weaponFraction_vmScale" 			"0.250000"
 
 	"viewkick_scale_firstshot_hipfire"		 		"1"
 	"viewkick_scale_firstshot_ads"					"0"
-	"viewkick_scale_min_hipfire"  					"1.0"
-	"viewkick_scale_max_hipfire"  					"2.0"
-	"viewkick_scale_min_ads"  						"1.0"
-	"viewkick_scale_max_ads"  						"2.0"
-	"viewkick_scale_valuePerShot" 					"1.0"
+	"viewkick_scale_min_hipfire"  					"1.000000"
+	"viewkick_scale_max_hipfire"  					"2.000000"
+	"viewkick_scale_min_ads"  						"1.000000"
+	"viewkick_scale_max_ads"  						"2.000000"
+	"viewkick_scale_valuePerShot" 					"1.000000"
 	"viewkick_scale_pitch_valueLerpStart"   		"0"
 	"viewkick_scale_yaw_valueLerpStart"   			"0"
 	"viewkick_scale_pitch_valueLerpEnd" 			"3"
 	"viewkick_scale_yaw_valueLerpEnd" 				"3"
-	"viewkick_scale_valueDecayDelay"  				"0.5"
+	"viewkick_scale_valueDecayDelay"  				"0.500000"
 	"viewkick_scale_valueDecayRate"   				"25"
 
 	//
-	"viewmodel_shake_forward"						"0.5"
-	"viewmodel_shake_up"							"0.2"
-	"viewmodel_shake_right"							"0.0"
+	"viewmodel_shake_forward"						"0.500000"
+	"viewmodel_shake_up"							"0.200000"
+	"viewmodel_shake_right"							"0.000000"
 
 	// Bodygroups:
 	"bodygroup1_name"	"sight"
@@ -238,12 +238,18 @@ WeaponData
 
     //for incendiary rounds
     "burn_damage"                   "20"            //total damage per stack
-    "burn_time"                     "2.0"           //how long to deliver the damage
+    "burn_time"                     "2.000000"
     "burn_stacks_max"               "1"             //max active stacks per target
-    "burn_stack_debounce"           "0.2"           //wait this long before trying to apply another stack
-    "burn_tick_rate"                "0.8"           //how often we do a damage tick = (tick_rate / burn_time)
+    "burn_stack_debounce"           "0.200000"
+    "burn_tick_rate"                "0.800000"
     "sound_burn_damage_tick_1p" 	"flesh_thermiteburn_3p_vs_1p"
 
+
+	"headshot_distance"	"1500"
+	"damage_leg_scale"	"1.000000"
+	"critical_hit"	"1"
+	"critical_hit_damage_scale"	"1"
+	"titanarmor_critical_hit_required"	"1"
 	Mods
 	{
         gold
@@ -395,7 +401,15 @@ WeaponData
 			"damage_far_value"								"8"
 		 }
       
-	}
+	
+		infinite_ammo
+		{
+			"ammo_min_to_fire"                      "0"
+			"ammo_no_remove_from_clip"              "1"
+			"ammo_no_remove_from_stockpile"         "1"
+			"low_ammo_fraction"                     "0.0"
+		}
+}
 
 	"ui1_enable"		"1"
 	UiData1

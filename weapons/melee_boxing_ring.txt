@@ -23,8 +23,8 @@ WeaponData
 	"impact_effect_table"						"melee_human"
 
 	// Behavior
-	"melee_raise_recovery_animtime_normal"		"0.75"
-	"melee_raise_recovery_animtime_quick"		"0.75"
+	"melee_raise_recovery_animtime_normal"		"0.750000"
+	"melee_raise_recovery_animtime_quick"		"0.750000"
 
 	// More punchy knockback compared to normal BR melee
 	"melee_knockback_velocity_magnitude"		"600"

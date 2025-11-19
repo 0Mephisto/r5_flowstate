@@ -1,10 +1,3 @@
-//APEX INFECTED
-//Made by @CafeFPS (@CafeFPS)
-
-// Julefox - Mystery box scripts
-// @KralRindo - Shadowfall gamemode initial implementation
-// everyone else - advice
-
 global function Cl_GamemodeInfection_Init
 global function ApplyInfectedHUD
 global function CleanUpInfectedClientEffects
@@ -34,15 +27,6 @@ struct {
 void function Cl_GamemodeInfection_Init()
 {
 	Obituary_SetIndexOffset( 2 )
-	SetConVarInt("cl_quota_stringCmdsPerSecond", 100)
-	//I don't want these things in user screen even if they launch in debug
-	SetConVarBool( "cl_showpos", false )
-	SetConVarBool( "cl_showfps", false )
-	SetConVarBool( "cl_showgpustats", false )
-	SetConVarBool( "cl_showsimstats", false )
-	SetConVarBool( "host_speeds", false )
-	SetConVarBool( "con_drawnotify", false )
-	SetConVarBool( "enable_debug_overlays", false )
 	
 	RegisterSignal("ChallengeStartRemoveCameras")
 	RegisterSignal("ChangeCameraToSelectedLocation")
@@ -55,8 +39,8 @@ void function ApplyInfectedHUD()
 	SetCommsDialogueEnabled( false )
 	entity player = GetLocalClientPlayer()
 
-	SetCustomPlayerInfoCharacterIcon( player, $"rui/gamemodes/shadow_squad/generic_shadow_character" )
-	SetCustomPlayerInfoTreatment( player, $"rui/gamemodes/shadow_squad/player_info_custom_treatment" )
+	SetCustomPlayerInfoCharacterIcon( player, $"rui/gamemodes/shadow_squad/generic_shadow_character_sdk" )
+	SetCustomPlayerInfoTreatment( player, $"rui/gamemodes/shadow_squad/player_info_custom_treatment_sdk" )
 	SetCustomPlayerInfoColor( player, <245, 81, 35 > )
 }
 

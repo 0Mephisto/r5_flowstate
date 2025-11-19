@@ -3,25 +3,45 @@ global const float METERS_TO_INCHES = 39.3701
 global const float INCHES_TO_METERS = 0.0254
 global const float KILOMETERS_TO_INCHES = 39370.1
 
-global string SDK_VERSION = "v2.4"
+global string SDK_VERSION = "v2.6"
 global string FLOWSTATE_VERSION = "v4.5"
 global const FLOWSTATE_HWLTM_SHIELD_AMOUNT = 25
 global const int BOOSTZONE_ALIVE_TIME = 15
 
-global const SCRIPT_GAME_VERSION__RELEASE = true
+global const SCRIPT_GAME_VERSION__RELEASE = true  //not used currently
 
 //r5r.dev
 global const bool TRACKER 					= false
 global const bool HAS_TRACKER_DLL 			= false
-global const bool MULTIPLAYER_DEBUG_PRINTS 	= false
+
+//
+global const bool MULTIPLAYER_DEBUG_PRINTS 	= false // Toggles print console message to all players where used (printm).
+global const bool ENTITYVAR_DEPRECATED		= false //Todo(mk): fully remove this deprecated system
+
+global const string DEFAULT_RATE_KEY 		= "default"
 global const bool NOTIFY_RATELIMIT_FAILED	= false
-global const bool MKOS						= false
-global const bool ENTITYVAR_DEPRECATED		= false
+global const float COMMAND_RATE_LIMIT 		= 0.200 //default value unless manually specified with CheckRate()
+global const bool DISABLE_NETINFO 			= true //net_showpeaks  (when in dev mode)
+
+//////////////////////////////////////////////////////////////
+// (mk): This enables network registration debug system. 
+// On Registration failure, you will get relevant debug info. 
+//
+// This should be DISABLED in release.
+//
+// There is also a 'VERBOSE_NET_PRINTS' toggle in 
+//  sh_net_wrapper.gnut for more prints
+//////////////////////////////////////////////////////////////
+global const bool DEBUG_REMOTE_FUNCS 		= false
+//////////////////////////////////////////////////////////////
+
 
 global const int INT_MIN = (1<<31)
 global const int INT_MAX = (1<<31) - 1
 global const float FLT_MAX = 3.40282e+38
-global const float FLT_EPSILON = 1.0e-6
+global const float FLT_MIN = 1.17549e-38 //smallest positive normalized https://www.gnu.org/software/libc/manual/html_node/Floating-Point-Parameters.html
+global const float FLT_LOWEST = -3.40282e+38
+global const float FLT_EPSILON = 1.0e-6 //1.19209e-7?
 
 global const void IN_SET = null
 global typedef IntSet table<int, void>
@@ -46,7 +66,6 @@ global const string SHOTGUN_AMMO = "shotgun"
 global const string SPECIAL_AMMO = "special"
 global const string ARROWS_AMMO = "arrows"
 global const string SNIPER_AMMO = "sniper"
-global const string EXPLOSIVE_AMMO = "explosive"
 
 #if UI
 global const float RUI_BADGAMETIME 	= -1 * pow( 10, 30 )
@@ -147,7 +166,6 @@ global const SURVIVAL						= "survival"
 global const FREELANCE						= "freelance"
 global const CUSTOM_CTF						= "custom_ctf"
 
-//Gamemodes made by @CafeFPS <3
 global const fs_dm							= "fs_dm"
 global const fs_aimtrainer					= "fs_aimtrainer"
 global const fs_prophunt					= "fs_prophunt"
@@ -382,9 +400,13 @@ global const int BURN_R = 246
 global const int BURN_G = 134
 global const int BURN_B = 40
 
-global const int AIRDROP_R = 10
-global const int AIRDROP_G = 224
-global const int AIRDROP_B = 233
+global const int AIRDROP_R = 255
+global const int AIRDROP_G = 215
+global const int AIRDROP_B = 0
+
+global const int CRAFTING_R = 0
+global const int CRAFTING_G = 255
+global const int CRAFTING_B = 204
 
 global const vector TEAM_COLOR_ENEMY = 		<ENEMY_R, ENEMY_G, ENEMY_B>
 global const vector TEAM_COLOR_FRIENDLY = 	<FRIENDLY_R, FRIENDLY_G, FRIENDLY_B>
@@ -392,6 +414,7 @@ global const vector TEAM_COLOR_PARTY = 		<PARTY_R, PARTY_G, PARTY_B>
 global const vector TEAM_COLOR_YOU = 		<LOCAL_R, LOCAL_G, LOCAL_B>
 global const vector BURN_COLOR = 			<BURN_R, BURN_G, BURN_B>
 global const vector COLOR_AIRDROP = 		<AIRDROP_R, AIRDROP_G, AIRDROP_B>
+global const vector CRAFTING_COLOR = 		<CRAFTING_R, CRAFTING_G, CRAFTING_B>
 // END OFFICIAL
 
 global const TIME_ZOFFSET = 11520
@@ -930,7 +953,7 @@ global const int DOOMED_MIN_HEALTH 			= 1
 
 global const float AREA_SONAR_SCAN_PULSE_DURATION 	= 6.0
 
-global const float SONAR_GRENADE_RADIUS 			= 1250.0
+global const float SONAR_GRENADE_RADIUS 			= 1250.0 //(mk): max in ServerCallback_SonarPulseFromPosition set to 3000.0 with 8 bits.
 global const float SONAR_GRENADE_PULSE_DURATION 	= 6.0
 // these numbers should be kept in sync with bakery assets: inside_sonar, outline_sonar
 global const float SONAR_PULSE_SPACE = 400.0
@@ -1370,6 +1393,9 @@ global enum ePresentationType
 	BATTLE_PASS,
 	BATTLE_PASS_3,
 	COLLECTION_EVENT,
+	STORE_INSPECT,
+	SERVER_BROWSER,
+	CREDITS,
 	MODEL
 	
 	COUNT
@@ -1416,7 +1442,7 @@ global enum ePlayerMovementEvents
 	END_WALLHANG
 }
 
-/* Valid inputs. Updated list for the R5Reloaded Build by @CafeFPS
+/*
 IN_JUMP
 IN_DUCK
 IN_LEFT
@@ -1832,7 +1858,7 @@ global enum eCommsAction
 	PING_AMMO_SHOTGUN,
 	PING_AMMO_HIGHCAL,
 	PING_AMMO_SNIPER,
-	PING_AMMO_EXPLOSIVE
+	
 	//
 	PING_EQUIPMENT_ARMOR_1,
 	PING_EQUIPMENT_ARMOR_2,
@@ -1993,6 +2019,8 @@ global enum eCommsAction
 	PING_RESPAWN_DROPSHIP,
 	PING_JUMP_PAD,
 	PING_CRYPTO_DRONE,
+	PING_DEATH_TOTEM_NEUTRAL,
+	PING_DEATH_TOTEM_ENEMY,
 	PING_GEYSER,
 	PING_LAVA,
 	PING_TRAIN,
@@ -2034,7 +2062,6 @@ global enum eCommsAction
 	INVENTORY_NEED_AMMO_HIGHCAL,
 	INVENTORY_NEED_AMMO_SHOTGUN,
 	INVENTORY_NEED_AMMO_SNIPER,
-	INVENTORY_NEED_AMMO_EXPLOSIVE,
 	INVENTORY_NEED_FIRST_WEAPON,
 	INVENTORY_NEED_ANOTHER_WEAPON,
 	INVENTORY_NEED_ARMOR,
@@ -2049,7 +2076,6 @@ global enum eCommsAction
 	INVENTORY_NEED_ATTACHMENT_MAG_SHOTGUN,
 	INVENTORY_NEED_ATTACHMENT_MAG_HIGHCAL,
 	INVENTORY_NEED_ATTACHMENT_MAG_SNIPER,
-	INVENTORY_NEED_ATTACHMENT_MAG_EXPLOSIVE,
 
 	INVENTORY_NEED_ATTACHMENT_SIGHT_PISTOL,
 	INVENTORY_NEED_ATTACHMENT_SIGHT_SMG,
@@ -2167,7 +2193,6 @@ global enum eCommsAction
 	FLAVOR_OFFHAND_GRENADE_ARC,
 	FLAVOR_AMMO_SPECIAL,
 	FLAVOR_AMMO_SHOTGUN,
-	FLAVOR_AMMO_EXPLOSIVE,
 	FLAVOR_EQUIPMENT_ARMOR_1,
 	FLAVOR_EQUIPMENT_ARMOR_2,
 	FLAVOR_EQUIPMENT_ARMOR_3,
@@ -2393,6 +2418,8 @@ global enum eQuality
 	EPIC,
 	LEGENDARY,
 	HEIRLOOM,
+	COLLAB,
+	FANMADE,
 	_COUNT,
 }
 
@@ -2411,7 +2438,6 @@ global const vector AMMO_ENERGY_COLOR 		= <132, 160, 61> / 255.0
 global const vector AMMO_SMALL_COLOR 		= <180, 123, 68> / 255.0
 global const vector AMMO_LARGE_COLOR 		= <84, 155, 131> / 255.0
 global const vector AMMO_SNIPER_COLOR 		= <74.0, 73.0, 147.0> / 255.0
-global const vector AMMO_EXPLOSIVE_COLOR 	= <163.0, 93.0, 72.0> / 255.0
 
 global const vector AMMO_LEGENDARY_COLOR 	= <255, 215, 30> / 255.0
 
@@ -2421,7 +2447,6 @@ global const table<string, vector> ammoColors = {
 	shotgun = AMMO_SHOTGUN_COLOR
 	highcal = AMMO_LARGE_COLOR
 	sniper = AMMO_SNIPER_COLOR
-	explosive = AMMO_EXPLOSIVE_COLOR
 }
 
 global struct BurnDamageSettings

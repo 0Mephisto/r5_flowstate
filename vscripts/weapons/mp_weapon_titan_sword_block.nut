@@ -1,5 +1,3 @@
-//By @CafeFPS and Respawn
-
 global function OnWeaponStartZoomIn_weapon_titan_sword
 global function OnWeaponStartZoomOut_weapon_titan_sword
 

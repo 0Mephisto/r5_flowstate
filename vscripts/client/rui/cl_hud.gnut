@@ -634,7 +634,7 @@ void function Flowstate_AddCustomScoreEventMessage( string eventText, float dura
 
 	RuiSetGameTime( rui, "startTime", Time() )
 	RuiSetFloat( rui, "duration", duration )
-	RuiSetString( rui, "messageText", Localize( " " + eventText + " " ) )
+	RuiSetString( rui, "messageText", Localize( eventText ) )
 	RuiSetBool( rui, "isBigText", true )
 	RuiSetFloat( rui, "messageOffsetScale", 1.0 )
 	RuiSetGameTime( rui, "updateTime", Time() )	

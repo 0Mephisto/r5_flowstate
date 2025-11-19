@@ -51,11 +51,11 @@ WeaponData
 	"ammo_min_to_fire"								"150"
 	"ammo_per_shot"									"150"
 	"ammo_stockpile_max"							"150"
-	"fire_rate"   									"1.0"
+	"fire_rate"   									"1.000000"
 	"regen_ammo_refill_rate"						"10"
 
 	// Regen Ammo
-	"regen_ammo_refill_start_delay"					"0.0"
+	"regen_ammo_refill_start_delay"					"0.000000"
 
 	// Damage
 	"damage_type" 									"none"
@@ -75,9 +75,9 @@ WeaponData
 
 	// Behavior
 	"cooldown_type"									"ammo_instant"
-	"holster_time"									"0.0"
+	"holster_time"									"0.000000"
 	//"deploy_time" 								"0.15"
-	"lower_time"  									"0.0"
+	"lower_time"  									"0.000000"
 	//"raise_time"  								"0.15"
 	"allow_empty_fire"								"0"
 	"reload_enabled"								"0"
@@ -91,11 +91,11 @@ WeaponData
 	"aimassist_disable_ads"							"1"
 
 	// Crosshair
-	"charge_time" 									"0.15"
+	"charge_time" 									"0.150000"
 	"charge_levels"									"1"
 	"charge_level_base"								"1"
-	"charge_cooldown_time"							"0.0"
-	"charge_cooldown_delay"   						"0.0"
+	"charge_cooldown_time"							"0.000000"
+	"charge_cooldown_delay"   						"0.000000"
 	"charge_is_triggered_by_ADS"					"0"
     "charge_end_forces_fire"  						"1"
 	"charge_remain_full_when_fired"                 "0"

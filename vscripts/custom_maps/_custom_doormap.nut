@@ -74,9 +74,17 @@ function TeleportPlayer(entity player) {
 	TakeAllPassives(player)
     player.SetPlayerNetBool("pingEnabled", false)
     player.SetPersistentVar("gen", 0)
-    player.SetOrigin(file.first_cp)
-    LocalMsg(player, "#FS_STRING_VAR", "", 9, 5.0, "Door Map", "By: Loy & Treeree", "", false)
+    LocalMsg(player, "#FS_STRING_VAR", "", 9, 5.0, "Door Map", "By: Loy & Treeree", "" )
     SpawnInfoText(player)
+
+    thread
+    (
+      void function() : ( player )
+      {
+        wait 5.0
+        player.SetOrigin(file.first_cp)
+      }
+    )()
 }
 
 // bool function ClientCommand_runrestart(entity player, array<string> args)
@@ -246,10 +254,10 @@ function lootbins_buttons() {
                 user.TakeOffhandWeapon(OFFHAND_ULTIMATE)
                 user.SetPersistentVar("gen", Time())
                 user.SetVelocity(<0,0,0>)
-                LocalMsg(user, "#FS_STRING_VAR", "", 4, 1.0, "Timer Started", "", "", false)
+                LocalMsg(user, "#HUB_TIMER_START", "", 4, 1.0, "", "", "" )
             } else {
                 user.SetPersistentVar("gen", 0)
-                LocalMsg(user, "#FS_STRING_VAR", "", 4, 1.0, "Timer Stopped", "", "", false)
+                LocalMsg(user, "#HUB_TIMER_STOP", "", 4, 1.0, "", "", "" )
             }
         })
 
@@ -267,7 +275,7 @@ function lootbins_buttons() {
                         int realseconds = seconds - (minutes * 60)
 
                         //Display player Time
-                        LocalMsg(user, "#FS_STRING_VAR", "", 2, 5.0, "Your Final Time: " + minutes + ":" + realseconds)
+                        LocalMsg(user, "#HUB_FINAL_TIME", "#FS_STRING_VAR", 2, 5.0, "", "" + minutes + ":" + realseconds)
 
                         //Reset Timer
                         user.SetPersistentVar("gen", reset)
@@ -275,13 +283,13 @@ function lootbins_buttons() {
                     } else {
 
                         //Display player Time
-                        LocalMsg(user, "#FS_STRING_VAR", "", 2, 5.0, "Your Final Time: " + seconds + " seconds", "", "", false)
+                        LocalMsg(user, "#HUB_FINAL_TIME", "#FS_STRING_VAR", 2, 5.0,"", "0" + ":" + seconds)
 
                         //Reset Timer
                         user.SetPersistentVar("gen", reset)
                     }
                 } else {
-                    LocalMsg(user, "#FS_STRING_VAR", "", 2, 5.0, "YOU FINISHED!", "CONGRATULATIONS", "", false)
+                    LocalMsg(user, "#HUB_YOU_FINISHED", "#HUB_CONGRATULATIONS", 2, 5.0, "", "", "" )
                 }
         })
 
@@ -292,8 +300,7 @@ function lootbins_buttons() {
                     if (user.GetPersistentVarAsInt("gen") == 0) {
                         user.SetOrigin( <- 54.6, 932.9, 14968.2 > )
                     } else {
-                        LocalMsg(user, "#FS_STRING_VAR", "", 4, 5.0, "Can't use it while timer is running", "", "", false)
-
+                        LocalMsg(user, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -306,8 +313,7 @@ function lootbins_buttons() {
                     if (user.GetPersistentVarAsInt("gen") == 0) {
                         user.SetOrigin( < 449, 1513, 14960.8 > )
                     } else {
-                        LocalMsg(user, "#FS_STRING_VAR", "", 4, 5.0, "Can't use it while timer is running", "", "", false)
-
+                        LocalMsg(user, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -320,8 +326,7 @@ function lootbins_buttons() {
                     if (user.GetPersistentVarAsInt("gen") == 0) {
                         user.SetOrigin( < 984, 1906, 14953.2 > )
                     } else {
-                        LocalMsg(user, "#FS_STRING_VAR", "", 4, 5.0, "Can't use it while timer is running", "", "", false)
-
+                        LocalMsg(user, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -334,8 +339,7 @@ function lootbins_buttons() {
                     if (user.GetPersistentVarAsInt("gen") == 0) {
                         user.SetOrigin( < 1041.8, 2098, 15096 > )
                     } else {
-                        LocalMsg(user, "#FS_STRING_VAR", "", 4, 5.0, "Can't use it while timer is running", "", "", false)
-
+                        LocalMsg(user, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -348,8 +352,7 @@ function lootbins_buttons() {
                     if (user.GetPersistentVarAsInt("gen") == 0) {
                         user.SetOrigin( < 784.8, 2217.1, 15229.3 > )
                     } else {
-                        LocalMsg(user, "#FS_STRING_VAR", "", 4, 5.0, "Can't use it while timer is running", "", "", false)
-
+                        LocalMsg(user, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -362,8 +365,7 @@ function lootbins_buttons() {
                     if (user.GetPersistentVarAsInt("gen") == 0) {
                         user.SetOrigin( < 1041.8, 2210.1, 15365.7 > )
                     } else {
-                        LocalMsg(user, "#FS_STRING_VAR", "", 4, 5.0, "Can't use it while timer is running", "", "", false)
-
+                        LocalMsg(user, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -376,8 +378,7 @@ function lootbins_buttons() {
                     if (user.GetPersistentVarAsInt("gen") == 0) {
                         user.SetOrigin( < 1035.4, 2550.6, 15522.9 > )
                     } else {
-                        LocalMsg(user, "#FS_STRING_VAR", "", 4, 5.0, "Can't use it while timer is running", "", "", false)
-
+                        LocalMsg(user, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -390,8 +391,7 @@ function lootbins_buttons() {
                     if (user.GetPersistentVarAsInt("gen") == 0) {
                         user.SetOrigin( < 1947.9, 2551.9, 15517 > )
                     } else {
-                        LocalMsg(user, "#FS_STRING_VAR", "", 4, 5.0, "Can't use it while timer is running", "", "", false)
-
+                        LocalMsg(user, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -404,8 +404,7 @@ function lootbins_buttons() {
                     if (user.GetPersistentVarAsInt("gen") == 0) {
                         user.SetOrigin( < 2556.8, 2127.3, 15624 > )
                     } else {
-                        LocalMsg(user, "#FS_STRING_VAR", "", 4, 5.0, "Can't use it while timer is running", "", "", false)
-
+                        LocalMsg(user, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -418,8 +417,7 @@ function lootbins_buttons() {
                     if (user.GetPersistentVarAsInt("gen") == 0) {
                         user.SetOrigin( < 2340.8, 1872.1, 15780.7 > )
                     } else {
-                        LocalMsg(user, "#FS_STRING_VAR", "", 4, 5.0, "Can't use it while timer is running", "", "", false)
-
+                        LocalMsg(user, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -432,8 +430,7 @@ function lootbins_buttons() {
                     if (user.GetPersistentVarAsInt("gen") == 0) {
                         user.SetOrigin( < 2569.3, 2130.6, 15901 > )
                     } else {
-                        LocalMsg(user, "#FS_STRING_VAR", "", 4, 5.0, "Can't use it while timer is running", "", "", false)
-
+                        LocalMsg(user, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -446,8 +443,7 @@ function lootbins_buttons() {
                     if (user.GetPersistentVarAsInt("gen") == 0) {
                         user.SetOrigin( < 2556.4, 1166.7, 15917.8 > )
                     } else {
-                        LocalMsg(user, "#FS_STRING_VAR", "", 4, 5.0, "Can't use it while timer is running", "", "", false)
-
+                        LocalMsg(user, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -460,8 +456,7 @@ function lootbins_buttons() {
                     if (user.GetPersistentVarAsInt("gen") == 0) {
                         user.SetOrigin( < 2567.6, 235, 15919.6 > )
                     } else {
-                        LocalMsg(user, "#FS_STRING_VAR", "", 4, 5.0, "Can't use it while timer is running", "", "", false)
-
+                        LocalMsg(user, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -474,8 +469,7 @@ function lootbins_buttons() {
                     if (user.GetPersistentVarAsInt("gen") == 0) {
                         user.SetOrigin( < 2578, -401.4, 15918.1 > )
                     } else {
-                        LocalMsg(user, "#FS_STRING_VAR", "", 4, 5.0, "Can't use it while timer is running", "", "", false)
-
+                        LocalMsg(user, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -488,8 +482,7 @@ function lootbins_buttons() {
                     if (user.GetPersistentVarAsInt("gen") == 0) {
                         user.SetOrigin( < 3062.9, -811.0966, 15920.1 > )
                     } else {
-                        LocalMsg(user, "#FS_STRING_VAR", "", 4, 5.0, "Can't use it while timer is running", "", "", false)
-
+                        LocalMsg(user, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -502,8 +495,7 @@ function lootbins_buttons() {
                     if (user.GetPersistentVarAsInt("gen") == 0) {
                         user.SetOrigin( < 2633.2, -1300.1, 15915.7 > )
                     } else {
-                        LocalMsg(user, "#FS_STRING_VAR", "", 4, 5.0, "Can't use it while timer is running", "", "", false)
-
+                        LocalMsg(user, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -516,8 +508,7 @@ function lootbins_buttons() {
                     if (user.GetPersistentVarAsInt("gen") == 0) {
                         user.SetOrigin( < 2047.8, -1278.3, 16043.1 > )
                     } else {
-                        LocalMsg(user, "#FS_STRING_VAR", "", 4, 5.0, "Can't use it while timer is running", "", "", false)
-
+                        LocalMsg(user, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -530,8 +521,7 @@ function lootbins_buttons() {
                     if (user.GetPersistentVarAsInt("gen") == 0) {
                         user.SetOrigin( < 1120.6, -1298.3, 16019.3 > )
                     } else {
-                        LocalMsg(user, "#FS_STRING_VAR", "", 4, 5.0, "Can't use it while timer is running", "", "", false)
-
+                        LocalMsg(user, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -544,8 +534,7 @@ function lootbins_buttons() {
                     if (user.GetPersistentVarAsInt("gen") == 0) {
                         user.SetOrigin( < 236.2, -1293.1, 16028.1 > )
                     } else {
-                        LocalMsg(user, "#FS_STRING_VAR", "", 4, 5.0, "Can't use it while timer is running", "", "", false)
-
+                        LocalMsg(user, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -558,8 +547,7 @@ function lootbins_buttons() {
                     if (user.GetPersistentVarAsInt("gen") == 0) {
                         user.SetOrigin( <- 779.7988, -1284.5, 15799.7 > )
                     } else {
-                        LocalMsg(user, "#FS_STRING_VAR", "", 4, 5.0, "Can't use it while timer is running", "", "", false)
-
+                        LocalMsg(user, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -572,8 +560,7 @@ function lootbins_buttons() {
                     if (user.GetPersistentVarAsInt("gen") == 0) {
                         user.SetOrigin( <- 1864.661, -1297.2, 16088 > )
                     } else {
-                        LocalMsg(user, "#FS_STRING_VAR", "", 4, 5.0, "Can't use it while timer is running", "", "", false)
-
+                        LocalMsg(user, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -586,8 +573,7 @@ function lootbins_buttons() {
                     if (user.GetPersistentVarAsInt("gen") == 0) {
                         user.SetOrigin( <- 2903.943, -1290.8, 16489.9 > )
                     } else {
-                        LocalMsg(user, "#FS_STRING_VAR", "", 4, 5.0, "Can't use it while timer is running", "", "", false)
-
+                        LocalMsg(user, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -600,8 +586,7 @@ function lootbins_buttons() {
                     if (user.GetPersistentVarAsInt("gen") == 0) {
                         user.SetOrigin( <- 2823.7, -621.6021, 16968.9 > )
                     } else {
-                        LocalMsg(user, "#FS_STRING_VAR", "", 4, 5.0, "Can't use it while timer is running", "", "", false)
-
+                        LocalMsg(user, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -614,8 +599,7 @@ function lootbins_buttons() {
                     if (user.GetPersistentVarAsInt("gen") == 0) {
                         user.SetOrigin( <- 2819.5, 127.3, 17108.9 > )
                     } else {
-                        LocalMsg(user, "#FS_STRING_VAR", "", 4, 5.0, "Can't use it while timer is running", "", "", false)
-
+                        LocalMsg(user, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -628,8 +612,7 @@ function lootbins_buttons() {
                     if (user.GetPersistentVarAsInt("gen") == 0) {
                         user.SetOrigin( <- 2820.9, 1119.8, 17249.4 > )
                     } else {
-                        LocalMsg(user, "#FS_STRING_VAR", "", 4, 5.0, "Can't use it while timer is running", "", "", false)
-
+                        LocalMsg(user, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -642,8 +625,7 @@ function lootbins_buttons() {
                     if (user.GetPersistentVarAsInt("gen") == 0) {
                         user.SetOrigin( <- 3127.1, 1920.9, 17390.4 > )
                     } else {
-                        LocalMsg(user, "#FS_STRING_VAR", "", 4, 5.0, "Can't use it while timer is running", "", "", false)
-
+                        LocalMsg(user, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -656,8 +638,7 @@ function lootbins_buttons() {
                     if (user.GetPersistentVarAsInt("gen") == 0) {
                         user.SetOrigin( <- 2774.602, 2832, 17556 > )
                     } else {
-                        LocalMsg(user, "#FS_STRING_VAR", "", 4, 5.0, "Can't use it while timer is running", "", "", false)
-
+                        LocalMsg(user, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -670,8 +651,7 @@ function lootbins_buttons() {
                     if (user.GetPersistentVarAsInt("gen") == 0) {
                         user.SetOrigin( <- 2499.4, 3729.9, 17532.8 > )
                     } else {
-                        LocalMsg(user, "#FS_STRING_VAR", "", 4, 5.0, "Can't use it while timer is running", "", "", false)
-
+                        LocalMsg(user, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -684,8 +664,7 @@ function lootbins_buttons() {
                     if (user.GetPersistentVarAsInt("gen") == 0) {
                         user.SetOrigin( <- 2286.825, 4914, 17538 > )
                     } else {
-                        LocalMsg(user, "#FS_STRING_VAR", "", 4, 5.0, "Can't use it while timer is running", "", "", false)
-
+                        LocalMsg(user, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -698,8 +677,7 @@ function lootbins_buttons() {
                     if (user.GetPersistentVarAsInt("gen") == 0) {
                         user.SetOrigin( <- 1410, 4863.159, 17542 > )
                     } else {
-                        LocalMsg(user, "#FS_STRING_VAR", "", 4, 5.0, "Can't use it while timer is running", "", "", false)
-
+                        LocalMsg(user, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -712,8 +690,7 @@ function lootbins_buttons() {
                     if (user.GetPersistentVarAsInt("gen") == 0) {
                         user.SetOrigin( <- 870, 4116, 17544 > )
                     } else {
-                        LocalMsg(user, "#FS_STRING_VAR", "", 4, 5.0, "Can't use it while timer is running", "", "", false)
-
+                        LocalMsg(user, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -726,8 +703,7 @@ function lootbins_buttons() {
                     if (user.GetPersistentVarAsInt("gen") == 0) {
                         user.SetOrigin( <- 881.4, 3789.826, 17789.6 > )
                     } else {
-                        LocalMsg(user, "#FS_STRING_VAR", "", 4, 5.0, "Can't use it while timer is running", "", "", false)
-
+                        LocalMsg(user, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -740,8 +716,7 @@ function lootbins_buttons() {
                     if (user.GetPersistentVarAsInt("gen") == 0) {
                         user.SetOrigin( <- 882, 3271, 18109 > )
                     } else {
-                        LocalMsg(user, "#FS_STRING_VAR", "", 4, 5.0, "Can't use it while timer is running", "", "", false)
-
+                        LocalMsg(user, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -754,8 +729,7 @@ function lootbins_buttons() {
                     if (user.GetPersistentVarAsInt("gen") == 0) {
                         user.SetOrigin( < 19, 2350, 18010 > )
                     } else {
-                        LocalMsg(user, "#FS_STRING_VAR", "", 4, 5.0, "Can't use it while timer is running", "", "", false)
-
+                        LocalMsg(user, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -768,8 +742,7 @@ function lootbins_buttons() {
                     if (user.GetPersistentVarAsInt("gen") == 0) {
                         user.SetOrigin( < 1061.8, 2391, 18223.8 > )
                     } else {
-                        LocalMsg(user, "#FS_STRING_VAR", "", 4, 5.0, "Can't use it while timer is running", "", "", false)
-
+                        LocalMsg(user, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -782,8 +755,7 @@ function lootbins_buttons() {
                     if (user.GetPersistentVarAsInt("gen") == 0) {
                         user.SetOrigin( < 1818.9, 2413.8, 18518.4 > )
                     } else {
-                        LocalMsg(user, "#FS_STRING_VAR", "", 4, 5.0, "Can't use it while timer is running", "", "", false)
-
+                        LocalMsg(user, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -796,8 +768,7 @@ function lootbins_buttons() {
                     if (user.GetPersistentVarAsInt("gen") == 0) {
                         user.SetOrigin( < 1821.3, 2758.2, 18727.2 > )
                     } else {
-                        LocalMsg(user, "#FS_STRING_VAR", "", 4, 5.0, "Can't use it while timer is running", "", "", false)
-
+                        LocalMsg(user, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -810,8 +781,7 @@ function lootbins_buttons() {
                     if (user.GetPersistentVarAsInt("gen") == 0) {
                         user.SetOrigin( < 1824.3, 3097.8, 18944.1 > )
                     } else {
-                        LocalMsg(user, "#FS_STRING_VAR", "", 4, 5.0, "Can't use it while timer is running", "", "", false)
-
+                        LocalMsg(user, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -824,8 +794,7 @@ function lootbins_buttons() {
                     if (user.GetPersistentVarAsInt("gen") == 0) {
                         user.SetOrigin( < 1823.1, 2661.6, 19149.6 > )
                     } else {
-                        LocalMsg(user, "#FS_STRING_VAR", "", 4, 5.0, "Can't use it while timer is running", "", "", false)
-
+                        LocalMsg(user, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -838,8 +807,7 @@ function lootbins_buttons() {
                     if (user.GetPersistentVarAsInt("gen") == 0) {
                         user.SetOrigin( < 1830.3, 2313, 19366.3 > )
                     } else {
-                        LocalMsg(user, "#FS_STRING_VAR", "", 4, 5.0, "Can't use it while timer is running", "", "", false)
-
+                        LocalMsg(user, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -852,8 +820,7 @@ function lootbins_buttons() {
                     if (user.GetPersistentVarAsInt("gen") == 0) {
                         user.SetOrigin( < 1871.5, 2042, 19575.5 > )
                     } else {
-                        LocalMsg(user, "#FS_STRING_VAR", "", 4, 5.0, "Can't use it while timer is running", "", "", false)
-
+                        LocalMsg(user, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -866,8 +833,7 @@ function lootbins_buttons() {
                     if (user.GetPersistentVarAsInt("gen") == 0) {
                         user.SetOrigin( < 1872.1, 973, 19708.6 > )
                     } else {
-                        LocalMsg(user, "#FS_STRING_VAR", "", 4, 5.0, "Can't use it while timer is running", "", "", false)
-
+                        LocalMsg(user, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -880,8 +846,7 @@ function lootbins_buttons() {
                     if (user.GetPersistentVarAsInt("gen") == 0) {
                         user.SetOrigin( <- 33.7, -5.4, 14978.1 > )
                     } else {
-                        LocalMsg(user, "#FS_STRING_VAR", "", 4, 5.0, "Can't use it while timer is running", "", "", false)
-
+                        LocalMsg(user, "#HUB_CANT_USE_TIMER_RUNNING", "", 4, 5.0, "", "", "" )
                     }
                 }
             }
@@ -1554,10 +1519,10 @@ function door_map() {
                                     if (seconds > 59) {
                                         int minutes = seconds / 60
                                         int realseconds = seconds - (minutes * 60)
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                     } else {
                                         int minutes = seconds
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                     }
                                 }
                         }
@@ -1571,10 +1536,10 @@ function door_map() {
                                 if (seconds > 59) {
                                     int minutes = seconds / 60
                                     int realseconds = seconds - (minutes * 60)
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                 } else {
                                     int minutes = seconds
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                 }
                             }
                     }
@@ -1599,10 +1564,10 @@ function door_map() {
                                     if (seconds > 59) {
                                         int minutes = seconds / 60
                                         int realseconds = seconds - (minutes * 60)
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                     } else {
                                         int minutes = seconds
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                     }
                                 }
                         }
@@ -1616,10 +1581,10 @@ function door_map() {
                                 if (seconds > 59) {
                                     int minutes = seconds / 60
                                     int realseconds = seconds - (minutes * 60)
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                 } else {
                                     int minutes = seconds
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                 }
                             }
                     }
@@ -1644,10 +1609,10 @@ function door_map() {
                                     if (seconds > 59) {
                                         int minutes = seconds / 60
                                         int realseconds = seconds - (minutes * 60)
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                     } else {
                                         int minutes = seconds
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                     }
                                 }
                         }
@@ -1661,10 +1626,10 @@ function door_map() {
                                 if (seconds > 59) {
                                     int minutes = seconds / 60
                                     int realseconds = seconds - (minutes * 60)
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                 } else {
                                     int minutes = seconds
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                 }
                             }
                     }
@@ -1689,10 +1654,10 @@ function door_map() {
                                     if (seconds > 59) {
                                         int minutes = seconds / 60
                                         int realseconds = seconds - (minutes * 60)
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                     } else {
                                         int minutes = seconds
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                     }
                                 }
                         }
@@ -1706,10 +1671,10 @@ function door_map() {
                                 if (seconds > 59) {
                                     int minutes = seconds / 60
                                     int realseconds = seconds - (minutes * 60)
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                 } else {
                                     int minutes = seconds
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                 }
                             }
                     }
@@ -1734,10 +1699,10 @@ function door_map() {
                                     if (seconds > 59) {
                                         int minutes = seconds / 60
                                         int realseconds = seconds - (minutes * 60)
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                     } else {
                                         int minutes = seconds
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                     }
                                 }
                         }
@@ -1751,10 +1716,10 @@ function door_map() {
                                 if (seconds > 59) {
                                     int minutes = seconds / 60
                                     int realseconds = seconds - (minutes * 60)
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                 } else {
                                     int minutes = seconds
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                 }
                             }
                     }
@@ -1779,10 +1744,10 @@ function door_map() {
                                     if (seconds > 59) {
                                         int minutes = seconds / 60
                                         int realseconds = seconds - (minutes * 60)
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                     } else {
                                         int minutes = seconds
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                     }
                                 }
                         }
@@ -1796,10 +1761,10 @@ function door_map() {
                                 if (seconds > 59) {
                                     int minutes = seconds / 60
                                     int realseconds = seconds - (minutes * 60)
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                 } else {
                                     int minutes = seconds
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                 }
                             }
                     }
@@ -1824,10 +1789,10 @@ function door_map() {
                                     if (seconds > 59) {
                                         int minutes = seconds / 60
                                         int realseconds = seconds - (minutes * 60)
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                     } else {
                                         int minutes = seconds
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                     }
                                 }
                         }
@@ -1841,10 +1806,10 @@ function door_map() {
                                 if (seconds > 59) {
                                     int minutes = seconds / 60
                                     int realseconds = seconds - (minutes * 60)
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                 } else {
                                     int minutes = seconds
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                 }
                             }
                     }
@@ -1869,10 +1834,10 @@ function door_map() {
                                     if (seconds > 59) {
                                         int minutes = seconds / 60
                                         int realseconds = seconds - (minutes * 60)
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                     } else {
                                         int minutes = seconds
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                     }
                                 }
                         }
@@ -1886,10 +1851,10 @@ function door_map() {
                                 if (seconds > 59) {
                                     int minutes = seconds / 60
                                     int realseconds = seconds - (minutes * 60)
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                 } else {
                                     int minutes = seconds
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                 }
                             }
                     }
@@ -1914,10 +1879,10 @@ function door_map() {
                                     if (seconds > 59) {
                                         int minutes = seconds / 60
                                         int realseconds = seconds - (minutes * 60)
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                     } else {
                                         int minutes = seconds
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                     }
                                 }
                         }
@@ -1931,10 +1896,10 @@ function door_map() {
                                 if (seconds > 59) {
                                     int minutes = seconds / 60
                                     int realseconds = seconds - (minutes * 60)
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                 } else {
                                     int minutes = seconds
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                 }
                             }
                     }
@@ -1959,10 +1924,10 @@ function door_map() {
                                     if (seconds > 59) {
                                         int minutes = seconds / 60
                                         int realseconds = seconds - (minutes * 60)
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                     } else {
                                         int minutes = seconds
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                     }
                                 }
                         }
@@ -1976,10 +1941,10 @@ function door_map() {
                                 if (seconds > 59) {
                                     int minutes = seconds / 60
                                     int realseconds = seconds - (minutes * 60)
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                 } else {
                                     int minutes = seconds
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                 }
                             }
                     }
@@ -2004,10 +1969,10 @@ function door_map() {
                                     if (seconds > 59) {
                                         int minutes = seconds / 60
                                         int realseconds = seconds - (minutes * 60)
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                     } else {
                                         int minutes = seconds
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                     }
                                 }
                         }
@@ -2021,10 +1986,10 @@ function door_map() {
                                 if (seconds > 59) {
                                     int minutes = seconds / 60
                                     int realseconds = seconds - (minutes * 60)
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                 } else {
                                     int minutes = seconds
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                 }
                             }
                     }
@@ -2049,10 +2014,10 @@ function door_map() {
                                     if (seconds > 59) {
                                         int minutes = seconds / 60
                                         int realseconds = seconds - (minutes * 60)
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                     } else {
                                         int minutes = seconds
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                     }
                                 }
                         }
@@ -2066,10 +2031,10 @@ function door_map() {
                                 if (seconds > 59) {
                                     int minutes = seconds / 60
                                     int realseconds = seconds - (minutes * 60)
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                 } else {
                                     int minutes = seconds
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                 }
                             }
                     }
@@ -2094,10 +2059,10 @@ function door_map() {
                                     if (seconds > 59) {
                                         int minutes = seconds / 60
                                         int realseconds = seconds - (minutes * 60)
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                     } else {
                                         int minutes = seconds
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                     }
                                 }
                         }
@@ -2111,10 +2076,10 @@ function door_map() {
                                 if (seconds > 59) {
                                     int minutes = seconds / 60
                                     int realseconds = seconds - (minutes * 60)
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                 } else {
                                     int minutes = seconds
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                 }
                             }
                     }
@@ -2139,10 +2104,10 @@ function door_map() {
                                     if (seconds > 59) {
                                         int minutes = seconds / 60
                                         int realseconds = seconds - (minutes * 60)
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                     } else {
                                         int minutes = seconds
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                     }
                                 }
                         }
@@ -2156,10 +2121,10 @@ function door_map() {
                                 if (seconds > 59) {
                                     int minutes = seconds / 60
                                     int realseconds = seconds - (minutes * 60)
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                 } else {
                                     int minutes = seconds
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                 }
                             }
                     }
@@ -2184,10 +2149,10 @@ function door_map() {
                                     if (seconds > 59) {
                                         int minutes = seconds / 60
                                         int realseconds = seconds - (minutes * 60)
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                     } else {
                                         int minutes = seconds
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                     }
                                 }
                         }
@@ -2201,10 +2166,10 @@ function door_map() {
                                 if (seconds > 59) {
                                     int minutes = seconds / 60
                                     int realseconds = seconds - (minutes * 60)
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                 } else {
                                     int minutes = seconds
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                 }
                             }
                     }
@@ -2229,10 +2194,10 @@ function door_map() {
                                     if (seconds > 59) {
                                         int minutes = seconds / 60
                                         int realseconds = seconds - (minutes * 60)
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                     } else {
                                         int minutes = seconds
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                     }
                                 }
                         }
@@ -2246,10 +2211,10 @@ function door_map() {
                                 if (seconds > 59) {
                                     int minutes = seconds / 60
                                     int realseconds = seconds - (minutes * 60)
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                 } else {
                                     int minutes = seconds
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                 }
                             }
                     }
@@ -2274,10 +2239,10 @@ function door_map() {
                                     if (seconds > 59) {
                                         int minutes = seconds / 60
                                         int realseconds = seconds - (minutes * 60)
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                     } else {
                                         int minutes = seconds
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                     }
                                 }
                         }
@@ -2291,10 +2256,10 @@ function door_map() {
                                 if (seconds > 59) {
                                     int minutes = seconds / 60
                                     int realseconds = seconds - (minutes * 60)
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                 } else {
                                     int minutes = seconds
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                 }
                             }
                     }
@@ -2319,10 +2284,10 @@ function door_map() {
                                     if (seconds > 59) {
                                         int minutes = seconds / 60
                                         int realseconds = seconds - (minutes * 60)
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                     } else {
                                         int minutes = seconds
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                     }
                                 }
                         }
@@ -2336,10 +2301,10 @@ function door_map() {
                                 if (seconds > 59) {
                                     int minutes = seconds / 60
                                     int realseconds = seconds - (minutes * 60)
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                 } else {
                                     int minutes = seconds
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                 }
                             }
                     }
@@ -2364,10 +2329,10 @@ function door_map() {
                                     if (seconds > 59) {
                                         int minutes = seconds / 60
                                         int realseconds = seconds - (minutes * 60)
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                     } else {
                                         int minutes = seconds
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                     }
                                 }
                         }
@@ -2381,10 +2346,10 @@ function door_map() {
                                 if (seconds > 59) {
                                     int minutes = seconds / 60
                                     int realseconds = seconds - (minutes * 60)
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                 } else {
                                     int minutes = seconds
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                 }
                             }
                     }
@@ -2409,10 +2374,10 @@ function door_map() {
                                     if (seconds > 59) {
                                         int minutes = seconds / 60
                                         int realseconds = seconds - (minutes * 60)
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                     } else {
                                         int minutes = seconds
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                     }
                                 }
                         }
@@ -2426,10 +2391,10 @@ function door_map() {
                                 if (seconds > 59) {
                                     int minutes = seconds / 60
                                     int realseconds = seconds - (minutes * 60)
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                 } else {
                                     int minutes = seconds
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                 }
                             }
                     }
@@ -2454,10 +2419,10 @@ function door_map() {
                                     if (seconds > 59) {
                                         int minutes = seconds / 60
                                         int realseconds = seconds - (minutes * 60)
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                     } else {
                                         int minutes = seconds
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                     }
                                 }
                         }
@@ -2471,10 +2436,10 @@ function door_map() {
                                 if (seconds > 59) {
                                     int minutes = seconds / 60
                                     int realseconds = seconds - (minutes * 60)
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                 } else {
                                     int minutes = seconds
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                 }
                             }
                     }
@@ -2499,10 +2464,10 @@ function door_map() {
                                     if (seconds > 59) {
                                         int minutes = seconds / 60
                                         int realseconds = seconds - (minutes * 60)
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                     } else {
                                         int minutes = seconds
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                     }
                                 }
                         }
@@ -2516,10 +2481,10 @@ function door_map() {
                                 if (seconds > 59) {
                                     int minutes = seconds / 60
                                     int realseconds = seconds - (minutes * 60)
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                 } else {
                                     int minutes = seconds
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                 }
                             }
                     }
@@ -2544,10 +2509,10 @@ function door_map() {
                                     if (seconds > 59) {
                                         int minutes = seconds / 60
                                         int realseconds = seconds - (minutes * 60)
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                     } else {
                                         int minutes = seconds
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                     }
                                 }
                         }
@@ -2561,10 +2526,10 @@ function door_map() {
                                 if (seconds > 59) {
                                     int minutes = seconds / 60
                                     int realseconds = seconds - (minutes * 60)
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                 } else {
                                     int minutes = seconds
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                 }
                             }
                     }
@@ -2589,10 +2554,10 @@ function door_map() {
                                     if (seconds > 59) {
                                         int minutes = seconds / 60
                                         int realseconds = seconds - (minutes * 60)
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                     } else {
                                         int minutes = seconds
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                     }
                                 }
                         }
@@ -2606,10 +2571,10 @@ function door_map() {
                                 if (seconds > 59) {
                                     int minutes = seconds / 60
                                     int realseconds = seconds - (minutes * 60)
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                 } else {
                                     int minutes = seconds
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                 }
                             }
                     }
@@ -2634,10 +2599,10 @@ function door_map() {
                                     if (seconds > 59) {
                                         int minutes = seconds / 60
                                         int realseconds = seconds - (minutes * 60)
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                     } else {
                                         int minutes = seconds
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                     }
                                 }
                         }
@@ -2651,10 +2616,10 @@ function door_map() {
                                 if (seconds > 59) {
                                     int minutes = seconds / 60
                                     int realseconds = seconds - (minutes * 60)
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                 } else {
                                     int minutes = seconds
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                 }
                             }
                     }
@@ -2679,10 +2644,10 @@ function door_map() {
                                     if (seconds > 59) {
                                         int minutes = seconds / 60
                                         int realseconds = seconds - (minutes * 60)
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                     } else {
                                         int minutes = seconds
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                     }
                                 }
                         }
@@ -2696,10 +2661,10 @@ function door_map() {
                                 if (seconds > 59) {
                                     int minutes = seconds / 60
                                     int realseconds = seconds - (minutes * 60)
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                 } else {
                                     int minutes = seconds
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                 }
                             }
                     }
@@ -2724,10 +2689,10 @@ function door_map() {
                                     if (seconds > 59) {
                                         int minutes = seconds / 60
                                         int realseconds = seconds - (minutes * 60)
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                     } else {
                                         int minutes = seconds
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                     }
                                 }
                         }
@@ -2741,10 +2706,10 @@ function door_map() {
                                 if (seconds > 59) {
                                     int minutes = seconds / 60
                                     int realseconds = seconds - (minutes * 60)
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                 } else {
                                     int minutes = seconds
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                 }
                             }
                     }
@@ -2769,10 +2734,10 @@ function door_map() {
                                     if (seconds > 59) {
                                         int minutes = seconds / 60
                                         int realseconds = seconds - (minutes * 60)
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                     } else {
                                         int minutes = seconds
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                     }
                                 }
                         }
@@ -2786,10 +2751,10 @@ function door_map() {
                                 if (seconds > 59) {
                                     int minutes = seconds / 60
                                     int realseconds = seconds - (minutes * 60)
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                 } else {
                                     int minutes = seconds
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                 }
                             }
                     }
@@ -2814,10 +2779,10 @@ function door_map() {
                                     if (seconds > 59) {
                                         int minutes = seconds / 60
                                         int realseconds = seconds - (minutes * 60)
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                     } else {
                                         int minutes = seconds
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                     }
                                 }
                         }
@@ -2831,10 +2796,10 @@ function door_map() {
                                 if (seconds > 59) {
                                     int minutes = seconds / 60
                                     int realseconds = seconds - (minutes * 60)
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                 } else {
                                     int minutes = seconds
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                 }
                             }
                     }
@@ -2859,10 +2824,10 @@ function door_map() {
                                     if (seconds > 59) {
                                         int minutes = seconds / 60
                                         int realseconds = seconds - (minutes * 60)
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                     } else {
                                         int minutes = seconds
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                     }
                                 }
                         }
@@ -2876,10 +2841,10 @@ function door_map() {
                                 if (seconds > 59) {
                                     int minutes = seconds / 60
                                     int realseconds = seconds - (minutes * 60)
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                 } else {
                                     int minutes = seconds
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                 }
                             }
                     }
@@ -2904,10 +2869,10 @@ function door_map() {
                                     if (seconds > 59) {
                                         int minutes = seconds / 60
                                         int realseconds = seconds - (minutes * 60)
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                     } else {
                                         int minutes = seconds
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                     }
                                 }
                         }
@@ -2921,10 +2886,10 @@ function door_map() {
                                 if (seconds > 59) {
                                     int minutes = seconds / 60
                                     int realseconds = seconds - (minutes * 60)
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                 } else {
                                     int minutes = seconds
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                 }
                             }
                     }
@@ -2949,10 +2914,10 @@ function door_map() {
                                     if (seconds > 59) {
                                         int minutes = seconds / 60
                                         int realseconds = seconds - (minutes * 60)
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                     } else {
                                         int minutes = seconds
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                     }
                                 }
                         }
@@ -2966,10 +2931,10 @@ function door_map() {
                                 if (seconds > 59) {
                                     int minutes = seconds / 60
                                     int realseconds = seconds - (minutes * 60)
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                 } else {
                                     int minutes = seconds
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                 }
                             }
                     }
@@ -2994,10 +2959,10 @@ function door_map() {
                                     if (seconds > 59) {
                                         int minutes = seconds / 60
                                         int realseconds = seconds - (minutes * 60)
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                     } else {
                                         int minutes = seconds
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                     }
                                 }
                         }
@@ -3011,10 +2976,10 @@ function door_map() {
                                 if (seconds > 59) {
                                     int minutes = seconds / 60
                                     int realseconds = seconds - (minutes * 60)
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                 } else {
                                     int minutes = seconds
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                 }
                             }
                     }
@@ -3039,10 +3004,10 @@ function door_map() {
                                     if (seconds > 59) {
                                         int minutes = seconds / 60
                                         int realseconds = seconds - (minutes * 60)
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                     } else {
                                         int minutes = seconds
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                     }
                                 }
                         }
@@ -3056,10 +3021,10 @@ function door_map() {
                                 if (seconds > 59) {
                                     int minutes = seconds / 60
                                     int realseconds = seconds - (minutes * 60)
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                 } else {
                                     int minutes = seconds
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                 }
                             }
                     }
@@ -3084,10 +3049,10 @@ function door_map() {
                                     if (seconds > 59) {
                                         int minutes = seconds / 60
                                         int realseconds = seconds - (minutes * 60)
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                     } else {
                                         int minutes = seconds
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                     }
                                 }
                         }
@@ -3101,10 +3066,10 @@ function door_map() {
                                 if (seconds > 59) {
                                     int minutes = seconds / 60
                                     int realseconds = seconds - (minutes * 60)
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                 } else {
                                     int minutes = seconds
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                 }
                             }
                     }
@@ -3129,10 +3094,10 @@ function door_map() {
                                     if (seconds > 59) {
                                         int minutes = seconds / 60
                                         int realseconds = seconds - (minutes * 60)
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                     } else {
                                         int minutes = seconds
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                     }
                                 }
                         }
@@ -3146,10 +3111,10 @@ function door_map() {
                                 if (seconds > 59) {
                                     int minutes = seconds / 60
                                     int realseconds = seconds - (minutes * 60)
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                 } else {
                                     int minutes = seconds
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                 }
                             }
                     }
@@ -3174,10 +3139,10 @@ function door_map() {
                                     if (seconds > 59) {
                                         int minutes = seconds / 60
                                         int realseconds = seconds - (minutes * 60)
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                     } else {
                                         int minutes = seconds
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                     }
                                 }
                         }
@@ -3191,10 +3156,10 @@ function door_map() {
                                 if (seconds > 59) {
                                     int minutes = seconds / 60
                                     int realseconds = seconds - (minutes * 60)
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                 } else {
                                     int minutes = seconds
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                 }
                             }
                     }
@@ -3219,10 +3184,10 @@ function door_map() {
                                     if (seconds > 59) {
                                         int minutes = seconds / 60
                                         int realseconds = seconds - (minutes * 60)
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                     } else {
                                         int minutes = seconds
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                     }
                                 }
                         }
@@ -3236,10 +3201,10 @@ function door_map() {
                                 if (seconds > 59) {
                                     int minutes = seconds / 60
                                     int realseconds = seconds - (minutes * 60)
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                 } else {
                                     int minutes = seconds
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                 }
                             }
                     }
@@ -3264,10 +3229,10 @@ function door_map() {
                                     if (seconds > 59) {
                                         int minutes = seconds / 60
                                         int realseconds = seconds - (minutes * 60)
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                     } else {
                                         int minutes = seconds
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                     }
                                 }
                         }
@@ -3281,10 +3246,10 @@ function door_map() {
                                 if (seconds > 59) {
                                     int minutes = seconds / 60
                                     int realseconds = seconds - (minutes * 60)
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                 } else {
                                     int minutes = seconds
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                 }
                             }
                     }
@@ -3309,10 +3274,10 @@ function door_map() {
                                     if (seconds > 59) {
                                         int minutes = seconds / 60
                                         int realseconds = seconds - (minutes * 60)
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                     } else {
                                         int minutes = seconds
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                     }
                                 }
                         }
@@ -3326,10 +3291,10 @@ function door_map() {
                                 if (seconds > 59) {
                                     int minutes = seconds / 60
                                     int realseconds = seconds - (minutes * 60)
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                 } else {
                                     int minutes = seconds
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                 }
                             }
                     }
@@ -3354,10 +3319,10 @@ function door_map() {
                                     if (seconds > 59) {
                                         int minutes = seconds / 60
                                         int realseconds = seconds - (minutes * 60)
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                     } else {
                                         int minutes = seconds
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                     }
                                 }
                         }
@@ -3371,10 +3336,10 @@ function door_map() {
                                 if (seconds > 59) {
                                     int minutes = seconds / 60
                                     int realseconds = seconds - (minutes * 60)
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                 } else {
                                     int minutes = seconds
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                 }
                             }
                     }
@@ -3399,10 +3364,10 @@ function door_map() {
                                     if (seconds > 59) {
                                         int minutes = seconds / 60
                                         int realseconds = seconds - (minutes * 60)
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                     } else {
                                         int minutes = seconds
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                     }
                                 }
                         }
@@ -3416,10 +3381,10 @@ function door_map() {
                                 if (seconds > 59) {
                                     int minutes = seconds / 60
                                     int realseconds = seconds - (minutes * 60)
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                 } else {
                                     int minutes = seconds
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                 }
                             }
                     }
@@ -3444,10 +3409,10 @@ function door_map() {
                                     if (seconds > 59) {
                                         int minutes = seconds / 60
                                         int realseconds = seconds - (minutes * 60)
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                     } else {
                                         int minutes = seconds
-                                        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                     }
                                 }
                         }
@@ -3461,10 +3426,10 @@ function door_map() {
                                 if (seconds > 59) {
                                     int minutes = seconds / 60
                                     int realseconds = seconds - (minutes * 60)
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                 } else {
                                     int minutes = seconds
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                 }
                             }
                     }
@@ -3490,10 +3455,10 @@ function door_map() {
                                 if (seconds > 59) {
                                     int minutes = seconds / 60
                                     int realseconds = seconds - (minutes * 60)
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                 } else {
                                     int minutes = seconds
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                 }
                             }
                         }
@@ -3507,10 +3472,10 @@ function door_map() {
                                 if (seconds > 59) {
                                     int minutes = seconds / 60
                                     int realseconds = seconds - (minutes * 60)
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + minutes + " minutes " + realseconds + " seconds ", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + minutes + " minutes " + realseconds + " seconds ", "", "" )
                                 } else {
                                     int minutes = seconds
-                                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "Current Time: " + seconds + " seconds", "", "", false)
+                                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "" + seconds + " seconds", "", "" )
                                 }
                             }
                     }

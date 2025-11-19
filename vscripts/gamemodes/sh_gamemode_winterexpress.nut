@@ -1,9 +1,3 @@
-// WINTER EXPRESS
-// ported & implemented by @CafeFPS
-// mp_rr_desertlands_holiday map by zee_x64
-
-// fix custom waypoint for train
-
 global function WinterExpress_Init
 global function WinterExpress_IsNarrowWin
 
@@ -252,7 +246,6 @@ struct {
 		var legendSelectMenuPromptRuiTopo = null
 		var customCaptureProgressRui = null
 
-		//By @CafeFPS
 		var localTeam
 		var localTeamScore
 		int localTeamScoreValue
@@ -296,7 +289,6 @@ struct {
 void function WinterExpress_Init()
 {
 	#if SERVER
-		//Cafe was here
 		SurvivalShip_Init()
 		MapZones_SharedInit()
 		SurvivalFreefall_Init()
@@ -378,9 +370,10 @@ void function WinterExpress_Init()
 	#endif
 
 	#if CLIENT
-		//Cafe was here
+		
 		RegisterSignal( "ReviveRuiThread" )
 		RegisterSignal( "CaptureEndTimeRui" )
+		RegisterSignal( "GameStateChanged" )
 		Sh_ArenaDeathField_Init()
 		ClSurvivalCommentary_Init()
 		BleedoutClient_Init()
@@ -417,7 +410,6 @@ void function WinterExpress_Init()
 
 		FlagInit( "WinterExpress_ObjectiveStateUpdated", false )
 		FlagInit( "WinterExpress_ObjectiveOwnerUpdated", false )
-		AddCallback_OnClientScriptInit( FS_WinterExpress_OnClientScriptInit )
 	#endif
 
 	//Init Playlist Settings
@@ -440,6 +432,7 @@ void function WinterExpress_Init()
 	#if SERVER
 		//(mk):Gamemode uses 1v1 features for weapons/ammo 
 		Gamemode1v1_SetWeaponAmmoStackAmount( GetCurrentPlaylistVarInt( "give_weapon_stack_count_amount", 0 ) )
+		PrimaryWeaponMetagame_Init()
 	#endif
 	
 	//Flowstate custom
@@ -448,58 +441,40 @@ void function WinterExpress_Init()
 	WinterExpress_RegisterNetworking()
 }
 
-#if CLIENT
-void function FS_WinterExpress_OnClientScriptInit( entity player ) 
-{
-	#if DEVELOPER && MKOS
-		return //(mk): I need my debugs lol -.- 
-	#endif
-	
-	//I don't want these things in user screen even if they launch in debug
-	SetConVarBool( "cl_showpos", false )
-	SetConVarBool( "cl_showfps", false )
-	SetConVarBool( "cl_showgpustats", false )
-	SetConVarBool( "cl_showsimstats", false )
-	SetConVarBool( "host_speeds", false )
-	SetConVarBool( "con_drawnotify", false )
-	SetConVarBool( "enable_debug_overlays", false )
-}
-#endif
-
 void function WinterExpress_RegisterNetworking()
 {
-	Remote_RegisterClientFunction( "ServerCallback_CL_GameStartAnnouncement" )
+	ScriptRemote_RegisterClientFunction( "ServerCallback_CL_GameStartAnnouncement" )
 
-	Remote_RegisterClientFunction( "ServerCallback_CL_RoundEnded", "int", 0, 128, "int", -2, 10000, "int", 0, 10000 )
-	Remote_RegisterClientFunction( "ServerCallback_CL_ObjectiveStateChanged", "int", 0, 128, "int", -1, 128 )
-	Remote_RegisterClientFunction( "ServerCallback_CL_SquadOnObjectiveStateChanged", "int", 0, 128, "bool" )
-	Remote_RegisterClientFunction( "ServerCallback_CL_WinnerDetermined", "int", -1, 128 )
-	Remote_RegisterClientFunction( "ServerCallback_CL_SquadEliminationStateChanged", "int", -1, 128, "bool" )
-	Remote_RegisterClientFunction( "ServerCallback_CL_RespawnAnnouncement" )
-	Remote_RegisterClientFunction( "ServerCallback_CL_ObserverModeSetToTrain" )
-	Remote_RegisterClientFunction( "ServerCallback_CL_CameraLerpFromStationToHoverTank", "entity", "entity", "entity", "entity", "bool" )
-	Remote_RegisterClientFunction( "ServerCallback_CL_CameraLerpTrain", "entity", "vector", -32000.0, 32000.0, 32, "entity", "bool" )
-	Remote_RegisterClientFunction( "ServerCallback_CL_UpdateOpenMenuButtonCallbacks_Gameplay", "bool" )
-	Remote_RegisterClientFunction( "ServerCallback_CL_DeregisterModeButtonPressedCallbacks" )
-	Remote_RegisterClientFunction( "ServerCallback_CL_UpdateCurrentLoadoutHUD" )
-	// Remote_RegisterClientFunction( "ServerCallback_FlowstateCaptureProgressUI", "float", -1.0, 99999.0, 32, "float", -1.0, 99999.0, 32 )
+	ScriptRemote_RegisterClientFunction( "ServerCallback_CL_RoundEnded", "int", 0, 128, "int", -2, 10000, "int", 0, 10000 )
+	ScriptRemote_RegisterClientFunction( "ServerCallback_CL_ObjectiveStateChanged", "int", 0, 128, "int", -1, 128 )
+	ScriptRemote_RegisterClientFunction( "ServerCallback_CL_SquadOnObjectiveStateChanged", "int", 0, 128, "bool" )
+	ScriptRemote_RegisterClientFunction( "ServerCallback_CL_WinnerDetermined", "int", -1, 128 )
+	ScriptRemote_RegisterClientFunction( "ServerCallback_CL_SquadEliminationStateChanged", "int", -1, 128, "bool" )
+	ScriptRemote_RegisterClientFunction( "ServerCallback_CL_RespawnAnnouncement" )
+	ScriptRemote_RegisterClientFunction( "ServerCallback_CL_ObserverModeSetToTrain" )
+	ScriptRemote_RegisterClientFunction( "ServerCallback_CL_CameraLerpFromStationToHoverTank", "entity", "entity", "entity", "entity", "bool" )
+	ScriptRemote_RegisterClientFunction( "ServerCallback_CL_CameraLerpTrain", "entity", "vector", -32000.0, 32000.0, 32, "entity", "bool" )
+	ScriptRemote_RegisterClientFunction( "ServerCallback_CL_UpdateOpenMenuButtonCallbacks_Gameplay", "bool" )
+	ScriptRemote_RegisterClientFunction( "ServerCallback_CL_DeregisterModeButtonPressedCallbacks" )
+	ScriptRemote_RegisterClientFunction( "ServerCallback_CL_UpdateCurrentLoadoutHUD" )
+	// ScriptRemote_RegisterClientFunction( "ServerCallback_FlowstateCaptureProgressUI", "float", -1.0, 99999.0, 32, "float", -1.0, 99999.0, 32 )
 
-	RegisterNetworkedVariable( "WinterExpress_RoundState", SNDC_GLOBAL, SNVT_INT, -1 )
-	RegisterNetworkedVariable( "WinterExpress_RoundEnd", SNDC_GLOBAL, SNVT_TIME, -1 )
-	RegisterNetworkedVariable( "WinterExpress_ObjectiveState", SNDC_GLOBAL, SNVT_INT, eWinterExpressObjectiveState.INACTIVE )
-	RegisterNetworkedVariable( "WinterExpress_ObjectiveOwner", SNDC_GLOBAL, SNVT_INT, -1 )
-	RegisterNetworkedVariable( "WinterExpress_UnlockDelayEndTime", SNDC_GLOBAL, SNVT_TIME, -1 )
-	RegisterNetworkedVariable( "WinterExpress_CaptureEndTime", SNDC_GLOBAL, SNVT_TIME, -1 )
-	RegisterNetworkedVariable( "WinterExpress_CaptureEndTimeCopy", SNDC_GLOBAL, SNVT_TIME, -1 )
-	RegisterNetworkedVariable( "WinterExpress_TrainArrivalTime", SNDC_GLOBAL, SNVT_TIME, -1 )
-	RegisterNetworkedVariable( "WinterExpress_TrainTravelTime", SNDC_GLOBAL, SNVT_TIME, -1 )
-	RegisterNetworkedVariable( "WinterExpress_WaveRespawnTime", SNDC_GLOBAL, SNVT_TIME, -1 )
-	RegisterNetworkedVariable( "WinterExpress_RoundRespawnTime", SNDC_GLOBAL, SNVT_TIME, -1 )
-	RegisterNetworkedVariable( "WinterExpress_IsOvertime", SNDC_GLOBAL, SNVT_BOOL, false )
-	RegisterNetworkedVariable( "WinterExpress_RoundCounter", SNDC_GLOBAL, SNVT_INT, 0 )
-	RegisterNetworkedVariable( "WinterExpress_NarrowWin", SNDC_GLOBAL, SNVT_BOOL, false )
-	RegisterNetworkedVariable( "WinterExpress_HasGracePeriodPermit", SNDC_PLAYER_GLOBAL, SNVT_BOOL, false )
-	RegisterNetworkedVariable( "WinterExpress_IsPlayerAllowedLegendChange", SNDC_PLAYER_EXCLUSIVE, SNVT_BOOL, false )
+	ScriptRegisterNetworkedVariable( "WinterExpress_RoundState", SNDC_GLOBAL, SNVT_INT, -1 )
+	ScriptRegisterNetworkedVariable( "WinterExpress_RoundEnd", SNDC_GLOBAL, SNVT_TIME, -1 )
+	ScriptRegisterNetworkedVariable( "WinterExpress_ObjectiveState", SNDC_GLOBAL, SNVT_INT, eWinterExpressObjectiveState.INACTIVE )
+	ScriptRegisterNetworkedVariable( "WinterExpress_ObjectiveOwner", SNDC_GLOBAL, SNVT_INT, -1 )
+	ScriptRegisterNetworkedVariable( "WinterExpress_UnlockDelayEndTime", SNDC_GLOBAL, SNVT_TIME, -1 )
+	ScriptRegisterNetworkedVariable( "WinterExpress_CaptureEndTime", SNDC_GLOBAL, SNVT_TIME, -1 )
+	ScriptRegisterNetworkedVariable( "WinterExpress_CaptureEndTimeCopy", SNDC_GLOBAL, SNVT_TIME, -1 )
+	ScriptRegisterNetworkedVariable( "WinterExpress_TrainArrivalTime", SNDC_GLOBAL, SNVT_TIME, -1 )
+	ScriptRegisterNetworkedVariable( "WinterExpress_TrainTravelTime", SNDC_GLOBAL, SNVT_TIME, -1 )
+	ScriptRegisterNetworkedVariable( "WinterExpress_WaveRespawnTime", SNDC_GLOBAL, SNVT_TIME, -1 )
+	ScriptRegisterNetworkedVariable( "WinterExpress_RoundRespawnTime", SNDC_GLOBAL, SNVT_TIME, -1 )
+	ScriptRegisterNetworkedVariable( "WinterExpress_IsOvertime", SNDC_GLOBAL, SNVT_BOOL, false )
+	ScriptRegisterNetworkedVariable( "WinterExpress_RoundCounter", SNDC_GLOBAL, SNVT_INT, 0 )
+	ScriptRegisterNetworkedVariable( "WinterExpress_NarrowWin", SNDC_GLOBAL, SNVT_BOOL, false )
+	ScriptRegisterNetworkedVariable( "WinterExpress_HasGracePeriodPermit", SNDC_PLAYER_GLOBAL, SNVT_BOOL, false )
+	ScriptRegisterNetworkedVariable( "WinterExpress_IsPlayerAllowedLegendChange", SNDC_PLAYER_EXCLUSIVE, SNVT_BOOL, false )
 
 	#if CLIENT
 		RegisterNetworkedVariableChangeCallback_int( "WinterExpress_RoundState", OnServerVarChanged_RoundState )
@@ -669,7 +644,7 @@ void function OnEntitiesDidLoad_Client()
 	SurvivalCommentary_SetHost( eSurvivalHostType.MIRAGE )
 	
 	FS_Scenarios_InitPlayersCards()
-	if( GetGameState() == eGameState.Playing ) //Cafe was here
+	if( GetGameState() == eGameState.Playing )
 	{
 		FS_Scenarios_SetupPlayersCards( false )
 		FS_CreateScoreHUD()
@@ -1243,7 +1218,7 @@ void function Thread_OnGameStatePlaying()
 		}()
 	}
 
-	//Cafe was here
+	
 	if( IsRoundBasedRespawn() )
 	{
 		thread function () : () 
@@ -1290,17 +1265,17 @@ void function FS_SendPlayerHUDData()
 		foreach( splayer in team1 )
 		{
 			if( IsValid( player ) && IsValid( splayer ) )
-				Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddAllyHandle", splayer.GetEncodedEHandle() )
+				Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddAllyHandle", splayer )
 		}
 		foreach( splayer in team2 )
 		{
 			if( IsValid( player ) && IsValid( splayer ) )
-				Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddEnemyHandle", splayer.GetEncodedEHandle() )
+				Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddEnemyHandle", splayer )
 		}
 		foreach( splayer in team3 )
 		{
 			if( IsValid( player ) && IsValid( splayer ) )
-				Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddEnemyHandle2", splayer.GetEncodedEHandle() )
+				Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddEnemyHandle2", splayer )
 		}
 	}
 	
@@ -1309,17 +1284,17 @@ void function FS_SendPlayerHUDData()
 		foreach( splayer in team1 )
 		{
 			if( IsValid( player ) && IsValid( splayer ) )
-				Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddEnemyHandle", splayer.GetEncodedEHandle() )
+				Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddEnemyHandle", splayer )
 		}
 		foreach( splayer in team2 )
 		{
 			if( IsValid( player ) && IsValid( splayer ) )
-				Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddAllyHandle", splayer.GetEncodedEHandle() )
+				Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddAllyHandle", splayer )
 		}
 		foreach( splayer in team3 )
 		{
 			if( IsValid( player ) && IsValid( splayer ) )
-				Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddEnemyHandle2", splayer.GetEncodedEHandle() )
+				Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddEnemyHandle2", splayer )
 		}
 	}
 
@@ -1328,17 +1303,17 @@ void function FS_SendPlayerHUDData()
 		foreach( splayer in team1 )
 		{
 			if( IsValid( player ) && IsValid( splayer ) )
-				Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddEnemyHandle", splayer.GetEncodedEHandle() )
+				Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddEnemyHandle", splayer )
 		}
 		foreach( splayer in team2 )
 		{
 			if( IsValid( player ) && IsValid( splayer ) )
-				Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddEnemyHandle2", splayer.GetEncodedEHandle() )
+				Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddEnemyHandle2", splayer )
 		}
 		foreach( splayer in team3 )
 		{
 			if( IsValid( player ) && IsValid( splayer ) )
-				Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddAllyHandle", splayer.GetEncodedEHandle() )
+				Remote_CallFunction_NonReplay( player, "FS_Scenarios_AddAllyHandle", splayer )
 		}
 	}
 }
@@ -1357,7 +1332,7 @@ void function OnWinnerDetermined()
 	StopSoundOnEntity( file.trainRef, "WXpress_Train_Capture_Status" )
 	StopSoundOnEntity( file.trainRef, "WXpress_Train_Capture_Status_Enemy" )
 
-	//Cafe was here
+	
 	//Send stats
 	thread function () : ()
 	{
@@ -1385,7 +1360,7 @@ void function OnPlayerKilled_GameState( entity victim, entity attacker, var atta
 	
 	if( settings.winter_express_show_player_cards )
 		foreach ( player in GetConnectedPlayers() )
-			Remote_CallFunction_Replay( player, "FS_Scenarios_ChangeAliveStateForPlayer", victim.GetEncodedEHandle(), false )
+			Remote_CallFunction_Replay( player, "FS_Scenarios_ChangeAliveStateForPlayer", victim, false )
 	
 	file.deadPlayers.append( victim )
 
@@ -2082,12 +2057,6 @@ void function Flowstate_GivePlayerLoadoutOnGameStart_Copy( entity player, bool f
 	player.TakeOffhandWeapon( OFFHAND_SLOT_FOR_CONSUMABLES )
 	player.GiveOffhandWeapon( CONSUMABLE_WEAPON_NAME, OFFHAND_SLOT_FOR_CONSUMABLES, [] )
 
-	if( ItemFlavor_GetHumanReadableRef( playerCharacter ) != "character_gibraltar" )
-	{
-		player.TakeOffhandWeapon( OFFHAND_EQUIPMENT )
-		player.GiveOffhandWeapon( "mp_ability_emote_projector", OFFHAND_EQUIPMENT )
-	}
-
 	if ( player.GetTeam() != TEAM_SPECTATOR )
 	{
 		player.SetNameVisibleToEnemy( true )
@@ -2121,11 +2090,11 @@ void function Flowstate_GivePlayerLoadoutOnGameStart_Copy( entity player, bool f
 	//give weapons on landing only? Cafe
 	if( fromRespawning && file.playersOnHovertank.contains( player ) )
 	{
-		//hehe
+		//this needs rework, fix spawning
 	} else
 	{
 		GiveRandomPrimaryWeaponMetagame( player )
-		GiveRandomSecondaryWeaponMetagame( player )
+		//GiveRandomSecondaryWeaponMetagame( player )//TODO: FIX SECONDARY GUNS - OR BETTER, REWORK THE WHOLE GAMEMODE
 	}
 	
 	Inventory_SetPlayerEquipment( player, "incapshield_pickup_lv3", "incapshield")	
@@ -2580,7 +2549,7 @@ void function WinterExpress_OnPlayerRespawnedThread( entity player, bool startin
 	if( settings.winter_express_show_player_cards && !startingGame )
 	{
 		foreach ( sPlayer in GetConnectedPlayers() )
-			Remote_CallFunction_Replay( sPlayer, "FS_Scenarios_ChangeAliveStateForPlayer", player.GetEncodedEHandle(), true )
+			Remote_CallFunction_Replay( sPlayer, "FS_Scenarios_ChangeAliveStateForPlayer", player, true )
 	}
 }
 
@@ -2660,7 +2629,7 @@ bool function WinterExpress_RespawnOnTrain( entity player, bool isGameStartLerp 
 		}
 	}
 	
-	print( "winter express: Failing a train spawn falling back to something else" ) //(mk): keep this for prod
+	printl( "winter express: Failing a train spawn falling back to something else" )
 	return false
 }
 
@@ -3512,7 +3481,7 @@ void function AddSelectMenuPromptRui( string hintText)
 	file.legendSelectMenuPromptRuiTopo = topo
 }
 
-void function DEV_UpdateTopoPos( float voffset, float hoffset ) //Cafe was here
+void function DEV_UpdateTopoPos( float voffset, float hoffset )
 {
 	if( file.legendSelectMenuPromptRuiTopo != null )
 	{
@@ -3760,7 +3729,7 @@ void function ServerCallback_CL_RoundEnded( int endCondition, int winningTeam, i
 		announcementColor = Squads_GetNonLinearSquadColor( squadWinningIndex )
 		borderIcon = $""//$"rui/hud/gametype_icons/winter_express/legend_icon_round_won"
 		soundAlias = "WXpress_Train_Capture"
-		FS_UpdateScoreForTeam( winningTeam, newScore ) //Cafe was here
+		FS_UpdateScoreForTeam( winningTeam, newScore )
 	}
 	else  // local team lost 
 	{
@@ -3769,7 +3738,7 @@ void function ServerCallback_CL_RoundEnded( int endCondition, int winningTeam, i
 		announcementColor = Squads_GetNonLinearSquadColor( squadWinningIndex )
 		borderIcon = $""//winningSquadRuiIndex == 1 ? $"rui/hud/gametype_icons/winter_express/icon_announcement_fail" : $"rui/hud/gametype_icons/winter_express/icon_announcement_fail_alt"
 		soundAlias = "WXpress_Train_Capture_Enemy"
-		FS_UpdateScoreForTeam( squadWinningIndex, newScore ) //Cafe was here
+		FS_UpdateScoreForTeam( squadWinningIndex, newScore )
 	}
 
 	if ( endCondition == eWinterExpressRoundEndCondition.OBJECTIVE_CAPTURED )
@@ -4294,7 +4263,7 @@ void function SetupPlayerThread( entity player )
 
 	ClearPlayerIntroDropSettings( player )
 
-	if( IsRoundBasedRespawn() ) //Cafe was here
+	if( IsRoundBasedRespawn() )
 		return
 
 	if ( player.GetTeam() == file.lastValidTeamToScore )
@@ -4579,7 +4548,7 @@ entity function HolidayHoverTank_GetHovertankEnt( int index )
 #endif
 
 #if CLIENT
-//Cafe was here
+
 void function OnServerVarChanged_CaptureEndTime( entity player, float old, float new, bool actuallyChanged )
 {
 	if( new == -1 && file.customCaptureProgressRui != null )
@@ -4855,7 +4824,8 @@ void function FS_UpdateScoreForTeam( int team, int score )
 
 	if( teamScoreElement == null )
 	{
-		print( "FS_UpdateScoreForTeam BUGTHIS; teamScoreElement == null" ) //(mk):keep this print in prod
+		// should not happen so this print needs to exist outside of devmode to help with debugging
+		printl( "FS_UpdateScoreForTeam BUGTHIS; teamScoreElement == null" )
 		return
 	}
 

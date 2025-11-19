@@ -1,5 +1,3 @@
-//By @CafeFPS and Respawn
-
 global function MpWeaponTitanSword_Heavy_Init
 global function TitanSword_Heavy_OnWeaponActivate
 global function TitanSword_Heavy_ClearMods
@@ -84,7 +82,6 @@ bool function TitanSword_Heavy_TryHeavyAttack( entity player, entity weapon )
 	return true
 }
 
-//By @CafeFPS
 bool function TitanSword_TryMultiAttack( entity attacker, entity weapon )
 {
 	if ( !weapon.HasMod( TITAN_SWORD_HEAVY_MOD ) )

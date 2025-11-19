@@ -21,6 +21,11 @@ global function IsNewLootEnabled
 global function IsEnabledForGroundLoot
 global function GetLockedSetFromName
 
+#if CLIENT || UI
+global function AddCallback_EditLootDesc
+global function RemoveCallback_EditLootDesc
+#endif
+
 #if CLIENT
 global function GetRarityColor
 #endif
@@ -204,6 +209,10 @@ struct
 		array< OverrideDeathBoxRUI_NetworkOptimizedStruct >              handcraftedProfilesMasterList //
 	#endif
 
+	#if CLIENT || UI
+	array<string functionref( string, entity , string)> editLootDescCallbacks
+	#endif
+
 	#if(UI)
 		bool                                                      overrideDeathBoxRUI_Initialized = false
 		table<string, OverrideDeathBoxRUI_NetworkOptimizedStruct> overrideDeathBoxRUIProfilesTable
@@ -276,16 +285,16 @@ void function SURVIVAL_Loot_All_InitShared()
 	file.disabledRefs.clear()
 	file.disabledRefs = split( GetCurrentPlaylistVarString( "survival_disabled_loot", " " ), " " )
 
-	if( Playlist() == ePlaylists.fs_haloMod_survival ) 
+	if (Playlist() == ePlaylists.survival_firingrange || Playlist() == ePlaylists.survival_training)
 	{
-		SURVIVAL_Loot_RegFromDataTable( GetDataTable( $"datatable/flowstate_all_new_halomod_survival_groundloot.rpak" ) )
-	} else
+		SURVIVAL_Loot_RegFromDataTable( GetDataTable( $"datatable/survival_loot_sdk_firingrange.rpak" ) )
+	} 
+	else
 	{
-		SURVIVAL_Loot_RegFromDataTable( GetDataTable( $"datatable/flowstate_all_new.rpak" ) )
 		SURVIVAL_Loot_RegFromDataTable( GetDataTable( $"datatable/survival_loot_sdk.rpak" ) )
 		
-		if( GetCurrentPlaylistVarBool( "is_halo_gamemode", false ) )
-			SURVIVAL_Loot_RegFromDataTable( GetDataTable( $"datatable/flowstate_all_new_halomod.rpak" ) )
+		if (IsFlowstateActive())
+			SURVIVAL_Loot_RegFromDataTable( GetDataTable( $"datatable/flowstate_all_new.rpak" ) )
 		
 		if( Gamemode() == eGamemodes.fs_snd )
 			SURVIVAL_Loot_RegFromDataTable( GetDataTable( $"datatable/flowstate_all_new_snd.rpak" ) )
@@ -332,6 +341,15 @@ bool function IsNewLootEnabled( string ref )
 			return false
 		}
 	}
+
+	if( Playlist() != ePlaylists.survival_firingrange )
+	{
+		switch( ref )
+		{
+			case "mp_weapon_3030":
+			return false
+		}
+	}
 		
 	switch( ref )
 	{
@@ -346,13 +364,9 @@ bool function IsNewLootEnabled( string ref )
 		//disabled until proper porting and fix
 		case "mp_weapon_grenade_gravity":
 		
-		// case "mp_weapon_sentinel":
-		// case "incapshield_pickup_lv0":
-		case "mp_weapon_bow":
-		case "mp_weapon_3030":
 		case "mp_weapon_nemesis":
-		case "arrows":
 		case "mp_weapon_dragon_lmg":
+		case "mp_weapon_bow":
 		case "armor_pickup_lv0_evolving":
 		case "armor_pickup_lv1_evolving":
 		case "armor_pickup_lv2_evolving":
@@ -362,7 +376,6 @@ bool function IsNewLootEnabled( string ref )
 		// case "mp_weapon_raygun":
 		// if( Gamemode() == eGamemodes.fs_infected && ref == "mp_weapon_raygun" )
 			// return true
-		case "mp_titanweapon_flightcore_rockets":
 		// case "laser_sight_l1":
 		// case "laser_sight_l2": 
 		// case "laser_sight_l3":
@@ -374,7 +387,6 @@ bool function IsNewLootEnabled( string ref )
 		//case "hopup_selectfire":
 		case "hopup_double_tap":
 		case "mp_ability_void_ring":
-		case "mp_ability_mobile_respawn_beacon":
 		case "mp_ability_redeploy_balloon":
 		case "hopup_smart_reload":
 		case "hopup_dual_loader":
@@ -431,7 +443,10 @@ int function GetLockedSetFromName( string ref )
 
 void function SURVIVAL_Loot_RegFromDataTable(var dt)
 {
-	var attachmentTable = GetDataTable( $"datatable/flowstate_weapon_mods.rpak" )
+	var attachmentTable = GetDataTable( $"datatable/weapon_mods_sdk.rpak" )
+	if( Playlist() == ePlaylists.survival_firingrange ) 
+		attachmentTable = GetDataTable( $"datatable/weapon_mods_sdk_firing_range.rpak" )
+	
 	int numRows = GetDatatableRowCount( dt )
 	for ( int i = 0; i < numRows; i++ )
 	{
@@ -642,6 +657,9 @@ struct CustomWeaponData
 
 void function RegisterCustomWeapons()
 {	
+	if( GetCurrentPlaylistVarBool( "custom_loot", false ) )
+		return
+
 	array<string> customWeaponClassNames = split(GetCurrentPlaylistVarString("custom_weapon_list", ""), " ")
 	
 	#if DEVELOPER //(mk): added for confirmation, added hudIcon, added name, added registering damagedef	
@@ -1133,39 +1151,14 @@ int function SURVIVAL_Loot_GetLootTypeFromString( string lootTypeString )
 		case "helmet":
 			return eLootType.HELMET
 
-#if SERVER
-
-
-
-#endif
-
 		case "data_knife":
 			return eLootType.DATAKNIFE
-
 
 		case "blank":
 			return eLootType.BLANK
 
 		case "resource":
 			return eLootType.RESOURCE
-
-#if SERVER
-
-
-
-#endif
-
-#if SERVER
-
-
-
-#endif
-
-#if SERVER
-
-
-
-#endif
 
 		default:
 			//
@@ -1503,6 +1496,20 @@ void function SURVIVAL_UI_OnLevelInit()
 
 	thread SURVIVAL_UI_GatherFriendInfo()
 }
+#endif
+
+#if CLIENT || UI
+void function AddCallback_EditLootDesc( string functionref( string, entity, string ) callback )
+{
+	Assert( !file.editLootDescCallbacks.contains( callback ), "Tried to add a callback that was already added" )
+	file.editLootDescCallbacks.append( callback )
+}
+void function RemoveCallback_EditLootDesc( string functionref( string, entity, string ) callback )
+{
+	Assert( file.editLootDescCallbacks.contains( callback ), "Tried to remove a callback that was not added" )
+	file.editLootDescCallbacks.fastremovebyvalue( callback )
+}
+
 #endif
 
 

@@ -1,6 +1,3 @@
-#if SERVER
-globalize_all_functions
-#endif
 globalize_all_functions
 
 global const NO_CHOICES = 2
@@ -23,6 +20,23 @@ global enum eTDMState
 {
 	IN_PROGRESS = 0
 	NEXT_ROUND_NOW = 1
+}
+
+global enum e1v1State
+{
+	INVALID = -1,
+	CHARSELECT,
+	PREMATCH,
+	MATCH_START,
+	WAITING,
+	SEQUENCE,
+	MATCHING,
+	RESTING,
+	RECAP,
+	SPECTATING,
+	
+	//coaching mode
+	WATCHING_FIGHT_REPLAY
 }
 
 global struct LocationSettings
@@ -136,7 +150,8 @@ void function Sh_CustomTDM_Init()
 			)
 		}
 		break
-	case eMaps.mp_rr_olympus_mu1:
+	case eMaps.mp_rr_olympus:
+	case eMaps.mp_rr_olympus_tt:
         Shared_RegisterLocation(
             NewLocationSettings(
                "Olympus Test Location",
@@ -172,7 +187,7 @@ void function Sh_CustomTDM_Init()
         )
 	break
    case eMaps.mp_rr_aqueduct:
-   case eMaps.mp_rr_aqueduct_night:
+   //case eMaps.mp_rr_aqueduct_night:
         Shared_RegisterLocation(
             NewLocationSettings(
                "Overflow",
@@ -214,7 +229,7 @@ void function Sh_CustomTDM_Init()
             )
         )
         break
-    case eMaps.mp_rr_ashs_redemption:
+/*     case eMaps.mp_rr_ashs_redemption:
         Shared_RegisterLocation(
             NewLocationSettings(
                 "Ash's Redemption",
@@ -228,7 +243,7 @@ void function Sh_CustomTDM_Init()
             )
         )
 
-        break
+        break */
     case eMaps.mp_rr_arena_composite:
         Shared_RegisterLocation(
             NewLocationSettings(
@@ -281,7 +296,7 @@ void function Sh_CustomTDM_Init()
 		)
 		break
 		
-	case eMaps.mp_rr_arena_skygarden:
+	/*case eMaps.mp_rr_arena_skygarden:
 	//This location sucks, disable until map is fixed.. Cafe
 	if(FlowState_EnableEncore()){
 	Shared_RegisterLocation(
@@ -307,7 +322,7 @@ void function Sh_CustomTDM_Init()
 				<0, 0, 1000>
 			)
 		)
-	}
+	}*/
 	
 	///////////////////////////////////////
 	//////////////DEAFPS Maps//////////////
@@ -1065,7 +1080,7 @@ void function Sh_CustomTDM_Init()
             )
         )
         //break
-		case eMaps.mp_flowstate:
+		case eMaps.mp_rr_arena_empty:
 		if( GetCurrentPlaylistVarBool( "is_halo_gamemode", false ) )
 		{
 			//Disabled for now until it's fixed. Cafe
@@ -1841,6 +1856,11 @@ LocPair function NewLocPair( vector origin, vector angles )
     return locPair
 }
 
+string function LocPairString( LocPair pair )
+{
+	return VectorToString( pair.origin ) + VectorToString( pair.angles )
+}
+
 LocationSettings function NewLocationSettings(string name, array<LocPair> spawns, vector cinematicCameraOffset, asset Asset = $"rui/menu/maps/map_not_found")
 {
     LocationSettings locationSettings
@@ -1873,11 +1893,7 @@ void function RegisterLocationSURF(LocationSettings locationSettings)
 
 }
 
-#if SERVER   
-string function Playlist_1v1_Primary_Array()						{ return GetCurrentPlaylistVarString( "custom_1v1_weapons_primary", "" ) }
-string function Playlist_1v1_Primary_Array_continue()				{ return GetCurrentPlaylistVarString( "custom_1v1_weapons_primary_continue", "" ) }
-string function Playlist_1v1_Secondary_Array()						{ return GetCurrentPlaylistVarString( "custom_1v1_weapons_secondary", "" ) }
-string function Playlist_1v1_Secondary_Array_continue()				{ return GetCurrentPlaylistVarString( "custom_1v1_weapons_secondary_continue", "" ) }
+#if SERVER
 
 StoredWeapon function Equipment_GetRespawnKit_PrimaryWeapon()
 {

@@ -1,22 +1,3 @@
-/*
-Flowstate Aim Trainer v1.0 - Made by CafeFPS (server, client, ui)
-Discord: @CafeFPS | Twitter: @CafeFPS
-Support me: https://ko-fi.com/r5r_colombia
-
-More credits:
-- Skeptation#4002 -- beta tester and coworker https://www.youtube.com/c/Skeptation
-- Amos#1368 & contributors -- sdk https://github.com/Mauler125/r5sdk/tree/indev
-- rexx#1287 & contributors -- repak tool https://github.com/r-ex/RePak
-- Zee#6969 -- weapons buy menu example, history ui pages
-- Darkes#8647 -- beta tester
-- Rego#2848 -- beta tester
-- michae\l/#1125 -- beta tester
-- James9950#5567 -- beta tester
-- (--__GimmYnkia__--)#2995 -- beta tester
-- oliver#1375 -- beta tester
-- Rin 暗#5862 -- beta tester
-*/
-
 global function Sh_ChallengesByColombia_Init
 
 global int AimTrainer_CHALLENGE_DURATION = 60

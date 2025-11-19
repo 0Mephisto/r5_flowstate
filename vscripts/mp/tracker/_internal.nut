@@ -17,6 +17,7 @@ global function Stats__GetRoundStatsTables
 global function Stats__ResetTableByValueType
 global function Stats__PlayerExists
 global function Stats__RawGetStat
+global function Stats__RawSetStat
 
 global function Stats__SetStatKeys
 global function Stats__GetStatKeys
@@ -25,6 +26,13 @@ global function GetPlayerStatInt
 global function GetPlayerStatString
 global function GetPlayerStatBool
 global function GetPlayerStatFloat
+
+global function GetPlayerStatArray
+global function GetPlayerStatArrayInt
+global function GetPlayerStatArrayString
+global function GetPlayerStatArrayBool
+global function GetPlayerStatArrayFloat
+global function PlayerStatArray_Append
 
 global function SetPlayerStatInt
 global function SetPlayerStatString
@@ -36,6 +44,9 @@ global function GetPlayerRoundStatString
 global function GetPlayerRoundStatBool
 global function GetPlayerRoundStatFloat
 
+global function GetPlayerSettingsTable
+global function MakeVarArrayInt
+
 global typedef StatsTable table< string, var >
 typedef UIDString string
 
@@ -46,7 +57,7 @@ struct
 	table< UIDString, string > generatedOutBoundJsonData
 	array< string > statKeys
 	
-	table< string, var functionref( string UID ) > registeredStatOutboundValues
+	table< string, var functionref( UIDString UID ) > registeredStatOutboundValues
 
 } file
 
@@ -63,7 +74,7 @@ void function OnDisconnected( entity player )
 	__AggregateStats( player )
 }
 
-StatsTable function Stats__GetPlayerStatsTable( string uid )
+StatsTable function Stats__GetPlayerStatsTable( UIDString uid )
 {	
 	if( !Stats__PlayerExists( uid ) ) //Tracker_IsStatsReadyFor( entity player )
 	{
@@ -88,7 +99,7 @@ StatsTable function EmptyStats()
 	return emptyStats
 }
 
-bool function Stats__PlayerExists( string uid )
+bool function Stats__PlayerExists( UIDString uid )
 {
 	return ( uid in file.onlineStatsTables )
 }
@@ -103,53 +114,34 @@ array<string> function Stats__GetStatKeys()
 	return file.statKeys
 }
 
-var function Stats__RawGetStat( string player_oid, string statname, bool online = true )
+var function Stats__RawGetStat( UIDString player_oid, string statname, bool online = true )
 {
-	switch( online )
-	{
-		case true:
-		
-			if ( player_oid in file.onlineStatsTables && statname in file.onlineStatsTables[ player_oid ] ) 
-				return file.onlineStatsTables[ player_oid ][ statname ]
-				
-			break 
-			
-		case false: 
-		
-			if ( player_oid in file.localStatsTables && statname in file.localStatsTables[ player_oid ] ) 
-				return file.localStatsTables[ player_oid ][ statname ]
-			
-			break
-	}
-	
-	return null
+	table< UIDString, StatsTable > statsTable = online ? file.onlineStatsTables : file.localStatsTables
+
+	if (player_oid in statsTable && statname in statsTable[player_oid])
+		return statsTable[player_oid][statname]
+	else
+		return null
 }
 
-function __RawSetStat( string uid, string statKey, var value, bool online = true )
+void function Stats__RawSetStat( UIDString uid, string statKey, var value, bool online = true )
 {
-	switch( online )
+	// there is a better way of doing this.
+	if(online)
 	{
-		case true:
-		
-			if ( uid in file.onlineStatsTables && statKey in file.onlineStatsTables[ uid ] ) 
-				file.onlineStatsTables[ uid ][ statKey ] = value
-				
-			break 
-			
-		case false: 
-		
-			if ( uid in file.localStatsTables && statKey in file.localStatsTables[ uid ] ) 
-				file.localStatsTables[ uid ][ statKey ] = value
-			
-			break
+		if ( uid in file.onlineStatsTables && statKey in file.onlineStatsTables[ uid ] ) 
+			file.onlineStatsTables[ uid ][ statKey ] = value
 	}
-	
-	return null
+	else
+	{
+		if ( uid in file.localStatsTables && statKey in file.localStatsTables[ uid ] ) 
+			file.localStatsTables[ uid ][ statKey ] = value
+	}
 }
 
-array<string> function Stats__AddPlayerStatsTable( string player_oid ) 
+array<string> function Stats__AddPlayerStatsTable( UIDString player_oid ) 
 {
-	var rawStatsTable = GetPlayerStats__internal( player_oid )
+	var rawStatsTable = GetPlayerPersistenceData__internal( player_oid )
 	array<string> statKeys = []
 	
 	if ( typeof rawStatsTable == "table" && rawStatsTable.len() > 0 ) 
@@ -158,8 +150,21 @@ array<string> function Stats__AddPlayerStatsTable( string player_oid )
 
         foreach ( key, value in rawStatsTable )
         {
-            statsTable[ expect string( key ) ] <- value;
 			statKeys.append( expect string( key ) )
+			
+			if ( key == "settings" && typeof value == "table" )
+            {
+                table settingsTable = {}
+
+                foreach ( subKey, subVal in value )
+                    settingsTable[ expect string( subKey ) ] <- subVal
+
+                statsTable[ expect string( key ) ] <- settingsTable
+            }
+            else
+            {
+                statsTable[ expect string( key ) ] <- value
+            }
         }
 		
 		file.onlineStatsTables[ player_oid ] <- statsTable
@@ -174,11 +179,34 @@ array<string> function Stats__AddPlayerStatsTable( string player_oid )
 			file.localStatsTables[ player_oid ] <- localTable
 		}
 	}
+	#if DEVELOPER
+		else
+			printw( "Stats table was empty for", player_oid )
+	#endif 
 	
 	return statKeys
 }
 
-int function GetPlayerStatInt( string player_oid, string statname ) 
+table<string, var> function GetPlayerSettingsTable( UIDString oid )
+{
+    if ( !Stats__PlayerExists( oid ) )
+        return EmptyStats()
+		
+    if ( !( "settings" in file.onlineStatsTables[ oid ] ) )
+        return EmptyStats()
+
+    var rawSettings = file.onlineStatsTables[ oid ][ "settings" ]
+    if ( typeof rawSettings != "table" )
+        return EmptyStats()
+
+    table<string, var> settings = {}
+    foreach ( key, value in rawSettings )
+        settings[ expect string( key ) ] <- value
+
+    return settings
+}
+
+int function GetPlayerStatInt( UIDString player_oid, string statname ) 
 {
 	if ( player_oid in file.onlineStatsTables && statname in file.onlineStatsTables[ player_oid ] ) 
 		return expect int( file.onlineStatsTables[ player_oid ][ statname ] )
@@ -186,7 +214,7 @@ int function GetPlayerStatInt( string player_oid, string statname )
 	return 0
 }
 
-string function GetPlayerStatString( string player_oid, string statname ) 
+string function GetPlayerStatString( UIDString player_oid, string statname ) 
 {
 	if ( player_oid in file.onlineStatsTables && statname in file.onlineStatsTables[ player_oid ] ) 
 		return expect string( file.onlineStatsTables[ player_oid ][ statname ] )
@@ -194,7 +222,7 @@ string function GetPlayerStatString( string player_oid, string statname )
 	return ""
 }
 
-bool function GetPlayerStatBool( string player_oid, string statname ) 
+bool function GetPlayerStatBool( UIDString player_oid, string statname ) 
 {
 	if ( player_oid in file.onlineStatsTables && statname in file.onlineStatsTables[ player_oid ] ) 
 		return expect bool( file.onlineStatsTables[ player_oid ][ statname ] )
@@ -202,24 +230,102 @@ bool function GetPlayerStatBool( string player_oid, string statname )
 	return false
 }
 
-float function GetPlayerStatFloat( string player_oid, string statname ) 
+float function GetPlayerStatFloat( UIDString player_oid, string statname ) 
 {
 	if ( player_oid in file.onlineStatsTables && statname in file.onlineStatsTables[ player_oid ] ) 
 		return expect float( file.onlineStatsTables[ player_oid ][ statname ] )
 	
 	return 0.0
 }
+ 
+array<var> function GetPlayerStatArray( UIDString player_oid, string statname )
+{
+	array<var> statArray
+	
+	if ( player_oid in file.onlineStatsTables && statname in file.onlineStatsTables[ player_oid ] )
+	{
+		string typeCheck = typeof file.onlineStatsTables[ player_oid ][ statname ]
+		if( typeCheck == "array" )
+		{
+			foreach( v in file.onlineStatsTables[ player_oid ][ statname ] )
+				statArray.append( v )
+		}
+		else
+			printw( "GetPlayerStatArray Warning: Tried to return array<var> from type", typeCheck, "for statKey" + "'" + statname + "'" )
+	}
+	
+	return statArray
+}
 
-void function SetPlayerStatInt( string player_oid, string statname, int value ) 
+array<string> function GetPlayerStatArrayString( UIDString player_oid, string statname )
+{
+	array<string> statArray
+	
+	if ( player_oid in file.onlineStatsTables && statname in file.onlineStatsTables[ player_oid ] ) 
+	{
+		foreach( var value in file.onlineStatsTables[ player_oid ][ statname ] )
+			statArray.append( expect string( value ) )
+	}
+	
+	return statArray
+}
+
+array<int> function GetPlayerStatArrayInt( UIDString player_oid, string statname )
+{
+	array<int> statArray
+	
+	if ( player_oid in file.onlineStatsTables && statname in file.onlineStatsTables[ player_oid ] ) 
+	{
+		foreach( var value in file.onlineStatsTables[ player_oid ][ statname ] )
+			statArray.append( expect int( value ) )
+	}
+	
+	return statArray
+}
+
+array<float> function GetPlayerStatArrayFloat( UIDString player_oid, string statname )
+{
+	array<float> statArray
+	
+	if ( player_oid in file.onlineStatsTables && statname in file.onlineStatsTables[ player_oid ] ) 
+	{
+		foreach( var value in file.onlineStatsTables[ player_oid ][ statname ] )
+			statArray.append( expect float( value ) )
+	}
+	
+	return statArray
+}
+
+array<bool> function GetPlayerStatArrayBool( UIDString player_oid, string statname )
+{
+	array<bool> statArray
+	
+	if ( player_oid in file.onlineStatsTables && statname in file.onlineStatsTables[ player_oid ] ) 
+	{
+		foreach( var value in file.onlineStatsTables[ player_oid ][ statname ] )
+			statArray.append( expect bool( value ) )
+	}
+	
+	return statArray
+}
+
+//all stat arrays have a backend limit of 1000 items.
+void function PlayerStatArray_Append( UIDString player_oid, string statname, var value )
+{
+	if ( player_oid in file.onlineStatsTables && statname in file.onlineStatsTables[ player_oid ] ) 
+		file.onlineStatsTables[ player_oid ][ statname ].append( value )
+}
+
+void function SetPlayerStatInt( UIDString player_oid, string statname, int value ) 
 {	
 	if ( player_oid in file.onlineStatsTables && statname in file.onlineStatsTables[ player_oid ] ) 
 		file.onlineStatsTables[ player_oid ][ statname ] = value
 }
 
-void function SetPlayerStatString( string player_oid, string statname, string value ) 
+void function SetPlayerStatString( UIDString player_oid, string statname, string value ) 
 {
 	#if DEVELOPER
-		//This will be thrown out in the backend if exceeded.
+		// This assert is only on dev as the string will be discarded later anyway f it exceeds the length
 		mAssert( value.len() <= 30, "Invalid string length for the value of statname \"" + statname + "\" value: \"" + value )
 	#endif
 	
@@ -227,13 +333,13 @@ void function SetPlayerStatString( string player_oid, string statname, string va
 		file.onlineStatsTables[ player_oid ][ statname ] = value
 }
 
-void function SetPlayerStatBool( string player_oid, string statname, bool value ) 
+void function SetPlayerStatBool( UIDString player_oid, string statname, bool value ) 
 {
 	if ( player_oid in file.onlineStatsTables && statname in file.onlineStatsTables[ player_oid ] ) 
 		file.onlineStatsTables[ player_oid ][ statname ] = value
 }
 
-void function SetPlayerStatFloat( string player_oid, string statname, float value ) 
+void function SetPlayerStatFloat( UIDString player_oid, string statname, float value ) 
 {
 	if ( player_oid in file.onlineStatsTables && statname in file.onlineStatsTables[ player_oid ] ) 
 		file.onlineStatsTables[ player_oid ][ statname ] = value
@@ -264,7 +370,7 @@ array<string> function GenerateOutBoundDataList()
 	return generatedOutboundList
 }
 
-string function Stats__GenerateOutBoundJsonData( string UID )
+string function Stats__GenerateOutBoundJsonData( UIDString UID )
 {
 	if( empty( UID ) )
 	{
@@ -309,12 +415,45 @@ string function Stats__GenerateOutBoundJsonData( string UID )
 					break
 					
 				case "float":
-					json += "\"" + statKey + "\": " + expect float( data ).tostring() + ", ";
+					json += "\"" + statKey + "\": " + format( "%.7f", expect float( data ) ) + ", ";
 					break
 				
 				case "bool":
 					json += "\"" + statKey + "\": " + expect bool( data ).tostring() + ", ";
 					break 
+					
+				case "array":
+                {
+                    string arrayJson = "["
+                    foreach( item in data )
+                    {
+                        string itemType = typeof( item )
+                        switch( itemType )
+                        {
+                            case "string":
+                                arrayJson += "\"" + expect string( item ) + "\", ";
+                                break
+                            case "int":
+                                arrayJson += expect int( item ).tostring() + ", ";
+                                break
+                            case "float": //we must format, or non fractional floats are truncated and misinterpreted as int, ie: 1.0 becomes 1 
+										  //rounding can also occur at precision exceeding 5 decimal places when casting to string.
+                                arrayJson += format( "%.7f", expect float( item ) ) + ", ";
+                                break
+                            case "bool":
+                                arrayJson += expect bool( item ).tostring() + ", ";
+                                break
+                            default:
+                                arrayJson += "null, ";
+                        }
+                    }
+                    if( arrayJson.len() > 1 )
+                        arrayJson = arrayJson.slice( 0, arrayJson.len() - 2 )
+						
+                    arrayJson += "]"
+                    json += "\"" + statKey + "\": " + arrayJson + ", ";
+                    break
+                }
 					
 				#if DEVELOPER 
 					default:
@@ -371,21 +510,24 @@ void function __AggregateStat_internal( entity player, string statKey )
 			
 			int addValue = expect int( data )
 			int storedValue = GetPlayerRoundStatInt( uid, statKey )
-			__RawSetStat( uid, statKey, MakeVar( addValue + storedValue ), false )		
+			Stats__RawSetStat( uid, statKey, MakeVar( addValue + storedValue ), false )		
 			break
 			
 		case "float":
 			float addValue = expect float( data )
 			float storedValue = GetPlayerRoundStatFloat( uid, statKey )
-			__RawSetStat( uid, statKey, MakeVar( addValue + storedValue ), false )
+			Stats__RawSetStat( uid, statKey, MakeVar( addValue + storedValue ), false )
 			break
 		
 		case "bool":
-			__RawSetStat( uid, statKey, data, false )
-
 		case "string":
-			__RawSetStat( uid, statKey, data, false )
+		case "array":
+			Stats__RawSetStat( uid, statKey, data, false )
 			break
+			
+		case "table":
+		default:
+			mAssert( false, "%s is currently unsupported.", vType )
 	}
 }
 
@@ -396,6 +538,15 @@ var function MakeVar( ... )
 	
 	mAssert( false, "Called MakeVar with no arguments." )
 	return null
+}
+
+var function MakeVarArrayInt( array<int> typedArray )
+{
+	array arr
+	foreach( item in typedArray )
+		arr.append( item )
+		
+	return arr
 }
 
 void function Stats__ResetTableByValueType( StatsTable statsTbl )
@@ -420,6 +571,14 @@ void function Stats__ResetTableByValueType( StatsTable statsTbl )
 			case "bool":
 				statsTbl[ statKey ] = false
 				break
+				
+			case "table":
+				statsTbl[ statKey ] = {}
+				break
+				
+			case "array":
+				statsTbl[ statKey ] = []
+				break
 			
 			default:
 				#if DEVELOPER 
@@ -429,7 +588,7 @@ void function Stats__ResetTableByValueType( StatsTable statsTbl )
 	}
 }
 
-int function GetPlayerRoundStatInt( string player_oid, string statname ) 
+int function GetPlayerRoundStatInt( UIDString player_oid, string statname ) 
 {
 	if ( player_oid in file.localStatsTables && statname in file.localStatsTables[ player_oid ] ) 
 		return expect int( file.localStatsTables[ player_oid ][ statname ] )
@@ -437,7 +596,7 @@ int function GetPlayerRoundStatInt( string player_oid, string statname )
 	return 0
 }
 
-string function GetPlayerRoundStatString( string player_oid, string statname ) 
+string function GetPlayerRoundStatString( UIDString player_oid, string statname ) 
 {
 	if ( player_oid in file.localStatsTables && statname in file.localStatsTables[ player_oid ] ) 
 		return expect string( file.localStatsTables[ player_oid ][ statname ] )
@@ -445,7 +604,7 @@ string function GetPlayerRoundStatString( string player_oid, string statname )
 	return ""
 }
 
-bool function GetPlayerRoundStatBool( string player_oid, string statname ) 
+bool function GetPlayerRoundStatBool( UIDString player_oid, string statname ) 
 {
 	if ( player_oid in file.localStatsTables && statname in file.localStatsTables[ player_oid ] ) 
 		return expect bool( file.localStatsTables[ player_oid ][ statname ] )
@@ -453,7 +612,7 @@ bool function GetPlayerRoundStatBool( string player_oid, string statname )
 	return false
 }
 
-float function GetPlayerRoundStatFloat( string player_oid, string statname ) 
+float function GetPlayerRoundStatFloat( UIDString player_oid, string statname ) 
 {
 	if ( player_oid in file.localStatsTables && statname in file.localStatsTables[ player_oid ] ) 
 		return expect float( file.localStatsTables[ player_oid ][ statname ] )
@@ -461,7 +620,7 @@ float function GetPlayerRoundStatFloat( string player_oid, string statname )
 	return 0.0
 }
 
-bool function __ShouldUseLocal_internal( string uid, string statKey )
+bool function __ShouldUseLocal_internal( UIDString uid, string statKey )
 {
 	if( !Tracker_StatLocalAllowed( statKey ) )
 		return false
@@ -494,6 +653,13 @@ global function SetPlayerStatString
 global function SetPlayerStatBool
 global function SetPlayerStatFloat
 
+global function GetPlayerStatArray
+global function GetPlayerStatArrayInt
+global function GetPlayerStatArrayString
+global function GetPlayerStatArrayBool
+global function GetPlayerStatArrayFloat
+global function PlayerStatArray_Append
+
 array<string> function Stats__GetStatKeys(){ return [] }
 
 int function GetPlayerStatInt( string player, string statname ){ return 0 }
@@ -505,4 +671,11 @@ void function SetPlayerStatInt( string player, string statname, int value ){}
 void function SetPlayerStatString( string player, string statname, string value ){}
 void function SetPlayerStatBool( string player, string statname, bool value ){}
 void function SetPlayerStatFloat( string player, string statname, float value ){}
+
+array<var> function GetPlayerStatArray( string player_oid, string statname ){ return [] }
+array<int> function GetPlayerStatArrayInt( string player_oid, string statname ){ return [] }
+array<string> function GetPlayerStatArrayString( string player_oid, string statname ){ return [] }
+array<float> function GetPlayerStatArrayFloat( string player_oid, string statname ){ return [] }
+array<bool> function GetPlayerStatArrayBool( string player_oid, string statname ){ return [] }
+void function PlayerStatArray_Append( string player_oid, string statname, var value ){}
 #endif // ELSE !TRACKER && !HAS_TRACKER_DLL

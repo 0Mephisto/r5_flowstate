@@ -5,7 +5,8 @@ global function ClientCodeCallback_MinimapEntitySpawned
 global function Minimap_AddCustomLayer
 
 global function RegisterMinimapPackage
-
+global function FullMap_AddEnemyLocation
+global function FS_Minimap_AddEnemyToMinimap_HACK
 global function CreateMinimapRui
 global function Minimap_SetSizeScale
 global function Minimap_IsUsingLargeMinimap
@@ -733,7 +734,7 @@ void function Minimap_CommonTrackEntOrigin( var rui, entity ent, bool doTrackAng
 }
 
 
-var function Minimap_RingPulse( float radius, vector color, float pulseDuration, float lifeTime, bool reverse )
+var function Minimap_RingPulse( float radius, vector color, float pulseDuration, float lifeTime, bool reverse, asset customRing = $"" )
 {
 	var rui = Minimap_CommonAdd( MINIMAP_RING_PULSE_RUI, MINIMAP_Z_OBJECTIVE )
 
@@ -747,8 +748,10 @@ var function Minimap_RingPulse( float radius, vector color, float pulseDuration,
 	RuiSetFloat( rui, "pulseDuration", pulseDuration )
 
 	RuiSetBool( rui, "reverse", reverse )
-
 	RuiSetImage( rui, "marker", $"" )
+
+	if ( customRing != $"" )
+		RuiSetImage( rui, "pulse", customRing )
 
 	if ( lifeTime > 0 )
 		thread Minimap_RingPulseCleanup( rui, lifeTime )
@@ -757,9 +760,9 @@ var function Minimap_RingPulse( float radius, vector color, float pulseDuration,
 }
 
 
-var function Minimap_RingPulseAtLocation( vector origin, float radius, vector color, float pulseDuration, float lifeTime = -1, bool reverse = false )
+var function Minimap_RingPulseAtLocation( vector origin, float radius, vector color, float pulseDuration, float lifeTime = -1, bool reverse = false, asset customRing = $"" )
 {
-	var rui = Minimap_RingPulse( radius, color, pulseDuration, lifeTime, reverse )
+	var rui = Minimap_RingPulse( radius, color, pulseDuration, lifeTime, reverse, customRing )
 	RuiSetFloat3( rui, "objectPos", origin )
 	RuiSetFloat3( rui, "objectAngles", <0, 0, 0> )
 	return rui
@@ -881,9 +884,9 @@ void function OnPlayerCreate( entity player )
 		}
 
 		RuiSetString( file.minimap_coords, "uid", " " )
-		RuiSetInt( file.minimap_coords, "uidPart1", 0 ) // int( uidPart1 )
-		RuiSetInt( file.minimap_coords, "uidPart2", 0 ) // int( uidPart2 )
-		RuiSetString( file.minimap_coords, "name", "R5Reloaded " + SDK_VERSION + "\nFlowstate Scripts " + FLOWSTATE_VERSION )
+		RuiSetInt( file.minimap_coords, "uidPart1", int( uidPart1 ) )
+		RuiSetInt( file.minimap_coords, "uidPart2", int( uidPart2 ) )
+		RuiTrackString( file.minimap_coords, "name", GetLocalClientPlayer(), RUI_TRACK_PLAYER_NAME_STRING )
 	}
 
 	asset mapImage       = Minimap_GetAssetForKey( "minimap" )
@@ -941,6 +944,22 @@ void function Minimap_OnPlayerTeamChanged( entity player, int oldTeam, int newTe
 		player.Signal( "TeamChanged" )
 }
 
+var function FullMap_AddEnemyLocation( entity enemy, asset enemyIconOverride = $"", float sizeOverride = -1.0 )
+{
+	var rui = FullMap_CommonAdd( $"ui/in_world_minimap_square_simple.rpak" )
+
+	RuiSetFloat3( rui, "objectPos", enemy.GetOrigin() )
+	RuiSetFloat3( rui, "objectAngles", ( enemy.GetAngles() + <0, -90, 0> ) )
+	RuiSetFloat( rui, "objectSize", sizeOverride <= 0 ? 5.0 : sizeOverride )
+	RuiSetBool( rui, "doAnnounceEffect", true )
+	RuiSetImage( rui, "iconImage", enemyIconOverride == $"" ? $"rui/hud/minimap/compass_icon_player" : enemyIconOverride )
+
+	
+	RuiSetFloat3( rui, "objColor", GetKeyColor( COLORID_FX_LOOT_TIER4 ) * ( 1.0 / 255.0 ) )
+
+	Fullmap_AddRui( rui )
+	return rui
+}
 void function UpdatePlayerRuiTracking( entity player )
 {
 	Assert( player == GetLocalClientPlayer() )
@@ -972,7 +991,8 @@ void function UpdatePlayerRuiTracking( entity player )
 
 	foreach ( var rui in file.minimapOtherRuis )
 	{
-		Minimap_RuiSetPlayerData( rui )
+		if ( rui != null )
+			Minimap_RuiSetPlayerData( rui )
 	}
 }
 
@@ -1434,8 +1454,6 @@ void function Minimap_SetBlankBackground( bool doBlank )
 
 void function Minimap_SetSizeScale( float scale )
 {
-	//if(GetCurrentPlaylistVarBool( "r5reloaded_aimtrainer", false )) return
-
 	if( Playlist() == ePlaylists.fs_aimtrainer )
 		return
 
@@ -1446,17 +1464,16 @@ void function Minimap_SetSizeScale( float scale )
 	RuiSetFloat( file.minimap_you, "minimapSizeScale", scale )
 	if ( file.minimap_coords != null )
 		RuiSetFloat( file.minimap_coords, "minimapSizeScale", scale )
-	
-	try{
-		foreach ( var rui in file.minimapOtherRuis )
-		{
-			RuiSetFloat( rui, "minimapSizeScale", scale )
-		}
 
-		var gameStateRui = ClGameState_GetRui()
-		if ( gameStateRui )
-			RuiSetFloat( gameStateRui, "minimapSizeScale", scale )
-	}catch(e420){}
+	foreach ( var rui in file.minimapOtherRuis )
+	{
+		if ( rui != null )
+			RuiSetFloat( rui, "minimapSizeScale", scale )
+	}
+
+	var gameStateRui = ClGameState_GetRui()
+	if ( gameStateRui )
+		RuiSetFloat( gameStateRui, "minimapSizeScale", scale )
 }
 
 
@@ -1553,10 +1570,23 @@ void function Minimap_DisableDraw_Internal()
 	
 	for( int i = maxIter; i >= 0; i-- )
 	{
-		if( file.minimapOtherRuis[ i ] == null )		
+		var rui = file.minimapOtherRuis[ i ]
+		if( rui == null )
+		{
 			file.minimapOtherRuis.remove( i )
+		}
 		else
-			RuiSetVisible( file.minimapOtherRuis[ i ], false )
+		{
+			try
+			{
+				RuiSetVisible( rui, false )
+			}
+			catch ( error )
+			{
+				// RUI was destroyed, remove it from the array
+				file.minimapOtherRuis.remove( i )
+			}
+		}
 	}
 }
 
@@ -1572,7 +1602,17 @@ void function Minimap_EnableDraw_Internal()
 
 	foreach ( var rui in file.minimapOtherRuis )
 	{
-		RuiSetVisible( rui, true )
+		if ( rui != null )
+		{
+			try
+			{
+				RuiSetVisible( rui, true )
+			}
+			catch ( error )
+			{
+				// RUI was destroyed, skip it
+			}
+		}
 	}
 }
 
@@ -1584,7 +1624,8 @@ void function Minimap_SetNorthFacing( bool northFacing )
 
 	foreach ( var rui in file.minimapOtherRuis )
 	{
-		RuiSetBool( rui, "isNorthFacing", northFacing )
+		if ( rui != null )
+			RuiSetBool( rui, "isNorthFacing", northFacing )
 	}
 }
 
@@ -1624,12 +1665,19 @@ void function Fullmap_SetVisible( bool state )
 {
 	FullMap_UpdateTopologies()
 	UpdateSurveyBeaconHint() // TODO: meh
+
 	UpdateMapFeatures()
 	UpdateCameraVisibility()
 
-	Fullmap_SetVisible_MapOnly( state )
+	foreach ( rui in file.fullmapRuis )
+	{
+		RuiSetVisible( rui, state )
+	}
 
 	FullMap_UpdateAimPos()
+	file.fullmapVisible = state
+
+	//UpdateGladCardVisibility()
 
 }
 
@@ -1927,9 +1975,10 @@ var function FS_Minimap_AddEnemyToMinimap_HACK( entity enemy )
 	RuiTrackInt( rui, "objectFlags", viewPlayer, RUI_TRACK_MINIMAP_FLAGS )
 	RuiTrackInt( rui, "customState", viewPlayer, RUI_TRACK_MINIMAP_CUSTOM_STATE )
 	
-	RuiSetFloat2( rui, "iconScale", < 0.7, 0.7, 0 > )
+	RuiSetFloat2( rui, "iconScale", < 1.5, 1.5, 0 > )
 	RuiSetBool( rui, "alwaysShowOnMinimap", true )
-	RuiSetBool( rui, "useTeamColor", false )
+	//RuiSetBool( rui, "useOverrideColor", true )
+	//RuiSetFloat3( rui, "overrideColor", SrgbToLinear( <186.0, 12.42, 12.42> ) )
 	RuiSetImage( rui, "defaultIcon", $"rui/menu/buttons/new" )
 	RuiSetImage( rui, "clampedDefaultIcon", $"" )
 

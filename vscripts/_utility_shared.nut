@@ -200,7 +200,41 @@ void function InitWeaponScripts()
 
 	MpWeaponBasicBolt_Init()
 
-	WeaponMastiff_Init() //mkos
+	WeaponMastiff_Init()
+	
+	//(cafe) S0 Dev Protos
+	MpWeaponGroundSlam_Init()
+	Haunt_Init()
+	MpAbilityLootCompass_Init()
+	MpAbilityMaelstromJavelin_Init()
+	MpAbilityRiotShield_Init()
+	MpAbilitySonicShoutWeapon_Init()
+	MpAbilitySplitTimelineWeapon_Init()
+	MpAbilitySpotterSight_Init()
+	MpWeaponConcussiveBreach_Init()
+	MpWeaponGrenadeBarrier_Init()
+	MpWeaponGrenadeFlashbang_Init()
+	MpWeaponDebrisTrap_Init()
+	MpWeaponCoverWall_Init()
+	ShPassiveShotgunKick_Init()
+	
+	//(cafe) Custom Stuff
+	// LobaTacticalTranslocation_LevelInit()
+	// MpAbilityAshDash_Init()
+	MpUltimatePhaseChamber_Init()
+	MpWeaponPortalGun_Init()
+	// MpWeaponTitanSword_Init() //Flowstate Sword //Revisit, change model, audit remote functs
+	MpWeaponFlameThrower_Init()
+	ChargePylons_Init()
+	MpWeaponRingFlare_Init()
+	if( Playlist() != ePlaylists.fs_1v1 && Playlist() != ePlaylists.fs_lgduels_1v1  && Playlist() != ePlaylists.fs_scenarios )
+		MpWeaponEmoteProjector_Init()
+	MpSpaceElevatorAbility_Init()
+	if ( Playlist() != ePlaylists.fs_infected )
+		Clickweapon_Init() //Lightning Gun
+	
+	//(kral) wip abilities
+	ShLobaPassiveEyeForQuality_LevelInit()				// Loba Passive
 
 	#if SERVER
 		//BallLightning_Init()
@@ -4200,6 +4234,11 @@ bool function IsProwler( entity ent )
 	return ent.GetNetworkedClassName() == "npc_prowler"
 }
 
+bool function IsSpider( entity ent )
+{
+	return ent.GetNetworkedClassName() == "npc_spider"
+}
+
 bool function IsAirDrone( entity ent )
 {
 	return ent.GetNetworkedClassName() == "npc_drone"
@@ -5671,6 +5710,10 @@ bool function IsLobbyFallLTM()
 	return GetCurrentPlaylistVarInt( "menu_fall_ltm", 0 ) == 1
 }
 
+bool function UseFallBanners()
+{
+	return IsFallLTM() || GetCurrentPlaylistVarInt( "use_fall_banners", 0 ) == 1
+}
 
 table<int, array<entity> > function ArrangePlayersByTeam( array<entity> players )
 {
@@ -5684,6 +5727,102 @@ table<int, array<entity> > function ArrangePlayersByTeam( array<entity> players 
 			out[team] <- [ player ]
 	}
 	return out
+}
+
+void function GivePlayerSettingsMods( entity player, array<string> additionalMods )
+{
+	#if CLIENT
+		if ( !player.GetPredictable() )
+			return
+	#endif
+
+	int oldMaxHealth = player.GetMaxHealth()
+	int oldHealth    = player.GetHealth()
+
+#if CLIENT
+	if ( InPrediction() )
+#endif
+	{
+		#if CLIENT
+			Assert( additionalMods.len() == 1 )
+		#endif
+
+		// check if we can add these mods, in dev we assert to force a fix, but if a rare case (usually involving spectators) gets through
+		// we skip the bad mods
+		array<string> modsToAdd
+		foreach( mod in additionalMods ) // only need to check new ones
+		{
+			bool isModAvailable = player.IsClassModAvailableForPlayerSetting( string( player.GetPlayerSettings() ), mod )
+			Assert( isModAvailable, "Undefined mod '" + mod + "' requested for player class '" + player.GetPlayerClass() + "'" )
+
+			if( isModAvailable )
+				modsToAdd.append( mod )
+		}
+		if( modsToAdd.len() > 0 )
+		{
+			//if ( additionalMods.len() == 1 )
+			{
+				//player.AddPlayerClassMod( additionalMods[ 0 ] )
+			}
+			//else
+			{
+				#if SERVER
+
+					array<string> mods = player.GetPlayerSettingsMods()
+					mods.extend( modsToAdd ) // duplicates are OK
+					player.SetPlayerSettingsWithMods( player.GetPlayerSettings(), mods )
+				#endif
+			}
+		}
+	}
+
+	#if SERVER
+		if ( IsAlive( player ) )
+		{
+			player.SetMaxHealth( oldMaxHealth )
+			player.SetHealth( oldHealth )
+		}
+		//ApplyAppropriateCharacterSkin( player )//come back to this later (kral)
+	#endif
+}
+
+void function TakePlayerSettingsMods( entity player, array<string> modsToTake, bool isHealthReset = true )
+{
+	array<string> mods = player.GetPlayerSettingsMods()
+	int oldMaxHealth = player.GetMaxHealth()
+	int oldHealth    = player.GetHealth()
+
+#if CLIENT
+	if ( InPrediction() )
+#endif
+	{
+		#if CLIENT
+			Assert( modsToTake.len() == 1 )
+		#endif
+		/*if ( modsToTake.len() == 1 && mods.contains( modsToTake[ 0 ] ) )
+		{
+			player.RemovePlayerClassMod( modsToTake[ 0 ] )
+		}
+		else*/
+		{
+			foreach ( string modToTake in modsToTake )
+				mods.fastremovebyvalue( modToTake )
+
+			#if SERVER
+				player.SetPlayerSettingsWithMods( player.GetPlayerSettings(), mods )
+			#endif
+		}
+	}
+
+
+	#if SERVER
+		if ( IsAlive( player ) && isHealthReset )
+		{
+			player.SetMaxHealth( oldMaxHealth )
+			player.SetHealth( oldHealth )
+		}
+		//ApplyAppropriateCharacterSkin( player )
+	#endif
 }
 
 void function WaitForGameState(int state) {
@@ -5853,7 +5992,7 @@ vector function MapAngleToRadius( float angle, float radius )
 	{
 		table<string, string> serverOutput =
 		{
-			//DEV_PrintBackendNames()
+			//uses DEV_PrintBackendNames() output pasted here
 		}
 		
 		string printText = "TableForBackend:\n\n [\n"
@@ -5868,3 +6007,18 @@ vector function MapAngleToRadius( float angle, float radius )
 		print( printText )
 	}
 #endif 
+
+// #if CLIENT
+	// void function TestFloatBits( float value )
+	// {
+		// printt( "Receieved Value in printt:", value )
+		// printf( "Accurately: %.8f", value )
+	// }
+// #endif
+
+// #if CLIENT
+	// void function VeryLongFunctionNameVeryLongFunctionNameVeryLongFunctionNameVeryLongVeryLong( bool v, bool _ )
+	// {
+		// printt( "boom" )
+	// }
+// #endif 

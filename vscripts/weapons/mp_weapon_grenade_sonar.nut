@@ -154,9 +154,7 @@ void function SonarGrenadeThink( entity projectile )
 		array<entity> players = GetPlayerArrayOfTeam( team )
 
 		foreach ( player in players )
-		{
-			Remote_CallFunction_Replay( player, "ServerCallback_SonarPulseFromPosition", pulseOrigin.x, pulseOrigin.y, pulseOrigin.z, SONAR_GRENADE_RADIUS )
-		}
+			Remote_CallFunction_Replay( player, "ServerCallback_SonarPulseFromPosition", pulseOrigin, SONAR_GRENADE_RADIUS, 1.0, false )//Audit 2-22-2025 (mk): switched to typed.
 
 		wait 1.3333
 		if ( IsValid( projectile ) )

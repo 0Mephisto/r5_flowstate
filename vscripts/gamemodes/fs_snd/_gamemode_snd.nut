@@ -1,10 +1,3 @@
-// Search and Destroy
-// Made by @CafeFPS - Server, Client and UI
-
-// Aeon#0236 - Playtests and ideas
-// AyeZee#6969 - Some of the economy system logic from his arenas mode draft - stamina
-// @dea_bb - Shoothouse, de_cache and NCanals maps
-// @CafeFPS and Darkes#8647 - de_dust2 map model port and fake collision
 // VishnuRajan in https://sketchfab.com/3d-models/time-bomb-efb2e079c31349c1b2bd072f00d8fe79 - Bomb model and textures
 
 global function _GamemodeSND_Init
@@ -69,6 +62,9 @@ bool debugdebug = false
 
 void function _GamemodeSND_Init()
 {
+	if (!IsFlowstateActive())
+		return
+	
 	if(GetCurrentPlaylistVarBool("enable_global_chat", true))
 		SetConVarBool("sv_forceChatToTeamOnly", false)
 	else
@@ -106,7 +102,7 @@ void function _GamemodeSND_Init()
 	RegisterSignal("EndWayPointThread")
 	RegisterSignal( "FlagPhysicsEnd" )
 
-	PrecacheModel($"mdl/Weapons/bomb/ptpov_bomb.rmdl")
+	//PrecacheModel($"mdl/Weapons/bomb/ptpov_bomb.rmdl")//FIX THE MODEL - KRAL
 	PrecacheModel($"mdl/Weapons/bomb/w_bomb.rmdl")
 	
 	FS_SND.currentLocation = GetCurrentPlaylistVarInt( "SND_force_initial_map", 0 )
@@ -114,11 +110,12 @@ void function _GamemodeSND_Init()
 	if( GetCurrentPlaylistVarInt( "SND_force_initial_map", 0 ) == SND_MAX_MAPS + 1 )
 		FS_SND.currentLocation = RandomInt( SND_MAX_MAPS + 1 )
 
-	PrecacheDust2()
-	PrecacheDefuseMapProps()
-	PrecacheDEAFPSMapProps()
-	PrecacheZeesMapProps()
-	de_NCanals_precache()
+    if( GetMapName() == "mp_rr_arena_empty" ){
+		PrecacheDust2()
+		PrecacheDefuseMapProps()
+		PrecacheDEAFPSMapProps()
+		PrecacheZeesMapProps()
+		de_NCanals_precache()}
 
 	thread SND_StartGameThread()
 }
@@ -850,9 +847,9 @@ void function SND_GameLoop()
 			player.SetCamo(MILITIA_color)
 		}
 
-		if( player.p.assignedCustomModel != -1 )
+		//if( player.p.assignedCustomModel != -1 )//Custom models cause engine issues, disabling for now til models are updated. - Kral
 		{
-			Flowstate_SetAssignedCustomModelToPlayer( player, player.p.assignedCustomModel )
+			//Flowstate_SetAssignedCustomModelToPlayer( player, player.p.assignedCustomModel )
 		}
 	
 		player.p.playerHasBomb = false
@@ -2047,7 +2044,7 @@ void function RingDamage( entity circle, float currentRadius)
 			float playerDist = Distance2D( player.GetOrigin(), circle.GetOrigin() )
 			if ( playerDist > currentRadius )
 			{
-				Remote_CallFunction_NonReplay( player, "ServerCallback_PlayerTookDamage", 0, 0, 0, 0, DF_BYPASS_SHIELD | DF_DOOMED_HEALTH_LOSS, eDamageSourceId.deathField, null )
+				Remote_CallFunction_NonReplay( player, "ServerCallback_PlayerTookDamage", 0, <0, 0, 0>, DF_BYPASS_SHIELD | DF_DOOMED_HEALTH_LOSS, eDamageSourceId.deathField, 0 )
 				player.TakeDamage( int( Deathmatch_GetOOBDamagePercent() / 100 * float( player.GetMaxHealth() ) ), null, null, { scriptType = DF_BYPASS_SHIELD | DF_DOOMED_HEALTH_LOSS, damageSourceId = eDamageSourceId.deathField } )
 			}
 		}

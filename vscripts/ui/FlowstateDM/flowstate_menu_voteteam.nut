@@ -1,5 +1,3 @@
-//Made by @CafeFPS
-
 global function Init_FS_VoteTeamMenu
 
 global function Open_FS_VoteTeam

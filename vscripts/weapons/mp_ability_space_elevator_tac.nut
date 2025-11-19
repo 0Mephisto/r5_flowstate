@@ -1,6 +1,3 @@
-//First concept made by AyeZee
-//Reworked by @CafeFPS
-
 global function MpSpaceElevatorAbility_Init
 global function OnProjectileCollision_lift
 global function Lift_OnWeaponTossRelease

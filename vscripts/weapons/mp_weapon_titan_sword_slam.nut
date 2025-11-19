@@ -1,4 +1,3 @@
-//By @CafeFPS and Respawn
 untyped
 
 global function MpWeaponTitanSword_Slam_Init

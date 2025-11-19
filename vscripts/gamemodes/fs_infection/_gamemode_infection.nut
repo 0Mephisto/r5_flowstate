@@ -1,10 +1,3 @@
-//APEX INFECTED
-//Made by @CafeFPS (@CafeFPS)
-
-// Julefox - Mystery box scripts
-// @KralRindo - Shadowfall gamemode initial implementation
-// everyone else - advice
-
 global function _GamemodeInfection_Init
 global function _RegisterLocationINFECTION
 global function FlowstateInfection_CallEvac
@@ -28,7 +21,7 @@ struct{
 	int winnerTeam = 0
 	vector chosenRingCircle
 	entity ringBoundary
-	
+
 	// Voting
 	array<entity> votedPlayers
 	bool votingtime = false
@@ -557,7 +550,7 @@ void function Infection_Lobby()
 					if( !IsValid( player ) )
 						continue
 
-					Remote_CallFunction_Replay(player, "ServerCallback_FSDM_SetScreen", eFSDMScreen.TiedScreen, eFSDMScreen.NotUsed, 42069, eFSDMScreen.NotUsed)
+					Remote_CallFunction_Replay(player, "ServerCallback_FSDM_SetScreen", eFSDMScreen.TiedScreen, eFSDMScreen.NotUsed, 42068, eFSDMScreen.NotUsed)
 				}
 
 				mapsWithHighestVoteCount.randomize()
@@ -637,21 +630,6 @@ void function Infection_GameLoop()
 	
 	FS_INFECTION.allowedRadius = float(minint(5000 + 80*GetPlayerArray().len(), 8000))
 	
-	if( MapName() == eMaps.mp_rr_thepit )
-	{
-		FS_INFECTION.allowedRadius = 5000
-		
-		array<vector> lzthepit		
-		lzthepit.append(<366.916016, 1710.0614, 16.25>)
-		lzthepit.append(<-1566.07056, 1678.12781, 87.25>)
-		lzthepit.append(<-1520.65747, -484.283447, 86.84375>)
-		lzthepit.append(<454.871857, -484.992889, 16.25>)
-
-		FS_INFECTION.EvacShipLZ = lzthepit.getrandom()
-		
-		printt("Pit time, hardcoded LZ. Next LZ point: " + FS_INFECTION.EvacShipLZ)
-	}
-	
 	//get spawn points inside allowed radius
 	foreach(spawn in spawns)
 	{
@@ -691,54 +669,7 @@ void function Infection_GameLoop()
 	
 	SurvivalCommentary_ResetAllData()
 	SurvivalCommentary_SetHost( eSurvivalHostType.NOC )
-	
-	if( MapName() == eMaps.mp_rr_thepit )
-	{
-		array<entity> doors = GetEntArrayByClass_Expensive( "prop_dynamic" )
-		
-		foreach(prop in doors)
-		{
-			if(!IsValid(prop)) continue
-			
-			if( prop.GetModelName() == $"mdl/door/door_canyonlands_large_01_animated.rmdl" || prop.GetModelName() == $"mdl/door/door_256x256x8_elevatorstyle02_animated.rmdl" )
-				prop.Destroy()
-		}
 
-		array<entity> otherDoors = GetEntArrayByClass_Expensive( "prop_door" )
-		
-		foreach(prop in otherDoors)
-		{
-			if(!IsValid(prop)) continue
-			
-			prop.Destroy()
-		}		
-		
-		//Single Doors 
-		MapEditor_SpawnDoor( < -114.2999, 2816.6000, 305.5000 >, < 0, 0, 0 >, eMapEditorDoorType.Single, false )
-		MapEditor_SpawnDoor( < -1516, -1073, 298.6000 >, < 0, 0, 0 >, eMapEditorDoorType.Single, false )
-		MapEditor_SpawnDoor( < -1765.2000, -1626.8000, 298.6000 >, < 0, -180, 0 >, eMapEditorDoorType.Single, false )
-		MapEditor_SpawnDoor( < -1188.8000, 2194.7000, 300.3000 >, < 0, -90, 0 >, eMapEditorDoorType.Single, false )
-		MapEditor_SpawnDoor( < -1516, 2334.3000, 298.6000 >, < 0, 0, 0 >, eMapEditorDoorType.Single, false )
-		MapEditor_SpawnDoor( < -114.2999, -1681.8000, 305.5000 >, < 0, 0, 0 >, eMapEditorDoorType.Single, false )
-		MapEditor_SpawnDoor( < -2370.3000, -1653.8100, 148.5000 >, < 0, -180, 0 >, eMapEditorDoorType.Single, false )
-		MapEditor_SpawnDoor( < -1765.2000, 2825.2000, 298.6000 >, < 0, 0, 0 >, eMapEditorDoorType.Single, false )
-		MapEditor_SpawnDoor( < -1188.8000, -1006.7000, 300.3000 >, < 0, -90, 0 >, eMapEditorDoorType.Single, false )
-		MapEditor_SpawnDoor( < -2370.3000, 2891.6000, 148.5000 >, < 0, -180, 0 >, eMapEditorDoorType.Single, false )
-
-		//Double Doors 
-		MapEditor_SpawnDoor( < 1823.5490, 2084.8000, 16.1000 >, < 0, 0, 0 >, eMapEditorDoorType.Double, false )
-		MapEditor_SpawnDoor( < -2804.5000, 2450.4000, 148.5000 >, < 0, -90, 0 >, eMapEditorDoorType.Double, false )
-		MapEditor_SpawnDoor( < 1823.5490, -862.7998, 16.1000 >, < 0, 0, 0 >, eMapEditorDoorType.Double, false )
-		MapEditor_SpawnDoor( < 1003.9000, 2084.8000, 16.1000 >, < 0, 0, 0 >, eMapEditorDoorType.Double, false )
-		MapEditor_SpawnDoor( < 2359.4000, 606.2002, 147.9000 >, < 0, 0, 0 >, eMapEditorDoorType.Double, false )
-		MapEditor_SpawnDoor( < -2804.5000, -1268.6000, 148.5000 >, < 0, -90, 0 >, eMapEditorDoorType.Double, false )
-		MapEditor_SpawnDoor( < 1003.9000, -862.7998, 16.1000 >, < 0, 0, 0 >, eMapEditorDoorType.Double, false )
-
-		//Vertical Doors 
-		MapEditor_SpawnDoor( < 1472.3000, -668.7998, 15.8000 >, < 0, 90, 0 >, eMapEditorDoorType.Vertical )
-		MapEditor_SpawnDoor( < 1472.3000, 1888.3000, 15.8000 >, < 0, -90, 0 >, eMapEditorDoorType.Vertical )
-	}
-	
 	if( !VOTING_PHASE_ENABLE_INFECTED )
 	{
 		foreach(player in GetPlayerArray())
@@ -1004,7 +935,7 @@ int function ComparePlayerInfo_Infection(entity a, entity b)
 
 void function EntitiesDidLoad() //these props are spawned via script ent file, revisit
 {
-	if( MapName() != eMaps.mp_rr_thepit ) return
+	return
 	
 	array<entity> props = GetEntArrayByClass_Expensive( "prop_dynamic" )
 	
@@ -1448,7 +1379,7 @@ void function RingDamage( entity circle, float currentRadius)
 			float playerDist = Distance2D( player.GetOrigin(), circle.GetOrigin() )
 			if ( playerDist > currentRadius )
 			{
-				Remote_CallFunction_Replay( player, "ServerCallback_PlayerTookDamage", 0, 0, 0, 0, DF_BYPASS_SHIELD | DF_DOOMED_HEALTH_LOSS, eDamageSourceId.deathField, null )
+				Remote_CallFunction_Replay( player, "ServerCallback_PlayerTookDamage", <0, 0, 0>, 0, DF_BYPASS_SHIELD | DF_DOOMED_HEALTH_LOSS, eDamageSourceId.deathField, 0 )
 				player.TakeDamage( int( Deathmatch_GetOOBDamagePercent() / 100 * float( player.GetMaxHealth() ) ), null, null, { scriptType = DF_BYPASS_SHIELD | DF_DOOMED_HEALTH_LOSS, damageSourceId = eDamageSourceId.deathField } )
 			}
 		}

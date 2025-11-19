@@ -61,8 +61,9 @@ global enum eDamageSourceId
 	damagedef_dirty_bomb_explosion
 	damagedef_sonic_boom
 	damagedef_bangalore_smoke_explosion
-	damagedef_creeping_bombardment_detcord_explosion
 	damagedef_tank_bombardment_detcord_explosion
+	damagedef_creeping_bombardment_detcord_explosion
+	damagedef_ability_silence
 	damagedef_defensive_bombardment
 	damagedef_loot_drone_explosion
 	//// end of must match order ////
@@ -101,10 +102,15 @@ global enum eDamageSourceId
 	mp_weapon_energy_ar
 	mp_weapon_volt_smg
 	mp_weapon_defender
+	mp_ability_mobile_respawn_beacon
 	// End S3 Defaults
+	
+	// Crate Weapons
+	mp_weapon_energy_ar_crate
+	mp_weapon_energy_shotgun_crate
+	mp_weapon_doubletake_crate
 
 	mp_weapon_melee_survival
-	mp_weapon_car
 	mp_weapon_car_r2
 	mp_weapon_3030
 	mp_weapon_mgl
@@ -130,6 +136,8 @@ global enum eDamageSourceId
 	mp_weapon_rspn101_og
 	sp_weapon_arc_tool
 	mp_weapon_pulse_lmg
+	mp_weapon_mounted_turret_weapon
+	mp_titanweapon_flightcore_rockets
 	//
 	melee_pilot_emptyhanded
 	melee_pilot_arena
@@ -214,6 +222,7 @@ global enum eDamageSourceId
 	grunt_melee
 	spectre_melee
 	prowler_melee
+	spider_melee
 	super_spectre_melee
 	titan_execution
 	human_execution
@@ -355,6 +364,10 @@ global enum eDamageSourceId
 	mp_weapon_cover_wall
 	mp_ability_ground_slam
 	mp_ability_split_timeline
+	
+	mp_weapon_proximity_mine
+	mp_weapon_grenade_rev_shell
+	mp_ability_devices_jammer
 }
 
 //When adding new mods, they need to be added below and to persistent_player_data_version_N.pdef in r1/cfg/server.
@@ -529,7 +542,7 @@ void function DamageTypes_Init()
 	{
 	}
 
-	file.damageSourceIDToImage[eDamageSourceId.melee_shadowsquad_hands] 	<- $"rui/gamemodes/shadow_squad/shadow_icon_small"
+	file.damageSourceIDToImage[eDamageSourceId.melee_shadowsquad_hands] 	<- $"rui/gamemodes/shadow_squad/shadow_icon_small_sdk"
 
 	//file.damageSourceIDToImage[eDamageSourceId.mp_weapon_mobile_hmg]		<- $"rui/weapon_icons/r5/weapon_rampart_turret"
 
@@ -539,9 +552,7 @@ void function DamageTypes_Init()
 	file.damageSourceIDToImage[eDamageSourceId.mp_weapon_flagpole_primary]	<- $"rui/gamemodes/capture_the_flag/mil_flag"
 	file.damageSourceIDToImage[eDamageSourceId.melee_flagpole]				<- $"rui/gamemodes/capture_the_flag/mil_flag"
 	
-	//Titanfall2 and Retail Apex guns, ported by @LorryLeKral, with the help from @AmosModz
 	file.damageSourceIDToImage[eDamageSourceId.mp_weapon_volt_smg] 			<- $"rui/weapon_icons/r5/weapon_volt"
-	file.damageSourceIDToImage[eDamageSourceId.mp_weapon_car] 				<- $"rui/weapon_icons/r5/weapon_car"
 	file.damageSourceIDToImage[eDamageSourceId.mp_weapon_car_r2] 				<- $"rui/weapon_icons/r5/weapon_car"
 	file.damageSourceIDToImage[eDamageSourceId.mp_weapon_sentinel] 			<- $"rui/weapon_icons/r5/weapon_sentinel"
 	file.damageSourceIDToImage[eDamageSourceId.mp_weapon_softball] 			<- $"r2_ui/menus/loadout_icons/primary_weapon/primary_softball"
@@ -555,14 +566,15 @@ void function DamageTypes_Init()
 	file.damageSourceIDToImage[eDamageSourceId.sp_weapon_arc_tool]			<- $"r2_ui/menus/loadout_icons/primary_weapon/primary_arc_tool"
 	file.damageSourceIDToImage[eDamageSourceId.mp_weapon_rspn101_og]		<- $"r2_ui/menus/loadout_icons/primary_weapon/primary_arc_tool"
 	file.damageSourceIDToImage[eDamageSourceId.mp_weapon_smart_pistol]		<- $"rui/weapon_icons/r5/weapon_smart_pistol"
-	
+	file.damageSourceIDToImage[eDamageSourceId.mp_titanweapon_flightcore_rockets] <- $"rui/weapon_icons/kral/custom/flamethrower"
 	file.damageSourceIDToImage[eDamageSourceId.mp_weapon_flamethrower] 		<- $"rui/weapon_icons/kral/custom/flamethrower"
+	file.damageSourceIDToImage[eDamageSourceId.mp_ability_mobile_respawn_beacon] 		<- $"rui/weapon_icons/kral/custom/flamethrower"//remove this later
 
-	file.damageSourceIDToImage[eDamageSourceId.mp_weapon_titan_sword]		<- $"rui/gamemodes/shadow_squad/legend_icon"
-	file.damageSourceIDToImage[eDamageSourceId.mp_weapon_titan_sword_slam]	<- $"rui/gamemodes/shadow_squad/legend_icon"
-	file.damageSourceIDToImage[eDamageSourceId.melee_titan_sword]			<- $"rui/gamemodes/shadow_squad/legend_icon"
+	file.damageSourceIDToImage[eDamageSourceId.mp_weapon_titan_sword]		<- $"rui/gamemodes/shadow_squad/legend_icon_sdk"
+	file.damageSourceIDToImage[eDamageSourceId.mp_weapon_titan_sword_slam]	<- $"rui/gamemodes/shadow_squad/legend_icon_sdk"
+	file.damageSourceIDToImage[eDamageSourceId.melee_titan_sword]			<- $"rui/gamemodes/shadow_squad/legend_icon_sdk"
 	
-	file.damageSourceIDToImage[eDamageSourceId.nextbot]						<- $"rui/gamemodes/shadow_squad/legend_icon"
+	file.damageSourceIDToImage[eDamageSourceId.nextbot]						<- $"rui/gamemodes/shadow_squad/legend_icon_sdk"
 	
 
 	file.damageSourceIDToName =
@@ -597,6 +609,7 @@ void function DamageTypes_Init()
 		[ eDamageSourceId.auto_titan_melee ] 						= "#DEATH_AUTO_TITAN_MELEE",
 
 		[ eDamageSourceId.prowler_melee ] 							= "#DEATH_PROWLER_MELEE",
+		[ eDamageSourceId.spider_melee ] 							= "#DEATH_SPIDER_MELEE",
 		[ eDamageSourceId.super_spectre_melee ] 					= "#DEATH_SUPER_SPECTRE",
 		[ eDamageSourceId.grunt_melee ] 							= "#DEATH_GRUNT_MELEE",
 		[ eDamageSourceId.spectre_melee ] 							= "#DEATH_SPECTRE_MELEE",
@@ -672,12 +685,14 @@ void function DamageTypes_Init()
 		[ eDamageSourceId.melee_titan_punch_stealth ] 				= "#DEATH_TITAN_MELEE",
 		[ eDamageSourceId.melee_titan_punch_rocket ] 				= "#DEATH_TITAN_MELEE",
 		[ eDamageSourceId.melee_titan_punch_drone ] 				= "#DEATH_TITAN_MELEE",
+		[ eDamageSourceId.mp_titanweapon_flightcore_rockets ] 				= "#flightcore_rocket",
 		[ eDamageSourceId.mp_weapon_volt_smg ] 						= "#WPN_VOLT_SMG",
 		[ eDamageSourceId.mp_weapon_pulse_lmg ] 					= "EM-4 Cold War",
 		[ eDamageSourceId.mp_weapon_flamethrower ] 					= "Flame Thrower",
 		[ eDamageSourceId.mp_weapon_arc_launcher ] 					= "#WPN_ARC_LAUNCHER",
 		[ eDamageSourceId.mp_ability_octane_stim ] 					= "#WPN_OCTANE_STIM_SHORT",		
 		[ eDamageSourceId.mp_weapon_tesla_trap ] 					= "#DEATH_TESLA_TRAP",
+		[ eDamageSourceId.mp_weapon_mounted_turret_weapon ] 		= "#untyped",
 		[ eDamageSourceId.mp_ability_crypto_drone_emp ]				= "#WPN_DRONE_EMP",
 		[ eDamageSourceId.mp_ability_crypto_drone_emp_trap ]		= "#WPN_DRONE_EMP",
 		[ eDamageSourceId.melee_wraith_kunai ] 						= "#DEATH_MELEE_WRAITH_KUNAI",
@@ -688,6 +703,7 @@ void function DamageTypes_Init()
 		[ eDamageSourceId.mp_weapon_lifeline_baton_primary ]		= "#DEATH_MELEE_LIFELINE_BATON",
 		[ eDamageSourceId.melee_shadowsquad_hands ] 				= "#DEATH_MELEE_SHADOWSQUAD_HANDS",
 		[ eDamageSourceId.mp_weapon_shadow_squad_hands_primary ] 	= "#DEATH_MELEE_SHADOWSQUAD_HANDS",
+		[ eDamageSourceId.mp_ability_mobile_respawn_beacon ] 	= "#DEATH_MELEE_SHADOWSQUAD_HANDS",
 		
 		//r5r
 		[ eDamageSourceId.melee_bolo_sword ] 						= "Bolo Sword Melee",
@@ -705,8 +721,7 @@ void function DamageTypes_Init()
 		[ eDamageSourceId.mp_weapon_epg ] 							= "EPG",
 		[ eDamageSourceId.mp_weapon_smr ] 							= "Sidewinder SMR",
 		[ eDamageSourceId.mp_weapon_rocket_launcher ] 				= "Archer",
-		[ eDamageSourceId.mp_weapon_car ] 							= "Car SMG",
-		[ eDamageSourceId.mp_weapon_car_r2 ] 							= "R2 Car SMG",
+		[ eDamageSourceId.mp_weapon_car_r2 ] 						= "Car SMG",
 		[ eDamageSourceId.mp_weapon_mgl ] 							= "MGL Mag Launcher",
 		[ eDamageSourceId.mp_weapon_3030 ] 							= "30-30 Repeater",
 		//[ eDamageSourceId.mp_weapon_energysword ] 				= "Energy Sword",
@@ -854,9 +869,7 @@ string function PIN_GetDamageCause( var damageInfo )
 		foreach( int enumIdx, string ref in DamageSourceIDToStringTable()  )
 		{
 			if( enumIdx in file.damageSourceIDToName )//janu weapon framework weapons will be here too + precached weps
-			{
 				printText += ( "[ \"" + ref + "\" ] = \"" + file.damageSourceIDToName[ enumIdx ] + "\",\n" )
-			}
 		}
 		
 		printText += "}"

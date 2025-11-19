@@ -1,10 +1,3 @@
-//APEX INFECTED
-//Made by @CafeFPS (@CafeFPS)
-
-// Julefox - Mystery box scripts
-// @KralRindo - Shadowfall gamemode initial implementation
-// everyone else - advice
-
 global function Sh_GamemodeInfection_Init
 
 global const string EVAC_TARGET_NAME             = "evac_ship"
@@ -47,7 +40,6 @@ global const array<string> InfectionMags = [
 void function Sh_GamemodeInfection_Init()
 {
 	SurvivalCommentary_SetHost( eSurvivalHostType.NOC )
-	ShPrecacheShadowSquadAssets()
 
 	SurvivalFreefall_Init() //Enables freefall/skydive
 	ShZombieMysteryBox_Init()

@@ -21,9 +21,9 @@ WeaponData
 	"offhand_hold_enabled"							"0"
 
 	"is_toss_weapon"								"1"
-	"toss_pullout_time"								"0.1"
-	"toss_time"										"1.6"
-	"toss_overhead_time"							"1.6"
+	"toss_pullout_time"								"0.100000"
+	"toss_time"										"1.600000"
+	"toss_overhead_time"							"1.600000"
 	"max_cook_time"									"0"
 
 	"instant_swap_to"								"0"
@@ -66,11 +66,11 @@ WeaponData
 	"rumble"  										"-1"
 
 	// Behavior
-	"fire_rate"   									"15.0"
-	"holster_time"									"0.1"
-	"deploy_time" 									"0.1"
-	"lower_time"  									"0.1"
-	"raise_time"  									"0.1"
+	"fire_rate"   									"15.000000"
+	"holster_time"									"0.100000"
+	"deploy_time" 									"0.100000"
+	"lower_time"  									"0.100000"
+	"raise_time"  									"0.100000"
 	"no_ammo_used_on_primary_attack"				"1"
 	"allow_empty_fire"								"0"
 	"reload_enabled"								"0"
@@ -86,15 +86,15 @@ WeaponData
 
 	MP_BASE
 	{
-		"ammo_clip_size"								"180"
+		"ammo_clip_size"								"240"
         "ammo_default_total"							"0"
         "ammo_display"									"count"
-        "ammo_min_to_fire"								"180"
-        "ammo_per_shot"									"180"
+        "ammo_min_to_fire"								"240"
+        "ammo_per_shot"									"240"
         "ammo_stockpile_max"							"0"
         "regen_ammo_refill_rate"						"1"
-        "regen_ammo_refill_start_delay"					"0.0"
-        "fire_duration"									"30.0"
+        "regen_ammo_refill_start_delay"					"0.000000"
+        "fire_duration"									"30.000000"
         "ammo_no_remove_from_stockpile"					"0"
 
 		"enable_highlight_networking_on_creation"		"<KEEP_DEFAULT>"

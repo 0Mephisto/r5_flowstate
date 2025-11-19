@@ -1,4 +1,4 @@
-"platform/scripts/resource/ui/menus/FS_1v1_Coaching/fs_1v1_coaching_recording_list.res"
+"scripts/resource/ui/menus/FS_1v1_Coaching/fs_1v1_coaching_recording_list.res"
 {
 	//Screen
 	//{

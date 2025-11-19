@@ -897,7 +897,6 @@ void function RotateFRLoop(entity ent,float speed,bool rightside)
 
 
 void function CreateFloor(int x, int y, int z, int width, int length)
-//By michae\l/#1125.
 {
 	int i;
 	int j;
@@ -912,8 +911,6 @@ void function CreateFloor(int x, int y, int z, int width, int length)
 
 void function CreateWall(int x, int y, int z, int length, int height, int angle, bool gates = true)
 //a gate = block without prop
-//By michae\l/#1125 & @CafeFPS
-// incredibly optimized. i am speed
 {
     int i;
     int j;
@@ -937,7 +934,6 @@ void function CreateWall(int x, int y, int z, int length, int height, int angle,
   }
 }
 
-//By @CafeFPS CafeFPS. Tomado del firing range.
 entity function CreateFRProp(asset a, vector pos, vector ang, bool mantle = true, float fade = -1)
 {
 	entity e = CreatePropDynamic(a,pos,ang,SOLID_VPHYSICS,15000)
@@ -951,7 +947,6 @@ entity function CreateFRProp(asset a, vector pos, vector ang, bool mantle = true
 	return e
 }
 
-//By @CafeFPS CafeFPS. Tomado del firing range.
 entity function CreateFRProp2(asset a, vector pos, vector ang, bool mantle = true, float fade = -1)
 {
 	entity e = CreatePropDynamic(a,pos,ang,SOLID_VPHYSICS,15000)
@@ -966,7 +961,6 @@ entity function CreateFRProp2(asset a, vector pos, vector ang, bool mantle = tru
 }
 
 void function TeleportFRPlayer(entity player, vector pos, vector ang)
-//By @CafeFPS CafeFPS. Tomado del firing range.
 {
 	player.SetOrigin(pos)
 	player.SetAngles(ang)
@@ -975,7 +969,6 @@ void function TeleportFRPlayer(entity player, vector pos, vector ang)
 }
 
 entity function CreateFRButton(vector pos, vector ang, string prompt)
-//By @CafeFPS CafeFPS. Tomado del firing range.
 {
 	entity button = CreateEntity("prop_dynamic")
 	button.kv.solid = 6
@@ -990,7 +983,6 @@ entity function CreateFRButton(vector pos, vector ang, string prompt)
 }
 
 void function SpawnSingleDoor(vector doorpos, vector doorang)
-//By @CafeFPS CafeFPS. Adaptado del firing range.
  {
 	entity singleDoor = CreateEntity("prop_door")
 	singleDoor.SetValueForModelKey($"mdl/door/canyonlands_door_single_02.rmdl")
@@ -999,7 +991,6 @@ void function SpawnSingleDoor(vector doorpos, vector doorang)
 	DispatchSpawn(singleDoor)
 }
 
-//By @CafeFPS CafeFPS. Adaptado del firing range.
 void function SpawnDoubleDoor(vector doorpos, vector doorang)
  {
 	entity ddl = CreateEntity("prop_door")
@@ -1062,14 +1053,7 @@ void function SetTargetNameAAA( entity ent, string name )
 }
 
 void function SkillTrainerLoad()
-//////////////////////////////////////////////////
-//@CafeFPS CafeFPS//
-//////////////////////////////////////////////////
 {
-
-////////////////////////////////////////////////
-//@CafeFPS CafeFPS//
-////////////////////////////////////////////////
 //Piso
 CreateFloor(13800, 29000, -869, 25, 25)
 CreateFloor(17300,32000, 2200, 2, 2)
@@ -1149,9 +1133,6 @@ CreateCustomLight( <14976, 33568, -550>, <0,-89,0>, "0 128 0", 1 )
 CreateCustomLight( <19264, 33520, -550>, <0,-89,0>, "0 128 0", 1 )
 CreateCustomLight( <19264, 30016, -550>, <0,-89,0>, "0 128 0", 1 )
 
-//////////////////////////////////////////////////
-//@CafeFPS CafeFPS//
-//////////////////////////////////////////////////
 
 //Plataforma
 CreateFRProp( $"mdl/thunderdome/thunderdome_cage_ceiling_256x256_06.rmdl", <16209, 30487, -357>, <0,0,0>)
@@ -1241,9 +1222,7 @@ CreateFRProp( $"mdl/thunderdome/thunderdome_cage_ceiling_256x256_06.rmdl", <1723
 CreateFRProp( $"mdl/thunderdome/thunderdome_cage_ceiling_256x256_06.rmdl", <17489, 33047, -357>, <0,0,0>)
 CreateFRProp( $"mdl/thunderdome/thunderdome_cage_ceiling_256x256_06.rmdl", <17745, 33047, -357>, <0,0,0>)
 CreateFRProp( $"mdl/thunderdome/thunderdome_cage_ceiling_256x256_06.rmdl", <18001, 33047, -357>, <0,0,0>)
-//////////////////////////////////////////////////
-//@CafeFPS CafeFPS//
-//////////////////////////////////////////////////
+
 //Objetos
 CreateEditorProp( $"mdl/barriers/concrete/concrete_barrier_fence_tarp_128.rmdl", <17184,30416,-870>, <0,0,0>, true, 8000 )
 CreateEditorProp( $"mdl/barriers/concrete/concrete_barrier_fence_tarp_128.rmdl", <18120,33088,-340>, <0,0,0>, true, 8000 )
@@ -1478,9 +1457,7 @@ CreateEditorProp( $"mdl/fx/medic_shield_wall.rmdl", <19616,29600,-112>, <0,-45,0
 CreateEditorProp( $"mdl/thunderdome/thunderdome_cage_ceiling_256x256_06.rmdl", <19632,29600,-112>, <0,-45,0>, true, 8000 )
 CreateEditorProp( $"mdl/thunderdome/thunderdome_cage_ceiling_256x256_06.rmdl", <14560,29600,-460>, <0,-135,0>, true, 8000 )
 CreateEditorProp( $"mdl/thunderdome/thunderdome_cage_ceiling_256x256_06.rmdl", <14576,33920,-64>, <0,135,0>, true, 8000 )
-//////////////////////////////////////////////////
-//@CafeFPS CafeFPS//
-//////////////////////////////////////////////////
+
 //Pasto-Grass
 CreateEditorProp( $"mdl/foliage/icelandic_moss_grass_02.rmdl", <19168,33120,-850>, <0,-45,0>, true, 8000 )
 CreateEditorProp( $"mdl/foliage/icelandic_moss_grass_02.rmdl", <17232,31648,-333>, <0,45,0>, true, 8000 )
@@ -2100,9 +2077,7 @@ CreateEditorProp( $"mdl/colony/farmland_crate_md_80x64x72_03.rmdl", <16816,32992
 CreateEditorProp( $"mdl/pipes/slum_pipe_large_blue_512_01.rmdl", <17952,31904,-850>, <0,-135,0>, true, 8000 )
 CreateEditorProp( $"mdl/pipes/slum_pipe_large_blue_512_01.rmdl", <17856,32832,-850>, <0,135,0>, true, 8000 )
 CreateEditorProp( $"mdl/pipes/slum_pipe_large_blue_512_01.rmdl", <16544,30848,-850>, <0,90,0>, true, 8000 )
-//////////////////////////////////////////////////
-//@CafeFPS CafeFPS//
-//////////////////////////////////////////////////
+
 //Lámparas
 CreateEditorProp( $"mdl/vehicle/dropship/dropship_afterburner.rmdl", <14672,29600,-560>, <0,-90,0>, true, 8000 )
 CreateEditorProp( $"mdl/vehicle/dropship/dropship_afterburner.rmdl", <14928,29600,-560>, <0,-90,0>, true, 8000 )

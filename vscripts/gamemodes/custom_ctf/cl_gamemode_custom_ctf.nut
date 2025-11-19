@@ -1,9 +1,3 @@
-// Credits
-// AyeZee#6969 -- ctf gamemode and ui
-// CafeFPS -- Server/client/ui Rework and multiple code fixes
-// sal#3261 -- base custom_tdm mode to work off
-// everyone else -- advice
-
 global function Cl_CustomCTF_Init
 
 //Server Callbacks
@@ -1522,7 +1516,6 @@ void function FSIntro_StartIntroScreen()
 		}
 
 		i++
-		//cool human like camera shake by cafefps - idk what i did
 		waitthread function() : ( cameraMover, model, camera_end_pos, camera, camera_focus_pos )
 		{
 			EndSignal( camera, "OnDestroy" )

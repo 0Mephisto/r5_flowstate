@@ -1,6 +1,6 @@
 #base "_base_sniper.txt"
 #base "_base_sniper_optics.txt"
-#base "_base_mags_heavy.txt"
+#base "_base_mags_sniper.txt"
 #base "_base_stocks_sniper.txt"
 
 "WeaponData"
@@ -32,36 +32,36 @@
 	"weapon_type_flags"							"WPT_PRIMARY"
 
 	// Script - Callbacks
-	"OnWeaponActivate"                       "OnWeaponActivate_weapon_sentinel"
-	"OnWeaponDeactivate"                     "OnWeaponDeactivate_weapon_sentinel"
-	"OnWeaponPrimaryAttack"                    "OnWeaponPrimaryAttack_weapon_sentinel"
-	"OnClientAnimEvent"						   "OnClientAnimEvent_weapon_basic_bolt"
-	"OnWeaponCustomActivityStart"            "OnWeaponCustomActivityStart_weapon_sentinel"
-	"OnWeaponCustomActivityEnd"              "OnWeaponCustomActivityEnd_weapon_sentinel"
-	"OnWeaponStartZoomIn"                    "OnWeaponStartZoomIn_weapon_sentinel"
-	"OnWeaponStartZoomOut"                   "OnWeaponStartZoomOut_weapon_sentinel"
+	"OnWeaponActivate"                       	"OnWeaponActivate_weapon_sentinel"
+	"OnWeaponDeactivate"                     	"OnWeaponDeactivate_weapon_sentinel"
+	"OnWeaponPrimaryAttack"                    	"OnWeaponPrimaryAttack_weapon_sentinel"
+	"OnClientAnimEvent"						   	"OnClientAnimEvent_weapon_basic_bolt"
+	"OnWeaponCustomActivityStart"            	"OnWeaponCustomActivityStart_weapon_sentinel"
+	"OnWeaponCustomActivityEnd"              	"OnWeaponCustomActivityEnd_weapon_sentinel"
+	"OnWeaponStartZoomIn"                    	"OnWeaponStartZoomIn_weapon_sentinel"
+	"OnWeaponStartZoomOut"                   	"OnWeaponStartZoomOut_weapon_sentinel"
 
     // Energize mechanics
-    "energized_duration"                       "120.0"
-    "energized_time_consumed_per_shot"         "15.0"
-    "energize_activity_time"                   "5.0"        //this doesn't scale the animation! This is used for UI, make sure it is in parity with the animation timing
+    "energized_duration"                       "150.000000"
+    "energized_time_consumed_per_shot"         "14.000000"
+    "energize_activity_time"                   "5.000000"
 	"entity_color_from_charge"				   "1"
 
 
 	// Behavior - Firing
 	//
-	"fire_rate"                                "3.1"
+	"fire_rate"                                "3.100000"
 	"impulse_force"                            "4000"
 
 	// Behavior - Zoom/ADS
-	"zoom_time_in"                             "0.31"   //"0.25"
-	"zoom_time_out"                            "0.28"   //"0.22"
+	"zoom_time_in"                             "0.310000"
+	"zoom_time_out"                            "0.280000"
 
 	 // Iron Sights only
-	"ads_fov_zoomfrac_start"	 			   "0.2"
-    "ads_fov_zoomfrac_end"	 				   "0.8"
-	"viewmodel_offset_zoom_frac_start"         "0.2"
-    "viewmodel_offset_zoom_frac_end"           "0.8"
+	"ads_fov_zoomfrac_start"	 			   "0.200000"
+    "ads_fov_zoomfrac_end"	 				   "0.800000"
+	"viewmodel_offset_zoom_frac_start"         "0.200000"
+    "viewmodel_offset_zoom_frac_end"           "0.800000"
 
 	// Behavior- Aim Assist
 	"aimassist_adspull_weaponclass"            "none"
@@ -79,24 +79,24 @@
     // Projectile
     "projectile_launch_speed"                  "31000"
 
-    "projectile_drag_coefficient" 			   "0.0"
+    "projectile_drag_coefficient" 			   "0.000000"
 
-    "bolt_hitsize_grow1_time"				    "0.127"
-    "bolt_hitsize_grow1_size"				    "0.33"
-    "bolt_hitsize_grow2_time"				    "0.254"
-    "bolt_hitsize_grow2_size"				    "1.25"
-    "bolt_hitsize_growfinal_lerptime"		    "0.381"
-    "bolt_hitsize_growfinal_size"			    "2.0"
+    "bolt_hitsize_grow1_time"				    "0.127000"
+    "bolt_hitsize_grow1_size"				    "0.330000"
+    "bolt_hitsize_grow2_time"				    "0.254000"
+    "bolt_hitsize_grow2_size"				    "1.250000"
+    "bolt_hitsize_growfinal_lerptime"		    "0.381000"
+    "bolt_hitsize_growfinal_size"			    "2.000000"
 
 	// Viewmodel
 	"viewmodel_offset_ads"                     "0 0.0 0"
-	"viewmodel_shake_forward"                  "0.5"
-	"viewmodel_shake_up"                       "0.1"
-	"viewmodel_shake_right"                    "0.0"
+	"viewmodel_shake_forward"                  "0.500000"
+	"viewmodel_shake_up"                       "0.100000"
+	"viewmodel_shake_right"                    "0.000000"
 
 	// Depth of Field
-	"dof_zoom_nearDepthStart"                      "1.0"
-	"dof_zoom_nearDepthEnd"                        "6.5"
+	"dof_zoom_nearDepthStart"                      "1.000000"
+	"dof_zoom_nearDepthEnd"                        "6.500000"
 
 
 	// Ammo
@@ -108,33 +108,33 @@
       
 	"ammo_clip_size"                               "4"
 	"ammo_stockpile_max"                           "50"
-	"ammo_default_total"                           "50"
-	"low_ammo_fraction"                            "0.26"
+	"ammo_default_total"                           "0"
+	"low_ammo_fraction"                            "0.260000"
 	"ammo_per_shot"                                "1"
 	"ammo_min_to_fire"                             "1"
 	"ammo_clip_random_loss_on_npc_drop_chunksize"  "1"
-	"ammo_no_remove_from_stockpile"                "1"
+	"ammo_no_remove_from_stockpile"                "0"
 	"reload_enabled"                               "1"
 	"allow_empty_click"                            "1"
 	"empty_reload_only"                            "0"
-	"uses_ammo_pool"                               "0"
+	"uses_ammo_pool"                               "1"
 
 	"disable_zoomed_rechamber"					   "0"
 
-	"reload_time"                                  "3.0"
-	"reload_time_late1"                            "1.65"
-	"reloadempty_time"                             "4.0"
-	"reloadempty_time_late1"                       "2.63"
-	"reloadempty_time_late2"                       "1.58"
-	"reloadempty_time_late3"                       "0.9"  //will update (Shawn)
-	"rechamber_time"                               "1.85" //"1.6"
+	"reload_time"                                  "3.000000"
+	"reload_time_late1"                            "1.650000"
+	"reloadempty_time"                             "4.000000"
+	"reloadempty_time_late1"                       "2.630000"
+	"reloadempty_time_late2"                       "1.580000"
+	"reloadempty_time_late3"                       "0.900000"
+	"rechamber_time"                               "1.600000"
 
 	// Behavior - Animation
-	"deployfirst_time"                         "1.6"
-	"deploy_time"                              "1.0"
-	"holster_time"                             "0.7"
-	"lower_time"                               "0.55"
-	"raise_time"                               "0.65"
+	"deployfirst_time"                         "1.600000"
+	"deploy_time"                              "1.000000"
+	"holster_time"                             "0.700000"
+	"lower_time"                               "0.550000"
+	"raise_time"                               "0.650000"
 
 
 	// Viewkick Spring
@@ -142,35 +142,35 @@
 	"viewkick_spring"                          "sentinel"
 
 	// Viewkick - Pitch
-	"viewkick_pitch_base"                      "-1.35"
-	"viewkick_pitch_random"                    "0.35"
-	"viewkick_pitch_softScale"                 "0.9"
-	"viewkick_pitch_hardScale"                 "1.1"
+	"viewkick_pitch_base"                      "-1.350000"
+	"viewkick_pitch_random"                    "0.350000"
+	"viewkick_pitch_softScale"                 "0.900000"
+	"viewkick_pitch_hardScale"                 "1.100000"
 
 	// Viewkick - Yaw
-	"viewkick_yaw_base"                        "-0.75"
-	"viewkick_yaw_random"                      "0.35"
-	"viewkick_yaw_softScale"                   "1.0"
-	"viewkick_yaw_hardScale"                   "0.6"
+	"viewkick_yaw_base"                        "-0.750000"
+	"viewkick_yaw_random"                      "0.350000"
+	"viewkick_yaw_softScale"                   "1.000000"
+	"viewkick_yaw_hardScale"                   "0.600000"
 
 	// Viewkick - Roll
-	"viewkick_roll_base"                       "1.95"
-	"viewkick_roll_randomMin"                  "-0.45"
-	"viewkick_roll_randomMax"                  "0.45"
-	"viewkick_roll_softScale"                  "0.95"
-	"viewkick_roll_hardScale"                  "0.65"
+	"viewkick_roll_base"                       "1.950000"
+	"viewkick_roll_randomMin"                  "-0.450000"
+	"viewkick_roll_randomMax"                  "0.450000"
+	"viewkick_roll_softScale"                  "0.950000"
+	"viewkick_roll_hardScale"                  "0.650000"
 
 	// Viewkick - Fractions
-	"viewkick_hipfire_weaponFraction"          "0.25"
-	"viewkick_hipfire_weaponFraction_vmScale"  "0.75"
-	"viewkick_ads_weaponFraction"              "0.2"
-	"viewkick_ads_weaponFraction_vmScale"      "0.8"
+	"viewkick_hipfire_weaponFraction"          "0.250000"
+	"viewkick_hipfire_weaponFraction_vmScale"  "0.750000"
+	"viewkick_ads_weaponFraction"              "0.200000"
+	"viewkick_ads_weaponFraction_vmScale"      "0.800000"
 
 	// Viewkick - Scale
-	"viewkick_scale_min_hipfire" 				"1.0"
-	"viewkick_scale_max_hipfire"             	"1.5"
-	"viewkick_scale_min_ads" 					"1.0"
-	"viewkick_scale_max_ads" 					"1.5"
+	"viewkick_scale_min_hipfire" 				"1.000000"
+	"viewkick_scale_max_hipfire"             	"1.500000"
+	"viewkick_scale_min_ads" 					"1.000000"
+	"viewkick_scale_max_ads" 					"1.500000"
 
 
 	// Sound - Firing
@@ -207,8 +207,8 @@
 	"npc_min_burst"                            "1"
 	"npc_max_burst"                            "1"
 	"npc_suppress_lsp_allowed"                 "0"
-	"npc_rest_time_between_bursts_min"         "5.0"
-	"npc_rest_time_between_bursts_max"         "5.25"
+	"npc_rest_time_between_bursts_min"         "5.000000"
+	"npc_rest_time_between_bursts_max"         "5.250000"
 	"npc_min_range"                            "750"
 	"npc_max_range"                            "12000"
 
@@ -221,13 +221,13 @@
 	"npc_max_engage_range"                     "12000"
 	"npc_min_engage_range_heavy_armor"         "750"
 	"npc_max_engage_range_heavy_armor"         "12000"
-	"npc_accuracy_multiplier_pilot"            "1.0"
+	"npc_accuracy_multiplier_pilot"            "1.000000"
 
 	// NPC - Proficiency
-	"proficiency_poor_spreadscale"             "3.0"
-	"proficiency_average_spreadscale"          "2.2"
-	"proficiency_good_spreadscale"             "2.0"
-	"proficiency_very_good_spreadscale"        "1.5"
+	"proficiency_poor_spreadscale"             "3.000000"
+	"proficiency_average_spreadscale"          "2.200000"
+	"proficiency_good_spreadscale"             "2.000000"
+	"proficiency_very_good_spreadscale"        "1.500000"
 
 	// Bodygroups
 	//
@@ -259,8 +259,8 @@
     //"pre_energize_effect0_attachment"           ""
     //"pre_energize_effect0_attachment_scope"     ""
 
-    "energize_effect0_1p"                       ""
-    "energize_effect0_3p"                       ""
+    "energize_effect0_1p"                       "P_wpn_sentinel_charge_FP"
+    "energize_effect0_3p"                       "P_wpn_sentinel_charge_3P"
     "energize_effect0_attachment"               "muzzle_flash"
     "energize_effect0_attachment_scope"         ""
     "energize_effect1_3p"                       ""
@@ -279,6 +279,17 @@
 
 
 
+
+	"critical_hit"	"1"
+	"titanarmor_critical_hit_required"	"1"
+	"headshot_distance"	"29528"
+	"damage_headshot_scale"	"1.800000"
+	"damage_leg_scale"	"0.900000"
+	"damage_shield_scale"	"1"
+	"critical_hit_damage_scale"	"2"
+	"damage_near_distance"	"7500"
+	"damage_far_distance"	"10000"
+	"damage_very_far_distance"	"12000"
 	"Mods"
 	{
 	    gold
@@ -325,17 +336,6 @@
             "low_ammo_sound_name_1"                        "DoubleTake_LowAmmo_Shot1"
             "low_ammo_sound_name_2"                        "DoubleTake_LowAmmo_Shot2"
             "low_ammo_sound_name_3"                        "DoubleTake_LowAmmo_Shot3"
-
-
-            // Sounds - Charged
-            // "charge_sound_1p"								"weapon_sentinel_fire_alt_1p"
-			// "charge_sound_3p"								"weapon_sentinel_fire_alt_3p"
-			// "charge_sound_stop_when_full"					"1"
-			// "charge_sound_seek_to_charge_fraction"		"1"
-			// "charge_drain_sound_1p"						"Weapon_ChargeRifle_WindDown_1P"
-			// "charge_drain_sound_3p"						"Weapon_ChargeRifle_WindDown_3P"
-			// "charge_drain_sound_stop_when_empty"			"1"
-			// "charge_drain_sound_seek_to_charge_fraction"	"1"
 
             // Rumble
             "charge_rumble_min"								"10"
@@ -414,13 +414,35 @@
             "viewmodel_offset_zoom_frac_end"           "0.7"
         }
 
+
+		"optic_cq_hcog_bruiser"
+        {
+			"dof_zoom_nearDepthStart"                   "1.0"
+			"dof_zoom_nearDepthEnd"                     "10.5"
+        }
+
         "optic_cq_hcog_classic"
         {
 			"dof_zoom_nearDepthStart"                   "1.0"
 			"dof_zoom_nearDepthEnd"                     "6.5"
         }
 
+        "optic_cq_holosight"
+        {
+			"mod_activity_modifier"						"mid_zoom"
+        }
+
+        "optic_cq_holosight_variable"
+        {
+			"mod_activity_modifier"						"mid_zoom"
+        }
+
         "optic_ranged_aog_variable"
+        {
+			"mod_activity_modifier"						"high_zoom"
+        }
+
+        "optic_ranged_hcog"
         {
 			"mod_activity_modifier"						"high_zoom"
         }
@@ -442,7 +464,19 @@
             "ammo_clip_size"   					"7"
         }
       
-	}
+		sniper_mag_l4
+        {
+            "ammo_clip_size"   					"7"
+        }
+	
+		infinite_ammo
+		{
+			"ammo_min_to_fire"                      "0"
+			"ammo_no_remove_from_clip"              "1"
+			"ammo_no_remove_from_stockpile"         "1"
+			"low_ammo_fraction"                     "0.0"
+		}
+}
 
 		// RUI
 	"ui1_enable"                               "1"
@@ -477,151 +511,6 @@
 		}
 	}
 
-
-	// optic_cq_hcog_classic
-    UiData6
-    {
-        "ui"	"ui/hcog_classic_sights"
-        "mesh" 	"models/weapons/attachments/hcog_classic_sights"
-        Args
-        {
-            vis							        player_zoomfrac
-            centerOffset		                weapon_ads_center_offset
-            clipSize                            weapon_clipSize
-        }
-    }
-
-    // optic_cq_hcog_bruiser
-    UiData7
-    {
-        "ui"						"ui/hcog_upper"
-        "mesh"						"models/weapons/attachments/hcog2_rui_upper"
-        Args
-        {
-            vis							        player_zoomfrac
-            centerOffset		                weapon_ads_center_offset
-            clipSize                            weapon_clipSize
-        }
-    }
-
-    // optic_cq_holosight
-    UiData8
-    {
-        "ui"					"ui/holo_sights"
-        "mesh"					"models/weapons/attachments/holo_rui_upper"
-        Args
-        {
-            vis					                player_zoomfrac
-            centerOffset		                weapon_ads_center_offset
-            clipSize                            weapon_clipSize
-                  
-        }
-    }
-
-
-    // optic_cq_holosight_variable
-    UiData9
-    {
-        "ui"						"ui/holo_variable_sights"
-        "mesh"						"models/weapons/attachments/holo_variable_sights"
-        Args
-        {
-            vis						            player_zoomfrac
-            zoomFOV                             weapon_zoom_fov
-            centerOffset			            weapon_ads_center_offset
-            clipSize                            weapon_clipSize
-                  
-        }
-    }
-
-	// optic_ranged_hcog
-	UiData16
-	{
-		"ui"					"ui/hcog_ranged_sights"
-		"mesh"					"models/weapons/attachments/acgs_rui_upper"
-		Args
-		{
-			vis					                player_zoomfrac
-            zoomFOV                             weapon_zoom_fov
-			centerOffset		                weapon_ads_center_offset
-			clipSize                            weapon_clipSize
-                  
-		}
-	}
-
-
-	// optic_ranged_aog_variable
-	UiData17
-	{
-		"ui"	"ui/aog_variable_sights"
-		"mesh" "models/weapons/attachments/aog_variable_sights"
-		Args
-		{
-			vis					                player_zoomfrac
-            zoomFOV                             weapon_zoom_fov
-			centerOffset		                weapon_ads_center_offset
-			clipSize                            weapon_clipSize
-                  
-		}
-	}
-
-	// optic_sniper
-    UiData30
-    {
-        "ui"			"ui/sniper_optic_sights"
-        "mesh"			"models/weapons/attachments/sniper_optic_sights"
-
-        Args
-        {
-            vis					                player_zoomfrac
-            crossDist			                distance_to_crosshair_target
-            zoomFOV         	                weapon_zoom_fov
-            varSightOffsets		                variable_sights_offsets
-            eyeAngles			                player_eye_angles
-            ammo				                weapon_ammo
-            clipCount			                weapon_ammoClipCount
-                  
-        }
-    }
-
-    // optic_sniper_variable
-    UiData31
-    {
-        "ui"			"ui/sniper_optic_variable_sights"
-        "mesh"			"models/weapons/attachments/sniper_optic_sights"
-
-        Args
-        {
-            vis					                player_zoomfrac
-            crossDist			                distance_to_crosshair_target
-            zoomFOV         	                weapon_zoom_fov
-            varSightOffsets		                variable_sights_offsets
-            eyeAngles			                player_eye_angles
-            ammo				                weapon_ammo
-            clipCount			                weapon_ammoClipCount
-                  
-        }
-    }
-
-    // optic_sniper_threat
-    UiData32
-    {
-        "ui" 		"ui/sniper_threat_optic_sights"
-        "mesh" 		"models/weapons/attachments/sniper_threat_optic_sights"
-
-        Args
-        {
-            vis					                player_zoomfrac
-            crossDist			                distance_to_crosshair_target
-            zoomFOV         	                weapon_zoom_fov
-            varSightOffsets		                variable_sights_offsets
-            eyeAngles			                player_eye_angles
-            ammo				                weapon_ammo
-            clipCount			                weapon_ammoClipCount
-                  
-        }
-    }
-
 	// UI - Crosshair
 	"rui_crosshair_index"                      "0"
 	"active_crosshair_count"                   "1"
@@ -652,3 +541,4 @@
 		}
 	}
 }
+

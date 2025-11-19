@@ -1,3 +1,7 @@
+#if SERVER || CLIENT 
+untyped //(mk): required for CPlayer script methods
+#endif 
+
 //=========================================================
 // melee attack = regular melee punch/slash/kick/etc
 // synced melee = execution/finisher
@@ -350,7 +354,6 @@ entity function GetMeleeAttackLungeTarget( entity attacker, entity meleeAttackWe
 		lungeTarget = PlayerMelee_LungeConeTrace( attacker, meleeAttackWeapon, SHARED_CB_IS_VALID_MELEE_ATTACK_TARGET )
 	}catch(e420)
 	{
-		printt( "R5R Sword Made by @CafeFPS and Respawn - Jan 15 2024 <3" )
 	}
 	return lungeTarget
 }
@@ -370,19 +373,18 @@ bool function AttackerCanStartMelee( entity attacker, entity inputWeaponOrNull, 
 
 	if ( attacker.IsWeaponSlotDisabled( eActiveInventorySlot.mainHand ) ) // Covers bleedout
 		return false
-
+		
+	if( attacker.IsDisabledFor( WPT_MELEE ) )
+		return false
+		
 	//if ( PlayerIsInMeleeBlockingADS( attacker ) )
 	//	return false
 	
 	if ( attacker.IsPhaseShifted() )
-    {
         return false
-    }
 	
 	if ( attacker.Player_IsFreefalling() )
-    {
         return false
-    }
 
 	if ( attacker.Lunge_IsActive() )
 		return false
@@ -540,7 +542,7 @@ void function CodeCallback_OnMeleePressed( entity attacker, entity meleeInputWea
 		vector eyeTraceHitPos
 		if ( doorLungeEnabled && !IsValid( lungeTarget ) )
 		{
-			//Cafe was here
+			
 			array<entity> ignoreEnts = [ attacker ]
 			
 			array<entity> tocheck

@@ -29,9 +29,9 @@ WeaponData
    	"play_offhand_charging_anim"  					"0"
 	"play_offhand_start_end_anim"					"0"
 
-   	"charge_time" 									"0.01"
-	"charge_cooldown_time"							"0.0"
-	"charge_cooldown_delay"   						"0.0"
+   	"charge_time" 									"0.010000"
+	"charge_cooldown_time"							"0.000000"
+	"charge_cooldown_delay"   						"0.000000"
 	"charge_end_forces_fire"  						"1"
 	"charge_require_input"							"0"
 
@@ -69,22 +69,22 @@ WeaponData
 	"damage_far_value"								"0"
 	
     "ammo_display"									"bar"
-    "ammo_stockpile_max"							"250"
-    "ammo_clip_size"   								"250"
-    "ammo_default_total"							"250"
-    "ammo_per_shot"									"250"
-    "ammo_min_to_fire"								"250"
+    "ammo_stockpile_max"							"25"
+    "ammo_clip_size"   								"25"
+    "ammo_default_total"							"25"
+    "ammo_per_shot"									"25"
+    "ammo_min_to_fire"								"25"
     
     // Regen Ammo
-    "regen_ammo_refill_rate"						"10"
-    "regen_ammo_refill_start_delay"					"0.0"
+    "regen_ammo_refill_rate"						"1"
+    "regen_ammo_refill_start_delay"					"0.000000"
 
     "enable_highlight_networking_on_creation"		"0"
 	// Behavior
-	"fire_rate"   									"1.25"
-    "fire_anim_rate"								"1.0"
-    "holster_time"									"1.0"
-	"deploy_time" 									"0.8"
+	"fire_rate"   									"1.250000"
+    "fire_anim_rate"								"1.000000"
+    "holster_time"									"1.000000"
+	"deploy_time" 									"0.800000"
 	"lower_time"  									"0"
 	"raise_time"  									"0"
 	"allow_empty_fire"								"0"

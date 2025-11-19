@@ -43,7 +43,7 @@ WeaponData
 	"offhand_default_inventory_slot"				"0"
 
 	"zoom_effects"									"0"
-	"ads_move_speed_scale"							"0.55"
+	"ads_move_speed_scale"							"0.550000"
 
 	// Effects
 	"bounce_effect_table"							"bounce_arc"
@@ -86,7 +86,7 @@ WeaponData
 	"explosion_shake_radius"						"500"
 	"explosion_shake_amplitude"						"20"
 	"explosion_shake_frequency"						"45"
-	"explosion_shake_duration"						"0.25"
+	"explosion_shake_duration"						"0.250000"
 	"damage_flags"									"DF_RAGDOLL | DF_EXPLOSION | DF_ELECTRICAL"
 
 	"explosion_damage"								"75"
@@ -94,7 +94,7 @@ WeaponData
 	"explosion_inner_radius"  						"72"
 	"explosionradius" 								"350"
 
-	"projectile_killreplay_enabled"					"1"
+	"projectile_killreplay_enabled"					"0"
 
 	"damage_shield_scale"                           "1"
 
@@ -103,15 +103,15 @@ WeaponData
 		"fire_mode"   									"automatic"
 		"is_semi_auto"									"1"
 		"ammo_display"									"bar"
-		"ammo_stockpile_max"							"200"
+		"ammo_stockpile_max"							"0"
 		"ammo_clip_size"   								"200"
 		"ammo_default_total"							"200"
 		"ammo_per_shot"									"200"
 		"ammo_min_to_fire"								"200"
 
 		// Regen Ammo
-		"regen_ammo_refill_rate"						"16.0"
-		"regen_ammo_refill_start_delay"					"0.0"
+		"regen_ammo_refill_rate"						"16.000000"
+		"regen_ammo_refill_start_delay"					"0.000000"
 
 		"npc_explosion_damage"							"50"
 		"npc_explosion_damage_heavy_armor"				"350"

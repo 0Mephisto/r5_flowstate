@@ -41,8 +41,8 @@ WeaponData
 	dof_zoom_focusArea_bottom						-0.018
 
 	// Models
-	"viewmodel"   									"mdl/weapons/rampart_turret/ptpov_rampart_turret_new.rmdl"
-	"playermodel" 									"mdl/weapons/rampart_turret/w_rampart_turret.rmdl"
+	"viewmodel"   									"mdl/dev/empty_model.rmdl"//"mdl/weapons/rampart_turret/ptpov_rampart_turret_new.rmdl"
+	"playermodel" 									"mdl/dev/empty_model.rmdl"//"mdl/weapons/rampart_turret/w_rampart_turret.rmdl"
 	"holster_type"									"rifle"
 
 	"projectilemodel" 								"mdl/dev/empty_model.rmdl"
@@ -520,7 +520,15 @@ WeaponData
 	Mods
 	{
 
-	}
+	
+		infinite_ammo
+		{
+			"ammo_min_to_fire"                      "0"
+			"ammo_no_remove_from_clip"              "1"
+			"ammo_no_remove_from_stockpile"         "1"
+			"low_ammo_fraction"                     "0.0"
+		}
+}
 
 
 	// "ui1_enable"		"1"

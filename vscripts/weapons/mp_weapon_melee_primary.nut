@@ -11,7 +11,6 @@ void function OnWeaponDeactivate_weapon_melee_primary( entity weapon )
 }
 
 void function OnWeaponActivate_vctblue( entity weapon )
-// By CafeFPS
 {
 	entity player = weapon.GetWeaponOwner()
 	weapon.kv.rendercolor = player.p.snd_knifecolor

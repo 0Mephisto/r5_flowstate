@@ -1,5 +1,3 @@
-//Made by @CafeFPS (X/twitter) and julefox (discord) ( 2022, dev script )
-
 global function OnWeaponTossReleaseAnimEvent_Turret
 global function OnWeaponAttemptOffhandSwitch_Turret
 global function OnWeaponTossPrep_Turret
@@ -258,7 +256,7 @@ void function RemoveTurretThread( entity turret, entity player, int useInputFlag
 }
 
 void function Turret_OnDamaged(entity proxy, var damageInfo)
-//By Retículo Endoplasmático#5955 (CaféDeColombiaFPS)//
+
 {
 	entity attacker = DamageInfo_GetAttacker(damageInfo)
 	if (!attacker.IsPlayer()) return
@@ -345,7 +343,7 @@ void function AddHUDAlert2( entity trigger, entity ent )
 }
 
 void function CreateTurretTrigger(entity turret, entity pc1)
-//By Retículo Endoplasmático#5955 (CaféDeColombiaFPS)//
+
 {
 	EndSignal(turret, "OnDestroy")
 	
@@ -479,7 +477,7 @@ void function CreateTurretTrigger(entity turret, entity pc1)
 }
 
 void function RadiusAlert( entity turret, bool red)
-//By Retículo Endoplasmático#5955 (CaféDeColombiaFPS)//
+
 {
 	entity circle = CreateEntity( "prop_script" )
 	circle.SetValueForModelKey( $"mdl/weapons_r5/weapon_tesla_trap/mp_weapon_tesla_trap_ar_trigger_radius.rmdl" )
@@ -499,7 +497,7 @@ void function RadiusAlert( entity turret, bool red)
 }
 
 entity function SpawnTurretWeapon(vector origin, vector angles, entity turret)
-//By Retículo Endoplasmático#5955 (CaféDeColombiaFPS)//
+
 {
 	entity dummy = CreateEntity( "npc_dummie" )
 	SetSpawnOption_AISettings( dummy, "npc_supressorturret" )
@@ -539,7 +537,7 @@ entity function SpawnTurretWeapon(vector origin, vector angles, entity turret)
 }
 
 void function weaponEnemyWatcher( entity dummy, entity turret )
-//By Retículo Endoplasmático#5955 (CaféDeColombiaFPS)//
+
 {
 	EndSignal(dummy, "OnDestroy")
 	EndSignal(turret, "OnDestroy")
@@ -603,7 +601,6 @@ void function weaponEnemyWatcher( entity dummy, entity turret )
 }
 
 void function PlayTurretSound( entity turret )
-//By julefox (discord)
 {   
 	EndSignal(turret, "OnDestroy")
 	while ( true )
@@ -614,7 +611,6 @@ void function PlayTurretSound( entity turret )
 }
 
 void function PlayRandomTurretSound( entity turret )
-//By julefox (discord)
 {   
 	EndSignal(turret, "OnDestroy")
 	while ( true )
@@ -626,7 +622,6 @@ void function PlayRandomTurretSound( entity turret )
 
 void function MakeLookAt(entity entityToRotate, vector targetPos, entity targetType, entity fx ) 
 {
-//By julefox (discord)
 	vector entityPos    = entityToRotate.GetOrigin()
 	vector distance     = targetPos - entityPos
 

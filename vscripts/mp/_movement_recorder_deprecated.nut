@@ -53,7 +53,7 @@ void function StartMovementRecorder(entity player, float length = 10, int charac
 		"amos_x64",
 		"rexx_x64",
 		"IcePixelx", 
-		"KralRindo",
+		"LorryLeKral",
 		"sal"
 	]
 	
@@ -83,8 +83,6 @@ void function StartMovementRecorder(entity player, float length = 10, int charac
 			AssignCharacter(player, 0)
 		break
 	}
-	
-	Message(player, msg1, "Made by @CafeFPS", 1.5)
 	
 	asset playermodel = player.GetModelName()
 	player.StartRecordingAnimation(initialpos, initialang)

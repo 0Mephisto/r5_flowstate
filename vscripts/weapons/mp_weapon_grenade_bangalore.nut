@@ -350,7 +350,7 @@ void function CreateSmokeTrigger( SmokescreenStruct smokescreen, entity smokeGre
 	trigger.SearchForNewTouchingEntity()  // set this to catch an entity in the trigger right away
 
 	#if DEVELOPER
-	DrawAngledBox( origin, smokeGrenade.GetAngles(), <-20, -20, -16>, <200, 280, 150>, 255, 0, 0, true, 15 )
+	//DrawAngledBox( origin, smokeGrenade.GetAngles(), <-20, -20, -16>, <200, 280, 150>, 255, 0, 0, true, 15 )
 	#endif
 
 	EndSignal( trigger, "OnDestroy" )
@@ -577,11 +577,10 @@ void function BangaloreSmokescreenEffectEnabled( entity ent, int statusEffect, b
 
 	thread UpdatePlayerScreenColorCorrection( viewPlayer, statusEffect, file.colorCorrectionGas )
 
-	//Cafe was here. This is chad part of my implementation
 	if ( BangSmokeHighlightsEnabled() )
 	{
 		thread Cafe_SmokesHighlights( ent )
-	}	//CLIENT
+	}
 
 	if ( !viewPlayer.IsTitan() )
 	{

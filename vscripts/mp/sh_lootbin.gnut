@@ -170,7 +170,7 @@ void function InitLootBinFromMap( entity lootbin )
 			lootbin.Destroy()
 			return
 		}
-		//Cafe was here
+
 		entity parentPoint = CreateEntity( "script_mover_lightweight" )
 		{
 			parentPoint.kv.solid = 0
@@ -180,8 +180,8 @@ void function InitLootBinFromMap( entity lootbin )
 			parentPoint.SetAngles( lootbin.GetAngles() )
 			DispatchSpawn( parentPoint )
 			parentPoint.Hide()
-			lootbin.SetParent(parentPoint)
 			parentPoint.SetParent( trace.hitEnt, "", true, 0 )
+			lootbin.SetParent( parentPoint )
 		}
 		
 		if( IsValid( parentPoint ) && trace.hitEnt.GetScriptName() == "train_brush" )
@@ -194,6 +194,17 @@ void function InitLootBinFromMap( entity lootbin )
 		InitLootBin( lootbin )
 	}
 
+}
+
+bool function SURVIVAL_ShouldBinOrSpawnPointMoveWithGeo( entity binOrSpawnPoint )
+{
+	if ( binOrSpawnPoint.HasKey( "onMovingGeo" ) )
+		return true
+
+	if ( binOrSpawnPoint.e.isOnMovingGeo )
+		return true
+
+	return false
 }
 #endif
 
@@ -497,8 +508,7 @@ void function AddMultipleLootItemsToLootBin( entity lootBin, array<string> refs 
     array<string> lootToSpawn = GetLootBinContents( lootBin )
     if(lootToSpawn.len() > 0)
     {
-        //printt("Lootbin already has contents! Clear it first before adding multiple items.")
-        return
+        ClearLootBinContents(lootBin)
     }
 	int numRefs = refs.len()
 	for ( int i; i < numRefs; i++ )

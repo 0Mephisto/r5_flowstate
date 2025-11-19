@@ -1,12 +1,3 @@
-// Search and Destroy
-// Made by @CafeFPS - Server, Client and UI
-
-// Aeon#0236 - Playtests and ideas
-// AyeZee#6969 - Some of the economy system logic from his arenas mode draft - stamina
-// @dea_bb - Shoothouse, de_cache and NCanals maps
-// @CafeFPS and Darkes#8647 - de_dust2 map model port and fake collision
-// VishnuRajan in https://sketchfab.com/3d-models/time-bomb-efb2e079c31349c1b2bd072f00d8fe79 - Bomb model and textures
-
 global function Sh_GamemodeSND_Init
 global function GetSidesSpawns
 global function GetBombPlantingLocations
@@ -287,7 +278,8 @@ void function Sh_SetAttackingLocations(int map)
 			thisMapPlantingLocations.B = <2090.76758, 12572.7256, -3336.95386>
 		break
 		
-		case eMaps.mp_rr_olympus_mu1:
+		case eMaps.mp_rr_olympus:
+		case eMaps.mp_rr_olympus_tt:
 			thisMapSides.Defenders = <-4899.18506, 23100.4492, -5939.96875>
 			thisMapSides.Attackers = <-8529.28125, 19642.5215, -5937.96875>
 
@@ -710,7 +702,7 @@ void function ServerCallback_SetBombState(int bombState)
 				bombStateText = "BOMB CARRIED"
 				if( SURVIVAL_CountItemsInInventory( player, "snd_bomb" ) == 1 )
 					bombStateText = "YOU HAVE THE BOMB"
-				Hud_ColorOverTime( elem, AIRDROP_R, AIRDROP_G, AIRDROP_B, 255, 0.35 )
+				Hud_ColorOverTime( elem, 10, 224, 233, 255, 0.35 )
 				EmitSoundOnEntity(GetLocalViewPlayer(), "HUD_Boost_Card_Earned_1P")
 			} else if(player.GetTeam() == Sh_GetDefenderTeam())
 			{
@@ -788,7 +780,7 @@ void function ServerCallback_SetBombStateFromfile()
 				bombStateText = "BOMB CARRIED"
 				if( SURVIVAL_CountItemsInInventory( player, "snd_bomb" ) == 1 )
 					bombStateText = "YOU HAVE THE BOMB"
-				Hud_ColorOverTime( elem, AIRDROP_R, AIRDROP_G, AIRDROP_B, 255, 0.35 )
+				Hud_ColorOverTime( elem, 10, 224, 233, 255, 0.35 )
 				EmitSoundOnEntity(GetLocalViewPlayer(), "HUD_Boost_Card_Earned_1P")
 			} else if(player.GetTeam() == Sh_GetDefenderTeam())
 			{

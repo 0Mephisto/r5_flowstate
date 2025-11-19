@@ -5,15 +5,6 @@ globalize_all_functions
 //  +-++-+-  -+-++-++-+++++-+  +-+- -+-+
 //  ¦¦¦¦ ¦++++¦¦ ¦¦¦¦¦ ¦¦¦ ¦   ¦ -+-+¦¦¦
 //  - -+-+ ++ +-+- -+-++++ -   +-+ - - -
-//  
-//  Client Script
-//  
-//  Made by DEAFPS
-//
-//  With help from:
-//  CafeFPS - General help
-//  
- 
 
 //Basic settings
 bool kmh
@@ -89,7 +80,7 @@ void function Cl_MovementGym_Init()
 {
 	entity player = GetLocalClientPlayer()
 	
-	RequestPakFile( "ui_dea" )
+	//RequestPakFile( "ui_dea" )
 	
 	// Register Signals
 	RegisterSignal("StopStopWatch")
@@ -1583,10 +1574,13 @@ void function MG_CustomPilotRUI( entity player, var rui ) {
 		case "DEAR5R":
 			RuiSetImage( rui, "playerIcon", $"rui/flowstatecustom/dea/dea_pfp" )
 			RuiSetString( rui, "name", "DEAFPS" )
+   			break
 		case "LoyTakian":
 			RuiSetImage( rui, "playerIcon", $"rui/flowstatecustom/dea/loy_pfp" )
 			RuiSetString( rui, "name", "Loy" )
 			break
+   		default:
+			SURVIVAL_PopulatePlayerInfoRui( player, rui )
 	}
 	
 }

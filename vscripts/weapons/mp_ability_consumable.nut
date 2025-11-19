@@ -1,3 +1,5 @@
+untyped //required for CPlayer class functions
+
 global function WeaponDrivenConsumablesEnabled
 
 global function OnWeaponAttemptOffhandSwitch_Consumable
@@ -31,6 +33,8 @@ global function Consumable_IsCurrentSelectedConsumableTypeUseful
 
 global function Consumable_SetClientTypeOnly
 global function AddModAndFireWeapon_Thread
+global function Consumable_DoHealScreenFx
+global function ServerToClient_DoUltAccelScreenFx
 #endif // CLIENT
 
 #if SERVER
@@ -114,6 +118,7 @@ enum eUseConsumableResult
 	DENY_NO_KITS,
 	DENY_NO_SHIELDS,
 	DENY_FULL,
+	DENY_DEATH_TOTEM,
 	COUNT,
 }
 
@@ -167,6 +172,7 @@ struct
 		bool healCompletedSuccessfully
 		int  clientSelectedConsumableType
 		int  healScreenFxHandle
+		int  ultAccelScreenFxHandle
 	#endif // CLIENT
 
 } file
@@ -174,11 +180,13 @@ struct
 global const int OFFHAND_SLOT_FOR_CONSUMABLES = OFFHAND_ANTIRODEO
 global const string CONSUMABLE_WEAPON_NAME = "mp_ability_consumable"
 
+const string SHOW_ULT_ACCEL_FX_PLAYLIST_VAR = "ult_accel_vfx_enable"
 const float HEAL_CHATTER_DEBOUNCE = 10.0
 const RESTORE_HEALTH_COCKPIT_FX = $"P_heal_loop_screen"
+const asset VFX_ULT_ACCEL_POP = $"P_UltAcc_screenSpace"
 global const vector HEALTH_RGB = < 114, 245, 250 >
 
-//Wattson
+// (dp): this is gross, but I will revisit it if we add more character/consumable specific sfx
 const string WATTSON_EXTRA_ULT_ACCEL_SFX = "Wattson_Xtra_A"
 
 // This init isn't with the rest of the weapon init functions in _utility_shared.gnut, because it has to run
@@ -187,6 +195,8 @@ void function Consumable_Init()
 {
 	RegisterWeaponForUse( CONSUMABLE_WEAPON_NAME )
 	RegisterSignal( "ConsumableDestroyRui" ) // idk really, from S7 or so...
+	
+	PrecacheParticleSystem( VFX_ULT_ACCEL_POP )
 		RegisterSignal( "VCTBlueFX" )
 
 	{ // Phoenix Kit - Full health and shields
@@ -195,7 +205,6 @@ void function Consumable_Init()
 			phoenixKit.lootData = SURVIVAL_Loot_GetLootDataByRef( "health_pickup_combo_full" )
 			phoenixKit.healAmount = 100
 			phoenixKit.shieldAmount = 999
-			phoenixKit.chargeSoundName = "PhoenixKit_Charge"
 			phoenixKit.cancelSoundName = "shield_battery_failure"
 			phoenixKit.modName = "phoenix_kit"
 		}
@@ -225,7 +234,6 @@ void function Consumable_Init()
 			shieldSmall.healAmount = 0
 			shieldSmall.shieldAmount = 25
 			shieldSmall.healCap = 0.0
-			shieldSmall.chargeSoundName = "Shield_Battery_Charge_Short"
 			shieldSmall.cancelSoundName = "shield_battery_failure"
 			shieldSmall.modName = "shield_small"
 		}
@@ -239,7 +247,6 @@ void function Consumable_Init()
 			healthLarge.lootData = SURVIVAL_Loot_GetLootDataByRef( "health_pickup_health_large" )
 			healthLarge.healAmount = 100
 			healthLarge.shieldAmount = 0
-			healthLarge.chargeSoundName = "Health_Syringe_Charge"
 			healthLarge.cancelSoundName = "Health_Syringe_Failure"
 			healthLarge.modName = "health_large"
 		}
@@ -268,7 +275,6 @@ void function Consumable_Init()
 			ultimateBattery.healAmount = 0
 			ultimateBattery.healTime = 0.0
 			ultimateBattery.lootData = SURVIVAL_Loot_GetLootDataByRef( "health_pickup_ultimate" )
-			ultimateBattery.chargeSoundName = "Ult_Acc_Charge"
 			ultimateBattery.cancelSoundName = ""
 			ultimateBattery.modName = "ultimate_battery"
 		}
@@ -312,8 +318,8 @@ void function Consumable_Init()
 	#if SERVER
 		AddCallback_OnClientConnected( OnClientConnected )
 
-		AddClientCommandCallbackNew( "SetSelectedConsumableTypeNetInt", ClientCommand_SetSelectedConsumableTypeNetInt )
-		AddClientCommandCallbackNew( "SetNextHealModType", ClientCommand_SetNextHealModType  )
+		AddClientCommandCallbackVoid( "SetSelectedConsumableTypeNetInt", ClientCommand_SetSelectedConsumableTypeNetInt )
+		AddClientCommandCallbackVoid( "SetNextHealModType", ClientCommand_SetNextHealModType  )
 
 		RegisterSignal( "StartHeal" )
 	#endif
@@ -1061,6 +1067,11 @@ var function OnWeaponPrimaryAttack_Consumable( entity weapon, WeaponPrimaryAttac
 		{
 			Consumable_DoHealScreenFx( player )
 		}
+		else if ( info.ultimateAmount > 0 )
+		{
+			Consumable_DoUltAccelScreenFx( player )
+		}
+
 		Chroma_ConsumableSucceeded( info )
 	#endif
 
@@ -1323,12 +1334,12 @@ int function Consumable_GetBestConsumableTypeForPlayer( entity player, int added
 
 	healthDataArray.sort( CompareHealData )
 
-	foreach ( PotentialHealData healData in healthDataArray )
-	{
-		#if CLIENT
-			printt( Localize( healData.consumableInfo.lootData.pickupString ), healData.totalAppliedHeal, healData.healthPerSecond )
-		#endif
-	}
+	// foreach ( PotentialHealData healData in healthDataArray )
+	// {
+		// #if CLIENT
+			// printt( Localize( healData.consumableInfo.lootData.pickupString ), healData.totalAppliedHeal, healData.healthPerSecond )
+		// #endif
+	// }
 
 	foreach ( PotentialHealData healData in healthDataArray )
 	{
@@ -1395,6 +1406,41 @@ void function DoHealScreenFx( entity player )
 	} )
 
 	WaitFrame()
+}
+
+void function Consumable_DoUltAccelScreenFx( entity player )
+{
+	if ( GetCurrentPlaylistVarBool( SHOW_ULT_ACCEL_FX_PLAYLIST_VAR, true ) )
+	{
+		thread DoUltAccelScreenFx( player )
+	}
+}
+
+void function DoUltAccelScreenFx( entity player )
+{
+	EndSignal( player, "OnDeath", "OnDestroy" )
+
+	if ( player != GetLocalViewPlayer() )
+		return
+
+	entity cockpit = player.GetCockpit()
+	if ( !IsValid( cockpit ) )
+		return
+
+	if ( EffectDoesExist( file.ultAccelScreenFxHandle ) )
+		return
+
+	int fxID = GetParticleSystemIndex( VFX_ULT_ACCEL_POP )
+	file.ultAccelScreenFxHandle = StartParticleEffectOnEntity( cockpit, fxID, FX_PATTACH_ABSORIGIN_FOLLOW, -1 )
+	EffectSetIsWithCockpit( file.ultAccelScreenFxHandle, true )
+	EffectSetControlPointVector( file.ultAccelScreenFxHandle, 1, <255, 208, 56> )
+
+	OnThreadEnd( function() {
+		if ( EffectDoesExist( file.ultAccelScreenFxHandle ) )
+			EffectStop( file.ultAccelScreenFxHandle, false, true )
+	} )
+
+	wait 2
 }
 
 void function PlayConsumableUseChroma( entity weapon, ConsumableInfo info )
@@ -1494,11 +1540,18 @@ string function GetCanUseResultString( int consumableUseActionResult )
 
 		case eUseConsumableResult.DENY_FULL:
 			return "#DENY_FULL"
+
+		case eUseConsumableResult.DENY_DEATH_TOTEM:
+			return "#DENY_DEATH_TOTEM"
 		default:
 			return ""
 	}
 
 	unreachable
+}
+void function ServerToClient_DoUltAccelScreenFx()
+{
+	Consumable_DoUltAccelScreenFx( GetLocalViewPlayer() )
 }
 #endif // CLIENT
 
@@ -1772,6 +1825,9 @@ bool function Consumable_IsValidModCommand( entity player, entity weapon, string
 }
 void function UseConsumable_Bomb( entity player, ConsumableInfo info )//, ConsumablePersistentData useData )
 {
+	if (!IsFlowstateActive())
+		return
+	
 	if( !IsValid(player) || player.GetTeam() != Sh_GetAttackerTeam() || GetGameState() != eGameState.Playing ) return
 	
 	if( Gamemode() == eGamemodes.fs_snd )
@@ -2200,21 +2256,16 @@ int function Consumable_GetConsumableRecoveryType( int consumableType )
 
 bool function Consumable_CanUseConsumable( entity player, int consumableType, bool printReason = true )
 {
-
 	if ( IsFallLTM() && IsPlayerShadowSquad( player ) )
 		return false
 
 	int canUseResult = TryUseConsumable( player, consumableType )
 
 	if( consumableType == eConsumableType.SND_BOMB && canUseResult == eUseConsumableResult.ALLOW )
-	{
-		return CanPlantBombHere(player)
-	}
+		return CanPlantBombHere( player )
 
 	if ( canUseResult == eUseConsumableResult.ALLOW )
-	{
 		return true
-	}
 
 	#if CLIENT
 		if ( printReason && !player.GetPlayerNetBool( "isHealing" ) )
@@ -2266,6 +2317,12 @@ bool function Consumable_CanUseConsumable( entity player, int consumableType, bo
 int function TryUseConsumable( entity player, int consumableType )
 {
 #if CLIENT
+	if( Playlist() == ePlaylists.fs_1v1 || Playlist() == ePlaylists.fs_vamp_1v1 || Playlist() == ePlaylists.fs_1v1_headshots_only || Playlist() == ePlaylists.fs_lgduels_1v1 )
+	{
+		if( player.GetPlayerNetInt( "FS_1v1_PlayerState" ) == e1v1State.RESTING || player.GetPlayerNetInt( "FS_1v1_PlayerState" ) == e1v1State.SPECTATING )
+			return eUseConsumableResult.DENY_NONE
+	}
+	
 	if ( player != GetLocalClientPlayer() )
 		return eUseConsumableResult.DENY_NONE
 
@@ -2278,6 +2335,9 @@ int function TryUseConsumable( entity player, int consumableType )
 	if ( Bleedout_IsPlayerGivingFirstAid( player ) )
 		return eUseConsumableResult.DENY_NONE
 #endif
+
+	if ( player.IsDisabledFor( WPT_CONSUMABLE ) )
+		return eUseConsumableResult.DENY_NONE
 
 	while ( player.ContextAction_IsActive() ) // not a real loop
 	{
@@ -2309,6 +2369,9 @@ int function TryUseConsumable( entity player, int consumableType )
 	{
 		return eUseConsumableResult.ALLOW
 	}
+	
+	if ( DeathTotem_PlayerCanRecall( player ) )
+		return eUseConsumableResult.DENY_DEATH_TOTEM
 	
 	if ( consumableType == eConsumableType.ULTIMATE )
 	{

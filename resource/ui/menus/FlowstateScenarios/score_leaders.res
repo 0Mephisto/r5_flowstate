@@ -1,4 +1,4 @@
-"platform/scripts/resource/ui/menus/FlowstateScenarios/score_leaders.res"
+"scripts/resource/ui/menus/FlowstateScenarios/score_leaders.res"
 {
 	//Screen
 	//{

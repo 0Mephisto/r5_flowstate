@@ -1,6 +1,3 @@
-// Made by @CafeFPS
-// -- holo thing for the spawner - Zer0bytes
-
 globalize_all_functions
 
 struct
@@ -32,7 +29,7 @@ bool function Flowstate_ClientCommand_AttemptThrowOddball(entity player, array <
 	if( !IsValid( player ) || !player.IsPlayer() || file.ballCarrier != player ) // check if loot fs_ball exists
 		return false
 
-	printt("Ball dropped by " + player)
+	printt("[ODDBALL] Ball dropped by " + player)
 
 	ClearBallCarrierPlayerSetup( player )
 	SpawnOddballFromPlayer( player )
@@ -43,7 +40,8 @@ void function FsOddball_PlayerDisconnected( entity player )
 {
 	if( file.ballCarrier == player && GetTDMState() == eTDMState.IN_PROGRESS )
 	{
-		printt( "Ball carrier disconnected. Ball spawned." )
+		printt("[ODDBALL] Ball carrier disconnected. Ball spawned.")
+
 		SpawnOddballFromPlayer( player )
 		SetBallCarrier( null )
 	}
@@ -61,7 +59,7 @@ void function FsOddball_OnPlayerKilled(entity victim, entity attacker, var damag
 		ClearBallCarrierPlayerSetup( victim )
 		SpawnOddballFromPlayer( victim )
 		SetBallCarrier( null )
-		printt( "Ball carrier died. Ball spawned." )
+		printt("[ODDBALL] Ball carrier died. Ball spawned.")
 	}
 }
 
@@ -94,7 +92,7 @@ void function CheckBallInWorldBounds( entity ball )
 			break
 		}
 
-		if( MapName() == eMaps.mp_flowstate && ball.GetOrigin().z <= GetZLimitForCurrentLocationName() || MapName() == eMaps.mp_flowstate && ball.GetOrigin().z >= -19500 )
+		if( MapName() == eMaps.mp_rr_arena_empty && ball.GetOrigin().z <= GetZLimitForCurrentLocationName() || MapName() == eMaps.mp_rr_arena_empty && ball.GetOrigin().z >= -19500 )
 		{
 			thread ResetBallInBallSpawner( true )
 			break
@@ -111,9 +109,8 @@ void function SetBallCarrier( entity player )
 		file.ballCarrier = null
 
 		if( IsValid( GetBallEntity() ) )
-		{
 			SetGlobalNetEnt( "FSDM_Oddball_BallOrCarrierEntity", GetBallEntity() )
-		}
+
 		return
 	}
 
@@ -127,10 +124,10 @@ void function SetBallCarrier( entity player )
 
 void function SetupBallCarrierPlayer( entity player )
 {
-	if(IsValid(player.GetNormalWeapon( WEAPON_INVENTORY_SLOT_PRIMARY_2 )))
+	if (IsValid(player.GetNormalWeapon( WEAPON_INVENTORY_SLOT_PRIMARY_2 )))
 		player.TakeNormalWeaponByIndexNow( WEAPON_INVENTORY_SLOT_PRIMARY_2 )
 	
-	if(IsValid(player.GetOffhandWeapon( OFFHAND_MELEE )))
+	if (IsValid(player.GetOffhandWeapon( OFFHAND_MELEE )))
 		player.TakeOffhandWeapon( OFFHAND_MELEE )
 	
 	player.GiveWeapon( "mp_weapon_oddball_primary", WEAPON_INVENTORY_SLOT_PRIMARY_2, [] )

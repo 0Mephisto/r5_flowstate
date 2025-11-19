@@ -107,8 +107,8 @@ const string CHAT_MENU_BIND_COMMAND = "+scriptCommand1"
 void function ShCommsMenu_Init()
 {
 	#if SERVER
-		AddClientCommandCallbackNew( "SetSelectedHealthPickupType", ClientCommand_SetSelectedHealthPickupType )
-		AddClientCommandCallbackNew( "ClientCommand_Quip", ClientCommand_Quip )
+		AddClientCommandCallbackVoid( "SetSelectedHealthPickupType", ClientCommand_SetSelectedHealthPickupType )
+		AddClientCommandCallbackVoid( "ClientCommand_Quip", ClientCommand_Quip )
 	#endif // SERVER
 
 	#if CLIENT
@@ -1778,6 +1778,12 @@ bool function CommsMenu_CanUseMenu( entity player )
 	
 	if( StatusEffect_GetSeverity( player, eStatusEffect.camera_view) > 0 )
 		return false
+	
+	if( Playlist() == ePlaylists.fs_1v1 || Playlist() == ePlaylists.fs_vamp_1v1 || Playlist() == ePlaylists.fs_1v1_headshots_only || Playlist() == ePlaylists.fs_lgduels_1v1 )
+	{
+		if( player.GetPlayerNetInt( "FS_1v1_PlayerState" ) == e1v1State.WAITING || player.GetPlayerNetInt( "FS_1v1_PlayerState" ) == e1v1State.RESTING )
+			return false
+	}
 	
 	return true
 }

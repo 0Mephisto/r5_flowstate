@@ -67,7 +67,6 @@ function Gymmovementmap_precache() {
     PrecacheModel($"mdl/thunderdome/thunderdome_cage_wall_256x128_02.rmdl")
     PrecacheModel($"mdl/slum_city/slumcity_girdering_256x16_dirty_d.rmdl")
     PrecacheModel($"mdl/ola/sewer_staircase_96_double.rmdl")
-    file.characters = GetAllCharacters()
 }
 
 struct {
@@ -102,15 +101,15 @@ function Gymmovementmap_player_setup(entity player) {
 
     player.SetPersistentVar("gen", 0)
 
-    LocalMsg(player, "#FS_STRING_VAR", "", 9, 5.0, "Gym Map", "By: Loy Takian", "", false)
+    LocalMsg(player, "#HUB_MAP_GYM", "#FS_STRING_VAR", 9, 5.0, "", "By: Loy Takian", "" )
 
     thread
     (
         void
         function() : (player) {
             wait 3.0 
-            CharacterSelect_AssignCharacter( ToEHI( player ), file.characters[8] )
             ItemFlavor playerCharacter = LoadoutSlot_GetItemFlavor( ToEHI( player ), Loadout_CharacterClass() )
+            CharacterSelect_AssignCharacter( ToEHI( player ), playerCharacter )
             asset characterSetFile = CharacterClass_GetSetFile( playerCharacter )
             player.SetPlayerSettingsWithMods( characterSetFile, [] )
             player.TakeOffhandWeapon(OFFHAND_TACTICAL)
@@ -483,11 +482,11 @@ function Gymmovementmap_load() {
                     ent.p.isTimerActive = true
                     ent.p.startTime = floor(Time()).tointeger()
                     ent.SetVelocity(<0,0,0>)
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 1.0, "Timer Started", "", "", false)
+                    LocalMsg(ent, "#HUB_TIMER_START", "", 4, 1.0, "", "", "" )
                 } else {
                     ent.SetPersistentVar("gen", 0)
                     ent.p.isTimerActive = false
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 1.0, "Timer Stopped", "", "", false)
+                    LocalMsg(ent, "#HUB_TIMER_STOP", "", 4, 1.0, "", "", "" )
                 }
                 file.last_cp[ent] <- false
                 ent.TakeOffhandWeapon(OFFHAND_TACTICAL)
@@ -796,9 +795,9 @@ function Gymmovementmap_load() {
                     float minutes = final_time / 60
                     float seconds = final_time % 60
 
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                 } else if (file.cp_table[ent] != < 11585, -4218, 15188.11 > ) {
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
                 }
 
                 file.cp_table[ent] <-  < 11585, -4218, 15188.11 >
@@ -817,9 +816,9 @@ function Gymmovementmap_load() {
                     float minutes = final_time / 60
                     float seconds = final_time % 60
 
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                 } else if (file.cp_table[ent] != < 11585, -6455, 14504 > ) {
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
                 }
 
                 file.cp_table[ent] <-  < 11585, -6455, 14504 >
@@ -838,9 +837,9 @@ function Gymmovementmap_load() {
                     float minutes = final_time / 60
                     float seconds = final_time % 60
 
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                 } else if (file.cp_table[ent] != < 11579.7, -8989.709, 14507.71 > ) {
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
                 }
 
                 file.cp_table[ent] <-  < 11579.7, -8989.709, 14507.71 >
@@ -859,9 +858,9 @@ function Gymmovementmap_load() {
                     float minutes = final_time / 60
                     float seconds = final_time % 60
 
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                 } else if (file.cp_table[ent] != < 11585.4, -9775.609, 15074.91 > ) {
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
                 }
 
                 file.cp_table[ent] <-  < 11585.4, -9775.609, 15074.91 >
@@ -880,9 +879,9 @@ function Gymmovementmap_load() {
                     float minutes = final_time / 60
                     float seconds = final_time % 60
 
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                 } else if (file.cp_table[ent] != < 10649, -10744.01, 15700.94 > ) {
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
                 }
 
                 file.cp_table[ent] <-  < 10649, -10744.01, 15700.94 >
@@ -901,9 +900,9 @@ function Gymmovementmap_load() {
                     float minutes = final_time / 60
                     float seconds = final_time % 60
 
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                 } else if (file.cp_table[ent] != < 9669.899, -10739.55, 15696.48 > ) {
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
                 }
 
                 file.cp_table[ent] <-  < 9669.899, -10739.55, 15696.48 >
@@ -927,9 +926,9 @@ function Gymmovementmap_load() {
                     float minutes = final_time / 60
                     float seconds = final_time % 60
 
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                 } else if (file.cp_table[ent] != < 8407.857, -10738.88, 16205.85 > ) {
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
                 }
 
                 file.cp_table[ent] <-  < 8407.857, -10738.88, 16205.85 >
@@ -950,9 +949,9 @@ function Gymmovementmap_load() {
                     float minutes = final_time / 60
                     float seconds = final_time % 60
 
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                 } else if (file.cp_table[ent] != < 7796.658, -10738.98, 15537.65 > ) {
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
                 }
 
                 StatusEffect_StopAllOfType(ent, eStatusEffect.speed_boost)
@@ -977,9 +976,9 @@ function Gymmovementmap_load() {
                     float minutes = final_time / 60
                     float seconds = final_time % 60
 
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                 } else if (file.cp_table[ent] != < 6215.494, -10739.38, 15537.65 > ) {
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
                 }
 
                 ent.TakeOffhandWeapon(OFFHAND_TACTICAL)
@@ -1001,9 +1000,9 @@ function Gymmovementmap_load() {
                     float minutes = final_time / 60
                     float seconds = final_time % 60
 
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                 } else if (file.cp_table[ent] != < 5705.593, -10732.53, 15919.15 > ) {
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
                 }
 
                 ent.TakeOffhandWeapon(OFFHAND_TACTICAL)
@@ -1027,9 +1026,9 @@ function Gymmovementmap_load() {
                     float minutes = final_time / 60
                     float seconds = final_time % 60
 
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                 } else if (file.cp_table[ent] != < 3198.999, -10731.38, 15914 > ) {
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
                 }
 
                 ent.TakeOffhandWeapon(OFFHAND_TACTICAL)
@@ -1051,9 +1050,9 @@ function Gymmovementmap_load() {
                     float minutes = final_time / 60
                     float seconds = final_time % 60
 
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                 } else if (file.cp_table[ent] != < 1873.601, -10731.65, 15919.25 > ) {
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
                 }
 
                 file.cp_table[ent] <-  < 1873.601, -10731.65, 15919.25 >
@@ -1072,9 +1071,9 @@ function Gymmovementmap_load() {
                     float minutes = final_time / 60
                     float seconds = final_time % 60
 
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                 } else if (file.cp_table[ent] != < 930.1455, -10671, 16489.52 > ) {
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
                 }
 
                 file.cp_table[ent] <-  < 930.1455, -10671, 16489.52 >
@@ -1093,9 +1092,9 @@ function Gymmovementmap_load() {
                     float minutes = final_time / 60
                     float seconds = final_time % 60
 
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                 } else if (file.cp_table[ent] != < 43.999, -10675.6, 16490.31 > ) {
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
                 }
 
                 file.cp_table[ent] <-  < 43.999, -10675.6, 16490.31 >
@@ -1114,9 +1113,9 @@ function Gymmovementmap_load() {
                     float minutes = final_time / 60
                     float seconds = final_time % 60
 
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                 } else if (file.cp_table[ent] != <- 1079.401, -10675.59, 16474.21 > ) {
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
                 }
 
                 file.cp_table[ent] <-  <- 1079.401, -10675.59, 16474.21 >
@@ -1135,9 +1134,9 @@ function Gymmovementmap_load() {
                     float minutes = final_time / 60
                     float seconds = final_time % 60
 
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                 } else if (file.cp_table[ent] != <- 1622.771, -10675.76, 17095.38 > ) {
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
                 }
 
                 file.cp_table[ent] <-  <- 1622.771, -10675.76, 17095.38 >
@@ -1156,9 +1155,9 @@ function Gymmovementmap_load() {
                     float minutes = final_time / 60
                     float seconds = final_time % 60
 
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                 } else if (file.cp_table[ent] != <- 2860.37, -10675.76, 17625.18 > ) {
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
                 }
 
                 file.cp_table[ent] <-  <- 2860.37, -10675.76, 17625.18 >
@@ -1180,9 +1179,9 @@ function Gymmovementmap_load() {
                     float minutes = final_time / 60
                     float seconds = final_time % 60
 
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                 } else if (file.cp_table[ent] != <- 3587.824, -10026.32, 17530.13 > ) {
-                    LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "", false)
+                    LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
                 }
 
                 StatusEffect_StopAllOfType(ent, eStatusEffect.speed_boost)
@@ -1223,10 +1222,10 @@ function Gymmovementmap_load() {
                         float minutes = final_time / 60
                         float seconds = final_time % 60
 
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 2, 5.0, format("%d:%02d", minutes, seconds), "FINAL TIME", "", false)
+                        LocalMsg(ent, "#FS_STRING_VAR", "#HUB_FINAL_TIME", 2, 5.0, format("%d:%02d", minutes, seconds), "", "" )
                         ent.SetPersistentVar("gen", 0)
                     } else {
-                        LocalMsg(ent, "#FS_STRING_VAR", "", 2, 5.0, "YOU FINISHED!", "CONGRATULATIONS", "", false)
+                        LocalMsg(ent, "#HUB_YOU_FINISHED", "#HUB_CONGRATULATIONS", 2, 5.0, "", "", "" )
                     }
 
                     if (ent.p.isTimerActive == true) {

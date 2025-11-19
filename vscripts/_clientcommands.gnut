@@ -10,14 +10,11 @@ void function ClientCommands_Init()
 {
 	AddClientCommandCallback( "noclip", ClientCommand_noclip )
 	AddClientCommandCallback( "infinite_ammo", ClientCommand_infinite_ammo )
+	AddClientCommandCallback( "finite_ammo", ClientCommand_finite_ammo )
 	AddClientCommandCallback( "ToggleThirdPerson", ClientCommand_ToggleThirdPerson )
 	AddClientCommandCallback( "ToggleHUD", ClientCommand_ToggleHUD )
 
 	AddClientCommandCallback( "recharge", ClientCommand_recharge )
-
-	#if DEVELOPER
-	//AddClientCommandCallback( "script", ClientCommand_script )
-	#endif
 }
 
 bool function ClientCommand_noclip( entity player, array<string> args )
@@ -82,18 +79,35 @@ bool function ClientCommand_ToggleHUD( entity player, array<string> args )
 // Gives a gun infinite reloads
 bool function ClientCommand_infinite_ammo( entity player, array<string> args )
 {
-
 	if( !IsValid( player ) )
 		return false
 
 	if ( GetConVarInt( "sv_cheats" ) != 1 )
 		return false
 
-	foreach(entity weapon in GetEntArrayByClass_Expensive("weaponx")) {
-		if(weapon.HasMod( "survival_finite_ammo" )) {
+	foreach( entity weapon in GetEntArrayByClass_Expensive("weaponx") ) 
+	{
+		if( weapon.HasMod( "survival_finite_ammo" ) )
 			weapon.RemoveMod( "survival_finite_ammo" )
-		}
 	}
+	
+	return true
+}
+
+bool function ClientCommand_finite_ammo( entity player, array<string> args )
+{
+	if( !IsValid( player ) )
+		return false
+
+	if ( GetConVarInt( "sv_cheats" ) != 1 )
+		return false
+		
+	foreach( entity weapon in GetEntArrayByClass_Expensive("weaponx") ) 
+	{
+		if( !weapon.HasMod( "survival_finite_ammo" ) )
+			weapon.AddMod( "survival_finite_ammo" )
+	}
+	
 	return true
 }
 
@@ -117,38 +131,3 @@ bool function ClientCommand_recharge( entity player, array<string> args )
 	
 	return true
 }
-
-#if DEVELOPER
-bool function ClientCommand_script( entity player, array<string> args )
-{
-	if( !IsValid( player ) )
-		return true
-	
-	if( GetConVarInt( "sv_cheats" ) != 1 )
-		return true
-
-	string func = ""
-
-	for ( int i = 0; i < args.len(); i++ )
-	{
-		func = (func + args[i])
-
-		if(args[i] == "'" || ((i+1) < args.len() && args[i+1] == "'")) {
-			// don't add spaces inside strings
-		} else {
-			func = (func + " ")
-		}
-	}
-	func = StringReplace( func, "'", "\"" )
-
-	try {
-		compilestring( "return "+func+"" )()
-	}
-	catch( error ) {
-		print("[ SCRIPT CMD ERROR ]:\n")
-		print("entity: " + player + "\n")
-		print("error:  " + error + "\n\n")
-	}
-	return true
-}
-#endif

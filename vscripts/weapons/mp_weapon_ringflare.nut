@@ -1,5 +1,3 @@
-//Made by @CafeFPS
-
 global function MpWeaponRingFlare_Init
 // global function MpWeaponGrenadeDefensiveBombardment_Init
 global function OnProjectileCollision_ringflare
@@ -369,7 +367,7 @@ void function DeathFieldDamage( entity circle, entity owner)
 			if ( playerDist < currentRadius )
 			{
 				int damagetodeal = int( FRAC_OF_HEALTH_DAMAGE * float( player.GetMaxHealth() ) )
-				Remote_CallFunction_Replay( player, "ServerCallback_PlayerTookDamage", 0, 0, 0, 0, DF_BYPASS_SHIELD | DF_DOOMED_HEALTH_LOSS, eDamageSourceId.deathField, null )
+				Remote_CallFunction_Replay( player, "ServerCallback_PlayerTookDamage", 0, <0, 0, 0>, DF_BYPASS_SHIELD | DF_DOOMED_HEALTH_LOSS, eDamageSourceId.deathField, 0 )
 				player.TakeDamage( damagetodeal, owner, null, { damageSourceId = eDamageSourceId.deathField } )
 				printt( " player took damage", damagetodeal)
 			}

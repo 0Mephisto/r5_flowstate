@@ -1,9 +1,3 @@
-//FLOWSTATE PROPHUNT
-//Made by @CafeFPS (@CafeFPS)
-
-// AyeZee#6969 -- Ctf voting phase to work off
-// _RitzKing#1715 -- Gamemode Icon
-// everyone else -- advice
 untyped
 
 global function ClGamemodeProphunt_Init
@@ -49,16 +43,6 @@ struct {
 
 void function ClGamemodeProphunt_Init()
 {
-	SetConVarInt("cl_quota_stringCmdsPerSecond", 100)
-	//I don't want these things in user screen even if they launch in debug
-	SetConVarBool( "cl_showpos", false )
-	SetConVarBool( "cl_showfps", false )
-	SetConVarBool( "cl_showgpustats", false )
-	SetConVarBool( "cl_showsimstats", false )
-	SetConVarBool( "host_speeds", false )
-	SetConVarBool( "con_drawnotify", false )
-	SetConVarBool( "enable_debug_overlays", false )
-	
 	RegisterSignal("ChallengeStartRemoveCameras")
 	RegisterSignal("ChangeCameraToSelectedLocation")
 	RegisterSignal("PROPHUNT_ShutdownWhistleAndRoundTimer")

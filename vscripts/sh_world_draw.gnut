@@ -298,24 +298,16 @@ int function WorldDrawAsset_AssetRefToID( string ref )
 	
 	bool function ClientCallback_VideoPlaybackFinished( entity player, array<string> args )
 	{
-		// if( !CheckRate( player, true ) ) //set to true for dev testing (display alert for ratelimit)
-			// return false
+		//Todo: check for is playing video
 		
-		if( args.len() < 1 )
+		if( args.len() == 0 )
 			return false
 			
-		string cmdgroup = args[0]
-		
-		if( !IsNumeric( cmdgroup, 0, MAX_VIDEO_CHANNELS ) )
-			return false
-		
-		int group = int( cmdgroup )	
-		string signal = "VideoFinishedPlaying_" + group
+		string signal = format( "VideoFinishedPlaying_%s", args[ 0 ] )
 		
 		if( BannerAssets_DoesSignalExist( signal ) )
 			player.Signal( signal )
-		
-		//player.Signal( "VideoFinishedPlaying", { group = group } )
+
 		return true
 	}
 	
@@ -491,6 +483,8 @@ int function WorldDrawAsset_AssetRefToID( string ref )
 			return
 		}
 				
+		// vector origin = < oX, oY, oZ >
+		// vector angles = < aX, aY, aZ >
 		
 		bool bHasID 		= remoteAssetRefID > -1
 		string assetRef 	= file.worldAssetRef
@@ -1091,7 +1085,7 @@ int function WorldDrawAsset_AssetRefToID( string ref )
 		if( channel == -1 )
 		{
 			#if DEVELOPER && DEBUG_WORLD_DRAW
-				mAssert( false, "channel was -1 for assetId: " + assetId + " group: " + groupId )
+				mAssert( false, "channel was -1 for assetId: \"%d\" group:\"\"", assetId, groupId )
 			#endif
 			
 			return false

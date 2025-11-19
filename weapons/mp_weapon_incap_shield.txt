@@ -62,10 +62,10 @@ WeaponData
 
     // Behavior
     "fire_rate"   									"1"
-    "holster_time"									"0.15"
-    "deploy_time" 									"0.25"
-    "lower_time"  									"0.25"
-    "raise_time"  									"0.25"
+    "holster_time"									"0.150000"
+    "deploy_time" 									"0.250000"
+    "lower_time"  									"0.250000"
+    "raise_time"  									"0.250000"
     //"vortex_refire_behavior"                        "absorb"
     "allow_empty_fire"								"0"
     "allow_empty_click"   							"0"
@@ -81,8 +81,8 @@ WeaponData
 
     //Charge Settings
     "charge_time" 									"-1"
-    "charge_cooldown_time"							"1.0"
-    "charge_cooldown_delay"   						"0.1"
+    "charge_cooldown_time"							"1.000000"
+    "charge_cooldown_delay"   						"0.100000"
     "charge_allow_melee"                            "0"
 
     "charge_sound_1p"								""
@@ -110,7 +110,7 @@ WeaponData
     // WeaponED Unhandled Key/Values and custom script Key/Values
     "sound_dryfire"   								"titan_dryfire"
     "npc_reload_enabled"  							"0"
-    "sprintcycle_time"								"0.55"
+    "sprintcycle_time"								"0.550000"
     "arc_switch_activator"							"1"
 
     // Bodygroups:

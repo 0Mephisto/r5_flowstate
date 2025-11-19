@@ -24,13 +24,17 @@ void function Flowstate_LgDuels1v1_Init()
 {
 	if( MapName() == eMaps.mp_rr_canyonlands_staging && Playlist() == ePlaylists.fs_lgduels_1v1 )
 	{
-		AddCallback_FlowstateSpawnsSettings( InitPreSpawnSystemSettings)	
-		SetCallback_FlowstateSpawnsOffset( LGDuels_Spawns_Offset ) //used to move all spawns by an offset
-		AddCallback_FlowstateSpawnsPostInit( Init_LGDuels_Spawns )
+		SpawnLGProps()
+		SpawnLGProps2()
+		
+		SpawnSystem_UseNavMeshCorrection( false )
+		AddCallback_SpawnsSettings( InitPreSpawnSystemSettings )	
+		//SpawnSystem_SetOffset( NewLocPair( LG_DUELS_OFFSET_ORIGIN, ZERO_VECTOR ) ) //used to move all spawns by an offset  //edit:  Spawns now have correct coordinates in pak.
+		AddCallback_SpawnsPostInit( Init_LGDuels_Spawns )
 	}
 	else
 	{
-		AddCallback_FlowstateSpawnsSettings
+		AddCallback_SpawnsSettings
 		(
 			void function()
 			{
@@ -146,7 +150,7 @@ void function LgDuelLoadSettings( entity player, string data )
 	
 	foreach( str in values )
 	{
-		if( !IsNumeric( str ) )
+		if( !IsStringNumeric( str ) )
 		{
 			#if DEVELOPER
 				sqerror( "Data for lgduel setting not numeric: " + str + ";Data:" + data )
@@ -213,20 +217,12 @@ bool function ClientCommand_mkos_LGDuel_settings( entity player, array<string> a
 }
 
 LocPairData function Init_LGDuels_Spawns()
-{
-	SpawnLGProps()
-	SpawnLGProps2()
-				
+{		
 	LocPair panels = NewLocPair( < 3480.92, -9218.92, -10252 >, < 360, 270, 0 > )
 	
 	Gamemode1v1_SetWaitingRoomRadius( 2400 )
 	
 	return SpawnSystem_CreateLocPairObject( [], false, null, panels )
-}
-
-LocPair function LGDuels_Spawns_Offset()
-{
-	return NewLocPair( LG_DUELS_OFFSET_ORIGIN, ZERO_VECTOR )
 }
 
 string function IntToSound( string num )
@@ -277,7 +273,7 @@ bool function ClientCommand_mkos_LGDuel_hitsound( entity player, array<string> a
 			return true
 		}				
 					
-		if( args.len() > 0 && !IsNumeric( param, 0, 16 ) )
+		if( args.len() > 0 && !IsStringNumeric( param, 0, 16 ) )
 		{
 			LocalMsg( player, "#FS_FAILED", "#FS_HitsoundNumFail" )
 			return true

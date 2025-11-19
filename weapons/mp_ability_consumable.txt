@@ -47,9 +47,9 @@ WeaponData
 	"ammo_suck_behavior"							"offhand_weapons"
 
     // Charge settings
-    "charge_time" 									"3.0"
-    "charge_cooldown_time"							"1.0"
-    "charge_cooldown_delay"   						"0.0"
+    "charge_time" 									"3.000000"
+    "charge_cooldown_time"							"1.000000"
+    "charge_cooldown_delay"   						"0.000000"
     "charge_end_forces_fire"  						"1"
     "charge_require_input"							"0"
     "charge_remain_full_when_fired"					"1"
@@ -74,7 +74,7 @@ WeaponData
 	"offhand_blocks_sprint"							"1"
 
 	"fire_rate"   								    "100"
-	"fire_anim_rate"								"1.0"
+	"fire_anim_rate"								"1.000000"
 
     "play_offhand_charging_anim"                    "1"
     "play_offhand_fire_anim"                        "1"
@@ -82,7 +82,7 @@ WeaponData
 
 	//"deploy_time" 									"0.25"
 	//"lower_time"  									"0.25"
-	"raise_time"  									"1.0"
+	"raise_time"  									"1.000000"
 	"allow_empty_fire"								"1"
 	"reload_enabled"								"0"
 	"empty_reload_only"   							"0"
@@ -100,33 +100,33 @@ WeaponData
 	"ammo_per_shot"									"1"
 	"ammo_stockpile_max"							"1"
 	"regen_ammo_refill_rate"						"0"
-	"regen_ammo_refill_start_delay"					"0.0"
+	"regen_ammo_refill_start_delay"					"0.000000"
 
 	"cooldown_type"									"ammo_instant"	// hud display
 	"activitymodifier"								"mp_ability_consumable"
 	// Bob
-	"bob_cycle_time"  						"0.4"
-	"bob_vert_dist"   						"0.1" //"0.19"
-	"bob_horz_dist"   						"0.1"
+	"bob_cycle_time"  						"0.400000"
+	"bob_vert_dist"   						"0.100000"
+	"bob_horz_dist"   						"0.100000"
 	"bob_max_speed"   						"100" //"150"
-	"bob_pitch"   							"0.75"
-	"bob_yaw" 								"-1.7"
-	"bob_roll"								"1.2"
+	"bob_pitch"   							"0.750000"
+	"bob_yaw" 								"-1.700000"
+	"bob_roll"								"1.200000"
 	// Sway - General
 	"sway_rotate_attach"                       "SWAY_ROTATE"
-	"sway_min_x"                               "-0.5"
-	"sway_min_y"                               "-0.5"
-	"sway_min_z"                               "-0.6"
-	"sway_max_x"                               "0.5"
-	"sway_max_y"                               "0.5"
-	"sway_max_z"                               "0.6"
+	"sway_min_x"                               "-0.500000"
+	"sway_min_y"                               "-0.500000"
+	"sway_min_z"                               "-0.600000"
+	"sway_max_x"                               "0.500000"
+	"sway_max_y"                               "0.500000"
+	"sway_max_z"                               "0.600000"
 	"sway_min_pitch"                           "-3"
-	"sway_min_yaw"                             "-2.5"
+	"sway_min_yaw"                             "-2.500000"
 	"sway_min_roll"                            "-4"
 	"sway_max_pitch"                           "3"
-	"sway_max_yaw"                             "2.5"
+	"sway_max_yaw"                             "2.500000"
 	"sway_max_roll"                            "4"
-	"sway_translate_gain"                      "2.5"
+	"sway_translate_gain"                      "2.500000"
 	"sway_rotate_gain"                         "7"
 	
 	"viewmodel_offset_hip" 					"-4 2 -1"
@@ -254,8 +254,8 @@ WeaponData
 		
 		snd_bomb
 		{
-            "viewmodel" 							"mdl/Weapons/bomb/ptpov_bomb.rmdl"
-            "playermodel" 							"mdl/Weapons/bomb/w_bomb.rmdl"
+            "viewmodel" 							"mdl/weapons/shield_battery/ptpov_shield_battery_held.rmdl"//"mdl/Weapons/bomb/ptpov_bomb.rmdl"
+            "playermodel" 							"mdl/Weapons/shield_battery/w_shield_battery.rmdl"//"mdl/Weapons/bomb/w_bomb.rmdl"
             "printname"                             "Planting Bomb"
             "charge_time"                           "4.0"
 			"raise_time"							"1.8"

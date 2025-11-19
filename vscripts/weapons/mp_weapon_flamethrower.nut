@@ -1,5 +1,3 @@
-//Made by @CafeFPS
-
 global function MpWeaponFlameThrower_Init
 global function OnWeaponPrimaryAttack_weapon_FlameThrower
 global function OnProjectileCollision_weapon_FlameThrower

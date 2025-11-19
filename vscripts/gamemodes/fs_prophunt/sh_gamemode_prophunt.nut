@@ -1,10 +1,3 @@
-//FLOWSTATE PROPHUNT
-//Made by @CafeFPS (@CafeFPS)
-
-// AyeZee#6969 -- Ctf voting phase to work off
-// _RitzKing#1715 -- Gamemode Icon
-// everyone else -- advice
-
 global function GamemodeProphuntShared_Init
 global function RegisterLocationPROPHUNT
 global function GetCenterOfCircle

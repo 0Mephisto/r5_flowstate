@@ -31,21 +31,21 @@
 
 	// Behavior - Firing
 	//
-	"fire_rate"                                "4.2"
+	"fire_rate"                                "4.100000"
 	"impulse_force"                            "750"
 	"is_semi_auto"				                "1"
 
 	// Behavior - Animation
-	"deployfirst_time"                          "1.42"
-	"deploy_time" 								"0.6"
-    "holster_time"								"0.5"
-	"raise_time"  								"0.4"
-	"lower_time"  								"0.35"
+	"deployfirst_time"                          "1.420000"
+	"deploy_time" 								"0.600000"
+    "holster_time"								"0.500000"
+	"raise_time"  								"0.400000"
+	"lower_time"  								"0.350000"
 
 	// Behavior - Zoom/ADS
 	// NOTE: G7 handling is tuned like an AR
-	"zoom_time_in"							   "0.32"
-	"zoom_time_out"   						   "0.25"
+	"zoom_time_in"							   "0.320000"
+	"zoom_time_out"   						   "0.250000"
 
 	// Damage
 	//
@@ -63,22 +63,22 @@
                                                    
                                                   
      
-	"damage_near_value"                        "33"
-	"damage_far_value"                         "33"
-	"damage_very_far_value"                    "33"
-	"damage_near_value_titanarmor"             "33"
-	"damage_far_value_titanarmor"              "33"
-	"damage_very_far_value_titanarmor"         "33"
+	"damage_near_value"                        "36"
+	"damage_far_value"                         "36"
+	"damage_very_far_value"                    "36"
+	"damage_near_value_titanarmor"             "36"
+	"damage_far_value_titanarmor"              "36"
+	"damage_very_far_value_titanarmor"         "36"
       
 
-    "damage_leg_scale"                         "0.75"
+    "damage_leg_scale"                         "0.750000"
 
 
 	// Viewmodel
 	"viewmodel_offset_ads"                     "0 -1.6 0"
 
 	// Projectile
-	"projectile_launch_speed"                  "30000"  //"31500"
+	"projectile_launch_speed"                  "29000"
 
     //"bolt_hitsize_grow1_time"				    "0.123"  //~100m
     //"bolt_hitsize_grow1_size"				    "0.33"
@@ -88,7 +88,7 @@
     //"bolt_hitsize_growfinal_size"               "2.0"
 
     "pass_through_depth"							"0"     //from AR
-    "pass_through_damage_preserved_scale"			"0.5"   //from AR
+    "pass_through_damage_preserved_scale"			"0.500000"
 
 	// Ammo
 	//
@@ -96,7 +96,7 @@
 
 	"ammo_min_to_fire"                         "1"
 	"reload_enabled"                           "1"
-	"low_ammo_fraction"                        "0.3"
+	"low_ammo_fraction"                        "0.300000"
                 
                                                    
                                                     
@@ -111,13 +111,13 @@
     "uses_ammo_pool"                           "1"
     "ammo_pool_type"                           "bullet"
     
-    "reload_time"                              "2.4"
-	"reload_time_late1"                        "1.26"
-	"reload_time_late2"                        "0.64"
-	"reloadempty_time"                         "3.0"
-	"reloadempty_time_late1"                   "1.82"
-	"reloadempty_time_late2"                   "1.17"
-	"reloadempty_time_late3"                   "0.96"
+    "reload_time"                              "2.400000"
+	"reload_time_late1"                        "1.260000"
+	"reload_time_late2"                        "0.640000"
+	"reloadempty_time"                         "3.000000"
+	"reloadempty_time_late1"                   "1.820000"
+	"reloadempty_time_late2"                   "1.170000"
+	"reloadempty_time_late3"                   "0.960000"
 	"allow_empty_click"                        "1"
 	"empty_reload_only"                        "0"
 
@@ -129,57 +129,57 @@
     "viewkick_spring" 						    "g2_vkp"
     "viewkick_spring_hot"                       "g2_vkp_hot"
 
-    "viewkick_spring_heatpershot"				"1.0"
-    "viewkick_spring_cooldown_holdtime"         "0.18"
-    "viewkick_spring_cooldown_fadetime"         "0.21"
+    "viewkick_spring_heatpershot"				"1.000000"
+    "viewkick_spring_cooldown_holdtime"         "0.180000"
+    "viewkick_spring_cooldown_fadetime"         "0.210000"
 
     "viewmodel_spring_jolt"                     "g2_viewmodel_jolt"
-    "viewmodel_jolt_scale"                      "1.0"
-    "viewmodel_jolt_backwardPerShot"            "-0.4"
+    "viewmodel_jolt_scale"                      "1.000000"
+    "viewmodel_jolt_backwardPerShot"            "-0.400000"
     "viewmodel_jolt_roll"                       "0 3.0 0.0"
     "viewmodel_jolt_side"                       "0 0.03 0"
 
 	// Viewkick - Pitch
-	"viewkick_pitch_base"                      "1.0"
-    "viewkick_pitch_random"                    "1.0"
-	"viewkick_pitch_softScale"                 "2.4"
-    "viewkick_pitch_hardScale"                 "0.3"
+	"viewkick_pitch_base"                      "1.000000"
+    "viewkick_pitch_random"                    "1.000000"
+	"viewkick_pitch_softScale"                 "2.400000"
+    "viewkick_pitch_hardScale"                 "0.300000"
 
 	// Viewkick - Yaw
-	"viewkick_yaw_base"                        "1.0"
-	"viewkick_yaw_random"                      "1.0"
-	"viewkick_yaw_softScale"                   "1.6"
-	"viewkick_yaw_hardScale"                   "1.0"
+	"viewkick_yaw_base"                        "1.000000"
+	"viewkick_yaw_random"                      "1.000000"
+	"viewkick_yaw_softScale"                   "1.600000"
+	"viewkick_yaw_hardScale"                   "1.000000"
 
 	// Viewkick - Roll
-	"viewkick_roll_base"  	                   "2.0"
-    "viewkick_roll_randomMin"                  "0.0"
-    "viewkick_roll_randomMax"                  "0.0"
-    "viewkick_roll_softScale"                  "1.1"
-    "viewkick_roll_hardScale"                  "0.3"
+	"viewkick_roll_base"  	                   "2.000000"
+    "viewkick_roll_randomMin"                  "0.000000"
+    "viewkick_roll_randomMax"                  "0.000000"
+    "viewkick_roll_softScale"                  "1.100000"
+    "viewkick_roll_hardScale"                  "0.300000"
 
 	// Viewkick - Fractions
-	"viewkick_hipfire_weaponFraction"          "0.2"
-	"viewkick_hipfire_weaponFraction_vmScale"  "0.8"
-	"viewkick_ads_weaponFraction"              "0.0"
-	"viewkick_ads_weaponFraction_vmScale"      "1.0"
+	"viewkick_hipfire_weaponFraction"          "0.200000"
+	"viewkick_hipfire_weaponFraction_vmScale"  "0.800000"
+	"viewkick_ads_weaponFraction"              "0.000000"
+	"viewkick_ads_weaponFraction_vmScale"      "1.000000"
 
 	// Viewkick - Scale
-	"viewkick_scale_firstshot_hipfire"         "1.0"
-	"viewkick_scale_firstshot_ads"             "1.0"
-	"viewkick_scale_min_ads"                   "1.0"
-	"viewkick_scale_max_ads"                   "1.0"
-	"viewkick_scale_min_hipfire"               "1.0"
-	"viewkick_scale_max_hipfire"               "1.0"
-	"viewkick_scale_valueDecayDelay"           "0.275"
+	"viewkick_scale_firstshot_hipfire"         "1.000000"
+	"viewkick_scale_firstshot_ads"             "1.000000"
+	"viewkick_scale_min_ads"                   "1.000000"
+	"viewkick_scale_max_ads"                   "1.000000"
+	"viewkick_scale_min_hipfire"               "1.000000"
+	"viewkick_scale_max_hipfire"               "1.000000"
+	"viewkick_scale_valueDecayDelay"           "0.275000"
     "viewkick_scale_valueDecayRate"            "35"
 
 	// Viewkick - Movement
-	"viewkick_air_scale_ads"                   "1.0"
+	"viewkick_air_scale_ads"                   "1.000000"
 
 	// Spread
 	"spread_decay_rate"                        "6"
-    "spread_decay_delay"                       "0.24"
+    "spread_decay_delay"                       "0.240000"
 
 	// Sound - Firing
 	//
@@ -212,8 +212,8 @@
 	//
 	"npc_min_burst"                            "1"
 	"npc_max_burst"                            "1"
-	"npc_rest_time_between_bursts_min"         "0.3"
-	"npc_rest_time_between_bursts_max"         "0.5"
+	"npc_rest_time_between_bursts_min"         "0.300000"
+	"npc_rest_time_between_bursts_max"         "0.500000"
 	"npc_max_range"                            "3000"
 
 	// NPC - Damage
@@ -227,17 +227,17 @@
 	"npc_max_engage_range_heavy_armor"         "3000"
 
 	// NPC - Proficiency
-	"proficiency_poor_spreadscale"             "4.5"
-	"proficiency_average_spreadscale"          "3.2"
-	"proficiency_good_spreadscale"             "2.8"
-	"proficiency_very_good_spreadscale"        "2.2"
+	"proficiency_poor_spreadscale"             "4.500000"
+	"proficiency_average_spreadscale"          "3.200000"
+	"proficiency_good_spreadscale"             "2.800000"
+	"proficiency_very_good_spreadscale"        "2.200000"
 
 	// Depth of Field
-	"dof_zoom_nearDepthStart"                  "4.0"
-	"dof_zoom_nearDepthEnd"                    "5.4"
-	"dof_zoom_focusArea_horizontal"            "0.027"
-	"dof_zoom_focusArea_top"                   "0.07"
-	"dof_zoom_focusArea_bottom"                "-0.012"
+	"dof_zoom_nearDepthStart"                  "4.000000"
+	"dof_zoom_nearDepthEnd"                    "5.400000"
+	"dof_zoom_focusArea_horizontal"            "0.027000"
+	"dof_zoom_focusArea_top"                   "0.070000"
+	"dof_zoom_focusArea_bottom"                "-0.012000"
 
 	// FX
 	"fx_muzzle_flash_attach_scoped"            "muzzle_flash"
@@ -261,6 +261,13 @@
 	"clip_bodygroup_show_for_milestone_2"      "1"
 	"clip_bodygroup_show_for_milestone_3"      "1"
 
+
+	"headshot_distance"	"17716"
+	"damage_headshot_scale"	"1.450000"
+	"damage_shield_scale"	"1"
+	"damage_near_distance"	"1000"
+	"damage_far_distance"	"2500"
+	"damage_very_far_distance"	"5000"
 	"Mods"
 	{
 	    gold
@@ -276,13 +283,6 @@
 			"ammo_no_remove_from_stockpile"  "0"
 			"uses_ammo_pool"                 "1"
 			"low_ammo_fraction"              "0.3"
-		}
-
-		fullauto_rounds
-		{
-			"fire_rate"                                "5"
-			"is_semi_auto"				                "0"
-			"viewkick_pitch_base"                        "2.0"
 		}
 		
 		hopup_double_tap
@@ -517,17 +517,15 @@
             "reloadempty_time_late4"			"*0.9"
             "reloadempty_time_late5"			"*0.9"
         }
-		
-		// Used to disable the default ammo counter, and enable the reactive ammo counter for the reactive skin
-		// This is called from the Bakery Reactive setting "Weapon Mods to Add" for each reactive skin.
-		"g7_reactive_ammo_counter_mod" {
-			// Disable the default ammo counter
-			"ui2_enable"						"0"
-			
-			// Enable the reactive ammo counter
-			"ui3_enable"						"1"
+	
+		infinite_ammo
+		{
+			"ammo_min_to_fire"                      "0"
+			"ammo_no_remove_from_clip"              "1"
+			"ammo_no_remove_from_stockpile"         "1"
+			"low_ammo_fraction"                     "0.0"
 		}
-	}
+}
 
 	// RUI
 	"ui1_enable"                               "1"

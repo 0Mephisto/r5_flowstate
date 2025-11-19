@@ -1,4 +1,3 @@
-//Made by ColombiaFPS
 #base "_base_handgun.txt"
 #base "_base_mags_heavy.txt"
 

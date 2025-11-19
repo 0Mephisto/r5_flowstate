@@ -18,8 +18,6 @@ struct
 
 void function OpenFRChallengesSettingsWpnSelector()
 {
-	Hud_SetText( Hud_GetChild( file.menu, "Title" ), Gamemode() == eGamemodes.WINTEREXPRESS ? "" : "FLOWSTATE AIM TRAINER" )
-	Hud_SetText( Hud_GetChild( file.menu, "MadeBy" ), Gamemode() == eGamemodes.WINTEREXPRESS ? "R5R Winter Express implemented by @CafeFPS %$rui/flowstate_custom/colombia_flag_papa%" : "v1.31 | %$rui/flowstate_custom/colombia_flag_papa% Made in Colombia by @CafeFPS" )
 	EmitUISound( "UI_InGame_Inventory_Open" )
 	AdvanceMenu( file.menu )
 	TabData tabData = GetTabDataForPanel( file.menu )
@@ -214,6 +212,9 @@ string function GetWeaponNameForUI(string weapon)
         case "mp_weapon_doubletake":
             weaponname = "Triple Take"
             break
+		case "mp_weapon_sentinel":
+            weaponname = "Sentinel"
+            break
         case "mp_weapon_defender":
             weaponname = "Charge Rifle"
             break
@@ -222,9 +223,6 @@ string function GetWeaponNameForUI(string weapon)
 			break
 		case "mp_weapon_volt_smg":
 			weaponname = "Volt"
-			break
-		case "mp_weapon_car":
-			weaponname = "Car"
 			break
 		case "mp_weapon_lightninggun":
 			weaponname = "Hitscan"

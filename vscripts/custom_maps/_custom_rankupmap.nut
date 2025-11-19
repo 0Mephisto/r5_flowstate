@@ -3,6 +3,7 @@ global function rankupmap_init
 
 
 void function rankupmap_precache() {
+    PrecacheModel( $"mdl/vistas/desertlands_se.rmdl" )
     PrecacheModel( $"mdl/thunderdome/thunderdome_cage_ceiling_256x256_06.rmdl" )
     PrecacheModel( $"mdl/thunderdome/thunderdome_cage_wall_128x352_04.rmdl" )
     PrecacheModel( $"mdl/signs/street_sign_arrow.rmdl" )
@@ -169,6 +170,9 @@ bool function hub_command(entity user, array < string > args) {
 
 void function rankupmap_load() {
     entity prop
+    prop = MapEditor_CreateProp( $"mdl/vistas/desertlands_se.rmdl", < 170.7841, 24975.25, 53977.13 >, < 0, 39.2344, 0 >, true, 18000, -1, 3 )
+    prop = MapEditor_CreateProp( $"mdl/vistas/desertlands_se.rmdl", < 1292.784, -29904.75, 31778.13 >, < 0, 39.2344, 0 >, true, 18000, -1, 40 )
+    prop = MapEditor_CreateProp( $"mdl/vistas/desertlands_se.rmdl", < 2499, 38035, 39085 >, < 0, 39.2344, 0 >, true, 18000, -1, 15 )
     prop = MapEditor_CreateProp( $"mdl/ola/sewer_grate_02.rmdl", < -713.2, -15372.5, 46237.9 >, < -90, 86.67, 0 >, true, 50000, -1, 1 )
     prop = MapEditor_CreateProp( $"mdl/desertlands/wall_city_barred_concrete_192_01.rmdl", < -4172.549, -50086.5, 41888.7 >, < 0, -75.199, 0 >, false, 15000, -1, 1 )
     prop.Highlight_SetFunctions(0, 133, false, 136, 1, 2, false); prop.Highlight_SetParam(0, 0, < 1, 0, 0 > ); prop.kv.solid = 3

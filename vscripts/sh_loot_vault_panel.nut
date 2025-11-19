@@ -127,7 +127,7 @@ void function EntitiesDidLoad()
 {
 	foreach( panelData in file.vaultControlPanels )
 	{	
-		if( MapName() == eMaps.mp_rr_olympus_mu1 && panelData.panel.GetScriptName() == SHIP_VAULT_PANEL_SCRIPTNAME )
+		if( panelData.panel.GetScriptName() == SHIP_VAULT_PANEL_SCRIPTNAME )
 		{
 			panelData.vaultDoors.append( GetEntByScriptName( SHIP_VAULT_DOOR_SCRIPTNAME ) )
 			continue
@@ -335,13 +335,13 @@ string function VaultPanel_TextOverride( entity panel )
 {
 	//	if ( !GetLocalViewPlayer().GetPlayerNetBool( "hasDataKnife" ) )
 	
-	if( MapName() == eMaps.mp_rr_olympus_mu1 )
+	/*if( MapName() == eMaps.mp_rr_olympus_mu1 )
 	{
 		if ( !VaultPanel_HasPlayerDataKnife(GetLocalViewPlayer()) )
 			return "#HINT_BRIDGE_NEED"
 
 		return "#HINT_BRIDGE_USE"
-	}
+	}*/
 
 	if ( !VaultPanel_HasPlayerDataKnife(GetLocalViewPlayer()) )
 		return "#HINT_VAULT_NEED"

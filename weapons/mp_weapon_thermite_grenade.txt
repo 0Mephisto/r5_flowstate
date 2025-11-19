@@ -85,29 +85,29 @@ WeaponData
 	"explosion_shake_radius"						"500"
 	"explosion_shake_amplitude"						"60"
 	"explosion_shake_frequency"						"45"
-	"explosion_shake_duration"						"0.75"
+	"explosion_shake_duration"						"0.750000"
 
 
 	// ----- Custom flame wall settings for thermite grenade (used by script)
 
-	"burn_segment_radius" 					"40.0"
-	"burn_segment_height" 					"48.0"
+	"burn_segment_radius" 					"40.000000"
+	"burn_segment_height" 					"48.000000"
 	"burn_segments"							"4" 	// # of segments on either side of the center
-	"burn_segment_spacing_dist"				"80.0" 	// spacing between segments
+	"burn_segment_spacing_dist"				"80.000000"
 
 	"sound_burn_segment_start" 				"thermitegrenade_flamewall_flame_burn_front"
 	"sound_burn_segment_middle" 			"thermitegrenade_flamewall_flame_burn_middle"
 	"sound_burn_segment_end" 				"thermitegrenade_flamewall_flame_burn_end"
 
-	"preburn_duration" 						"0.5"
-	"burn_duration" 						"8.0"
+	"preburn_duration" 						"0.500000"
+	"burn_duration" 						"8.000000"
 
 	// players that touch/ stay in the flames get tagged with a damage stack that is delivered over time
 	"burn_damage" 							"25"  	// total damage per stack
-	"burn_time" 							"2.8"  	// time it takes to deliver the damage
+	"burn_time" 							"2.800000"
 	"burn_stacks_max" 						"4"  	// max active stacks of burn dsdamage per target
-	"burn_stack_debounce" 					"0.7" 	// wait this long before trying to apply another stack
-	"burn_tick_rate" 						"1.2"  	// how often we deliver part of the damage
+	"burn_stack_debounce" 					"0.700000"
+	"burn_tick_rate" 						"1.200000"
 
 	"sound_burn_damage_tick_1p" 			"flesh_fire_damage_1p"
 
@@ -119,15 +119,15 @@ WeaponData
 		"fire_mode"   									"automatic"
 		"is_semi_auto"									"1"
 		"ammo_display"									"bar"
-		"ammo_stockpile_max"							"100"
+		"ammo_stockpile_max"							"0"
 		"ammo_clip_size"   								"100"
 		"ammo_default_total"							"100"
 		"ammo_per_shot"									"100"
 		"ammo_min_to_fire"								"100"
 
 		// Regen Ammo
-		"regen_ammo_refill_rate"						"4.5"
-		"regen_ammo_refill_start_delay"					"0.0"
+		"regen_ammo_refill_rate"						"4.500000"
+		"regen_ammo_refill_start_delay"					"0.000000"
 
 		"damage_near_distance"							"1000"
 		"damage_far_distance"							"3000"

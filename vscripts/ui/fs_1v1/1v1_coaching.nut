@@ -1,5 +1,3 @@
-//Made by @CafeFPS
-
 global function InitCoachingMenu
 
 global function Init_CoachingRecordingsList
@@ -101,6 +99,13 @@ void function UI_Open1v1CoachingMenu()
 
 		Hud_SetVisible( file.buttonStartNewText, false )
 		Hud_SetVisible( file.buttonCloseText, false )
+	} else
+	{
+		Hud_SetVisible( file.buttonStartNew, true )
+		Hud_SetVisible( file.buttonClose, true )
+
+		Hud_SetVisible( file.buttonStartNewText, true )
+		Hud_SetVisible( file.buttonCloseText, true )
 	}
 	
 	if( file.coachingRecordingList.len() == 0 )
@@ -125,7 +130,14 @@ void function PopulateRecordingsList()
 		SetButtonAndTextVisible( i, true )
 		
 		DisplayTime dt = SecondsToDHMS( int( file.coachingRecordingList[i].duration ) )
-		Hud_SetText( Hud_GetChild( file.contentPanel, "Text" + i ), ( i + 1 ).tostring() + ". " + EHI_GetName( file.coachingRecordingList[i].winnerHandle ) + " Win - Duration: " + format( "%.2d:%.2d", dt.minutes, dt.seconds ) )
+		string winnerName
+		try{
+			winnerName = EHI_GetName( file.coachingRecordingList[i].winnerHandle )
+		}catch(e420)
+		{
+			winnerName = "NoName"
+		}
+		Hud_SetText( Hud_GetChild( file.contentPanel, "Text" + i ), ( i + 1 ).tostring() + ". " + winnerName + " Win - Duration: " + format( "%.2d:%.2d", dt.minutes, dt.seconds ) )
 	}
 
 	for( int i = file.coachingRecordingList.len(); i < 50 ; i++ )
@@ -184,6 +196,8 @@ void function CoachingMenuOnNavBack()
 
 void function ClearRecordings()
 {
+	printw( "ClearRecordings coaching" )
+	
 	file.coachingRecordingList.clear()
 }
 

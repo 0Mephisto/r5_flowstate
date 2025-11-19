@@ -1,6 +1,3 @@
-// Reimplemented by @CafeFPS (@CafeFPS)
-// everyone else -- advice
-
 #base "_base_ability_tactical.txt"
 
 WeaponData
@@ -102,13 +99,13 @@ WeaponData
 	"explosion_shake_radius"						"0"
 	"explosion_shake_amplitude"						"0"
 	"explosion_shake_frequency"						"0"
-	"explosion_shake_duration"						"0.0"
+	"explosion_shake_duration"						"0.000000"
 
 	"show_grenade_indicator"						"0"
 
 	// Behavior
-	"fire_rate"   									"5.0"
-	"fire_duration"									"0.0"
+	"fire_rate"   									"5.000000"
+	"fire_duration"									"0.000000"
 	//"deploy_time" 									"0.0"
 	//"lower_time"  									"0.0"
 	//"raise_time"  									"0.1"	//raise time controlled by animation, "ready_to_fire" set in sequence
@@ -137,9 +134,9 @@ WeaponData
 
 
 	// Bob
-	"bob_cycle_time"  								"0.4"
-	"bob_vert_dist"   								"0.19"
-	"bob_horz_dist"   								"0.1"
+	"bob_cycle_time"  								"0.400000"
+	"bob_vert_dist"   								"0.190000"
+	"bob_horz_dist"   								"0.100000"
 	"bob_max_speed"   								"150"
 	//"bob_pitch"   									"0.75"
 	//"bob_yaw" 										"-1.7"
@@ -148,29 +145,29 @@ WeaponData
 
 	// Sway
 	"sway_rotate_attach"  							"jx_c_pov"
-	"sway_min_x"  									"-0.3"
-	"sway_min_y"  									"-0.5"
-	"sway_min_z"  									"-0.5"
-	"sway_max_x"  									"0.3"
-	"sway_max_y"  									"0.5"
-	"sway_max_z"  									"0.1"
+	"sway_min_x"  									"-0.300000"
+	"sway_min_y"  									"-0.500000"
+	"sway_min_z"  									"-0.500000"
+	"sway_max_x"  									"0.300000"
+	"sway_max_y"  									"0.500000"
+	"sway_max_z"  									"0.100000"
 	"sway_min_pitch"  								"-3"
-	"sway_min_yaw"									"-3.5"
+	"sway_min_yaw"									"-3.500000"
 	"sway_min_roll"   								"-1"
 	"sway_max_pitch"  								"3"
-	"sway_max_yaw"									"3.5"
+	"sway_max_yaw"									"3.500000"
 	"sway_max_roll"   								"2"
 	"sway_translate_gain" 							"4"
 	"sway_rotate_gain"								"7"
 	"sway_move_forward_translate_x"   				"0"
-	"sway_move_forward_translate_z"   				"-0.5"
+	"sway_move_forward_translate_z"   				"-0.500000"
 	"sway_move_back_translate_x"  					"-2"
 	"sway_move_back_translate_z"  					"-1"
 	"sway_move_left_translate_y"  					"-1"
-	"sway_move_left_translate_z"  					"-0.5"
+	"sway_move_left_translate_z"  					"-0.500000"
 	"sway_move_left_rotate_roll"  					"-1"
 	"sway_move_right_translate_y" 					"1"
-	"sway_move_right_translate_z" 					"-0.5"
+	"sway_move_right_translate_z" 					"-0.500000"
 	"sway_move_right_rotate_roll" 					"2"
 	"sway_move_up_translate_z"						"-1"
 	"sway_move_down_translate_z"  					"1"
@@ -178,15 +175,15 @@ WeaponData
 	"sway_turn_right_rotate_yaw"  					"2"
 	"sway_turn_up_rotate_pitch"   					"2"
 	"sway_turn_down_rotate_pitch" 					"-2"
-	"sway_turn_angle_factor"  						"-0.5"
+	"sway_turn_angle_factor"  						"-0.500000"
 	"sway_turn_origin_factor" 						"0"
 	"sway_turn_angle_factor_zoomed"   				"0"
-	"sway_turn_origin_factor_zoomed"  				"0.05"
-	"sway_move_angle_factor"  						"0.5"
-	"sway_move_origin_factor" 						"0.5"
+	"sway_turn_origin_factor_zoomed"  				"0.050000"
+	"sway_move_angle_factor"  						"0.500000"
+	"sway_move_origin_factor" 						"0.500000"
 	"sway_move_angle_factor_zoomed"   				"0"
-	"sway_move_origin_factor_zoomed"  				"0.03"
-	"sway_gain"   									"15.0"
+	"sway_move_origin_factor_zoomed"  				"0.030000"
+	"sway_gain"   									"15.000000"
 
 	"ammo_clip_size"   								"120"
     "ammo_default_total"							"120"
@@ -194,9 +191,9 @@ WeaponData
     "ammo_min_to_fire"								"30"
     "ammo_per_shot"									"30"
     "ammo_stockpile_max"							"30"
-	"regen_ammo_refill_rate"						"2"
-    "regen_ammo_refill_start_delay"					"0.0"
-    "low_ammo_fraction" 							"0.0"
+	"regen_ammo_refill_rate"						"7.500000"
+    "regen_ammo_refill_start_delay"					"0.000000"
+    "low_ammo_fraction" 							"0.000000"
 
 	//Mods
     "grenade_arc_indicator_bounce_count"			"1"

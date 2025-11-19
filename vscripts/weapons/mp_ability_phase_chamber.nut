@@ -1,4 +1,3 @@
-//Made by CafeFPS
 untyped
 
 global function OnProjectileCollision_phase_chamber
@@ -14,7 +13,7 @@ global function StartPhaseChamberTimer
 ///CONFIGS///
 const float TOTALRADIUS = 256 //hardcoded don't change until props are resized properly
 const float DELAY_TIME = 2.0
-const float INVOID_TIME = 3.0
+const float INVOID_TIME = 3.0 //(mk): max for ServerCallback_SonarPhaseChamber is set to 120.0
 const float DAMAGE_TO_DEAL_ON_EXPLOSION = 10
 global const float MAX_TIME_IN_REWIND_OR_VOID = 3.11
 
@@ -329,19 +328,21 @@ void function PhaseChamberTrigger( entity bubbleShield, entity bubbleShieldPlaye
 		
 	foreach( touchingEnt in targetEnts  )
 	{
-		  printt("touching ent sent to void" + touchingEnt)
-		  		  
-		  if(touchingEnt != bubbleShieldPlayer) {
-			  touchingEnt.TakeDamage( DAMAGE_TO_DEAL_ON_EXPLOSION, bubbleShieldPlayer, null, { scriptType = DF_BYPASS_SHIELD | DF_DOOMED_HEALTH_LOSS, damageSourceId = eDamageSourceId.deathField } )
-		  }
-		  Remote_CallFunction_Replay( bubbleShieldPlayer, "ServerCallback_SonarPhaseChamber", touchingEnt, bubbleShieldPlayer, INVOID_TIME)
-		  PhaseShift( touchingEnt, 0.0, 10 )
-		  if(touchingEnt.IsPlayer()) {
-			  // StatusEffect_AddTimed( touchingEnt, eStatusEffect.rewindTimerChamber, 1.0, MAX_TIME_IN_REWIND_OR_VOID, 0.0 )
-			  EmitSoundOnEntityOnlyToPlayer( touchingEnt, touchingEnt, "PhaseGate_Enter_1p" )
-			  EmitSoundOnEntityExceptToPlayer( touchingEnt, touchingEnt, "PhaseGate_Enter_3p" )
-		  }
-		  thread CancelPSAndDoFXs(touchingEnt, bubbleShieldPlayer)
+		#if DEVELOPER 
+			printt("touching ent sent to void" + touchingEnt)
+		#endif
+			  
+		if(touchingEnt != bubbleShieldPlayer) {
+		  touchingEnt.TakeDamage( DAMAGE_TO_DEAL_ON_EXPLOSION, bubbleShieldPlayer, null, { scriptType = DF_BYPASS_SHIELD | DF_DOOMED_HEALTH_LOSS, damageSourceId = eDamageSourceId.deathField } )
+		}
+		Remote_CallFunction_Replay( bubbleShieldPlayer, "ServerCallback_SonarPhaseChamber", touchingEnt, bubbleShieldPlayer, INVOID_TIME)
+		PhaseShift( touchingEnt, 0.0, 10 )
+		if(touchingEnt.IsPlayer()) {
+		  // StatusEffect_AddTimed( touchingEnt, eStatusEffect.rewindTimerChamber, 1.0, MAX_TIME_IN_REWIND_OR_VOID, 0.0 )
+		  EmitSoundOnEntityOnlyToPlayer( touchingEnt, touchingEnt, "PhaseGate_Enter_1p" )
+		  EmitSoundOnEntityExceptToPlayer( touchingEnt, touchingEnt, "PhaseGate_Enter_3p" )
+		}
+		thread CancelPSAndDoFXs(touchingEnt, bubbleShieldPlayer)
 	}
 }
 

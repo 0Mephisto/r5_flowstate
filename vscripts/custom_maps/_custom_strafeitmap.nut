@@ -21,7 +21,7 @@ function strafeitmap_precache() {
     PrecacheModel( $"mdl/lava_land/volcanic_rock_01a.rmdl" )
     PrecacheModel( $"mdl/thunderdome/thunderdome_cage_ceiling_256x64_05.rmdl" )
     PrecacheModel( $"mdl/fx/water_bubble_pop_fx.rmdl" )
-    file.characters = GetAllCharacters()
+    PrecacheModel( $"mdl/levels_terrain/mp_lobby/mp_setting_menu.rmdl")
 }
 
 const PROP_DEFAULT_COLOR = "survival_item_common_cargobot"
@@ -58,15 +58,15 @@ function strafeitmap_player_setup(entity player) {
 
     player.SetPersistentVar("gen", 0)
 
-    LocalMsg(player, "#FS_STRING_VAR", "", 9, 5.0, "Strafe It", "By: Loy & Treeree", "", false)
+    LocalMsg(player, "#FS_STRING_VAR", "", 9, 5.0, "Strafe It", "By: Loy & Treeree", "" )
     
       thread
   (
     void 
     function() : ( player ) {
         wait 3.0
-        CharacterSelect_AssignCharacter( ToEHI( player ), file.characters[8] )
-    	ItemFlavor playerCharacter = LoadoutSlot_GetItemFlavor( ToEHI( player ), Loadout_CharacterClass() )
+        ItemFlavor playerCharacter = LoadoutSlot_GetItemFlavor( ToEHI( player ), Loadout_CharacterClass() )
+        CharacterSelect_AssignCharacter( ToEHI( player ), playerCharacter )
     	asset characterSetFile = CharacterClass_GetSetFile( playerCharacter )
     	player.SetPlayerSettingsWithMods( characterSetFile, [] )
     	player.TakeOffhandWeapon(OFFHAND_TACTICAL)
@@ -81,6 +81,10 @@ void
 function strafeitmap_load() {
     // Props
     entity prop
+
+    // prop = MapEditor_CreateProp( $"mdl/lava_land/volcanic_rock_01a.rmdl", < 10360.73, -22346.8, 44662.46 >, < 0, -52.06, 0 >, true, 50000, -1, 20 )
+    prop = MapEditor_CreateProp( $"mdl/levels_terrain/mp_lobby/mp_setting_menu.rmdl", < 11120, -24759, 45413 >, < 0, -90.0099, 0 >, true, 50000, -1, 6.78 )
+
     prop = MapEditor_CreateProp( $"mdl/thunderdome/thunderdome_cage_frame_128_01.rmdl", < 7543.46, -24034.65, 46070.66 >, < 0, -15, 0 >, true, 50000, -1, 1 )
     prop.kv.solid = 1; Highlight_SetNeutralHighlight( prop, PROP_DEFAULT_COLOR )
     prop = MapEditor_CreateProp( $"mdl/thunderdome/thunderdome_cage_ceiling_256x256_06.rmdl", < 8438.76, -23846.1, 47198.36 >, < 0, 75, 0 >, false, 50000, -1, 1 )
@@ -135,7 +139,6 @@ function strafeitmap_load() {
     prop = MapEditor_CreateProp( $"mdl/thunderdome/thunderdome_cage_ceiling_256x256_06.rmdl", < 7922.54, -24598.12, 47198.36 >, < 0, 75, 0 >, false, 50000, -1, 1 )
     prop.kv.solid = 3; prop.Highlight_SetFunctions(0, 12, false, 136, 2.0, 2, false); prop.Highlight_SetParam(0, 0, < 1, 0, 0 > )
 
-    prop = MapEditor_CreateProp( $"mdl/lava_land/volcanic_rock_01a.rmdl", < 10360.73, -22346.8, 44662.46 >, < 0, -52.06, 0 >, true, 50000, -1, 20 )
     prop = MapEditor_CreateProp( $"mdl/thunderdome/thunderdome_cage_ceiling_256x256_06.rmdl", < 7851.36, -23688.82, 47134.36 >, < 0, -105, 0 >, true, 50000, -1, 1 )
     prop.kv.solid = 1; Highlight_SetNeutralHighlight( prop, PROP_DEFAULT_COLOR )
     prop = MapEditor_CreateProp( $"mdl/thunderdome/thunderdome_cage_frame_16x128_01.rmdl", < 7896.2, -24943.68, 47199.36 >, < 0, -105, 90 >, true, 50000, -1, 1 )
@@ -402,11 +405,11 @@ if (IsValidPlayer(ent)) {
         ent.p.isTimerActive = true
         ent.SetPersistentVar("gen", Time())
         ent.SetVelocity(<0,0,0>)
-        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 1.0, "Timer Started", "", "", false)
+        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 1.0, "Timer Started", "", "" )
     } else {
         ent.SetPersistentVar("gen", 0)
         ent.p.isTimerActive = false
-        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 1.0, "Timer Stopped", "", "", false)
+        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 1.0, "Timer Stopped", "", "" )
     }
     file.last_cp[ent] <- false
     ent.TakeOffhandWeapon(OFFHAND_TACTICAL)
@@ -432,10 +435,10 @@ if (file.last_cp[ent]) {
         float minutes = final_time / 60
         float seconds = final_time % 60
 
-        LocalMsg(ent, "#FS_STRING_VAR", "", 2, 5.0, format("%d:%02d", minutes, seconds), "FINAL TIME", "", false)
+        LocalMsg(ent, "#FS_STRING_VAR", "", 2, 5.0, format("%d:%02d", minutes, seconds), "FINAL TIME", "" )
         ent.SetPersistentVar("gen", 0)
     } else {
-        LocalMsg(ent, "#FS_STRING_VAR", "", 2, 5.0, "YOU FINISHED!", "CONGRATULATIONS", "", false)
+        LocalMsg(ent, "#FS_STRING_VAR", "", 2, 5.0, "YOU FINISHED!", "CONGRATULATIONS", "" )
     }
 }
 
@@ -495,10 +498,10 @@ if (file.cp_table[ent] != < 7231.66, -24927.05, 46450.86 > )
         float final_time = Time() - gen
         float minutes = final_time / 60
         float seconds = final_time % 60
-        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
     } else
     {
-        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "", false)
+        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
     }
 }
 
@@ -522,10 +525,10 @@ if (file.cp_table[ent] != < 7799.05, -25086.63, 47184.26 > )
         float final_time = Time() - gen
         float minutes = final_time / 60
         float seconds = final_time % 60
-        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
     } else
     {
-        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "", false)
+        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
     }
 }
 
@@ -549,10 +552,10 @@ if (file.cp_table[ent] != < 10860.89, -24121.12, 47377.06 > )
         float final_time = Time() - gen
         float minutes = final_time / 60
         float seconds = final_time % 60
-        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
     } else
     {
-        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "", false)
+        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
     }
 }
 
@@ -611,10 +614,10 @@ if (file.last_cp[ent]) {
         float minutes = final_time / 60
         float seconds = final_time % 60
 
-        LocalMsg(ent, "#FS_STRING_VAR", "", 2, 5.0, format("%d:%02d", minutes, seconds), "FINAL TIME", "", false)
+        LocalMsg(ent, "#FS_STRING_VAR", "", 2, 5.0, format("%d:%02d", minutes, seconds), "FINAL TIME", "" )
         ent.SetPersistentVar("gen", 0)
     } else {
-        LocalMsg(ent, "#FS_STRING_VAR", "", 2, 5.0, "YOU FINISHED!", "CONGRATULATIONS", "", false)
+        LocalMsg(ent, "#FS_STRING_VAR", "", 2, 5.0, "YOU FINISHED!", "CONGRATULATIONS", "" )
     }
 }
 
@@ -638,10 +641,10 @@ if (file.cp_table[ent] != < 8900.5, -22729.6, 46210.16 > )
         float final_time = Time() - gen
         float minutes = final_time / 60
         float seconds = final_time % 60
-        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
     } else
     {
-        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "", false)
+        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
     }
 }
 
@@ -683,10 +686,10 @@ if (file.cp_table[ent] != < 13372.06, -22030.57, 51108.16 > )
         float final_time = Time() - gen
         float minutes = final_time / 60
         float seconds = final_time % 60
-        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
     } else
     {
-        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "", false)
+        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
     }
 }
 
@@ -711,10 +714,10 @@ if (file.cp_table[ent] != < 7717.81, -23410.44, 46202.76 > )
         float final_time = Time() - gen
         float minutes = final_time / 60
         float seconds = final_time % 60
-        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
     } else
     {
-        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "", false)
+        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
     }
 }
 
@@ -738,10 +741,10 @@ if (file.cp_table[ent] != < 9601.3, -22325.23, 46085.56 > )
         float final_time = Time() - gen
         float minutes = final_time / 60
         float seconds = final_time % 60
-        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
     } else
     {
-        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "", false)
+        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
     }
 }
 
@@ -776,10 +779,10 @@ if (file.cp_table[ent] != < 7799.05, -25086.63, 47184.26 > )
         float final_time = Time() - gen
         float minutes = final_time / 60
         float seconds = final_time % 60
-        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
     } else
     {
-        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "", false)
+        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
     }
 }
 
@@ -803,10 +806,10 @@ if (file.cp_table[ent] != < 10048.66, -22365.16, 48162.46 > )
         float final_time = Time() - gen
         float minutes = final_time / 60
         float seconds = final_time % 60
-        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
     } else
     {
-        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "", false)
+        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
     }
 }
 
@@ -830,10 +833,10 @@ if (file.cp_table[ent] != < 10048.66, -22365.16, 48162.46 > )
         float final_time = Time() - gen
         float minutes = final_time / 60
         float seconds = final_time % 60
-        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
     } else
     {
-        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "", false)
+        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
     }
 }
 
@@ -875,10 +878,10 @@ if (file.cp_table[ent] != < 8299.36, -23194.54, 47200.96 > )
         float final_time = Time() - gen
         float minutes = final_time / 60
         float seconds = final_time % 60
-        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
     } else
     {
-        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "", false)
+        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
     }
 }
 
@@ -902,10 +905,10 @@ if (file.cp_table[ent] != < 8556.94, -21963.44, 48162.46 > )
         float final_time = Time() - gen
         float minutes = final_time / 60
         float seconds = final_time % 60
-        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
     } else
     {
-        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "", false)
+        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
     }
 }
 
@@ -929,10 +932,10 @@ if (file.cp_table[ent] != < 7231.66, -24927.05, 46450.86 > )
         float final_time = Time() - gen
         float minutes = final_time / 60
         float seconds = final_time % 60
-        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, format("%d:%02d", minutes, seconds), "", "", false)
+        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, format("%d:%02d", minutes, seconds), "", "" )
     } else
     {
-        LocalMsg(ent, "#FS_STRING_VAR", "", 1, 5.0, "CHECKPOINT", "", "", false)
+        LocalMsg(ent, "#FS_STRING_VAR", "", 4, 5.0, "CHECKPOINT", "", "" )
     }
 }
 

@@ -2,9 +2,24 @@ globalize_all_functions
 
 //mp_rr_canyonlands_staging
 
-global const vector LG_DUELS_OFFSET_ORIGIN = <33184.4023, -11875.7686, -24047.4277>
+global const vector LG_DUELS_OFFSET_ORIGIN = <33184.4023, -11875.7686, -24045.4277>
 
-
+void function PrecacheLGDuels()
+{
+	if( Playlist() != ePlaylists.fs_lgduels_1v1 )
+		return
+		
+	PrecacheModel( $"mdl/thunderdome/thunderdome_cage_frame_16x128_01.rmdl" )
+	PrecacheModel( $"mdl/thunderdome/thunderdome_cage_wall_256x352_01.rmdl" )
+	PrecacheModel( $"mdl/rocks/rock_white_chalk_modular_flat_02.rmdl" )
+	PrecacheModel( $"mdl/thunderdome/thunderdome_cage_ceiling_256x128_05.rmdl" )
+	PrecacheModel( $"mdl/thunderdome/thunderdome_cage_ceiling_256x128_06.rmdl" )
+	PrecacheModel( $"mdl/thunderdome/thunderdome_cage_frame_128x32_01.rmdl" )
+	PrecacheModel( $"mdl/thunderdome/thunderdome_cage_frame_64x32_01.rmdl" )
+	PrecacheModel( $"mdl/canyonlands/fabric_canopy_02.rmdl" )
+	PrecacheModel( $"mdl/pipes/pipe_modular_painted_yellow_32_04.rmdl" )
+	PrecacheModel( $"mdl/thunderdome/thunderdome_cage_ceiling_256x32_01.rmdl" )
+}
 
 void function SpawnLGProps() 
 {

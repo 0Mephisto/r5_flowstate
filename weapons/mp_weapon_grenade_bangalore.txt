@@ -88,21 +88,21 @@ WeaponData
 	"explosion_shake_radius"						"500"
 	"explosion_shake_amplitude"						"5"
 	"explosion_shake_frequency"						"45"
-	"explosion_shake_duration"						"0.1"
+	"explosion_shake_duration"						"0.100000"
 	"damage_flags"									"DF_RAGDOLL | DF_EXPLOSION"
 
 
 
 	MP_BASE
 	{
-		"ammo_clip_size"   								"200"
-		"ammo_default_total"							"200"
+		"ammo_clip_size"   								"180"
+		"ammo_default_total"							"180"
 		"ammo_display"									"bar"
-		"ammo_min_to_fire"								"100"
-		"ammo_per_shot"									"100"
-		"ammo_stockpile_max"							"200"
+		"ammo_min_to_fire"								"90"
+		"ammo_per_shot"									"90"
+		"ammo_stockpile_max"							"180"
 		"regen_ammo_refill_rate"						"3"
-		"regen_ammo_refill_start_delay"					"0.0"
+		"regen_ammo_refill_start_delay"					"0.000000"
 
 		"enable_highlight_networking_on_creation"		"<KEEP_DEFAULT>"
 

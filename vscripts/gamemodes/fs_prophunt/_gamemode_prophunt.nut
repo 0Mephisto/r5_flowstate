@@ -1,10 +1,3 @@
-//FLOWSTATE PROPHUNT
-//Made by @CafeFPS (@CafeFPS)
-
-// AyeZee#6969 -- Ctf voting phase to work off
-// _RitzKing#1715 -- Gamemode Icon
-// everyone else -- advice
-
 global function _GamemodeProphunt_Init
 global function _RegisterLocationPROPHUNT
 global function _OnPlayerConnectedPROPHUNT
@@ -146,7 +139,6 @@ void function PROPHUNT_StartGameThread()
 }
 
 void function PROPHUNT_CharSelect( entity player)
-//By @CafeFPS (CafeFPS)//
 {
 	if(FlowState_ForceCharacter())
 	{
@@ -163,9 +155,11 @@ void function PROPHUNT_CharSelect( entity player)
 
 void function _OnPlayerConnectedPROPHUNT(entity player)
 {
-	while(IsDisconnected( player )) WaitFrame()
+	while(IsDisconnected( player ))
+		WaitFrame()
 
-    if(!IsValid(player)) return
+    if(!IsValid(player))
+		return
 
 	CreatePanelText( player, "Flowstate", "", <-19766, 2111, 6541>, <0, 180, 0>, false, 2 )
 	
@@ -274,7 +268,7 @@ void function SetSpectatorAnotherTry(entity player)
 	}
 	
 	entity specTarget = playersON.getrandom()
-	try{
+	try {
 		if( IsValid( specTarget ) && IsValid(player) && ShouldSetObserverTarget( specTarget ) && specTarget != player)
 		{
 			player.SetPlayerNetInt( "spectatorTargetCount", GetPlayerArray_Alive().len() )
@@ -291,7 +285,7 @@ void function SetSpectatorAnotherTry(entity player)
 
 void function _OnPlayerDiedPROPHUNT(entity victim, entity attacker, var damageInfo)
 {
-	if(GetGameState() != eGameState.Playing) //FIXME!
+	if (GetGameState() != eGameState.Playing) //FIXME!
 	{	
 		array<entity> playersON = GetPlayerArray_Alive()
 		playersON.fastremovebyvalue( victim )
@@ -1282,7 +1276,7 @@ void function PROPHUNT_GameLoop()
 					if( !IsValid( player ) )
 						continue
 
-					Remote_CallFunction_Replay(player, "ServerCallback_FSDM_SetScreen", eFSDMScreen.TiedScreen, eFSDMScreen.NotUsed, 42069, eFSDMScreen.NotUsed)
+					Remote_CallFunction_Replay(player, "ServerCallback_FSDM_SetScreen", eFSDMScreen.TiedScreen, eFSDMScreen.NotUsed, 42068, eFSDMScreen.NotUsed)
 				}
 
 				mapsWithHighestVoteCount.randomize()
@@ -1719,7 +1713,7 @@ void function RingDamage2( entity circle, float currentRadius)
 			float playerDist = Distance2D( player.GetOrigin(), circle.GetOrigin() )
 			if ( playerDist > currentRadius )
 			{
-				Remote_CallFunction_Replay( player, "ServerCallback_PlayerTookDamage", 0, 0, 0, 0, DF_BYPASS_SHIELD | DF_DOOMED_HEALTH_LOSS, eDamageSourceId.deathField, null )
+				Remote_CallFunction_Replay( player, "ServerCallback_PlayerTookDamage", 0, <0, 0, 0>, DF_BYPASS_SHIELD | DF_DOOMED_HEALTH_LOSS, eDamageSourceId.deathField, 0 )
 				player.TakeDamage( int( Deathmatch_GetOOBDamagePercent() / 100 * float( player.GetMaxHealth() ) ), null, null, { scriptType = DF_BYPASS_SHIELD | DF_DOOMED_HEALTH_LOSS, damageSourceId = eDamageSourceId.deathField } )
 			}
 		}
@@ -1817,7 +1811,7 @@ void function RingDamage( entity circle, float currentRadius)
 			float playerDist = Distance2D( player.GetOrigin(), circle.GetOrigin() )
 			if ( playerDist > currentRadius )
 			{
-				Remote_CallFunction_Replay( player, "ServerCallback_PlayerTookDamage", 0, 0, 0, 0, DF_BYPASS_SHIELD | DF_DOOMED_HEALTH_LOSS, eDamageSourceId.deathField, null )
+				Remote_CallFunction_Replay( player, "ServerCallback_PlayerTookDamage", 0, <0, 0, 0>, DF_BYPASS_SHIELD | DF_DOOMED_HEALTH_LOSS, eDamageSourceId.deathField, 0 )
 				player.TakeDamage( int( Deathmatch_GetOOBDamagePercent() / 100 * float( player.GetMaxHealth() ) ), null, null, { scriptType = DF_BYPASS_SHIELD | DF_DOOMED_HEALTH_LOSS, damageSourceId = eDamageSourceId.deathField } )
 			}
 		}

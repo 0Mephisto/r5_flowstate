@@ -1,24 +1,3 @@
-/*
-Flowstate Aim Trainer v1.0 - Made by CafeFPS (server, client, ui)
-Discord: @CafeFPS | Twitter: @CafeFPS
-Support me: https://ko-fi.com/r5r_colombia
-
-More credits:
-- Skeptation#4002 -- beta tester and coworker https://www.youtube.com/c/Skeptation
-- Amos#1368 & contributors -- sdk https://github.com/Mauler125/r5sdk/tree/indev
-- rexx#1287 & contributors -- repak tool https://github.com/r-ex/RePak
-- JustANormalUser#6809 -- custom weapons framework
-- Zee#6969 -- weapons buy menu example, history ui pages
-- Darkes#8647 -- beta tester
-- Rego#2848 -- beta tester
-- michae\l/#1125 -- beta tester
-- James9950#5567 -- beta tester
-- (--__GimmYnkia__--)#2995 -- beta tester
-- oliver#1375 -- beta tester
-- Rin 暗#5862 -- beta tester
-- 暇人のEndergreen#7138 -- contributor, bugs fixes/code improvements
-*/
-
 global function  _ChallengesByColombia_Init
 global function StartFRChallenges
 global function CreateMovementMapDummie
@@ -116,6 +95,7 @@ void function _ChallengesByColombia_Init()
 	//required assets for different challenges
 	PrecacheParticleSystem($"P_enemy_jump_jet_ON_trails")
 	PrecacheParticleSystem( $"P_skydive_trail_CP" )
+	PrecacheParticleSystem( FIRINGRANGE_ITEM_RESPAWN_PARTICLE )
 	PrecacheModel($"mdl/imc_interior/imc_int_fusebox_01.rmdl")
 	PrecacheModel($"mdl/barriers/shooting_range_target_02.rmdl")
 	PrecacheModel($"mdl/thunderdome/thunderdome_cage_wall_256x256_01.rmdl")
@@ -130,39 +110,48 @@ void function _ChallengesByColombia_Init()
 		case eMaps.mp_rr_desertlands_64k_x_64k:
 		case eMaps.mp_rr_desertlands_64k_x_64k_nx:
 		case eMaps.mp_rr_desertlands_64k_x_64k_tt:
-		floorLocation = <-10020.1543, -8643.02832, 5189.92578>
-		onGroundLocationPos = <12891.2783, -2391.77124, -3121.60132>
-		onGroundLocationAngs = <0, -157.629303, 0>
-		AimTrainer_startPos = <10623.7773, 4953.48975, -4303.92041>
-		AimTrainer_startAngs = <0, 143.031052, 0>	
+		case eMaps.mp_rr_desertlands_mu1:
+		case eMaps.mp_rr_desertlands_mu1_tt:
+		case eMaps.mp_rr_desertlands_mu2:
+		case eMaps.mp_rr_desertlands_holiday:
+			floorLocation = <-10020.1543, -8643.02832, 5189.92578>
+			onGroundLocationPos = <12891.2783, -2391.77124, -3121.60132>
+			onGroundLocationAngs = <0, -157.629303, 0>
+			AimTrainer_startPos = <10623.7773, 4953.48975, -4303.92041>
+			AimTrainer_startAngs = <0, 143.031052, 0>	
 		break
 
 		case eMaps.mp_rr_canyonlands_staging:
-		floorLocation = <35306.2344, -16956.5098, -27010.2539>
-		onGroundLocationPos = <33946,-6511,-28859>
-		onGroundLocationAngs = <0,-90,0>
-		AimTrainer_startPos = <32645.04,-9575.77,-25911.94>
-		AimTrainer_startAngs = <7.71,91.67,0.00>	
+			floorLocation = <35306.2344, -16956.5098, -27010.2539>
+			onGroundLocationPos = <33946,-6511,-28859>
+			onGroundLocationAngs = <0,-90,0>
+			AimTrainer_startPos = <32645.04,-9575.77,-25911.94>
+			AimTrainer_startAngs = <7.71,91.67,0.00>	
 		break
 
 		case eMaps.mp_rr_canyonlands_mu1:
 		case eMaps.mp_rr_canyonlands_mu1_night:
 		case eMaps.mp_rr_canyonlands_64k_x_64k:
-		floorLocation = <-11964.7803, -8858.25098, 17252.25>
-		onGroundLocationPos = <-14599.2178, -7073.89551, 2703.93286>
-		onGroundLocationAngs = <0,90,0>
-		AimTrainer_startPos = <-16613.873, -487.12088, 3312.10791>
-		AimTrainer_startAngs = <0, 144.184357, 0>
+		case eMaps.mp_rr_canyonlands_mu2:
+		case eMaps.mp_rr_canyonlands_mu2_tt:
+		case eMaps.mp_rr_canyonlands_mu2_mv:
+		case eMaps.mp_rr_canyonlands_mu2_ufo:
+			floorLocation = <-11964.7803, -8858.25098, 17252.25>
+			onGroundLocationPos = <-14599.2178, -7073.89551, 2703.93286>
+			onGroundLocationAngs = <0,90,0>
+			AimTrainer_startPos = <-16613.873, -487.12088, 3312.10791>
+			AimTrainer_startAngs = <0, 144.184357, 0>
 		break
 
-		case eMaps.mp_rr_olympus_mu1:
-		floorLocation = <9857.08496, -7948.96631, -1000>
-		onGroundLocationPos = <-13700.8594, 26238.1387, -6891.95508>
-		onGroundLocationAngs = <0, 175.306152, 0>
-		AimTrainer_startPos = <-34234.2148, 9426.86426, -5563.96875>
-		AimTrainer_startAngs = <0, 69.2027512, 0>
-
+		case eMaps.mp_rr_olympus:
+		case eMaps.mp_rr_olympus_tt:
+			floorLocation = <9857.08496, -7948.96631, -1000>
+			onGroundLocationPos = <-13700.8594, 26238.1387, -6891.95508>
+			onGroundLocationAngs = <0, 175.306152, 0>
+			AimTrainer_startPos = <-34234.2148, 9426.86426, -5563.96875>
+			AimTrainer_startAngs = <0, 69.2027512, 0>
 		break
+		
 		default:
 		// cutsceneSpawns.append(NewCameraPair(<-3096.13501, 632.377991, 1913.47217>, <0, -134.430405, 0> ))
 		
@@ -222,10 +211,18 @@ void function SetCommonDummyLines(entity dummy)
 	dummy.SetDeathNotifications( true )
 	dummy.SetValidHealthBarTarget( true )
 	SetObjectCanBeMeleed( dummy, true )
-	// if(AimTrainer_AI_COLOR == 5)
-		// dummy.SetSkin(RandomIntRangeInclusive(1,4))
-	// else
-		// dummy.SetSkin(AimTrainer_AI_COLOR)
+	
+	if( AimTrainer_STRAFING_SPEED == 0 )
+	{
+		dummy.EnableNPCFlag( NPC_IGNORE_ALL | NPC_DISABLE_SENSING)
+		dummy.DisableNPCFlag( NPC_ALLOW_PATROL | NPC_ALLOW_INVESTIGATE | NPC_USE_SHOOTING_COVER )
+	}
+	
+	if(AimTrainer_AI_COLOR == 5)
+		dummy.SetSkin(RandomIntRangeInclusive(1,4))
+	else
+		dummy.SetSkin(AimTrainer_AI_COLOR)
+	
 	dummy.DisableHibernation()
 }
 
@@ -262,25 +259,28 @@ void function StartStraferDummyChallenge(entity player)
 	while(true){
 		if(!AimTrainer_INFINITE_CHALLENGE && Time() > endtime) break
 		vector dummypos = player.GetOrigin() + AnglesToForward(onGroundLocationAngs)*100*AimTrainer_SPAWN_DISTANCE
-		entity dummy = CreateLegend_ai_aimtrainer( 99, AimTrainerOriginToGround( dummypos + Vector(0,0,10000)), Vector(0,0,0), true )
+		entity dummy = CreateDummy( 99, AimTrainerOriginToGround( dummypos + Vector(0,0,10000)), Vector(0,0,0) )
 		vector pos = dummy.GetOrigin()
 		vector angles = dummy.GetAngles()
 		StartParticleEffectInWorld( GetParticleSystemIndex( FIRINGRANGE_ITEM_RESPAWN_PARTICLE ), pos, angles )
-		// SetSpawnOption_AISettings( dummy, "npc_dummie_combat_trainer" )
 		DispatchSpawn( dummy )
+		
 		dummy.SetOrigin(dummy.GetOrigin() + Vector(0,0,1))
-		
-		//PutEntityInSafeSpot( dummy, null, null, dummy.GetOrigin() + dummy.GetUpVector()*2048 + dummy.GetForwardVector()*2048 , dummy.GetOrigin() )
-		
 		dummy.SetShieldHealthMax( ReturnShieldAmountForDesiredLevel() )
 		dummy.SetShieldHealth( ReturnShieldAmountForDesiredLevel() )
 		dummy.SetMaxHealth( AimTrainer_AI_HEALTH )
 		dummy.SetHealth( AimTrainer_AI_HEALTH )
+		
 		SetCommonDummyLines(dummy)
+		
 		AddEntityCallback_OnDamaged(dummy, OnStraferDummyDamaged)
 		AddEntityCallback_OnKilled(dummy, OnDummyKilled)
 		
-		waitthread StrafeMovement(dummy, player)
+		if( AimTrainer_STRAFING_SPEED > 0 )
+			waitthread StrafeMovement(dummy, player)
+		else
+			WaitSignal(dummy, "OnDeath")
+		
 		wait 0.2
 	}
 }
@@ -301,12 +301,7 @@ void function StrafeMovement(entity ai, entity player)
 	while(IsValid(ai))
 	{
 		ai.SetAngles(VectorToAngles( player.GetOrigin() - ai.GetOrigin()))
-		if(AimTrainer_STRAFING_SPEED == 0)
-		{
-			WaitFrame()
-			continue
-		}
-			
+		
 		int random = RandomIntRangeInclusive(1,10)
 		if (random == 9 || random == 10){
 			ai.Anim_ScriptedPlayActivityByName( "ACT_STAND", true, 0.1 )
@@ -770,6 +765,7 @@ void function CreateDummyStraightUpChallenge(entity player)
 void function StartArcstarsChallenge(entity player)
 {
 	if(!IsValid(player)) return
+	wait 0.1
 	
 	player.SetOrigin(onGroundLocationPos)
 	player.SetAngles(onGroundLocationAngs)
@@ -905,6 +901,7 @@ void function ArcstarDummyChangeAngles(entity ai, entity player)
 void function StartVerticalGrenadesChallenge(entity player)
 {
 	if(!IsValid(player)) return
+	wait 0.1
 	
 	ChallengesEntities.floor = CreateFloorAtOrigin(floorLocation, 30, 30)
 	player.SetOrigin(floorCenterForPlayer)
@@ -2216,7 +2213,8 @@ void function StartArmorSwapChallenge(entity player)
 {
 	if(!IsValid(player)) return
 	
-	if( MapName() == eMaps.mp_rr_desertlands_64k_x_64k || MapName() == eMaps.mp_rr_desertlands_64k_x_64k_nx || MapName() == eMaps.mp_rr_desertlands_64k_x_64k_tt )
+	if( MapName() == eMaps.mp_rr_desertlands_64k_x_64k || MapName() == eMaps.mp_rr_desertlands_64k_x_64k_nx || MapName() == eMaps.mp_rr_desertlands_64k_x_64k_tt ||
+	 MapName() == eMaps.mp_rr_desertlands_mu1 || MapName() == eMaps.mp_rr_desertlands__mu1_tt || MapName() == eMaps.mp_rr_desertlands_mu2 || MapName() == eMaps.mp_rr_desertlands_holiday )
 		player.SetOrigin(<10377.2695, 6253.86523, -4303.90625>)
 	else
 		player.SetOrigin(onGroundLocationPos)
@@ -2348,12 +2346,12 @@ entity function FlowState_CreateDeathBox( entity player, vector origin)
 		"R5R_AyeZee",
 		"R5R_Makimakima",
 		"R5R_Endergreen12",
-		"R5R_Zer0Bytes", //not cool
+		"R5R_Zer0Bytes",
 		"R5R_Julefox",
-		"R5R_Amos",
+		"R5R_AmosMods",
 		"R5R_Rexx",
 		"R5R_IcePixelx", 
-		"R5R_KralRindo",
+		"R5R_LorryLeKral",
 		"R5R_sal"
 	]
 
@@ -2803,7 +2801,6 @@ int function ReturnShieldAmountForDesiredLevel()
 }
 
 array<entity> function CreateFloorAtOrigin(vector origin, int width, int length)
-//By michae\l/#1125 incredibly optimized. i am speed
 {
 	int x = int(origin.x)
 	int y = int(origin.y)
@@ -2822,7 +2819,6 @@ array<entity> function CreateFloorAtOrigin(vector origin, int width, int length)
 }
 
 array<entity> function CreateWallAtOrigin(vector origin, int length, int height, int angle)
-//By michae\l/#1125 incredibly optimized. i am speed
 {
 	int x = int(origin.x)
 	int y = int(origin.y)
@@ -2874,21 +2870,24 @@ void function ClippingAIWorkaround(entity dummy)
 //CLIENT COMMANDS
 void function PreChallengeStart(entity player, int challenge)
 {
-	if( IsAlive( player ) )
-		player.Die( null, null, { damageSourceId = eDamageSourceId.damagedef_despawn } )
-	
-	thread SetupPlayer( player )
-	player.FreezeControlsOnServer()
+	thread function() : (player, challenge)
+	{
+		if( IsAlive( player ) )
+			player.Die( null, null, { damageSourceId = eDamageSourceId.damagedef_despawn } )
+		
+		waitthread SetupPlayer( player )
+		player.FreezeControlsOnServer()
 
-	player.p.storedWeapons = StoreWeapons(player)
-	AddCinematicFlag( player, CE_FLAG_HIDE_MAIN_HUD_INSTANT )
-	AddCinematicFlag( player, CE_FLAG_HIDE_PERMANENT_HUD)
-	player.p.challengeName = challenge
+		player.p.storedWeapons = StoreWeapons(player)
+		AddCinematicFlag( player, CE_FLAG_HIDE_MAIN_HUD_INSTANT )
+		AddCinematicFlag( player, CE_FLAG_HIDE_PERMANENT_HUD)
+		player.p.challengeName = challenge
 
-	player.p.isChallengeActivated = true
-	Remote_CallFunction_NonReplay(player, "ServerCallback_SetChallengeActivated", true)
+		player.p.isChallengeActivated = true
+		Remote_CallFunction_NonReplay(player, "ServerCallback_SetChallengeActivated", true)
 
-	SetGameState( eGameState.WaitingForPlayers )
+		SetGameState( eGameState.WaitingForPlayers )
+	}()
 }
 
 bool function CC_StartChallenge1( entity player, array<string> args )
@@ -3151,7 +3150,7 @@ bool function CC_MenuGiveAimTrainerWeapon( entity player, array<string> args )
 	
 	string weapon = args[0]
 	
-	bool bIs1v1 = g_is1v1GameType() //idc, conditional.	
+	bool bIs1v1 = g_bIs1v1GameType() //idc, conditional.	
 	if( Gamemode() != eGamemodes.fs_aimtrainer && !ValidateWeaponTgiveSettings( player, args[0] ) || Gamemode() == eGamemodes.WINTEREXPRESS && !player.GetPlayerNetBool( "WinterExpress_IsPlayerAllowedLegendChange" ) )
 		return true
 	
@@ -3525,7 +3524,7 @@ bool function CC_MenuGiveAimTrainerWeapon( entity player, array<string> args )
 		
 			if( args[1] == "p" )
 			{
-				player.p.ratelimit = 0.0;				
+				ResetRate( player )	//todo track down need		
 			
 					wep1Array[0] = "wepmenu"; //print_string_array( wep1Array )
 				
@@ -3537,16 +3536,16 @@ bool function CC_MenuGiveAimTrainerWeapon( entity player, array<string> args )
 			{		
 				array<string> wep2Array = split( weaponname2, " " )
 				
-					if ( wep2Array[1] == "s" )
-					{
-						player.p.ratelimit = 0;	
+				if ( wep2Array[1] == "s" )
+				{
+					ResetRate( player )	//todo track down need	
+				
+						wep2Array[0] = "wepmenu"; //print_string_array( wep2Array )	
 					
-							wep2Array[0] = "wepmenu"; //print_string_array( wep2Array )	
-						
-								ClientCommand_GiveWeapon( player, wep2Array )	
-									
-									return true
-					}												
+							ClientCommand_GiveWeapon( player, wep2Array )	
+								
+								return true
+				}
 			}
 		}
 		else 
@@ -3571,21 +3570,6 @@ bool function CC_MenuGiveAimTrainerWeapon( entity player, array<string> args )
 
 		if( weaponent.UsesClipsForAmmo() )
 			weaponent.SetWeaponPrimaryClipCount( weaponent.GetWeaponPrimaryClipCountMax() )	
-	}
-
-	if( Playlist() == ePlaylists.fs_aimtrainer )
-	{
-		switch( weaponent.GetWeaponClassName() )
-		{
-			case "mp_weapon_car":
-				weaponSkin = weaponent.GetSkinIndexByName( "charm_preview_black" )
-				break
-			case "mp_weapon_wingman":
-			case "mp_weapon_r97":
-				weaponModelIndex = 2
-				weaponSkin = RandomInt( weaponent.GetSkinCount() )
-				break
-		}
 	}
 	
 	if(slot == "p")
@@ -3663,8 +3647,8 @@ void function SetupPlayer( entity player, bool fromSelector = false )
 
 	TakeAllWeapons( player )
 	
-	player.GiveWeapon( "mp_weapon_melee_survival", WEAPON_INVENTORY_SLOT_PRIMARY_2, [] )
-	player.GiveOffhandWeapon( "melee_pilot_emptyhanded", OFFHAND_MELEE, [] )
+	FS_GiveRandomMelee( player )
+	
 	entity weapon = player.GiveWeapon_NoDeploy( player.p.weapon, WEAPON_INVENTORY_SLOT_PRIMARY_0, player.p.mods )
 
 	if( !fromSelector )

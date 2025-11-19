@@ -35,25 +35,32 @@ void function InitFRChallengesResultsMenu( var newMenuArg )
 	AddEventHandlerToButton( file.menu, "RestartButton", UIE_CLICK, RestartButtonFunct )
 }
 
-void function UpdateResultsData(string challengeName, int shothits, int dummieskilled, float accuracy, int damagedone, int criticalshots, int shotshitrecord, bool isNewRecord)
+void function UpdateResultsData(string challengeName, int shotHits, int dummiesKilled, float accuracy, int damageDealt, int criticalShots, int bestShotsHitRecord, bool isNewRecord)
 {
-	string AccuracyShort = LocalizeAndShortenNumber_Float(accuracy * 100, 3, 2)
-	if(AccuracyShort == "-na,n(i,nd).-n" || AccuracyShort == "-nan(ind)" || AccuracyShort == "-na.n(i.nd),-n") AccuracyShort = "0"
-	printt(AccuracyShort)
+	string accuracyShort = LocalizeAndShortenNumber_Float(accuracy * 100, 3, 2)
+
+	if ( accuracyShort == "-na,n(i,nd).-n" || accuracyShort == "-nan(ind)" || accuracyShort == "-na.n(i.nd),-n" )
+		accuracyShort = "0"
+
+	#if DEVELOPER
+	printt(accuracyShort)
+	#endif
+
 	Hud_SetText(Hud_GetChild( file.menu, "Title"), challengeName)
-	Hud_SetText(Hud_GetChild( file.menu, "DummiesKilledResult"), dummieskilled.tostring())
-	Hud_SetText(Hud_GetChild( file.menu, "AccuracyResult"), AccuracyShort + "%")
-	Hud_SetText(Hud_GetChild( file.menu, "ShotsHitResult"), shothits.tostring())
-	Hud_SetText(Hud_GetChild( file.menu, "DamageDoneResult"), damagedone.tostring())
-	Hud_SetText(Hud_GetChild( file.menu, "CriticalShotsResult"), criticalshots.tostring())
-	Hud_SetText(Hud_GetChild( file.menu, "PersonalBestData"), "THIS SESSION BEST:  " + shotshitrecord.tostring())
+	Hud_SetText(Hud_GetChild( file.menu, "ResultsText"), "DUMMIES KILLED") //Temp, add to localizations
+	Hud_SetText(Hud_GetChild( file.menu, "DummiesKilledResult"), dummiesKilled.tostring())
+	Hud_SetText(Hud_GetChild( file.menu, "AccuracyResult"), accuracyShort + "%")
+	Hud_SetText(Hud_GetChild( file.menu, "ShotsHitResult"), shotHits.tostring())
+	Hud_SetText(Hud_GetChild( file.menu, "DamageDoneResult"), damageDealt.tostring())
+	Hud_SetText(Hud_GetChild( file.menu, "CriticalShotsResult"), criticalShots.tostring())
+	Hud_SetText(Hud_GetChild( file.menu, "PersonalBestData"), "THIS SESSION BEST:  " + bestShotsHitRecord.tostring())
 	
-	if(isNewRecord) 
+	if ( isNewRecord ) 
 	{
 		Hud_SetText(Hud_GetChild( file.menu, "WasNotNewPersonalBest"), "")
 		Hud_SetText(Hud_GetChild( file.menu, "WasNewPersonalBest"), "NEW BEST SCORE")
 		Hud_SetText(Hud_GetChild( file.menu, "ShotsHitResultFinalWasNotNew"), "")
-		Hud_SetText(Hud_GetChild( file.menu, "ShotsHitResultFinal"), shothits.tostring())
+		Hud_SetText(Hud_GetChild( file.menu, "ShotsHitResultFinal"), shotHits.tostring())
 		Hud_SetText(Hud_GetChild( file.menu, "ShotsHitResultFinal2WasNotNew"), "")
 		Hud_SetText(Hud_GetChild( file.menu, "ShotsHitResultFinal2"), "Hits")
 	}
@@ -61,7 +68,7 @@ void function UpdateResultsData(string challengeName, int shothits, int dummiesk
 	{
 		Hud_SetText(Hud_GetChild( file.menu, "WasNotNewPersonalBest"), "TRY AGAIN!")
 		Hud_SetText(Hud_GetChild( file.menu, "WasNewPersonalBest"), "")
-		Hud_SetText(Hud_GetChild( file.menu, "ShotsHitResultFinalWasNotNew"), shothits.tostring())
+		Hud_SetText(Hud_GetChild( file.menu, "ShotsHitResultFinalWasNotNew"), shotHits.tostring())
 		Hud_SetText(Hud_GetChild( file.menu, "ShotsHitResultFinal"), "")
 		Hud_SetText(Hud_GetChild( file.menu, "ShotsHitResultFinal2WasNotNew"), "Hits")
 		Hud_SetText(Hud_GetChild( file.menu, "ShotsHitResultFinal2"), "")

@@ -1,10 +1,3 @@
-// Search and Destroy
-// Made by @CafeFPS - Server, Client and UI
-
-// Aeon#0236 - Playtests and ideas
-// AyeZee#6969 - Some of the economy system logic from his arenas mode draft - stamina
-// @dea_bb - Shoothouse, de_cache and NCanals maps
-// @CafeFPS and Darkes#8647 - de_dust2 map model port and fake collision
 // VishnuRajan in https://sketchfab.com/3d-models/time-bomb-efb2e079c31349c1b2bd072f00d8fe79 - Bomb model and textures
 
 untyped
@@ -107,17 +100,6 @@ struct {
 
 void function Cl_GamemodeSND_Init()
 {
-	SetConVarInt("cl_quota_stringCmdsPerSecond", 200)
-	//I don't want these things in user screen even if they launch in debug
-	SetConVarBool( "cl_showpos", false )
-	SetConVarBool( "cl_showfps", false )
-	SetConVarBool( "cl_showgpustats", false )
-	SetConVarBool( "cl_showsimstats", false )
-	SetConVarBool( "host_speeds", false )
-	SetConVarBool( "con_drawnotify", false )
-	SetConVarBool( "enable_debug_overlays", false )
-	//SetConVarFloat( "fps_max", 190 ) 
-	
 	SetConVarInt( "cl_footstep_event_max_dist", 600 )
 	SetConVarBool( "miles_occlusion", false )
 	SetConVarFloat( "mat_autoexposure_force_value", 0.8 )
@@ -318,14 +300,13 @@ void function SetCameraStartPointForMap()
 			file.cameraAnglesStart = <0, -170.236649, 0>
 		break
 		
-		case eMaps.mp_rr_arena_skygarden:
+		/*case eMaps.mp_rr_arena_skygarden:
 			file.cameraStart = <499.259277, 2014.12402, 3020.03125>
 			file.cameraAnglesStart = <0, -122.591728, 0>
-		break
+		break*/
 		
-		case eMaps.mp_rr_olympus_mu1:
 		case eMaps.mp_rr_arena_empty:
-		case eMaps.mp_rr_party_crasher_new:
+		case eMaps.mp_rr_party_crasher:
 			file.cameraStart = <238.288742, 94.6433334, 11841.7451>
 			file.cameraAnglesStart = <0, -177.9431, 0>
 		break

@@ -80,12 +80,12 @@ grenade_use_mask_ability                            "1"
                                                       
                                                        
       
-		"projectile_gravity_scale"						"0.001"
+		"projectile_gravity_scale"						"0.001000"
 		"grenade_orient_to_velocity"					"0"
        
 	"grenade_hull_mins"                             "-10.0 -10.0 -10.0"
     "grenade_hull_maxs"                             "10.0 10.0 10.0"
-	"projectile_inherit_owner_velocity_scale"		"0.3"
+	"projectile_inherit_owner_velocity_scale"		"0.300000"
      
                                     
                                                   
@@ -118,7 +118,7 @@ grenade_use_mask_ability                            "1"
 	"explosion_shake_radius"						"0"
 	"explosion_shake_amplitude"						"0"
 	"explosion_shake_frequency"						"0"
-	"explosion_shake_duration"						"0.0"
+	"explosion_shake_duration"						"0.000000"
 
                                
     "grenade_touch_triggers_on_impact"				"1"
@@ -137,10 +137,10 @@ grenade_use_mask_ability                            "1"
 
 	// Behavior
     "zoom_effects"                                  "0"
-	"fire_rate"   									"10.0"
-	"fire_duration"									"0.0"
-	"deploy_time" 									"0.15"
-	"lower_time"  									"0.15"
+	"fire_rate"   									"10.000000"
+	"fire_duration"									"0.000000"
+	"deploy_time" 									"0.150000"
+	"lower_time"  									"0.150000"
 	"allow_empty_fire"								"0"
 	"no_ammo_used_on_primary_attack"				"1"
 	"reload_enabled"  								"0"
@@ -154,26 +154,26 @@ grenade_use_mask_ability                            "1"
 	"grenade_inherit_owner_velocity"				"1"
 	"cooldown_type"									"ammo_instant"
                                
-	"toss_pullout_time"								"0.25" //previously 0.1, testing different method for confirming immediate camera accesss
+	"toss_pullout_time"								"0.250000"
      
                                  
       
-	"toss_time"										"1.3"
-	"toss_overhead_time"							"1.3"
+	"toss_time"										"1.300000"
+	"toss_overhead_time"							"1.300000"
 
                                       
                              
      
 	"max_cook_time"									"0"
 
-	"grenade_bounce_vel_frac_shallow"				"0.0"
-	"grenade_bounce_vel_frac_sharp"					"0.0"
-	"grenade_bounce_vel_frac_along_normal"			"0.0"
-	"grenade_bounce_randomness"						"0.0"
-	"grenade_bounce_extra_vertical_randomness"		"0.0"
-	"grenade_roll_vel_frac_per_second"				"0.0"
-	"grenade_radius_vertical"						"5.0"
-	"grenade_radius_horizontal"						"16.0"
+	"grenade_bounce_vel_frac_shallow"				"0.000000"
+	"grenade_bounce_vel_frac_sharp"					"0.000000"
+	"grenade_bounce_vel_frac_along_normal"			"0.000000"
+	"grenade_bounce_randomness"						"0.000000"
+	"grenade_bounce_extra_vertical_randomness"		"0.000000"
+	"grenade_roll_vel_frac_per_second"				"0.000000"
+	"grenade_radius_vertical"						"5.000000"
+	"grenade_radius_horizontal"						"16.000000"
 	"projectile_launch_pitch_offset"				"0"
 
 	// Spread
@@ -185,15 +185,15 @@ grenade_use_mask_ability                            "1"
 
 	"ammo_drains_to_empty_on_fire"					"0"
 
-	"ammo_clip_size"   								"400"
-	"ammo_default_total"							"400"
+	"ammo_clip_size"   								"300"
+	"ammo_default_total"							"300"
 	"ammo_display"									"bar"
-	"ammo_min_to_fire"								"400"
-	"ammo_per_shot"									"400"
-	"ammo_stockpile_max"							"400"
+	"ammo_min_to_fire"								"300"
+	"ammo_per_shot"									"300"
+	"ammo_stockpile_max"							"300"
 	"ammo_no_remove_from_clip"						"0"
 	"regen_ammo_refill_rate"						"10"
-	"regen_ammo_refill_start_delay"					"0.0"
+	"regen_ammo_refill_start_delay"					"0.000000"
     "ammo_no_remove_from_stockpile"					"0"
 
 	// Rumble

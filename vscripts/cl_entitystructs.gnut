@@ -54,6 +54,11 @@ global struct ClientEntityStruct
 	//Legion Variables
 	bool ammoSwapPlaying = false
 	bool gunShieldActive = false
+	
+	bool eyeForQuality_isScanned = false
+	bool isSelected = false
+	
+	table<string, TokenizedAnimEventData> tokenizedAnimEventDataForEntity
 
 	float localPingBeginTime = -999.0
 	int predictedUseCount = 0
@@ -64,6 +69,7 @@ global struct ClientEntityStruct
 	string functionref( entity ent ) entTextOverrideCallback
 
 	bool functionref( entity player, entity ent ) canUseEntityCallback = null
+	bool functionref( entity player, entity ent, int useFlags ) canUseEntityCallbackNew = null
 
 	array<void functionref( entity ent, entity player, int useInputType )> onUseEntityCallbacks
 	array<void functionref( entity vehicle )> onVehicleLaunchCallbacks
@@ -109,6 +115,9 @@ global struct ClientEntityStruct
 	int    clientEntMinimapCustomState
 	int    clientEntMinimapFlags
 	float  clientEntMinimapScale = 1.0
+	EncodedEHandle ornull gladCardPropOwnerPlayerEEH = null
+	ItemFlavor ornull     animWindowCosmeticItemFlavor = null
+	ItemFlavor ornull     animWindowSkinItemFlavor = null
 }
 
 
@@ -225,6 +234,7 @@ global struct ClientPlayerStruct
 	float lastUseTime
 	
 	float lastTimeUsedRailjump
+	bool isInAdsCustom
 }
 
 
@@ -269,6 +279,7 @@ global struct ClientWeaponStruct
 	bool wasFired
 	
 	bool isInAdsCustom = false
+	bool toggleShot
 }
 
 

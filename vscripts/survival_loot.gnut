@@ -57,10 +57,14 @@ global function ShouldForceUseSafeSpotForDeathBox_RemovePlayer
 
 global function AddCallback_LootPhysicsParented
 global function RemoveCallback_LootPhysicsParented
+global function GetRefOrRefFromGroup
 
 global function Dev_ForceDropDeathbox
 global function SURVIVAL_Death_DropLoot_Internal
 global function SURVIVAL_IsValidLootGroup
+global function Survival_Loot_SetRealmsToPopulate
+global function Survival_Loot_GetRealmsToPopulate
+global function Survival_Loot_GetDefaultRealm
 
 global function Loot_AddCallback_OnGiveMainWeapon
 global function Loot_RemoveCallback_OnGiveMainWeapon
@@ -68,13 +72,12 @@ global function Loot_AddCallback_OnWeaponDrop
 global function Loot_RemoveCallback_OnWeaponDrop
 global function Loot_IsStandardSurvivalLootEnabled
 
-//added 8/8/2024 ~mkos
 global function AddCallback_OnPlayerWeaponAttachmentChanged
 global function RemoveCallback_OnPlayerWeaponAttachmentChanged 
 
 global function GetGroundPosition
 
-const int GIVE_FULL_AMMO_MARKER = 1337 // I hate this //(mk): wtf lmao
+const int GIVE_FULL_AMMO_MARKER = 1337
 
 global const LOOT_COLLISION_GROUP = 1
 global const int LOOT_TRACE = TRACE_MASK_PLAYERSOLID | TRACE_MASK_OPAQUE
@@ -174,10 +177,12 @@ struct {
 	table< string, void functionref(entity, string, int) > specialCaseRefDecrementFunctions
 
 	array< void functionref(entity, entity, string, int, bool, entity, int) >       Callbacks_OnPlayerLootPickup
+	array< void functionref(entity, LootData, int) >                                Callbacks_OnLootSpawn
 	table< entity, array<void functionref( entity parentEnt, entity childEnt ) > >  Callbacks_OnLootPhysicsParented
 	table< string, array<void functionref( entity parentEnt, entity childEnt ) > >  Callbacks_OnLootSpawnParented
 	array< void functionref(entity, entity, entity) >								Callbacks_OnGiveMainWeapon
 	array< void functionref(entity, entity, entity) >								Callbacks_OnWeaponDrop
+	array<int>                     realmsToPopulate = [ eRealms.DEFAULT ]
 
 	array<entity> playersThatShouldForceUseSafeSpotForDeathBox
 	
@@ -201,10 +206,8 @@ struct
 	bool death_box_dist_check
 	bool drop_loot_on_death
 	bool thank_for_loot_ping_enabled
-	bool flowstate_giveskins_weapons
 	bool sur_dev_disable_hibernation
 	bool survival_weapon_spawn_with_ammo
-	bool flowstate_givecharms_weapons
 	bool survival_transfer_attachment
 	bool survival_unequip_attachment
 	bool survival_equip_attachment
@@ -228,6 +231,8 @@ void function SV_Survival_Loot_Init()
 
 	AddClientCommandCallback( "Sur_EquipAttachment", ClientCommand_Sur_EquipAttachment )
 	AddClientCommandCallback( "Sur_UnequipAttachment", ClientCommand_Sur_UnequipAttachment )
+	
+	
 
 	AddClientCommandCallback( "Sur_TransferAttachment", ClientCommand_Sur_TransferAttachment )
 
@@ -296,11 +301,9 @@ void function SurvivalLoot_Settings_Init()
 	settings.deathbox_ondeath_enabled			= GetCurrentPlaylistVarBool( "deathbox_ondeath_enabled", true )
 	settings.death_box_dist_check				= GetCurrentPlaylistVarBool( "death_box_dist_check", true  )
 	settings.thank_for_loot_ping_enabled		= GetCurrentPlaylistVarBool( "thank_for_loot_ping_enabled", true )
-	settings.flowstate_giveskins_weapons		= GetCurrentPlaylistVarBool( "flowstate_giveskins_weapons", false )
 	settings.sur_dev_disable_hibernation		= ( GetCurrentPlaylistVarInt( "sur_dev_disable_hibernation", 0 ) == 1 )
 	settings.drop_loot_on_death					= GetCurrentPlaylistVarBool( "drop_loot_on_death", true )
 	settings.survival_weapon_spawn_with_ammo	= ( GetCurrentPlaylistVarInt( "survival_weapon_spawn_with_ammo", 1 ) != 0 )
-	settings.flowstate_givecharms_weapons		= GetCurrentPlaylistVarBool( "flowstate_givecharms_weapons", false )
 	settings.survival_transfer_attachment		= GetCurrentPlaylistVarBool( "survival_transfer_attachment", true )
 	settings.survival_unequip_attachment		= GetCurrentPlaylistVarBool( "survival_unequip_attachment", true )
 	settings.survival_equip_attachment			= GetCurrentPlaylistVarBool( "survival_equip_attachment", true )
@@ -2018,6 +2021,13 @@ void function TrackingVision_CreatePOIForPickedUpLoot( entity player, int lootTy
 
 }
 
+string function GetRefOrRefFromGroup( string refOrGroup )
+{
+	if ( SURVIVAL_IsValidLootGroup( refOrGroup ) )
+		return SURVIVAL_GetWeightedItemFromGroup( refOrGroup )
+	return refOrGroup
+}
+
 void function AddValidModsFromAttachList( entity player, string weaponName, array<string> mods, array<string> additionalAttachments )
 {
 	if ( SURVIVAL_Weapon_IsAttachmentLocked( weaponName ) )
@@ -2122,19 +2132,8 @@ entity function SURVIVAL_ThrowLootFromPointEx( ThrowLootParams params )
 	}
 	else
 	{
-		vector vel
-		if( params.fwd == <-1,-1,-1> )
-		{
-			float speed = RandomFloatRange( params.throwVelocityRange[0], params.throwVelocityRange[1] )
-			vel  = (params.fwd * speed) + <0, 0, 100>
-		} else
-		{
-			vel = params.fwd
-		}
-		#if DEVELOPER
-			printt( "will throw with vel", vel )
-		#endif 
-		
+		float speed = RandomFloatRange( params.throwVelocityRange[0], params.throwVelocityRange[1] )
+		vector vel  = (params.fwd * speed) + <0, 0, 100>
 		FakePhysicsThrow_Retail( player, ent, vel, true )
 	}
 
@@ -2153,6 +2152,7 @@ entity function SURVIVAL_ThrowLootFromPoint( vector dropOrg, vector fwd, string 
 
 	return SURVIVAL_ThrowLootFromPointEx( params )
 }
+
 
 void function RemovePlayerExtraWeaponMods( entity player, array<string> mods )
 {
@@ -2453,7 +2453,6 @@ entity function SURVIVAL_GiveMainWeapon( entity player, entity pickup, array<str
 	newWeapon.SetProScreenOwner( ( ( pickup.e.firstOwner == null) ? player : pickup.e.firstOwner) )
 	// TryRemoveExtraWeaponModsThatMustBeOnPlayer( player, newWeapon, mods ) //for rampart. Cafe
 
-	//Cafe was here
 	ItemFlavor ornull weaponSkinOrNull = null
 	array<string> fsCharmsToUse = [ "SAID00701640565", "SAID01451752993", "SAID01334887835", "SAID01993399691", "SAID00095078608", "SAID01439033541", "SAID00510535756", "SAID00985605729" ]
 	ItemFlavor ornull weaponCharmOrNull 
@@ -2466,27 +2465,10 @@ entity function SURVIVAL_GiveMainWeapon( entity player, entity pickup, array<str
 	{
 		weaponSkinOrNull = GetItemFlavorByGUID( pickup.e.skinItemFlavorGUID )
 	} 
-	else if ( settings.flowstate_giveskins_weapons )
-	{
-		ItemFlavor ornull weaponFlavor = GetWeaponItemFlavorByClass( pickupRef )
-		
-		if( weaponFlavor != null )
-		{
-			array<int> weaponLegendaryIndexMap = FS_ReturnLegendaryModelMapForWeaponFlavor( expect ItemFlavor( weaponFlavor ) )
-			if( weaponLegendaryIndexMap.len() > 1 )
-				weaponSkinOrNull = GetItemFlavorByGUID( weaponLegendaryIndexMap[RandomIntRangeInclusive(1,weaponLegendaryIndexMap.len()-1)] )
-		}
-	}
-
-	if ( settings.flowstate_givecharms_weapons )
-		weaponCharmOrNull = GetItemFlavorByGUID( chosenCharm )
 
 	if( newWeapon.LookupAttachment( "CHARM" ) > 0 )
 	{
-		if( GetCurrentPlaylistVarBool( "is_hiswattson_event", false ) )
-			newWeapon.SetWeaponCharm( $"mdl/flowstate_custom/charm_hiswattson.rmdl", "CHARM" )
-		else
-			WeaponCosmetics_Apply( newWeapon, weaponSkinOrNull, weaponCharmOrNull )
+		WeaponCosmetics_Apply( newWeapon, weaponSkinOrNull, weaponCharmOrNull )
 	}
 
 	if ( WeaponHasCosmetics( newWeapon ) && ( pickup.e.firstOwner != null ) && ( pickup.e.firstOwner != player ) && CodeCallback_CanStartCustomWeaponActivity( player, ACT_VM_WEAPON_INSPECT ) )
@@ -3043,7 +3025,7 @@ entity function SpawnGenericLoot( string ref, vector origin, vector overrideAngl
 	int lootType = lootData.lootType
 
 	SetForceDrawWhileParented( ent, true )
-	// ent.SetSurvivalPropFadeDist( GetFadeDistForLoot( lootData ) )
+	ent.SetFadeDistance( GetFadeDistForLoot( lootData ) )
 
 	ent.SetUsable()
 	ent.SetUsableByGroup( "pilot" )
@@ -3106,7 +3088,7 @@ entity function SpawnGenericLoot( string ref, vector origin, vector overrideAngl
 		ShowDefaultBodygroupsOnFakeWeapon( ent, baseWeapon )
 	}
 
-	if ( settings.sur_dev_disable_hibernation )
+	if ( GetCurrentPlaylistVarInt( "sur_dev_disable_hibernation", 0 ) == 1 )
 	{
 		ent.DisableHibernation()
 	}
@@ -3114,8 +3096,8 @@ entity function SpawnGenericLoot( string ref, vector origin, vector overrideAngl
 	ent.e.spawnTime = Time()
 	SetItemSpawnSource( ent, eSpawnSource.GAME )
 
-	// foreach ( callbackFunc in file.Callbacks_OnLootSpawn )
-		// thread callbackFunc( ent, lootData, clipCount )
+	foreach ( callbackFunc in file.Callbacks_OnLootSpawn )
+		thread callbackFunc( ent, lootData, clipCount )
 
 	return ent
 }
@@ -3755,10 +3737,13 @@ void function FakePhysicsThrow_Retail( entity player, entity drop, vector vel, b
 	if ( !IsValid( drop ) )
 		return
 
+	drop.kv.solid = 0
+	drop.kv.CollideWithOwner = false
+	drop.kv.fadedist = 10000
 	asset model       = drop.GetModelName()
-	entity physicsEnt = CreatePropPhysics( model, drop.GetOrigin(), drop.GetAngles(), SF_PHYSPROP_DEBRIS )
+	entity physicsEnt = CreatePropPhysics( model, drop.GetOrigin(), drop.GetAngles(), 0 )
 	physicsEnt.kv.CollideWithOwner = false
-	// physicsEnt.SetIgnoreCombatCharacters( ignoreCombatCharacters )
+	physicsEnt.kv.solid = 0
 	physicsEnt.SetBlocksRadiusDamage( false )
 	drop.SetParent( physicsEnt )
 
@@ -3766,7 +3751,6 @@ void function FakePhysicsThrow_Retail( entity player, entity drop, vector vel, b
 
 	// set the owner so the physics object doesn't collide with the thrower
 	physicsEnt.Hide()
-	physicsEnt.AllowMantle()
 	physicsEnt.SetTakeDamageType( DAMAGE_NO )
 
 	vector baseVel
@@ -3974,21 +3958,6 @@ entity function SpawnWeaponAndAmmo( string weaponName, vector origin, int realm 
 		}
 
 		weapon.SetParent( trace.hitEnt, "", true, 0 )
-	}
-
-	if ( settings.flowstate_giveskins_weapons )
-	{
-		ItemFlavor ornull weaponFlavor = GetWeaponItemFlavorByClass( weaponName )
-		ItemFlavor ornull weaponSkinOrNull = null
-
-		if( weaponFlavor != null )
-		{
-			array<int> weaponLegendaryIndexMap = FS_ReturnLegendaryModelMapForWeaponFlavor( expect ItemFlavor( weaponFlavor ) )
-			if( weaponLegendaryIndexMap.len() > 1 )
-				weaponSkinOrNull = GetItemFlavorByGUID( weaponLegendaryIndexMap[RandomIntRangeInclusive(1,weaponLegendaryIndexMap.len()-1)] )
-		}
-		
-		WeaponCosmetics_Apply( weapon, weaponSkinOrNull, null )
 	}
 	
 	LootData data = SURVIVAL_Loot_GetLootDataByRef( weaponName )
@@ -4450,7 +4419,7 @@ void function SURVIVAL_AutoEquipOrdnanceFromInventory( entity player, bool shoul
 {
 	#if DEVELOPER
 	// DumpStack()
-	Warning( "SURVIVAL_AutoEquipOrdnanceFromInventory" )
+	// Warning( "SURVIVAL_AutoEquipOrdnanceFromInventory" )
 	#endif
 	
 	if( Flowstate_IsHaloMode() )
@@ -4591,8 +4560,8 @@ void function SURVIVAL_TryGivePlayerDefaultMeleeWeapons( entity player )
 void function SURVIVAL_EquipOrdnanceFromInventory( entity player, string item, bool forceDontSwitch = false )
 {
 	#if DEVELOPER
-	DumpStack()
-	Warning( "SURVIVAL_EquipOrdnanceFromInventory " + player + " " + item + " " + forceDontSwitch )
+		// DumpStack()
+		// Warning( "SURVIVAL_EquipOrdnanceFromInventory " + player + " " + item + " " + forceDontSwitch )
 	#endif
 	if ( !SURVIVAL_PlayerCanSwitchOrdnance( player ) )
 		return
@@ -5512,7 +5481,7 @@ void function SURVIVAL_RefreshWeaponSkinAndModel( entity weapon, entity player )
 			WeaponCosmetics_ApplyModelAndSkin( weapon, skin )
 		}
 	} 
-	else //Cafe was here
+	else
 	{
 		ItemFlavor ornull weaponFlavor = GetWeaponItemFlavorByClass( weapon.GetWeaponClassName() )
 		
@@ -5686,6 +5655,23 @@ void function MoveToNewPosition( entity loot, vector origin, vector angles )
 	loot.ClearParent()
 }
 
+void function Survival_Loot_SetRealmsToPopulate( array<int> realms )
+{
+	file.realmsToPopulate = realms
+}
+
+
+array<int> function Survival_Loot_GetRealmsToPopulate()
+{
+	return file.realmsToPopulate
+}
+
+
+int function Survival_Loot_GetDefaultRealm()
+{
+	return file.realmsToPopulate[ 0 ]
+}
+
 void function AddCallback_LootPhysicsParented( entity ent, void functionref( entity parentEnt, entity childEnt ) callbackFunc )
 {
 	if ( ent in file.Callbacks_OnLootPhysicsParented )
@@ -5708,7 +5694,7 @@ void function RemoveCallback_LootPhysicsParented( entity ent, void functionref( 
 	}
 }
 
-//TODO: Create separate logic for halo specific loot dropping.
+//TODO(mk): Create separate logic for halo specific loot dropping.
 const array<string> VALID_FOR_HALO = 
 [ 
 	"mp_weapon_haloassaultrifle",  

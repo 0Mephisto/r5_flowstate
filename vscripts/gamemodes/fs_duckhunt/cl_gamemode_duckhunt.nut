@@ -1,9 +1,3 @@
-//APEX DUCKHUNT
-//Made by @CafeFPS (@CafeFPS)
-
-// Darkes#8647 - duckhunt maps
-// everyone else - advice
-
 global function Cl_GamemodeDuckhunt_Init
 global function DUCKHUNT_CustomHint
 global function DUCKHUNT_Timer
@@ -16,16 +10,6 @@ struct {
 
 void function Cl_GamemodeDuckhunt_Init()
 {
-	SetConVarInt("cl_quota_stringCmdsPerSecond", 100)
-	//I don't want these things in user screen even if they launch in debug
-	SetConVarBool( "cl_showpos", false )
-	SetConVarBool( "cl_showfps", false )
-	SetConVarBool( "cl_showgpustats", false )
-	SetConVarBool( "cl_showsimstats", false )
-	SetConVarBool( "host_speeds", false )
-	SetConVarBool( "con_drawnotify", false )
-	SetConVarBool( "enable_debug_overlays", false )
-	
 	RegisterSignal("DUCKHUNT_EndTimer")
 	AddClientCallback_OnResolutionChanged( ReloadCustomRUI )
 }

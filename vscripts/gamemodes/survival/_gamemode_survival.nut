@@ -41,6 +41,7 @@ global function SURVIVAL_SetPlaneHeight
 global function Survival_RunPlaneLogic_Thread
 global function Survival_GenerateSingleRandomPlanePath
 global function Survival_RunSinglePlanePath_Thread
+global function Survival_GetPlayerRealm
 
 global function SetPlayerIntroDropSettings
 global function ClearPlayerIntroDropSettings
@@ -70,7 +71,7 @@ const string KNOCKED_SOUND = "flesh_bulletimpact_downedshot_3p_vs_3p"
 //fix debug draws calls
 const bool DEBUG_PLANE_PATH = false
 const bool DEBUG_PLANE_PATH_LIGHTWEIGHT = false
-const bool DEBUG_PLANE_PATH_JUMP = true
+const bool DEBUG_PLANE_PATH_JUMP = false
 const bool PLANE_PATH_DEBUG = false
 
 global float g_DOOR_OPEN_TIME = 0
@@ -131,7 +132,7 @@ struct
 } file
 
 void function GamemodeSurvival_Init()
-{	
+{
 	if(GetCurrentPlaylistVarBool("enable_global_chat", true))
 		SetConVarBool("sv_forceChatToTeamOnly", false) //thanks rexx
 	else
@@ -144,7 +145,6 @@ void function GamemodeSurvival_Init()
 	FlagInit( "PlaneStartMoving" )
 	FlagInit( "PlaneDoorOpen" )
 	FlagInit( "PlaneAtLaunchPoint" )
-	FlagInit( "DeathCircleActive" )
 	FlagInit( "SpawnInDropship", false )
 	FlagInit( "PlaneDrop_Respawn_SetUseCallback", false )
 
@@ -439,6 +439,16 @@ void function EntitiesDidLoad_Survival()
 	//defaulting to false crashes survival game modes expecting a plane
 	if( GetCurrentPlaylistVarBool( "jump_from_plane_enabled", true ) || GetCurrentPlaylistVarBool( "force_plane_to_spawn_without_players", false ) )
 		thread Survival_RunPlaneLogic_Thread( Survival_GenerateSingleRandomPlanePath, Survival_RunSinglePlanePath_Thread, false )
+	else
+	{
+		if ( GetCurrentPlaylistVarBool( "survival_deathfield_enabled", true ) )
+			FlagSet( "DeathCircleActive" )
+
+		if ( GetCurrentPlaylistVarBool( "sur_circle_start_paused", false ) )
+		{
+			FlagSet( "DeathFieldPaused" )
+		}
+	}
 }
 
 void function Survival_RunPlaneLogic_Thread( array< PlanePathData > functionref( bool, int = 0 ) generatePlanePathFunc, void functionref( array< PlanePathData >, int = 0 ) runPlanePathFunc, bool beQuick, int planeInt = 0 )
@@ -823,7 +833,7 @@ void function Survival_RunSinglePlanePath_Thread( array< PlanePathData > paths, 
 
 	if ( GetCurrentPlaylistVarBool( "sur_circle_start_paused", false ) )
 	{
-		FlagClear( "DeathFieldPaused" )
+		FlagSet( "DeathFieldPaused" )
 	}
 }
 
@@ -892,10 +902,10 @@ bool function ClientCommand_Flowstate_AssignCustomCharacterFromMenu(entity playe
 		player.SetArmsModelOverride( $"mdl/Humans/pilots/ptpov_master_chief.rmdl" )
 		break
 		
-		case "1":
+		/*case "1":
 		player.SetBodyModelOverride( $"mdl/Humans/pilots/w_blisk.rmdl" )
 		player.SetArmsModelOverride( $"mdl/Humans/pilots/pov_blisk.rmdl" )
-		break
+		break*/
 		
 		case "2":
 		player.SetBodyModelOverride( $"mdl/Humans/pilots/w_phantom.rmdl" )
@@ -917,17 +927,17 @@ bool function ClientCommand_Flowstate_AssignCustomCharacterFromMenu(entity playe
 		player.SetArmsModelOverride( $"mdl/Humans/pilots/ptpov_rhapsody.rmdl" )
 		break
 		
-		case "6":
+		/*case "6":
 		player.SetBodyModelOverride( $"mdl/Humans/pilots/w_ash_legacy.rmdl" )
 		player.SetArmsModelOverride( $"mdl/Humans/pilots/pov_ash_legacy.rmdl" )
-		break
+		break*/
 		
 		// case "7":
 		// player.SetBodyModelOverride( $"mdl/Humans/pilots/w_cj.rmdl" )
 		// player.SetArmsModelOverride( $"mdl/Humans/pilots/ptpov_amogino.rmdl" )
 		// break
 		
-		case "8":
+		/*case "8":
 		player.SetBodyModelOverride( $"mdl/Humans/pilots/w_jackcooper.rmdl" )
 		player.SetArmsModelOverride( $"mdl/Humans/pilots/ptpov_jackcooper.rmdl" )
 		break
@@ -935,7 +945,7 @@ bool function ClientCommand_Flowstate_AssignCustomCharacterFromMenu(entity playe
 		case "9":
 		player.SetBodyModelOverride( $"mdl/Humans/pilots/pilot_medium_loba.rmdl" )
 		player.SetArmsModelOverride( $"mdl/Humans/pilots/pov_pilot_medium_loba.rmdl" )
-		break
+		break*/
 		
 		// case "10":
 		// player.SetBodyModelOverride( $"mdl/Humans/pilots/pilot_heavy_revenant.rmdl" )
@@ -952,10 +962,10 @@ bool function ClientCommand_Flowstate_AssignCustomCharacterFromMenu(entity playe
 		player.SetArmsModelOverride( $"mdl/Humans/pilots/ballistic_base_v.rmdl" )
 		break
 		
-		case "13": // mrvn
+		/*case "13": // mrvn
 		player.SetBodyModelOverride( $"mdl/flowstate_custom/w_marvin.rmdl" )
 		player.SetArmsModelOverride( $"mdl/Humans/pilots/ptpov_amogino.rmdl" )
-		break
+		break*/
 
 		// case "14": // gojo
 		// player.SetBodyModelOverride( $"mdl/flowstate_custom/w_gojo.rmdl" )
@@ -1021,19 +1031,16 @@ void function Sequence_Playing()
 	}
 
 	// Set settings for the drop-in
-	foreach ( entity player in GetPlayerArray() )
+	bool shouldSetDropSettings = true
+	if ( Gamemode() == eGamemodes.WINTEREXPRESS || Playlist() == ePlaylists.survival_dev || Playlist() == ePlaylists.dev_default || GetCurrentPlaylistVarBool( "is_practice_map", false ) || Playlist() == ePlaylists.fs_movementrecorder )
+		shouldSetDropSettings = false
+	
+	if ( shouldSetDropSettings )
 	{
-		bool shouldSetDropSettings = true
-
-		if ( Gamemode() == eGamemodes.WINTEREXPRESS || Playlist() == ePlaylists.survival_dev || Playlist() == ePlaylists.dev_default || GetCurrentPlaylistVarBool( "is_practice_map", false ) || Playlist() == ePlaylists.fs_movementrecorder )
-			shouldSetDropSettings = false
-
-		if ( shouldSetDropSettings )
-		{
+		foreach ( entity player in GetPlayerArray() )
 			SetPlayerIntroDropSettings( player )
-		}
 	}
-
+	
 	FlagClear( "PlaneStartMoving" )
 	FlagClear( "PlaneDoorOpen" )
 	FlagClear( "PlaneAtLaunchPoint" )
@@ -1061,7 +1068,8 @@ void function Sequence_Playing()
 		{
 			WaitFrame()
 		}
-	} else if ( !GetCurrentPlaylistVarBool( "match_ending_enabled", true ) || GetConVarInt( "mp_enablematchending" ) < 1 )
+	} 
+	else if ( !GetCurrentPlaylistVarBool( "match_ending_enabled", true ) || GetConVarInt( "mp_enablematchending" ) < 1 )
 	{
 		WaitForever() // match never ending
 	}
@@ -1204,7 +1212,7 @@ void function Sequence_Epilogue()
 			)
 		}
 
-		Remote_CallFunction_NonReplay( player, "ServerCallback_ShowWinningSquadSequence" )
+		Remote_CallFunction_ByRef( player, "ServerCallback_ShowWinningSquadSequence" )
 	}
 	
 	if( GetCurrentPlaylistVarBool( "survival_server_restart_after_end", false ) )
@@ -1305,10 +1313,6 @@ void function OnPlayerDamaged( entity victim, var damageInfo )
 //Centralized start bleedout
 int function CodeCallback_KillDamagePlayerOrNPC( entity ent, var damageInfo, int actualTotalDamage )
 {
-	#if DEVELOPER
-	Warning( "CodeCallback_KillDamagePlayerOrNPC " + ent + " actualTotalDamage " + actualTotalDamage )
-	#endif
-
 	entity damagedEnt = ent
 
 	if ( !damagedEnt.IsPlayer() )
@@ -1824,15 +1828,13 @@ void function OnClientConnected( entity player )
 	} 
 	else if ( IsSurvivalTraining() )
 	{
-		DecideRespawnPlayer( player )
-		thread PlayerStartsTraining( player )
 		return
 	} 
 
 	switch ( GetGameState() )
 	{
 		case eGameState.Epilogue:
-			Remote_CallFunction_NonReplay( player, "ServerCallback_ShowWinningSquadSequence" )
+			Remote_CallFunction_ByRef( player, "ServerCallback_ShowWinningSquadSequence" )
 			break
 	}
 	
@@ -2748,7 +2750,6 @@ void function SurvivalPlayerRespawnedInit( entity player )
 		}
 		else
 		{
-			// Cafe was here
 			// The following should be allowed only in dev modes, but those are handled in a different way in r5r, which allows us to completely disable this. 
 			// The fixed behavior for this part has been moved to OnClientConnected callback in sh_onboarding, where we do the pertinent checks before respawning the player.
 			
@@ -2777,6 +2778,17 @@ void function Survival_ClearPrematchSettings( entity player )
 {
 	if ( file.shouldFreezeControlsOnPrematch )
 		player.UnfreezeControlsOnServer()
+}
+
+int function Survival_GetPlayerRealm( entity player )
+{
+	foreach ( realm in Survival_Loot_GetRealmsToPopulate() )
+	{
+		if ( player.IsInRealm( realm ) )
+			return realm
+	}
+
+	return eRealms.DEFAULT
 }
 
 void function Survival_ResetPlayerHighlights()

@@ -64,6 +64,7 @@ void function SV_CL_Init()
 		#endif 
 	Flags_Init()
 	RemoteFunctions_Init_Begin()
+	CryptoTT_Init()
 	ShGamepad_LevelInit()
 	Thirdperson_Init()
 	DeathHints_Init()
@@ -110,6 +111,7 @@ void function SV_CL_Init()
 	ShXP_Init()
 	ShPersistentData_LevelInit_Begin()
 	ScoreShared_Init()
+	ShLootMarvin_Init()
 	//InitStatsTables()
 	ShItems_LevelInit_Begin()
 	ShGRX_LevelInit()
@@ -180,10 +182,9 @@ void function SV_CL_Init()
 	ShLootRollers_Init()
 
 	CharacterSelectNewMenu_Init()
-	// MpWeaponLifelineBatonPrimary_Init()
 
 	//ShHoverBike_Init()
-	//ShHoverVehicle_Init()
+	ShHoverVehicle_Init()
 	Sh_SkydiveLaunchers_Init()
 	ShLootBin_Init()
 	ShFlyers_Init()
@@ -195,39 +196,11 @@ void function SV_CL_Init()
 	ShTutorial_Init()
 	Sh_PassiveVoices_Init()
 	ShPassiveAdrenaline_Init()
-	
-	// Custom - Made by @CafeFPS
-	MpWeaponTitanSword_Init() //Flowstate Sword
-	MpWeaponFlameThrower_Init()
-	// MpUltimatePhaseChamber_Init()
-	// MpWeaponPortalGun_Init() //It needs rework
-	MpNextBots_Init()
-	// MpAbilityTank_Init()
-	// MpWeaponGuidedMissile_Init()
-	ChargePylons_Init()
-	MpWeaponRingFlare_Init()
-	if( Playlist() != ePlaylists.fs_1v1 && Playlist() != ePlaylists.fs_lgduels_1v1  && Playlist() != ePlaylists.fs_scenarios )
-		MpWeaponEmoteProjector_Init()
-	MpSpaceElevatorAbility_Init()
-	Clickweapon_Init() //Lightning Gun
-	///////////////////// END CUSTOM
-	
-	// S0 Dev PROTOS - Ported by @CafeFPS
-	// MpWeaponConcussiveBreach_Init()
-	// MpWeaponGrenadeFlashbang_Init()
-	// ShPassiveShotgunKick_Init()
-	// MpAbilityMaelstromJavelin_Init()
-	// MpAbilitySonicShoutWeapon_Init()
-	// MpAbilityRiotShield_Init()
-	// MpAbilitySpotterSight_Init()
-	// MpAbilityLootCompass_Init()
-	// MpWeaponCoverWall_Init()
-	// MpWeaponGroundSlam_Init()
-	// MpAbilitySplitTimelineWeapon_Init()
-	// MpWeaponDebrisTrap_Init()
-	// MpWeaponGrenadeBarrier_Init()
-	///////////////////// END DEV PROTOS
 
+	MpAbilitySharedSilence_Init()
+	MpAbilityRevenantDeathTotem_Init()
+	MobileRespawnBeacon_Init()
+	PanicButton_Init()
 	WeaponMastiff_Init()
 	WorldDrawAsset_Init()
 
@@ -239,15 +212,20 @@ void function SV_CL_Init()
 	PassiveMedic_Init() //Should be shared. Cafe
 	MpAbilityCryptoDrone_Init()
 	MpAbilityCryptoDroneEMP_Init()
-	//MpAbilitySilence_Init()
-	// Titanfall GUNS - by LorryLeKral
+	MpAbilitySilence_Init()
 	MpWeaponSmartPistol_Init()
 	MpWeaponProximityMine_Init()
 	MpWeaponRocketLauncher_Init()
+	MpWeapon3030_Init()
+	
+	Dash_Init()
+
+	//MpWeaponMountedTurretPlaceable_Init()
+	MpWeaponMountedTurretWeapon_Init()
 
     // Zipline Utility
     #if SERVER
-		TurretPlasma_Init() //turret dev ability by cafefps
+		TurretPlasma_Init()
         ZiplineUtility_Init()
     #endif
 
@@ -272,21 +250,22 @@ void function SV_CL_Init()
 	}
 
 	#if CLIENT	
-	if( GetCurrentPlaylistVarBool( "enable_oddball_gamemode", false ) )
-	{
-		RegisterNetworkedVariableChangeCallback_ent( "FSDM_Oddball_BallOrCarrierEntity", Oddball_BallOrCarrierEntityChanged )
-		// RegisterNetworkedVariableChangeCallback_time( "FSIntro_StartTime", Flowstate_IntroTimeChanged )
-		// RegisterNetworkedVariableChangeCallback_time( "FSIntro_EndTime", Flowstate_IntroEndTimeChanged )
-		// RegisterNetworkedVariableChangeCallback_time( "FSVoteTeam_EndTime", Flowstate_VoteTeamEndTimeChanged )
-		if( Gamemode() == eGamemodes.fs_dm )
-			RegisterNetworkedVariableChangeCallback_int( "FSDM_GameState", FSDM_GameStateChanged )		
-	}
-	
-	if( Gamemode() == eGamemodes.CUSTOM_CTF )
-	{
-		RegisterNetworkedVariableChangeCallback_int( "FSDM_GameState", FSCTF_GameStateChanged )
-	}
+		if( GetCurrentPlaylistVarBool( "enable_oddball_gamemode", false ) )
+		{
+			RegisterNetworkedVariableChangeCallback_ent( "FSDM_Oddball_BallOrCarrierEntity", Oddball_BallOrCarrierEntityChanged )
+			// RegisterNetworkedVariableChangeCallback_time( "FSIntro_StartTime", Flowstate_IntroTimeChanged )
+			// RegisterNetworkedVariableChangeCallback_time( "FSIntro_EndTime", Flowstate_IntroEndTimeChanged )
+			// RegisterNetworkedVariableChangeCallback_time( "FSVoteTeam_EndTime", Flowstate_VoteTeamEndTimeChanged )
+			if( Gamemode() == eGamemodes.fs_dm )
+				RegisterNetworkedVariableChangeCallback_int( "FSDM_GameState", FSDM_GameStateChanged )		
+		}
+		
+		if( Gamemode() == eGamemodes.CUSTOM_CTF )
+		{
+			RegisterNetworkedVariableChangeCallback_int( "FSDM_GameState", FSCTF_GameStateChanged )
+		}
 	#endif
+	ModSystem_RunCallbacks()//MOD SYSTEM CALLBACK
 	RemoteFunctions_Init_Finish()
 }
 
@@ -366,7 +345,6 @@ void function Server_Init()
 	GoblinDropship_Init()
 	AiPersonalShield()
 	ATTurrets_Init()
-
 	HoverTank_Init()
 	ThreatTracker_Init()
 	MobilityExperiments_Init()
@@ -385,6 +363,7 @@ void function Server_Init()
 
 	TrackingVision_Init()
 	PassiveGasGear_Init()
+	ShPassiveLootHighlight_Init()
 	Bombardment_Init()
 	ThreatDetection_Init()
 	Staging_Area_Init()
@@ -415,11 +394,13 @@ void function Server_Init()
 	LiveAPI_Init()
 	LootHelper_Init()
 
+	MOTD_Init()
+
     // ReMap Live
     if ( IsDevGamemode() )
         ReMapLive_Init()
 		
-	Flowstate_SpawnSystem_Init()
+	SpawnSystem_Init()
 	NotificationSystem_Init()
 	Flowstate_Afk_Init()
 
@@ -481,6 +462,7 @@ void function Client_Init()
 	ClDroneMedic_Init()
 	ClDroneCrypto_Init()
 	ClDraconisFlyin_Init()
+	CLPilotPassiveDash_Init()
 
 	ClControlPanel_Init()
 	ClSpectre_Init()

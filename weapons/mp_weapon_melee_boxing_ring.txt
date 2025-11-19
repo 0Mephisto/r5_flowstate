@@ -19,8 +19,8 @@ WeaponData
 	//"OnWeaponActivate"								"OnWeaponActivate_weapon_melee_boxing_ring"
 	//"OnWeaponDeactivate"							"OnWeaponDeactivate_weapon_melee_boxing_ring"
 
-	"dof_nearDepthStart"							"0.5"
-	"dof_nearDepthEnd"							    "6.4"
+	"dof_nearDepthStart"							"0.500000"
+	"dof_nearDepthEnd"							    "6.400000"
 
 	// Behavior
 	"deployfirst_time"								"1"

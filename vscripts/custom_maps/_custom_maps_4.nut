@@ -7010,12 +7010,12 @@ void function nuketown()
 {
     //Starting Origin, Change this to a origin in a map
     vector startingorg
-    if( MapName() == eMaps.mp_rr_arena_skygarden ){
+    /*if( MapName() == eMaps.mp_rr_arena_skygarden ){
 	startingorg = <28524,23022,43000>
-	} else {
+	} else */{
 	startingorg = <28524,23022,-3375>
 	}
-	if( MapName() == eMaps.mp_rr_party_crasher_new || MapName() == eMaps.mp_rr_arena_empty )
+	if( MapName() == eMaps.mp_rr_party_crasher || MapName() == eMaps.mp_rr_arena_empty )
 	{
 		startingorg = <-7000, -5000, 20000>
 	}

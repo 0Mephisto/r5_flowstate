@@ -1,4 +1,3 @@
-//Implemented by @CafeFPS (CafeFPS)
 global function OnWeaponPrimaryAttack_ability_phase_rewind
 
 #if SERVER

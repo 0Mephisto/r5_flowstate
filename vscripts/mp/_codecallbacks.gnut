@@ -21,6 +21,9 @@ global function SvCodeCallbacksCommon_Init
 global function EvoCurrentShieldToNextTier
 global function CodeCallback_OnPhysicsAutoDisable
 global function AddEntityCallback_OnPhysicsDisabled
+global function __IncrementPlayerNetInt
+
+global const int MAX_GAMESTAT_NET_INT = 510
 
 struct AccumulatedDamageData
 {
@@ -73,8 +76,6 @@ void function OnClientConnected( entity player )
 		return
 
 	printt( "[+] New player connected! ", player )
-
-	//By CafeFPS
 
 	//Wraith Q fix
 	player.SetForceVisibleInPhaseShift( true )
@@ -143,6 +144,10 @@ void function CodeCallback_DamagePlayerOrNPC( entity ent, var damageInfo )
 			else if ( IsProwler( attacker ) )
 			{
 				DamageInfo_SetDamageSourceIdentifier( damageInfo, eDamageSourceId.prowler_melee )
+			}
+			else if ( IsSpider( attacker ) )
+			{
+				DamageInfo_SetDamageSourceIdentifier( damageInfo, eDamageSourceId.spider_melee )
 			}
 			else if ( IsSuperSpectre( attacker ) )
 			{
@@ -393,11 +398,25 @@ void function CodeCallback_DamagePlayerOrNPC( entity ent, var damageInfo )
 			DamageInfo_SetDamage( damageInfo, 0 )
 		}
 	}
+	
+	float damageAmount = DamageInfo_GetDamage( damageInfo )
+	bool isKillShot = ( damageAmount >= ent.GetHealth() + ent.GetShieldHealth() )
+	
+	if( isKillShot && !entIsNPC && ent.IsShadowForm() )
+	{
+		foreach( callback in ent.e.entOnShadowHealthExhaustedCallbacks )
+		{
+			if( callback( ent ) == true )
+			{
+				DamageInfo_SetDamage( damageInfo, 0 )
+				return
+			}
+		}
+	}
 
 	if (  ( entIsNPC && attackerIsPlayer ) ) //|| ( entIsPlayer && attackerIsNPC ) )
 	{
 		float damage = 0
-		//AI bleedthrough fix By @CafeFPS (CafeFPS)
 		if( ent.GetShieldHealth() > 0 )
 		{
 			//DamageInfo_AddCustomDamageType( damageInfo, DF_SHIELD_DAMAGE )
@@ -446,26 +465,29 @@ void function CodeCallback_DamagePlayerOrNPC( entity ent, var damageInfo )
 		} 
 		else
 		{
-			if( attacker.IsPlayer() )
+			if( attackerIsPlayer )
+			{
 				PlayerDamageFeedback( ent, damageInfo )
 
-			if( file.register_damage_to_ai && attacker.IsPlayer() )
-			{
-				attacker.p.playerDamageDealt = attacker.p.playerDamageDealt + DamageInfo_GetDamage( damageInfo )
-				attacker.SetPlayerNetInt( "damage", attacker.GetPlayerNetInt( "damage" ) + DamageInfo_GetDamage( damageInfo ) )
+				if( file.register_damage_to_ai )
+				{
+					attacker.p.playerDamageDealt = attacker.p.playerDamageDealt + DamageInfo_GetDamage( damageInfo )
+					attacker.SetPlayerNetInt( "damage", attacker.GetPlayerNetInt( "damage" ) + DamageInfo_GetDamage( damageInfo ) )
+				}
 			}
 		}
-
-		//(mk): was missing damage history for shields for non-players
-		float actualDamageDone = damage ? damage : DamageInfo_GetDamage( damageInfo )
 		
-		if( !ent.IsPlayer() && file.register_dummie_kill_as_actual_kill && !file.firingrange_aimtrainerbycolombia )
+		if( !entIsPlayer && file.register_dummie_kill_as_actual_kill && !file.firingrange_aimtrainerbycolombia )
+		{
+			//(mk): was missing damage history for shields for non-players
+			float actualDamageDone = damage ? damage : DamageInfo_GetDamage( damageInfo )
 			StoreDamageHistoryAndUpdate( ent, MAX_DAMAGE_HISTORY_TIME, actualDamageDone, attacker.GetOrigin(), DamageInfo_GetCustomDamageType( damageInfo ), damageSourceId, attacker, GetWeaponModsFromDamageInfo( damageInfo ) )
+		}
 
-		float damageAmount = DamageInfo_GetDamage( damageInfo )
-		bool isKillShot = (damageAmount >= ent.GetHealth() + ent.GetShieldHealth() )
+		damageAmount = DamageInfo_GetDamage( damageInfo )
+		isKillShot = ( damageAmount >= ent.GetHealth() + ent.GetShieldHealth() )
 	
-		if ( isKillShot && attacker.IsPlayer() && !entIsPlayer )
+		if ( isKillShot && attackerIsPlayer && !entIsPlayer )
 		{
 			DamageInfo_AddCustomDamageType( damageInfo, DF_KILLSHOT )
 			EmitSoundOnEntityOnlyToPlayer( attacker, attacker, "flesh_bulletimpact_downedshot_1p_vs_3p" )
@@ -481,14 +503,14 @@ void function CodeCallback_DamagePlayerOrNPC( entity ent, var damageInfo )
 				if( IsValid( ent ) )
 					AddPlayerScore( attacker, "Sur_DownedPilot", ent )
 				
-				attacker.SetPlayerNetInt( "kills", attacker.GetPlayerNetInt( "kills" ) + 1 )
+				__IncrementPlayerNetInt( attacker, "kills" )
 				
-				#if TRACKER 
+				#if TRACKER
 					Tracker_EndFight( ent, attacker, damageInfo )
-				#endif 
+				#endif
 			}
 
-			if( IsValid( attacker ) && attacker.IsPlayer() && IsAlive( attacker ) && file.flowstate_evo_shields && Gamemode() == eGamemodes.SURVIVAL )
+			if( file.flowstate_evo_shields && Gamemode() == eGamemodes.SURVIVAL && attackerIsPlayer && IsAlive( attacker ) )
 				EvoCurrentShieldToNextTier( damageInfo, attacker )
 		}
 	}
@@ -511,15 +533,12 @@ void function CodeCallback_DamagePlayerOrNPC( entity ent, var damageInfo )
 
 	if ( !(DamageInfo_GetCustomDamageType( damageInfo ) & DF_DOOMED_HEALTH_LOSS) )
 	{
-		if ( attackerIsPlayer )
+		if ( attackerIsPlayer && entIsPlayer )
 		{		
-			if ( entIsPlayer )
-			{
-				attacker.p.currentTargetPlayerOrSoul_Ent = ent
-				attacker.p.currentTargetPlayerOrSoul_LastHitTime = Time()
-				attacker.p.playerDamageDealt += savedDamage
-				attacker.SetPlayerNetInt( "damage", attacker.GetPlayerNetInt( "damage" ) + savedDamage )
-			}
+			attacker.p.currentTargetPlayerOrSoul_Ent = ent
+			attacker.p.currentTargetPlayerOrSoul_LastHitTime = Time()
+			attacker.p.playerDamageDealt += savedDamage
+			attacker.SetPlayerNetInt( "damage", attacker.GetPlayerNetInt( "damage" ) + savedDamage )
 		}
 	}
 
@@ -1001,23 +1020,29 @@ function TellClientPlayerTookDamage( entity player, damageInfo, entity attacker,
 	if ( !player.hasConnected )
 		return
 
-	local attackerEHandle = IsValid( attacker ) ? attacker.GetEncodedEHandle() : null
-	local weaponEHandle = IsValid( DamageInfo_GetWeapon( damageInfo ) ) ? DamageInfo_GetWeapon( damageInfo ).GetEncodedEHandle() : null
-	local damageOrigin = GetDamageOrigin( damageInfo, player )
+	int attackerEHandle = IsValid( attacker ) ? attacker.GetEncodedEHandle() : -1
+	int weaponEHandle = IsValid( DamageInfo_GetWeapon( damageInfo ) ) ? DamageInfo_GetWeapon( damageInfo ).GetEncodedEHandle() : -1
+	vector damageOrigin = GetDamageOrigin( damageInfo, player )
 
-	Remote_CallFunction_Replay(
+	// printt_verticle
+	// (
+		// player,
+		// "ServerCallback_PlayerTookDamage",
+		// DamageInfo_GetDamage( damageInfo ),
+		// damageOrigin,
+		// damageType,
+		// damageSourceId,
+		// attackerEHandle
+	// )
+
+	Remote_CallFunction_Replay
+	(
 		player,
 		"ServerCallback_PlayerTookDamage",
-
 		DamageInfo_GetDamage( damageInfo ),
-
-		damageOrigin.x,
-		damageOrigin.y,
-		damageOrigin.z,
-
+		damageOrigin,
 		damageType,
 		damageSourceId,
-
 		attackerEHandle
 	)
 }
@@ -1181,4 +1206,12 @@ void function AddEntityCallback_OnPhysicsDisabled( entity ent, void functionref(
 
 	ent.PhysicsSetAutoDisableNotifications( true )
 	ent.e.onPhysicsDisabledCallbacks.append( callbackFunc )
+}
+
+void function __IncrementPlayerNetInt( entity player, string ref )
+{
+	int playerStat = player.GetPlayerNetInt( ref )
+	
+	if( playerStat < MAX_GAMESTAT_NET_INT )
+		player.SetPlayerNetInt( ref, playerStat + 1 )	
 }

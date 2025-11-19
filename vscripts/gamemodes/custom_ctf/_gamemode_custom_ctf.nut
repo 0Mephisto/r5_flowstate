@@ -1,11 +1,3 @@
-// Credits
-// AyeZee#6969 -- ctf gamemode and ui
-// CafeFPS -- Server/client/ui Rework and multiple code fixes
-// Rexx and IcePixelx -- Help with code improvments
-// sal#3261 -- base custom_tdm mode to work off
-// mkos -- added healing
-// everyone else -- advice
-
 global function _CustomCTF_Init
 global function _CTFRegisterLocation
 global function _CTFRegisterCTFClass
@@ -444,7 +436,7 @@ void function VotingPhase()
 void function StartRound()
 {
 	// create the ring based on location
-	if( MapName() != eMaps.mp_flowstate )
+	if( MapName() != eMaps.mp_rr_arena_empty )
 		file.ringBoundary = CreateRingBoundary(file.selectedLocation)
 
 	CTF.roundstarttime = Time()
@@ -624,7 +616,7 @@ void function StartRound()
 		if( !IsValid( player ) || !IsAlive( player ) )
 			return
 		
-		if( MapName() == eMaps.mp_flowstate )
+		if( MapName() == eMaps.mp_rr_arena_empty )
 			//Remote_CallFunction_NonReplay(player, "Minimap_DisableDraw_Internal")
 			Remote_CallFunction_ByRef( player, "Minimap_DisableDraw_Internal" )
 		else
@@ -1786,7 +1778,7 @@ void function PlayerThrowFlag(entity victim, int team, CTFPoint teamflagpoint)
 	
 	//printt( teamflagpoint.pole.GetOrigin().z, GetZLimitForCurrentLocationName() )
 
-	if( MapName() == eMaps.mp_flowstate && flag.GetOrigin().z <= GetZLimitForCurrentLocationName() || MapName() == eMaps.mp_flowstate && flag.GetOrigin().z >= -19500 )
+	if( MapName() == eMaps.mp_rr_arena_empty && flag.GetOrigin().z <= GetZLimitForCurrentLocationName() || MapName() == eMaps.mp_rr_arena_empty && flag.GetOrigin().z >= -19500 )
 	{
 		ResetFlagForTeam( team )
 		return
@@ -1832,7 +1824,7 @@ void function TrackFlagDropTimeoutAndWorldBounds( int team, CTFPoint teamflagpoi
 			break
 		}
 
-		if( MapName() == eMaps.mp_flowstate && teamflagpoint.pole.GetOrigin().z <= CTF_GetZLimitForCurrentLocationName() || MapName() == eMaps.mp_flowstate && teamflagpoint.pole.GetOrigin().z >= -19500 )
+		if( MapName() == eMaps.mp_rr_arena_empty && teamflagpoint.pole.GetOrigin().z <= CTF_GetZLimitForCurrentLocationName() || MapName() == eMaps.mp_rr_arena_empty && teamflagpoint.pole.GetOrigin().z >= -19500 )
 		{
 			Signal( teamflagpoint.pole, "FlagPhysicsEnd" )
 			ResetFlagForTeam( team )
@@ -2082,7 +2074,7 @@ void function MonitorBubbleBoundary(entity bubbleShield, vector bubbleCenter, fl
 			if(!IsValid(player)) continue
 			if(Distance(player.GetOrigin(), bubbleCenter) > bubbleRadius)
 			{
-				Remote_CallFunction_Replay( player, "ServerCallback_PlayerTookDamage", 0, 0, 0, 0, DF_BYPASS_SHIELD | DF_DOOMED_HEALTH_LOSS, eDamageSourceId.deathField, null )
+				Remote_CallFunction_Replay( player, "ServerCallback_PlayerTookDamage", 0, <0, 0, 0>, DF_BYPASS_SHIELD | DF_DOOMED_HEALTH_LOSS, eDamageSourceId.deathField, 0 )
 				player.TakeDamage( int( Deathmatch_GetOOBDamagePercent() / 100 * float( player.GetMaxHealth() ) ), null, null, { scriptType = DF_BYPASS_SHIELD | DF_DOOMED_HEALTH_LOSS, damageSourceId = eDamageSourceId.deathField } )
 			}
 		}

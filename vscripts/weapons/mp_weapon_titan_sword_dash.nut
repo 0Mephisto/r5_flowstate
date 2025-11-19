@@ -1,5 +1,3 @@
-//By @CafeFPS and Respawn
-
 global function MpWeaponTitanSword_Dash_Init
 global function TitanSword_Dash_OnWeaponActivate
 global function TitanSword_Dash_OnWeaponDeactivate

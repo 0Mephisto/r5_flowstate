@@ -8,6 +8,7 @@ global function DebugDrawMissilePath
 global function DegreesToTarget
 global function EntityCanHaveStickyEnts
 global function EntityShouldStick
+global function EntityShouldStickEx
 global function FireExpandContractMissiles
 global function FireExpandContractMissiles_S2S
 global function GetVectorFromPositionToCrosshair
@@ -179,6 +180,8 @@ const FX_EMP_REBOOT_SPARKS 					= $"weld_spark_01_sparksfly"
 const EMP_GRENADE_BEAM_EFFECT 				= $"wpn_arc_cannon_beam"
 const DRONE_REBOOT_TIME 					= 5.0
 const GUNSHIP_REBOOT_TIME 					= 5.0
+const vector UP_VECTOR = <0, 0, 1>
+const float DOT_60DEGREE =	0.5
 
 const bool DEBUG_BURN_DAMAGE 				= false
 
@@ -1459,6 +1462,38 @@ void function HandleDisappearingParent( entity ent, entity parentEnt )
 }
 #endif
 
+string function GetClassnamefromStickyHitEnt( entity hitEnt )
+{
+	string ornull classNameRaw = hitEnt.GetNetworkedClassName()
+	return ((classNameRaw == null) ? "" : expect string( classNameRaw ))
+}
+
+bool function EntityShouldStickEx( entity stickyEnt, DeployableCollisionParams params )
+{
+	entity hitEnt = params.hitEnt
+	if ( !EntityCanHaveStickyEnts( stickyEnt, hitEnt ) )
+		return false
+
+	string className = GetClassnamefromStickyHitEnt( hitEnt )
+	if ( className == "prop_door" )
+	{
+		float normal = ((params.normal == ZERO_VECTOR) ? 0.0 : params.normal.Dot( UP_VECTOR ))
+		if ( normal > DOT_60DEGREE )
+			return false
+	}
+
+	if ( stickyEnt.IsMarkedForDeletion() )
+		return false
+	if ( hitEnt.IsMarkedForDeletion() )
+		return false
+	if ( hitEnt == stickyEnt )
+		return false
+	if ( hitEnt == stickyEnt.GetParent() )
+		return false
+
+	return true
+}
+
 bool function EntityShouldStick( entity stickyEnt, entity hitent )
 {
 	if ( !EntityCanHaveStickyEnts( stickyEnt, hitent ) )
@@ -2079,9 +2114,7 @@ void function StartClusterExplosions( entity projectile, entity owner, PopcornIn
 
 	array<entity> players = GetPlayerArray()
 	foreach ( player in players )
-	{
-		Remote_CallFunction_NonReplay( player, "SCB_AddGrenadeIndicatorForEntity", owner.GetTeam(), owner.GetEncodedEHandle(), placementHelper.GetEncodedEHandle(), outerRadius )
-	}
+		Remote_CallFunction_NonReplay( player, "SCB_AddGrenadeIndicatorForEntity", owner, placementHelper, outerRadius )
 
 	int particleSystemIndex = GetParticleSystemIndex( CLUSTER_BASE_FX )
 	int attachId            = placementHelper.LookupAttachment( "REF" )
@@ -5014,6 +5047,21 @@ void function PlayDelayedShellEject( entity weapon, float time, int count = 1, b
 		weapon.PlayWeaponEffect( vmShell, worldShell, shellAttach, persistent )
 	}
 }
+
+#if SERVER || CLIENT
+bool function AreAbilitiesSilenced( entity player )
+{
+	if ( !IsValid( player ) )
+		return true
+
+	/*if ( StatusEffect_HasSeverity( player, eStatusEffect.silenced ) )
+		return true
+	if ( StatusEffect_HasSeverity( player, eStatusEffect.is_boxing ) )
+		return true*/
+
+	return false
+}
+#endif
 
 bool function IsABaseGrenade( entity ent )
 {

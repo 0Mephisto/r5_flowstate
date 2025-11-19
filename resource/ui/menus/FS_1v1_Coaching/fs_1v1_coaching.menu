@@ -1,4 +1,4 @@
-resource/ui/menus/FS_1v1_Coaching/fs_1v1_coaching.menu
+scripts/resource/ui/menus/FS_1v1_Coaching/fs_1v1_coaching.menu
 {
 	menu
 	{
@@ -86,7 +86,7 @@ resource/ui/menus/FS_1v1_Coaching/fs_1v1_coaching.menu
 			tall					84
 			ypos					128
 			visible					1
-			controlSettingsFile		"resource/ui/menus/panels/tabs_settings.res"
+			controlSettingsFile		"scripts/resource/ui/menus/panels/tabs_settings.res"
 
 			pin_to_sibling			PanelFrame
 			pin_corner_to_sibling	TOP
@@ -167,7 +167,7 @@ resource/ui/menus/FS_1v1_Coaching/fs_1v1_coaching.menu
                 tabPosition             1
                 tall					3500
 
-                controlSettingsFile		"platform/scripts/resource/ui/menus/FS_1v1_Coaching/fs_1v1_coaching_recording_list.res"
+                controlSettingsFile		"scripts/resource/ui/menus/FS_1v1_Coaching/fs_1v1_coaching_recording_list.res"
             }
         }
 

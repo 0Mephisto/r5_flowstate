@@ -24,7 +24,7 @@ WeaponData
 	"OnWeaponChargeEnd"							    "OnWeaponChargeEnd_ability_gibraltar_shield"
 
 	"clear_fx_on_new_view_model"					"0"
-	"fire_duration"                                 "10.0"
+	"fire_duration"                                 "10.000000"
 
 	// Menu Stats
 

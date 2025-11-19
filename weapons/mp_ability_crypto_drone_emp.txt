@@ -42,7 +42,7 @@ WeaponData
 
 	// Regen Ammo
 	"regen_ammo_refill_rate"						"1"
-	"regen_ammo_refill_start_delay"					"0.0"
+	"regen_ammo_refill_start_delay"					"0.000000"
 
 	// Damage
 	"damage_type" 									"none"
@@ -58,13 +58,13 @@ WeaponData
 	"rumble"  										"-1"
 
 	// Behavior
-	"fire_rate"   									"1.3"
-	"fire_duration"									"0.25"
+	"fire_rate"   									"1.300000"
+	"fire_duration"									"0.250000"
 	//"fire_anim_rate"								"1.0"
-	"holster_time"									"0.15"
-	"deploy_time" 									"0.15"
-	"lower_time"  									"0.15"
-	"raise_time"  									"0.15"
+	"holster_time"									"0.150000"
+	"deploy_time" 									"0.150000"
+	"lower_time"  									"0.150000"
+	"raise_time"  									"0.150000"
 	"allow_empty_fire"								"0"
 	"reload_enabled"								"0"
 	"empty_reload_only"   							"0"

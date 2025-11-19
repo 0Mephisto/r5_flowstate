@@ -51,13 +51,13 @@ WeaponData
 	"damage_far_value"								"0"
 
 	// Behavior
-	"fire_rate"   									"1000.0"
-	"fire_duration"									"0.001"
-	"fire_anim_rate"								"5.0"
-	"holster_time"									"0.15"
-	"deploy_time" 									"0.25"
-	"lower_time"  									"0.25"
-	"raise_time"  									"0.2"
+	"fire_rate"   									"1000.000000"
+	"fire_duration"									"0.001000"
+	"fire_anim_rate"								"5.000000"
+	"holster_time"									"0.150000"
+	"deploy_time" 									"0.250000"
+	"lower_time"  									"0.250000"
+	"raise_time"  									"0.200000"
 	"allow_empty_fire"								"0"
 	"reload_enabled"								"0"
 	"empty_reload_only"   							"0"
@@ -72,9 +72,9 @@ WeaponData
 
 	"viewkick_spring" 								"rspn101"
 
-	"toss_pullout_time"								"0.25"
-	"toss_time"										"0.25"
-	"toss_overhead_time"							"0.25"
+	"toss_pullout_time"								"0.250000"
+	"toss_time"										"0.250000"
+	"toss_overhead_time"							"0.250000"
 
 	"hud_grapple_indicator"							"1"
 

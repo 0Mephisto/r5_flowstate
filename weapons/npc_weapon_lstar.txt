@@ -12,18 +12,18 @@ WeaponData
 	"weapon_type_flags"								"WPT_PRIMARY"
 
 	"cooldown_type"									"chargeFrac"
-	"cooldown_time"	                                "0.4" // actually, "blowoff animation time"
-	"charge_time"                                   "2.4"  // while holding trigger, time until weapon overheats
-	"charge_cooldown_time"                          "2.45"  // controls length of overheat anim (along with delay)
-	"charge_cooldown_delay"                         "0.05"
+	"cooldown_time"	                                "0.400000"
+	"charge_time"                                   "2.400000"
+	"charge_cooldown_time"                          "2.450000"
+	"charge_cooldown_delay"                         "0.050000"
 	"charge_overheats_when_full"                    "1"
 	"charge_weapon_fires_while_charging"            "1"
 	"charge_remain_full_when_fired"                 "1"
 
 	"projectile_launch_speed"						"1500"
-	"projectile_gravity_scale"						"0.05"
-	"projectile_drag_coefficient" 					"0.0"
-	"projectile_lifetime" 							"4.0"
+	"projectile_gravity_scale"						"0.050000"
+	"projectile_drag_coefficient" 					"0.000000"
+	"projectile_lifetime" 							"4.000000"
 
 	"damage_flags"									"DF_BULLET | DF_GIB | DF_DISMEMBERMENT"
 
@@ -58,7 +58,7 @@ WeaponData
 	"burst_or_looping_fire_sound_end_npc"			"Weapon_LSTAR_LoopEnd_3P_npc_a"
 	"fire_sound_2_npc"								"weapon_lstar_secondshot_3p_npc_a"
 
-	"bolt_hitsize"									"0.75"
+	"bolt_hitsize"									"0.750000"
 
 	"bolt_gravity_enabled"							"1"
 
@@ -90,18 +90,18 @@ WeaponData
 	"npc_max_range"   								"1750"
 
 	//shot geometry
-	"npc_burst_radius_min_precision"                "15.0"
-	"npc_burst_radius_max_precision"                "5.0"
+	"npc_burst_radius_min_precision"                "15.000000"
+	"npc_burst_radius_max_precision"                "5.000000"
 
-	"npc_spread_cone_min_precision"                 "2.0"
-	"npc_spread_cone_max_precision"                 "1.25"
+	"npc_spread_cone_min_precision"                 "2.000000"
+	"npc_spread_cone_max_precision"                 "1.250000"
 
-	"npc_burst_radius_distribution_bias_min_precision"  "-0.5"
-	"npc_burst_radius_distribution_bias_max_precision"  ".5"
+	"npc_burst_radius_distribution_bias_min_precision"  "-0.500000"
+	"npc_burst_radius_distribution_bias_max_precision"  "0.500000"
 
-	"npc_lead_projectiles"                          "1"
-	"npc_lead_projectiles_fraction_min_precision"   "0.3"
-	"npc_lead_projectiles_fraction_max_precision"   "0.9"
+	"npc_lead_projectiles"                          "0"
+	"npc_lead_projectiles_fraction_min_precision"   "0.300000"
+	"npc_lead_projectiles_fraction_max_precision"   "0.900000"
 
 	//shot cadence
 	"npc_min_burst_min_precision"   				"8"
@@ -109,32 +109,32 @@ WeaponData
 	"npc_min_burst_max_precision"                   "10"
 	"npc_max_burst_max_precision"                   "12"
 
-	"npc_min_rest_time_between_bursts_min_precision" "2.0"
-	"npc_max_rest_time_between_bursts_min_precision" "3.0"
-	"npc_min_rest_time_between_bursts_max_precision" "1.25"
+	"npc_min_rest_time_between_bursts_min_precision" "2.000000"
+	"npc_max_rest_time_between_bursts_min_precision" "3.000000"
+	"npc_min_rest_time_between_bursts_max_precision" "1.250000"
 	"npc_max_rest_time_between_bursts_max_precision" "2"
 
-	"proficiency_poor_spreadscale"					"6.0"
-	"proficiency_average_bias"						"0.3"
-	"proficiency_average_spreadscale" 				"5.0"
-	"proficiency_good_bias"   						"0.5"
-	"proficiency_good_spreadscale"					"4.0"
-	"proficiency_very_good_bias"  					"0.5"
-	"proficiency_very_good_spreadscale"   			"3.0"
+	"proficiency_poor_spreadscale"					"6.000000"
+	"proficiency_average_bias"						"0.300000"
+	"proficiency_average_spreadscale" 				"5.000000"
+	"proficiency_good_bias"   						"0.500000"
+	"proficiency_good_spreadscale"					"4.000000"
+	"proficiency_very_good_bias"  					"0.500000"
+	"proficiency_very_good_spreadscale"   			"3.000000"
 
 	// Behavior
-	"fire_rate"   									"12.0"
+	"fire_rate"   									"12.000000"
 
-	"reload_time" 									"3.26"
-	"reloadempty_time"								"3.26"
+	"reload_time" 									"3.260000"
+	"reloadempty_time"								"3.260000"
 
-	"deployfirst_time"								"1.45"
-	"deploy_time" 									"0.9"
-	"holster_time"									"0.4"
-	"lower_time"  									"0.35"
-	"raise_time"  									"0.75"
+	"deployfirst_time"								"1.450000"
+	"deploy_time" 									"0.900000"
+	"holster_time"									"0.400000"
+	"lower_time"  									"0.350000"
+	"raise_time"  									"0.750000"
 
-	"vortex_drain" 			 						"0.0"
+	"vortex_drain" 			 						"0.000000"
 	"vortex_refire_behavior"  						"absorb"
 	"allow_empty_fire"								"0"
 	"reload_enabled"  								"1"
@@ -144,7 +144,7 @@ WeaponData
 	"allow_headshots" 								"1"
 	"headshot_distance" 							"2500"
 	"primary_fire_does_not_block_sprint"			"0"
-	"ads_move_speed_scale"							"0.5"
+	"ads_move_speed_scale"							"0.500000"
 	"aimassist_disable_hipfire"						"0"
 	"aimassist_disable_ads"							"0"
 	"aimassist_disable_hipfire_titansonly"			"0"

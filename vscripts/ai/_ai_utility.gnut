@@ -23,7 +23,7 @@ void function DisconnectAllBots()
         if( !IsValid( bot ) || !bot.p.IsBot )
             continue
 
-        KickPlayerByName( bot.GetPlayerName(), "cafe was here" )
+        KickPlayerByName( bot.GetPlayerName(), "disconnect_bot" )
     }
 }
 
@@ -34,7 +34,7 @@ void function SimulateRandomDisconnects()
 		if( !IsValid( bot ) || !bot.p.IsBot || CoinFlip() )
 			continue
 
-		KickPlayerByName( bot.GetPlayerName(), "cafe was here" )
+		KickPlayerByName( bot.GetPlayerName(), "disconnect_bot" )
     }
 }
 
@@ -337,7 +337,6 @@ int function TotalEntsInRadius( float radius = 1000 )
 }
 
 void function Flowstate_DebugGameEntities()
-//By @CafeFPS
 {
 	entity firstEnt = Entities_First()
 	entity nextEnt = Entities_Next( firstEnt )
@@ -397,7 +396,6 @@ void function Flowstate_DebugGameEntities()
 }
 void function AnimNameTest()
 {
-//By Colombia
     entity player = gp()[0]
 
 	entity weapon = player.GetActiveWeapon( eActiveInventorySlot.mainHand )
@@ -459,7 +457,6 @@ void function StartRunningForward(entity player)
 
 void function SpawnDoubleDoorAtCrosshair()
 {
-//By Colombia
 	entity player = GetPlayerArray()[ 0 ]
 
 	vector origin = GetPlayerCrosshairOrigin( player )
@@ -1809,12 +1806,12 @@ void function DEV_SpawnLegendAtCrosshair( int team = 99)
 
 	if(GetCurrentPlaylistVarBool( "dummies_agressivedummies", true ))
 	{
-		dummy = CreateLegend_ai( team, origin, angles1 )
+		dummy = CreateDummy( team, origin, angles1 )
 		dummy.SetBehaviorSelector( "behavior_dummie_combat" )
 	}
 	else
 	{
-		dummy = CreateLegend_ai( team, origin, angles1, true)
+		dummy = CreateDummy( team, origin, angles1)
 		dummy.SetBehaviorSelector( "behavior_dummy_empty" )
 		dummy.EnableNPCFlag( NPC_DISABLE_SENSING )
 		dummy.EnableNPCFlag( NPC_IGNORE_ALL )

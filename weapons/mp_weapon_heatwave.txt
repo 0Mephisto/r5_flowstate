@@ -1,5 +1,3 @@
-//By Retículo Endoplasmático#5955 (CaféDeColombiaFPS)
-//By Retículo Endoplasmático#5955 (CaféDeColombiaFPS)
 #base "_base_shotgun.txt"
 #base "_base_character_mods.txt"
 
@@ -65,7 +63,7 @@ WeaponData
 	"projectile_lifetime" 							"2.0"
 	"projectile_flight_sound"                       "weapon_mastiff_projectile_crackle"
                        
-	"blast_pattern"									"mastiff_2"
+	"blast_pattern"									"mastiff_3"
 	"blast_pattern_default_scale"        			"1.1"
 	"blast_pattern_ads_scale"                       "0.55"  // for players, scales pattern when ADS                                                                            
       

@@ -1,5 +1,3 @@
-//By @CafeFPS and Respawn
-
 global function MpWeaponTitanSword_Launcher_Init
 global function TitanSword_Launcher_OnWeaponActivate
 global function TitanSword_Launcher_ClearMods
