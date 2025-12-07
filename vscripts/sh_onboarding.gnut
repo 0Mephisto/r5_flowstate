@@ -642,9 +642,10 @@ void function DecideRespawnPlayer( entity player, bool giveLoadoutWeapons = true
 	Survival_SetInventoryEnabled( player, giveLoadoutWeapons )
 
 	player.SetPlayerNetInt( "respawnStatus", eRespawnStatus.NONE )
-
 	player.SetPlayerNetBool( "pingEnabled", true )
-	player.SetHealth( player.GetMaxHealth() )
+
+	if( IsAlive( player ) ) //(mk): idk yet. sphaghetti
+		player.SetHealth( player.GetMaxHealth() )
 
 	UpdatePlayerCounts()
 	
