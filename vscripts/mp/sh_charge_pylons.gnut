@@ -141,6 +141,9 @@ void function ChargePylons_Init()
 #if SERVER
 void function InitChargePylon( entity trig )
 {
+	if( Playlist() == ePlaylists.fs_lgduels_1v1 )
+		return 
+		
 	FlagWait( "EntitiesDidLoad" )
 	thread InitChargePylon_Thread( trig )
 }

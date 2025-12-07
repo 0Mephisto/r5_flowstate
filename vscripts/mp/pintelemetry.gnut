@@ -3927,11 +3927,11 @@ void function UpdateFromLocalPersistence( entity player )
 {		
 	SetIgnoreSyncFlag( player )
 	
-	player.p.IBMM_grace_period 		= GetPlayer_wait_time( player )
+	// player.p.IBMM_grace_period 		= GetPlayer_wait_time( player )
 	player.p.weapon_loadout 		= GetPlayer_saved_weapons( player )
-	player.p.lock1v1_setting		= GetPlayer_lock1v1_setting( player )	
-	player.p.start_in_rest_setting 	= GetPlayer_start_in_rest_setting( player )
-	player.p.enable_input_banner 	= GetPlayer_enable_input_banner_setting( player )
+	// player.p.lock1v1_setting		= GetPlayer_lock1v1_setting( player )	
+	// player.p.start_in_rest_setting 	= GetPlayer_start_in_rest_setting( player )
+	// player.p.enable_input_banner 	= GetPlayer_enable_input_banner_setting( player )
 	
 	player.SetPlayerNetInt( "kills", GetPlayerKills( player ) )
 	player.SetPlayerNetInt( "deaths", GetPlayerDeaths( player ) )
@@ -3945,11 +3945,11 @@ void function PlayerDataCallbacks_Init()
 
 void function Gamemode1v1_PlayerDataCallbacks()
 {
-	AddCallback_PlayerData( "wait_time", UpdateIBMMWaitTime )
+	// AddCallback_PlayerData( "wait_time", UpdateIBMMWaitTime )
 	if( !FlowState_AdminTgive() ){ AddCallback_PlayerData( "saved_weapons", UpdateSavedWeapons ) }
-	AddCallback_PlayerData( "lock1v1_setting", UpdateLock1v1Setting )
-	AddCallback_PlayerData( "start_in_rest_setting", UpdateStartInRestSetting )
-	AddCallback_PlayerData( "enable_input_banner", UpdateInputBannerSetting )
+	// AddCallback_PlayerData( "lock1v1_setting", UpdateLock1v1Setting )
+	// AddCallback_PlayerData( "start_in_rest_setting", UpdateStartInRestSetting )
+	// AddCallback_PlayerData( "enable_input_banner", UpdateInputBannerSetting )
 }
 
 // utility funcitons for fetch/save playerdata 
@@ -4317,7 +4317,7 @@ void function SavePlayerData( entity player, string setting, ... )
 		return 
 		
 	#if DEVELOPER
-		mAssert( vargc > 0, "Empty Data passed to " + FUNC_NAME() )			
+		mAssert( vargc > 0, "Empty Data passed to %s", FUNC_NAME() )			
 		mAssert( player.IsPlayer(), "Cannot save player data for nonplayer." )
 	#endif
 	
@@ -4354,7 +4354,7 @@ bool function GetPlayerLeftFlag( entity player )
 }
 
 
-float function GetPlayer_wait_time( entity player ) 
+float function GetPlayer_wait_time( entity player ) //deprecated
 {
 	string setting = Tracker_FetchPlayerData( player.p.UID, "enable_input_banner" ) 
 	
@@ -4365,7 +4365,7 @@ float function GetPlayer_wait_time( entity player )
 }
 
 
-string function GetPlayer_saved_weapons( entity player ) 
+string function GetPlayer_saved_weapons( entity player )
 {	
 	string setting = Tracker_FetchPlayerData( player.p.UID, "saved_weapons" )
 	
@@ -4376,7 +4376,7 @@ string function GetPlayer_saved_weapons( entity player )
 }
 
 
-bool function GetPlayer_lock1v1_setting( entity player ) 
+bool function GetPlayer_lock1v1_setting( entity player ) //deprecated
 {	
 	string setting = Tracker_FetchPlayerData( player.p.UID, "lock1v1_setting" )
 	
@@ -4387,7 +4387,7 @@ bool function GetPlayer_lock1v1_setting( entity player )
 }
 
 
-bool function GetPlayer_start_in_rest_setting( entity player ) 
+bool function GetPlayer_start_in_rest_setting( entity player ) //deprecated
 {	
 	string setting = Tracker_FetchPlayerData( player.p.UID, "start_in_rest_setting" )
 	
@@ -4398,7 +4398,7 @@ bool function GetPlayer_start_in_rest_setting( entity player )
 }
 
 
-bool function GetPlayer_enable_input_banner_setting( entity player ) 
+bool function GetPlayer_enable_input_banner_setting( entity player ) //deprecated
 {
 	string setting = Tracker_FetchPlayerData( player.p.UID, "enable_input_banner" )
 	
@@ -4408,23 +4408,23 @@ bool function GetPlayer_enable_input_banner_setting( entity player )
     return GetDefaultEnableInputBannerSetting() 
 }
 
-bool function GetDefaultLock1v1Setting()
+bool function GetDefaultLock1v1Setting() //deprecated
 {
 	return file.DefaultLock1v1Setting
 }
 
-bool function GetDefaultEnableInputBannerSetting()
+bool function GetDefaultEnableInputBannerSetting() //deprecated
 {
 	return file.DefaultEnableInputBannerSetting
 }
 
-bool function GetDefaultStartInRestSetting()
+bool function GetDefaultStartInRestSetting() //deprecated
 {
 	return file.DefaultStartInRestSetting
 }
 
 
-void function UpdateIBMMWaitTime( entity player, string data )
+void function UpdateIBMMWaitTime( entity player, string data ) //deprecated
 {	
 	if( empty( data ) )
 		data = string( GetDefaultIBMM() )
@@ -4456,7 +4456,7 @@ void function UpdateSavedWeapons( entity player, string data )
 }
 
 
-void function UpdateLock1v1Setting( entity player, string data )
+void function UpdateLock1v1Setting( entity player, string data ) //deprecated
 {	
 	if ( empty( data ) ) 
 	{ 
@@ -4472,7 +4472,7 @@ void function UpdateLock1v1Setting( entity player, string data )
 		player.p.lock1v1_setting = GetDefaultLock1v1Setting()
 }
 
-void function UpdateStartInRestSetting( entity player, string data )
+void function UpdateStartInRestSetting( entity player, string data ) //deprecated
 {	
 	if ( empty( data ) ) 
 	{ 
@@ -4488,7 +4488,7 @@ void function UpdateStartInRestSetting( entity player, string data )
 		player.p.start_in_rest_setting = GetDefaultStartInRestSetting()
 }
 
-void function UpdateInputBannerSetting( entity player, string data )
+void function UpdateInputBannerSetting( entity player, string data ) //deprecated
 {	
 	if ( empty( data ) ) 
 	{ 

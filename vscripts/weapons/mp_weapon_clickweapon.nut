@@ -19,7 +19,7 @@ global function Clickweapon_Init
 	global function LGDuels_SetPresetYellow
 	global function LGDuels_SetPresetBlue
 	global function LGDuels_SetPresetPurple
-	global function LGDuels_SetFromPersistence
+	//global function LGDuels_SetFromPersistence //deprecated
 	global function LGDuels_UpdateSettings
 	global function LGDuels_SaveToServerPersistence
 
@@ -29,36 +29,34 @@ global function Clickweapon_Init
 		global function DEV_PrintBeams
 	#endif 
 
-	int DesiredR = 89
-	int DesiredG = 232
-	int DesiredB = 37
-	int DesiredEnemyR = 252
-	int DesiredEnemyG = 3
-	int DesiredEnemyB = 227
-	vector chosenColor
-	vector chosenEnemyColor
-	float positionOffset = -30
-	bool isSettingsMenuOpen = false
-	bool modifyingLocalBeam = true
+	int s_desiredR = 89
+	int s_desiredG = 232
+	int s_desiredB = 37
+	int s_desiredEnemyR = 252
+	int s_desiredEnemyG = 3
+	int s_desiredEnemyB = 227
+	vector s_chosenColor
+	vector s_chosenEnemyColor
+	float s_positionOffset = -30
+	bool s_bIsSettingsMenuOpen = false
+	bool s_bModifyingLocalBeam = true
 #endif //CLIENT
 
-const asset TheBestAssetInTheGame 	= $"P_tesla_trap_link_CP"
-const asset expAsset = $"P_plasma_exp_SM"
-const asset railjumpAsset = $"P_plasma_exp_SM"
+const asset THE_BEST_ASSET_IN_THE_GAME 	= $"P_tesla_trap_link_CP"
+const asset EXP_ASSET = $"P_plasma_exp_SM"
+const asset RAIL_JUMP_ASSET = $"P_plasma_exp_SM"
 const float LG_SINGLE_FIRE_DEBOUNCE = 0.6 //Increased fire rate
-const float LG_DRAG_TIME			= 0.45 //Increased the time the fx is alive 
+const float LG_DRAG_TIME			= 0.45 //Increased the time the fx is alive  //
 const float LG_MAX_DISTANCE_RAILJUMP_TRACE = 400
 const float LG_RAILJUMP_COOLDOWN = 1.0
 
 struct BeamSettings 
 {
 	#if CLIENT 
-
 		float offset = -30
 		int R = 0
 		int G = 0
 		int B = 0
-
 	#endif 
 }
 
@@ -84,19 +82,24 @@ void function Clickweapon_Init()
 	RegisterSignal( "EndNoAutoThread" )
 	RegisterSignal( "PlayerStartShotingLightningGun" )
 	RegisterSignal( "RestartAirborne" )
-	PrecacheParticleSystem( expAsset )
-	PrecacheParticleSystem( railjumpAsset )
+	PrecacheParticleSystem( EXP_ASSET )
+	PrecacheParticleSystem( RAIL_JUMP_ASSET )
 	
 	#if CLIENT
 		AddCreateCallback( "player", FS_LG_OnPlayerCreated )
 		AddDestroyCallback( "player", FS_LG_OnPlayerDestroyed )
 		
-		chosenColor = < DesiredR, DesiredG, DesiredB >
+		s_desiredR = GetConVarInt( "fs_lightning_gun_color_r" )
+		s_desiredG = GetConVarInt( "fs_lightning_gun_color_g" )
+		s_desiredB = GetConVarInt( "fs_lightning_gun_color_b" )
+
+		s_chosenColor = < s_desiredR, s_desiredG, s_desiredB >
 		
-		SetConVarInt( "fs_lightning_gun_color_r", DesiredR )
-		SetConVarInt( "fs_lightning_gun_color_g", DesiredG )
-		SetConVarInt( "fs_lightning_gun_color_b", DesiredB )
-		chosenEnemyColor = < DesiredEnemyR, DesiredEnemyG, DesiredEnemyB >
+		s_desiredEnemyR = GetConVarInt( "fs_lightning_gun_color_r_enemy" )
+		s_desiredEnemyG = GetConVarInt( "fs_lightning_gun_color_g_enemy" )
+		s_desiredEnemyB = GetConVarInt( "fs_lightning_gun_color_b_enemy" )
+
+		s_chosenEnemyColor = < s_desiredEnemyR, s_desiredEnemyG, s_desiredEnemyB >
 		
 		RegisterConCommandTriggeredCallback( "+zoom", LGUN_TryRailJump ) //improve this by registering/deregistering properly in activate/deactivate. Cafe
 		RegisterConCommandTriggeredCallback( "+toggle_zoom", LGUN_TryRailJump )
@@ -260,7 +263,7 @@ bool function LGUN_CanPlayerRailjump( entity player ) //Cafe
 	weapon.StartCustomActivity("ACT_VM_DRAWFIRST", 0)
 	player.KnockBack( player.GetViewVector() * -850 * ( 1 - distanceValue ) , 0.1 )
 	
-	StartParticleEffectInWorld( GetParticleSystemIndex( railjumpAsset ), trace.endPos, <0, 0, 0> ) //Explosion
+	StartParticleEffectInWorld( GetParticleSystemIndex( RAIL_JUMP_ASSET ), trace.endPos, <0, 0, 0> ) //Explosion
 	
 	#if SERVER
 	player.p.railjumptimes++
@@ -273,7 +276,7 @@ bool function LGUN_CanPlayerRailjump( entity player ) //Cafe
 #if CLIENT
 void function LGUN_TryRailJump( entity player )
 {
-	if( player != GetLocalClientPlayer() )
+	if( !file.isInstaGib || player != GetLocalClientPlayer() ) //Fixme. Cafe [file.isInstaGib]
 		return
 	
 	entity weapon = player.GetActiveWeapon( eActiveInventorySlot.mainHand )
@@ -281,18 +284,17 @@ void function LGUN_TryRailJump( entity player )
 	if( !IsValid( weapon ) || weapon.GetWeaponClassName() != "mp_weapon_lightninggun" )
 		return
 
-	if( !file.isInstaGib ) //Fixme. Cafe
-		return
-	
 	if( !LGUN_CanPlayerRailjump( player ) )
 		return
 	
 	//temp
 	OnLocalPlayerShoot( player, player.EyePosition(), player.GetViewVector(), true )
 			
-	
-	printw("railjump")
-	player.ClientCommand("PlayerTryRailJump")
+	#if DEVELOPER
+		printw( "railjump" )
+	#endif
+
+	player.ClientCommand( "PlayerTryRailJump" )
 }
 
 void function ServerCallback_CreatesLaserFXFromServer( entity fromPlayer, vector origin, vector direction )
@@ -310,10 +312,7 @@ void function OnLocalPlayerShoot( entity player, vector origin, vector direction
 {
 	entity weapon = player.GetActiveWeapon( eActiveInventorySlot.mainHand )
 	
-	if( !IsValid( weapon ) || weapon.GetWeaponClassName() != "mp_weapon_lightninggun" )
-		return
-
-	if( !file.isInstaGib || player != GetLocalViewPlayer() )
+	if( !file.isInstaGib || !IsValid( weapon ) || weapon.GetWeaponClassName() != "mp_weapon_lightninggun" || player != GetLocalViewPlayer() )
 		return
 
 	vector traceEnd = origin + (direction * 50000)
@@ -338,22 +337,22 @@ void function OnLocalPlayerShoot( entity player, vector origin, vector direction
 			moverForHand.SetParent( player, "R_HAND" )
 	}
 	
-	int fxIDTeam = GetParticleSystemIndex( TheBestAssetInTheGame )
+	int fxIDTeam = GetParticleSystemIndex( THE_BEST_ASSET_IN_THE_GAME )
 
 	int localFx = StartParticleEffectOnEntityWithPos( moverForHand, fxIDTeam, FX_PATTACH_CUSTOMORIGIN_FOLLOW, -1, <0, 0, 0>, <0, 0, 0> )
 	EffectSetDontKillForReplay( localFx )
 	EffectAddTrackingForControlPoint( localFx, 1, moverForLaserEnt, FX_PATTACH_CUSTOMORIGIN_FOLLOW, -1, <0, 0, 0> )
 	if( !isRailjump )
-		EffectSetControlPointVector( localFx, 2, chosenColor )
+		EffectSetControlPointVector( localFx, 2, s_chosenColor )
 	else
 		EffectSetControlPointVector( localFx, 2, <255,255,255> )
 	
 	moverForHand.ClearParent() //to leave the fx alive for a moment
 	
 	if( !isRailjump )
-		StartParticleEffectInWorldWithHandle( GetParticleSystemIndex( expAsset ), trace.endPos, <0, 0, 0> ) //Explosion
+		StartParticleEffectInWorldWithHandle( GetParticleSystemIndex( EXP_ASSET ), trace.endPos, <0, 0, 0> ) //Explosion
 	// else
-		// StartParticleEffectInWorldWithHandle( GetParticleSystemIndex( railjumpAsset ), trace.endPos, <0, 0, 0> ) //Explosion
+		// StartParticleEffectInWorldWithHandle( GetParticleSystemIndex( RAIL_JUMP_ASSET ), trace.endPos, <0, 0, 0> ) //Explosion
 	
 	thread function () : ( localFx )
 	{
@@ -387,8 +386,8 @@ void function OnEnemyPlayerShoot( entity player, vector origin, vector direction
 	entity handmover = CreateClientsideScriptMover( $"mdl/dev/empty_model.rmdl", <0, 0, 0>, <0, 0, 0> )
 	handmover.SetOrigin( origin )
 
-	int laserStoreMe = StartParticleEffectOnEntityWithPos( handmover, GetParticleSystemIndex( TheBestAssetInTheGame ), FX_PATTACH_ABSORIGIN_FOLLOW, -1, <0, 0, 0>, <0, 0, 0> )
-	StartParticleEffectInWorldWithHandle( GetParticleSystemIndex( expAsset ), mover.GetOrigin(), <0, 0, 0> ) //Explosion
+	int laserStoreMe = StartParticleEffectOnEntityWithPos( handmover, GetParticleSystemIndex( THE_BEST_ASSET_IN_THE_GAME ), FX_PATTACH_ABSORIGIN_FOLLOW, -1, <0, 0, 0>, <0, 0, 0> )
+	StartParticleEffectInWorldWithHandle( GetParticleSystemIndex( EXP_ASSET ), mover.GetOrigin(), <0, 0, 0> ) //Explosion
 	
 	thread function () : ( laserStoreMe, player, mover, handmover )
 	{
@@ -406,9 +405,9 @@ void function OnEnemyPlayerShoot( entity player, vector origin, vector direction
 	EffectSetDontKillForReplay( laserStoreMe )
 	
 	if( player.GetTeam() != GetLocalViewPlayer().GetTeam() )
-		EffectSetControlPointVector( laserStoreMe, 2, chosenEnemyColor )
+		EffectSetControlPointVector( laserStoreMe, 2, s_chosenEnemyColor )
 	else
-		EffectSetControlPointVector( laserStoreMe, 2, chosenColor )
+		EffectSetControlPointVector( laserStoreMe, 2, s_chosenColor )
 
 	EffectAddTrackingForControlPoint( laserStoreMe, 1, mover, FX_PATTACH_ABSORIGIN_FOLLOW, -1, <0, 0, 3> )
 
@@ -494,9 +493,9 @@ void function CheckBeamSettingsExist()
 		BeamSettings localSettings
 	
 		localSettings.offset = -30
-		localSettings.R = 89
-		localSettings.G = 232
-		localSettings.B = 37
+		localSettings.R = s_desiredR
+		localSettings.G = s_desiredEnemyG
+		localSettings.B = s_desiredEnemyB
 		
 		file.allBeamSettings["local"] <- localSettings
 	}
@@ -506,9 +505,9 @@ void function CheckBeamSettingsExist()
 		BeamSettings enemySettings
 	
 		enemySettings.offset = -30
-		enemySettings.R = 252
-		enemySettings.G = 3
-		enemySettings.B = 227
+		enemySettings.R = s_desiredEnemyR
+		enemySettings.G = s_desiredEnemyG
+		enemySettings.B = s_desiredEnemyB
 		
 		file.allBeamSettings["enemy"] <- enemySettings
 	}
@@ -554,7 +553,9 @@ void function OnWeaponCustomActivityStart_weapon_lightninggun( entity weapon )
 	if ( !IsValid( player ) )
 		return 
 
-	printt( "OnWeaponCustomActivityStart_weapon_lightninggun" )
+	#if DEVELOPER
+		printt( "OnWeaponCustomActivityStart_weapon_lightninggun" )
+	#endif
 }
 
 void function OnWeaponCustomActivityEnd_weapon_lightninggun( entity weapon )
@@ -562,7 +563,9 @@ void function OnWeaponCustomActivityEnd_weapon_lightninggun( entity weapon )
 	if ( !IsValid( weapon ) )
 		return
 
-	printt( "OnWeaponCustomActivityEnd_weapon_lightninggun" )
+	#if DEVELOPER
+		printt( "OnWeaponCustomActivityEnd_weapon_lightninggun" )
+	#endif
 }
 
 void function OnWeaponActivate_Clickweapon( entity weapon ) 
@@ -600,8 +603,8 @@ void function OnWeaponActivate_Clickweapon( entity weapon )
 				{
 					// Warning( "CHECK FOR ATTACK , allowed= " + currentAttackTime + " ,weaponnext= " + weapon.GetNextAttackAllowedTime() + " ,Time= " + Time() )
 					// DEV_SetBreakPoint()
-					
-					if( player.IsInputCommandHeld( IN_ATTACK ) && isAuto || isSettingsMenuOpen && modifyingLocalBeam )
+
+					if( player.IsInputCommandHeld( IN_ATTACK ) && isAuto || s_bIsSettingsMenuOpen && s_bModifyingLocalBeam )
 					{
 						vector origin = ClampToWorldspace( player.GetCrosshairTraceEndPos() )
 						
@@ -633,18 +636,18 @@ void function OnWeaponActivate_Clickweapon( entity weapon )
 								moverForHand.SetParent( player, "R_HAND" )
 						}
 						
-						int fxIDTeam = GetParticleSystemIndex( TheBestAssetInTheGame )
+						int fxIDTeam = GetParticleSystemIndex( THE_BEST_ASSET_IN_THE_GAME )
 						
-						if( !EffectDoesExist( file.beamsFxs[ player ] ) || !isAuto && !isSettingsMenuOpen )
+						if( !EffectDoesExist( file.beamsFxs[ player ] ) || !isAuto && !s_bIsSettingsMenuOpen )
 						{
 							file.beamsFxs[ player ] = StartParticleEffectOnEntityWithPos( moverForHand, fxIDTeam, FX_PATTACH_CUSTOMORIGIN_FOLLOW, -1, <0, 0, 0>, <0, 0, 0> )
 							EffectSetDontKillForReplay( file.beamsFxs[ player ] )
 							EffectAddTrackingForControlPoint( file.beamsFxs[ player ], 1, moverForLaserEnt, FX_PATTACH_CUSTOMORIGIN_FOLLOW, -1, <0, 0, 0> )
-							EffectSetControlPointVector( file.beamsFxs[ player ], 2, chosenColor )
+							EffectSetControlPointVector( file.beamsFxs[ player ], 2, s_chosenColor )
 							moverForHand.ClearParent() //to leave the fx alive for a moment
 							
 							if( !isAuto )
-								StartParticleEffectInWorldWithHandle( GetParticleSystemIndex( expAsset ), origin, <0, 0, 0> ) //Explosion
+								StartParticleEffectInWorldWithHandle( GetParticleSystemIndex( EXP_ASSET ), origin, <0, 0, 0> ) //Explosion
 						}
 						else if( EffectDoesExist( file.beamsFxs[ player ] ) )
 						{
@@ -684,9 +687,7 @@ void function OnWeaponActivate_Clickweapon( entity weapon )
 	void function StopEffectForPlayer( entity sPlayer )
 	{
 		if( sPlayer in file.beamsFxs && EffectDoesExist( file.beamsFxs[ sPlayer ] ) && sPlayer == GetLocalViewPlayer() )
-		{
 			EffectStop( file.beamsFxs[ sPlayer ], false, true )
-		}
 	}
 #endif //CLIENT
 
@@ -887,7 +888,7 @@ void function FS_LG_HandleLaserForPlayer( entity player )
 		
 		if( !EffectDoesExist( file.beamsFxs[ player ] ) && player.GetPlayerNetBool( "isPlayerShootingFlowstateLightningGun" ) && !wasPlayerShooting && isAuto )
 		{
-			file.beamsFxs[ player ] = StartParticleEffectOnEntityWithPos( handmover, GetParticleSystemIndex( TheBestAssetInTheGame ), FX_PATTACH_ABSORIGIN_FOLLOW, -1, <0, 0, 0>, <0, 0, 0> )
+			file.beamsFxs[ player ] = StartParticleEffectOnEntityWithPos( handmover, GetParticleSystemIndex( THE_BEST_ASSET_IN_THE_GAME ), FX_PATTACH_ABSORIGIN_FOLLOW, -1, <0, 0, 0>, <0, 0, 0> )
 
 			EffectSetDontKillForReplay( file.beamsFxs[ player ] )
 
@@ -904,9 +905,9 @@ void function FS_LG_HandleLaserForPlayer( entity player )
 				}()
 			} 
 			else if( player.GetTeam() != GetLocalViewPlayer().GetTeam() )
-				EffectSetControlPointVector( file.beamsFxs[ player ], 2, chosenEnemyColor )
+				EffectSetControlPointVector( file.beamsFxs[ player ], 2, s_chosenEnemyColor )
 			else
-				EffectSetControlPointVector( file.beamsFxs[ player ], 2, chosenColor )
+				EffectSetControlPointVector( file.beamsFxs[ player ], 2, s_chosenColor )
 
 			EffectAddTrackingForControlPoint( file.beamsFxs[ player ], 1, mover, FX_PATTACH_ABSORIGIN_FOLLOW, -1, <0, 0, 3> )
 			
@@ -936,14 +937,14 @@ void function FS_LG_OnPlayerDestroyed( entity player )
 
 	if( player in file.beammover )
 	{
-		if( IsValid( file.beammover[player] ) )
+		if( IsValid( file.beammover[ player ] ) )
 			file.beammover[ player ].Destroy()
 		delete file.beammover[player]
 	}
 
 	if( player in file.handmover )
 	{
-		if( IsValid( file.handmover[player] ) )
+		if( IsValid( file.handmover[ player ] ) )
 			file.handmover[ player ].Destroy()
 		delete file.handmover[player]
 	}
@@ -960,42 +961,42 @@ void function LGDuels_SetPresetRed( bool isLocalChosen )
 {
 	if( isLocalChosen )
 	{
-		DesiredR = 255
-		DesiredG = 0
-		DesiredB = 0
+		s_desiredR = 255
+		s_desiredG = 0
+		s_desiredB = 0
 		
-		LGDuels_UpdateSettings( true, DesiredR, DesiredG, DesiredB )
+		LGDuels_UpdateSettings( true, s_desiredR, s_desiredG, s_desiredB )
 
-		SetConVarInt( "fs_lightning_gun_color_r", DesiredR )
-		SetConVarInt( "fs_lightning_gun_color_g", DesiredG )
-		SetConVarInt( "fs_lightning_gun_color_b", DesiredB )
+		SetConVarInt( "fs_lightning_gun_color_r", s_desiredR )
+		SetConVarInt( "fs_lightning_gun_color_g", s_desiredG )
+		SetConVarInt( "fs_lightning_gun_color_b", s_desiredB )
 
-		chosenColor = < DesiredR, DesiredG, DesiredB >
+		s_chosenColor = < s_desiredR, s_desiredG, s_desiredB >
 
 		entity sPlayer = GetLocalViewPlayer()
 
 		if( sPlayer in file.beamsFxs && EffectDoesExist( file.beamsFxs[ sPlayer ] ) )
 		{
-			EffectSetControlPointVector( file.beamsFxs[ sPlayer ], 2, chosenColor )
+			EffectSetControlPointVector( file.beamsFxs[ sPlayer ], 2, s_chosenColor )
 		}
 	} 
 	else 
 	{
-		DesiredEnemyR = 255
-		DesiredEnemyG = 0
-		DesiredEnemyB = 0
+		s_desiredEnemyR = 255
+		s_desiredEnemyG = 0
+		s_desiredEnemyB = 0
 		
-		LGDuels_UpdateSettings( false, DesiredEnemyR, DesiredEnemyG, DesiredEnemyB )
+		LGDuels_UpdateSettings( false, s_desiredEnemyR, s_desiredEnemyG, s_desiredEnemyB )
 
-		SetConVarInt( "fs_lightning_gun_color_r", DesiredEnemyR )
-		SetConVarInt( "fs_lightning_gun_color_g", DesiredEnemyG )
-		SetConVarInt( "fs_lightning_gun_color_b", DesiredEnemyB )
+		SetConVarInt( "fs_lightning_gun_color_r_enemy", s_desiredEnemyR )
+		SetConVarInt( "fs_lightning_gun_color_g_enemy", s_desiredEnemyG )
+		SetConVarInt( "fs_lightning_gun_color_b_enemy", s_desiredEnemyB )
 
-		chosenEnemyColor = < DesiredEnemyR, DesiredEnemyG, DesiredEnemyB >
+		s_chosenEnemyColor = < s_desiredEnemyR, s_desiredEnemyG, s_desiredEnemyB >
 
 		foreach( player in GetPlayerArray() )
 			if( player.GetTeam() != GetLocalViewPlayer().GetTeam() && player != GetLocalViewPlayer() && player in file.beamsFxs && EffectDoesExist( file.beamsFxs[ player ] ) )
-				EffectSetControlPointVector( file.beamsFxs[ player ], 2, chosenEnemyColor )
+				EffectSetControlPointVector( file.beamsFxs[ player ], 2, s_chosenEnemyColor )
 	}
 }
 
@@ -1003,42 +1004,42 @@ void function LGDuels_SetPresetBlue( bool isLocalChosen )
 {
 	if( isLocalChosen )
 	{
-		DesiredR = 0
-		DesiredG = 0
-		DesiredB = 255
+		s_desiredR = 0
+		s_desiredG = 0
+		s_desiredB = 255
 		
-		LGDuels_UpdateSettings( true, DesiredR, DesiredG, DesiredB )
+		LGDuels_UpdateSettings( true, s_desiredR, s_desiredG, s_desiredB )
 		
-		SetConVarInt( "fs_lightning_gun_color_r", DesiredR )
-		SetConVarInt( "fs_lightning_gun_color_g", DesiredG )
-		SetConVarInt( "fs_lightning_gun_color_b", DesiredB )
+		SetConVarInt( "fs_lightning_gun_color_r", s_desiredR )
+		SetConVarInt( "fs_lightning_gun_color_g", s_desiredG )
+		SetConVarInt( "fs_lightning_gun_color_b", s_desiredB )
 
-		chosenColor = < DesiredR, DesiredG, DesiredB >
+		s_chosenColor = < s_desiredR, s_desiredG, s_desiredB >
 
 		entity sPlayer = GetLocalViewPlayer()
 
 		if( sPlayer in file.beamsFxs && EffectDoesExist( file.beamsFxs[ sPlayer ] ) )
 		{
-			EffectSetControlPointVector( file.beamsFxs[ sPlayer ], 2, chosenColor )
+			EffectSetControlPointVector( file.beamsFxs[ sPlayer ], 2, s_chosenColor )
 		}
 	} 
 	else 
 	{
-		DesiredEnemyR = 0
-		DesiredEnemyG = 0
-		DesiredEnemyB = 255
+		s_desiredEnemyR = 0
+		s_desiredEnemyG = 0
+		s_desiredEnemyB = 255
 
-		LGDuels_UpdateSettings( false, DesiredEnemyR, DesiredEnemyG, DesiredEnemyB )
+		LGDuels_UpdateSettings( false, s_desiredEnemyR, s_desiredEnemyG, s_desiredEnemyB )
 		
-		SetConVarInt( "fs_lightning_gun_color_r", DesiredEnemyR )
-		SetConVarInt( "fs_lightning_gun_color_g", DesiredEnemyG )
-		SetConVarInt( "fs_lightning_gun_color_b", DesiredEnemyB )
+		SetConVarInt( "fs_lightning_gun_color_r_enemy", s_desiredEnemyR )
+		SetConVarInt( "fs_lightning_gun_color_g_enemy", s_desiredEnemyG )
+		SetConVarInt( "fs_lightning_gun_color_b_enemy", s_desiredEnemyB )
 
-		chosenEnemyColor = < DesiredEnemyR, DesiredEnemyG, DesiredEnemyB >
+		s_chosenEnemyColor = < s_desiredEnemyR, s_desiredEnemyG, s_desiredEnemyB >
 
 		foreach( player in GetPlayerArray() )
 			if( player.GetTeam() != GetLocalViewPlayer().GetTeam() && player != GetLocalViewPlayer() && player in file.beamsFxs && EffectDoesExist( file.beamsFxs[ player ] ) )
-				EffectSetControlPointVector( file.beamsFxs[ player ], 2, chosenEnemyColor )
+				EffectSetControlPointVector( file.beamsFxs[ player ], 2, s_chosenEnemyColor )
 	}
 }
 
@@ -1046,42 +1047,42 @@ void function LGDuels_SetPresetYellow( bool isLocalChosen )
 {
 	if( isLocalChosen )
 	{
-		DesiredR = 255
-		DesiredG = 255
-		DesiredB = 0
+		s_desiredR = 255
+		s_desiredG = 255
+		s_desiredB = 0
 
-		LGDuels_UpdateSettings( true, DesiredR, DesiredG, DesiredB )
+		LGDuels_UpdateSettings( true, s_desiredR, s_desiredG, s_desiredB )
 					
-		SetConVarInt( "fs_lightning_gun_color_r", DesiredR )
-		SetConVarInt( "fs_lightning_gun_color_g", DesiredG )
-		SetConVarInt( "fs_lightning_gun_color_b", DesiredB )
+		SetConVarInt( "fs_lightning_gun_color_r", s_desiredR )
+		SetConVarInt( "fs_lightning_gun_color_g", s_desiredG )
+		SetConVarInt( "fs_lightning_gun_color_b", s_desiredB )
 
-		chosenColor = < DesiredR, DesiredG, DesiredB >
+		s_chosenColor = < s_desiredR, s_desiredG, s_desiredB >
 
 		entity sPlayer = GetLocalViewPlayer()
 
 		if( sPlayer in file.beamsFxs && EffectDoesExist( file.beamsFxs[ sPlayer ] ) )
 		{
-			EffectSetControlPointVector( file.beamsFxs[ sPlayer ], 2, chosenColor )
+			EffectSetControlPointVector( file.beamsFxs[ sPlayer ], 2, s_chosenColor )
 		}
 	} 
 	else 
 	{
-		DesiredEnemyR = 255
-		DesiredEnemyG = 255
-		DesiredEnemyB = 0
+		s_desiredEnemyR = 255
+		s_desiredEnemyG = 255
+		s_desiredEnemyB = 0
 		
-		LGDuels_UpdateSettings( false, DesiredEnemyR, DesiredEnemyG, DesiredEnemyB )
+		LGDuels_UpdateSettings( false, s_desiredEnemyR, s_desiredEnemyG, s_desiredEnemyB )
 
-		SetConVarInt( "fs_lightning_gun_color_r", DesiredEnemyR )
-		SetConVarInt( "fs_lightning_gun_color_g", DesiredEnemyG )
-		SetConVarInt( "fs_lightning_gun_color_b", DesiredEnemyB )
+		SetConVarInt( "fs_lightning_gun_color_r_enemy", s_desiredEnemyR )
+		SetConVarInt( "fs_lightning_gun_color_g_enemy", s_desiredEnemyG )
+		SetConVarInt( "fs_lightning_gun_color_b_enemy", s_desiredEnemyB )
 
-		chosenEnemyColor = < DesiredEnemyR, DesiredEnemyG, DesiredEnemyB >
+		s_chosenEnemyColor = < s_desiredEnemyR, s_desiredEnemyG, s_desiredEnemyB >
 
 		foreach( player in GetPlayerArray() )
 			if( player.GetTeam() != GetLocalViewPlayer().GetTeam() && player != GetLocalViewPlayer() && player in file.beamsFxs && EffectDoesExist( file.beamsFxs[ player ] ) )
-				EffectSetControlPointVector( file.beamsFxs[ player ], 2, chosenEnemyColor )
+				EffectSetControlPointVector( file.beamsFxs[ player ], 2, s_chosenEnemyColor )
 	}
 }
 
@@ -1089,42 +1090,42 @@ void function LGDuels_SetPresetGreen( bool isLocalChosen )
 {
 	if( isLocalChosen )
 	{
-		DesiredR = 0
-		DesiredG = 255
-		DesiredB = 0
+		s_desiredR = 0
+		s_desiredG = 255
+		s_desiredB = 0
 
-		LGDuels_UpdateSettings( true, DesiredR, DesiredG, DesiredB )
+		LGDuels_UpdateSettings( true, s_desiredR, s_desiredG, s_desiredB )
 		
-		SetConVarInt( "fs_lightning_gun_color_r", DesiredR )
-		SetConVarInt( "fs_lightning_gun_color_g", DesiredG )
-		SetConVarInt( "fs_lightning_gun_color_b", DesiredB )
+		SetConVarInt( "fs_lightning_gun_color_r", s_desiredR )
+		SetConVarInt( "fs_lightning_gun_color_g", s_desiredG )
+		SetConVarInt( "fs_lightning_gun_color_b", s_desiredB )
 
-		chosenColor = < DesiredR, DesiredG, DesiredB >
+		s_chosenColor = < s_desiredR, s_desiredG, s_desiredB >
 
 		entity sPlayer = GetLocalViewPlayer()
 
 		if( sPlayer in file.beamsFxs && EffectDoesExist( file.beamsFxs[ sPlayer ] ) )
 		{
-			EffectSetControlPointVector( file.beamsFxs[ sPlayer ], 2, chosenColor )
+			EffectSetControlPointVector( file.beamsFxs[ sPlayer ], 2, s_chosenColor )
 		}
 	} 
 	else 
 	{
-		DesiredEnemyR = 0
-		DesiredEnemyG = 255
-		DesiredEnemyB = 0
+		s_desiredEnemyR = 0
+		s_desiredEnemyG = 255
+		s_desiredEnemyB = 0
 		
-		LGDuels_UpdateSettings( false, DesiredEnemyR, DesiredEnemyG, DesiredEnemyB )
+		LGDuels_UpdateSettings( false, s_desiredEnemyR, s_desiredEnemyG, s_desiredEnemyB )
 
-		SetConVarInt( "fs_lightning_gun_color_r", DesiredEnemyR )
-		SetConVarInt( "fs_lightning_gun_color_g", DesiredEnemyG )
-		SetConVarInt( "fs_lightning_gun_color_b", DesiredEnemyB )
+		SetConVarInt( "fs_lightning_gun_color_r_enemy", s_desiredEnemyR )
+		SetConVarInt( "fs_lightning_gun_color_g_enemy", s_desiredEnemyG )
+		SetConVarInt( "fs_lightning_gun_color_b_enemy", s_desiredEnemyB )
 
-		chosenEnemyColor = < DesiredEnemyR, DesiredEnemyG, DesiredEnemyB >
+		s_chosenEnemyColor = < s_desiredEnemyR, s_desiredEnemyG, s_desiredEnemyB >
 
 		foreach( player in GetPlayerArray() )
 			if( player.GetTeam() != GetLocalViewPlayer().GetTeam() && player != GetLocalViewPlayer() && player in file.beamsFxs && EffectDoesExist( file.beamsFxs[ player ] ) )
-				EffectSetControlPointVector( file.beamsFxs[ player ], 2, chosenEnemyColor )
+				EffectSetControlPointVector( file.beamsFxs[ player ], 2, s_chosenEnemyColor )
 	}
 }
 
@@ -1132,53 +1133,53 @@ void function LGDuels_SetPresetPurple( bool isLocalChosen )
 {
 	if( isLocalChosen )
 	{
-		DesiredR = 255
-		DesiredG = 0
-		DesiredB = 255
+		s_desiredR = 255
+		s_desiredG = 0
+		s_desiredB = 255
 	
-		LGDuels_UpdateSettings( true, DesiredR, DesiredG, DesiredB )
+		LGDuels_UpdateSettings( true, s_desiredR, s_desiredG, s_desiredB )
 					
-		SetConVarInt( "fs_lightning_gun_color_r", DesiredR )
-		SetConVarInt( "fs_lightning_gun_color_g", DesiredG )
-		SetConVarInt( "fs_lightning_gun_color_b", DesiredB )
+		SetConVarInt( "fs_lightning_gun_color_r", s_desiredR )
+		SetConVarInt( "fs_lightning_gun_color_g", s_desiredG )
+		SetConVarInt( "fs_lightning_gun_color_b", s_desiredB )
 
-		chosenColor = < DesiredR, DesiredG, DesiredB >
+		s_chosenColor = < s_desiredR, s_desiredG, s_desiredB >
 
 		entity sPlayer = GetLocalViewPlayer()
 
 		if( sPlayer in file.beamsFxs && EffectDoesExist( file.beamsFxs[ sPlayer ] ) )
 		{
-			EffectSetControlPointVector( file.beamsFxs[ sPlayer ], 2, chosenColor )
+			EffectSetControlPointVector( file.beamsFxs[ sPlayer ], 2, s_chosenColor )
 		}
 	} 
 	else 
 	{
-		DesiredEnemyR = 255
-		DesiredEnemyG = 0
-		DesiredEnemyB = 255
+		s_desiredEnemyR = 255
+		s_desiredEnemyG = 0
+		s_desiredEnemyB = 255
 		
-		LGDuels_UpdateSettings( false, DesiredEnemyR, DesiredEnemyG, DesiredEnemyB )
+		LGDuels_UpdateSettings( false, s_desiredEnemyR, s_desiredEnemyG, s_desiredEnemyB )
 
-		SetConVarInt( "fs_lightning_gun_color_r", DesiredEnemyR )
-		SetConVarInt( "fs_lightning_gun_color_g", DesiredEnemyG )
-		SetConVarInt( "fs_lightning_gun_color_b", DesiredEnemyB )
+		SetConVarInt( "fs_lightning_gun_color_r", s_desiredEnemyR )
+		SetConVarInt( "fs_lightning_gun_color_g", s_desiredEnemyG )
+		SetConVarInt( "fs_lightning_gun_color_b", s_desiredEnemyB )
 
-		chosenEnemyColor = < DesiredEnemyR, DesiredEnemyG, DesiredEnemyB >
+		s_chosenEnemyColor = < s_desiredEnemyR, s_desiredEnemyG, s_desiredEnemyB >
 
 		foreach( player in GetPlayerArray() )
 			if( player.GetTeam() != GetLocalViewPlayer().GetTeam() && player != GetLocalViewPlayer() && player in file.beamsFxs && EffectDoesExist( file.beamsFxs[ player ] ) )
-				EffectSetControlPointVector( file.beamsFxs[ player ], 2, chosenEnemyColor )
+				EffectSetControlPointVector( file.beamsFxs[ player ], 2, s_chosenEnemyColor )
 	}
 }
 
-void function LGDuels_SetModifyingLocalBeam( bool modifyingLocalBeam )
+void function LGDuels_SetModifyingLocalBeam( bool bModifyingLocalBeam )
 {
-	modifyingLocalBeam = modifyingLocalBeam
+	s_bModifyingLocalBeam = bModifyingLocalBeam
 }
 
 void function LGDuels_SetSettingsMenuOpen( bool open )
 {
-	isSettingsMenuOpen = open
+	s_bIsSettingsMenuOpen = open
 	if( open )
 	{
 		ForceHide1v1Scoreboard( )
@@ -1191,28 +1192,28 @@ void function LGDuels_SetR( int R, bool isLocalChosen )
 {
 	if( isLocalChosen )
 	{
-		DesiredR = R
+		s_desiredR = R
 		
-		LGDuels_UpdateSettings( true, DesiredR )
-		chosenColor = < DesiredR, DesiredG, DesiredB >
+		LGDuels_UpdateSettings( true, s_desiredR )
+		s_chosenColor = < s_desiredR, s_desiredG, s_desiredB >
 
 		entity sPlayer = GetLocalViewPlayer()
 
 		if( sPlayer in file.beamsFxs && EffectDoesExist( file.beamsFxs[ sPlayer ] ) )
 		{
-			EffectSetControlPointVector( file.beamsFxs[ sPlayer ], 2, chosenColor )
+			EffectSetControlPointVector( file.beamsFxs[ sPlayer ], 2, s_chosenColor )
 		}
 	} 
 	else 
 	{
-		DesiredEnemyR = R
+		s_desiredEnemyR = R
 		
-		LGDuels_UpdateSettings( false, DesiredEnemyR )
-		chosenEnemyColor = < DesiredEnemyR, DesiredEnemyG, DesiredEnemyB >
+		LGDuels_UpdateSettings( false, s_desiredEnemyR )
+		s_chosenEnemyColor = < s_desiredEnemyR, s_desiredEnemyG, s_desiredEnemyB >
 
 		foreach( player in GetPlayerArray() )
 			if( player.GetTeam() != GetLocalViewPlayer().GetTeam() && player != GetLocalViewPlayer() && player in file.beamsFxs && EffectDoesExist( file.beamsFxs[ player ] ) )
-				EffectSetControlPointVector( file.beamsFxs[ player ], 2, chosenEnemyColor )
+				EffectSetControlPointVector( file.beamsFxs[ player ], 2, s_chosenEnemyColor )
 	}
 }
 
@@ -1220,28 +1221,28 @@ void function LGDuels_SetG( int G, bool isLocalChosen )
 {
 	if( isLocalChosen )
 	{
-		DesiredG = G
+		s_desiredG = G
 		
-		LGDuels_UpdateSettings( true, null, DesiredG )	
-		chosenColor = < DesiredR, DesiredG, DesiredB >
+		LGDuels_UpdateSettings( true, null, s_desiredG )	
+		s_chosenColor = < s_desiredR, s_desiredG, s_desiredB >
 
 		entity sPlayer = GetLocalViewPlayer()
 
 		if( sPlayer in file.beamsFxs && EffectDoesExist( file.beamsFxs[ sPlayer ] ) )
 		{
-			EffectSetControlPointVector( file.beamsFxs[ sPlayer ], 2, chosenColor )
+			EffectSetControlPointVector( file.beamsFxs[ sPlayer ], 2, s_chosenColor )
 		}
 	} 
 	else 
 	{
-		DesiredEnemyG = G
+		s_desiredEnemyG = G
 		
-		LGDuels_UpdateSettings( false, null, DesiredEnemyG )
-		chosenEnemyColor = < DesiredEnemyR, DesiredEnemyG, DesiredEnemyB >
+		LGDuels_UpdateSettings( false, null, s_desiredEnemyG )
+		s_chosenEnemyColor = < s_desiredEnemyR, s_desiredEnemyG, s_desiredEnemyB >
 
 		foreach( player in GetPlayerArray() )
 			if( player.GetTeam() != GetLocalViewPlayer().GetTeam() && player != GetLocalViewPlayer() && player in file.beamsFxs && EffectDoesExist( file.beamsFxs[ player ] ) )
-				EffectSetControlPointVector( file.beamsFxs[ player ], 2, chosenEnemyColor )
+				EffectSetControlPointVector( file.beamsFxs[ player ], 2, s_chosenEnemyColor )
 	}
 }
 
@@ -1249,34 +1250,34 @@ void function LGDuels_SetB( int B, bool isLocalChosen )
 {
 	if( isLocalChosen )
 	{
-		DesiredB = B
+		s_desiredB = B
 		
-		LGDuels_UpdateSettings( true, null, null, DesiredB )
-		chosenColor = < DesiredR, DesiredG, DesiredB >
+		LGDuels_UpdateSettings( true, null, null, s_desiredB )
+		s_chosenColor = < s_desiredR, s_desiredG, s_desiredB >
 
 		entity sPlayer = GetLocalViewPlayer()
 
 		if( sPlayer in file.beamsFxs && EffectDoesExist( file.beamsFxs[ sPlayer ] ) )
 		{
-			EffectSetControlPointVector( file.beamsFxs[ sPlayer ], 2, chosenColor )
+			EffectSetControlPointVector( file.beamsFxs[ sPlayer ], 2, s_chosenColor )
 		}
 	} 
 	else 
 	{
-		DesiredEnemyB = B
+		s_desiredEnemyB = B
 		
-		LGDuels_UpdateSettings( false, null, null, DesiredEnemyB )
-		chosenEnemyColor = < DesiredEnemyR, DesiredEnemyG, DesiredEnemyB >
+		LGDuels_UpdateSettings( false, null, null, s_desiredEnemyB )
+		s_chosenEnemyColor = < s_desiredEnemyR, s_desiredEnemyG, s_desiredEnemyB >
 
 		foreach( player in GetPlayerArray() )
 			if( player.GetTeam() != GetLocalViewPlayer().GetTeam() && player != GetLocalViewPlayer() && player in file.beamsFxs && EffectDoesExist( file.beamsFxs[ player ] ) )
-				EffectSetControlPointVector( file.beamsFxs[ player ], 2, chosenEnemyColor )
+				EffectSetControlPointVector( file.beamsFxs[ player ], 2, s_chosenEnemyColor )
 	}
 }
 #endif
 
 #if CLIENT
-void function LGDuels_SetFromPersistence( float s1, int s2, int s3, int s4, float s5, int s6, int s7, int s8 )
+void function LGDuels_SetFromPersistence( float s1, int s2, int s3, int s4, float s5, int s6, int s7, int s8 ) //deprecated
 {
 	// LGDuels_SetPositionOffset( s1 )
 	
@@ -1284,23 +1285,23 @@ void function LGDuels_SetFromPersistence( float s1, int s2, int s3, int s4, floa
 	SetConVarInt( "fs_lightning_gun_color_g", s3 )
 	SetConVarInt( "fs_lightning_gun_color_b", s4 )
 
-	chosenColor = < s2, s3, s4 > //uses global script var
+	s_chosenColor = < s2, s3, s4 > //uses global script var
 
 	entity sPlayer = GetLocalViewPlayer()
 
 	if( sPlayer in file.beamsFxs && EffectDoesExist( file.beamsFxs[ sPlayer ] ) )
 	{
-		EffectSetControlPointVector( file.beamsFxs[ sPlayer ], 2, chosenColor )
+		EffectSetControlPointVector( file.beamsFxs[ sPlayer ], 2, s_chosenColor )
 	}
 	
-	chosenEnemyColor = < s6, s7, s8 > //uses global script var
+	s_chosenEnemyColor = < s6, s7, s8 > //uses global script var
 	
 	foreach( player in GetPlayerArray() )
 		if( player.GetTeam() != GetLocalViewPlayer().GetTeam() && player != GetLocalViewPlayer() && player in file.beamsFxs && EffectDoesExist( file.beamsFxs[ player ] ) )
-			EffectSetControlPointVector( file.beamsFxs[ player ], 2, chosenEnemyColor )
+			EffectSetControlPointVector( file.beamsFxs[ player ], 2, s_chosenEnemyColor )
 }
 
-void function LGDuels_SaveToServerPersistence()
+void function LGDuels_SaveToServerPersistence() //deprecatd
 {
 	entity player = GetLocalViewPlayer()
 	
@@ -1311,7 +1312,7 @@ void function LGDuels_SaveToServerPersistence()
 	player.ClientCommand( format( "SaveLgSettings %s", settings ) ) 
 }
 
-string function GenerateSettingsString()
+string function GenerateSettingsString() //deprecated
 {	
 	CheckBeamSettingsExist()
 	

@@ -426,7 +426,7 @@ void function RemoteFunctions_Init_Begin()
 				ScriptRegisterNetworkedVariable( "accuracy", SNDC_PLAYER_GLOBAL, SNVT_INT, 0 )
 				
 				//offset, r, g, b | enemy offset, r, g, b (mk)
-				ScriptRemote_RegisterClientFunction( "ServerCallback_SetLGDuelPesistenceSettings", "float", -999999.0, 999999.0, 32, "int", -1, 256, "int", -1, 256, "int", -1, 256, "float", -999999.0, 999999.0, 32, "int", -1, 256, "int", -1, 256, "int", -1, 256 ) //Audit 2-22-2025
+				//ScriptRemote_RegisterClientFunction( "ServerCallback_SetLGDuelPesistenceSettings", "float", -999999.0, 999999.0, 32, "int", -1, 256, "int", -1, 256, "int", -1, 256, "float", -999999.0, 999999.0, 32, "int", -1, 256, "int", -1, 256, "int", -1, 256 ) //Audit 2-22-2025 //(mk): Deprecated moved to convar
 			}
 			
 			if( Playlist() == ePlaylists.fs_dm_fast_instagib )

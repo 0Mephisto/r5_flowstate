@@ -12,7 +12,7 @@ global function ServerCallback_ClearScoreboardOnClient
 global function ServerCallback_OpenStatisticsUI
 
 //Persistence
-global function ServerCallback_SetLGDuelPesistenceSettings
+//global function ServerCallback_SetLGDuelPesistenceSettings //deprecated
 
 //Chat
 global function mute
@@ -1305,15 +1305,15 @@ void function ServerCallback_FSDM_OpenVotingPhase(bool shouldOpen)
 
 }
 
-void function ServerCallback_SetLGDuelPesistenceSettings( float s1, int s2, int s3, int s4, float s5, int s6, int s7, int s8 )
-{
-	#if DEVELOPER
-		printt("Calling LoadLgDuelSettings with: ", s1, s2, s3, s4, s5, s6, s7, s8 )
-	#endif
+// void function ServerCallback_SetLGDuelPesistenceSettings( float s1, int s2, int s3, int s4, float s5, int s6, int s7, int s8 ) //deprecated
+// {
+// 	#if DEVELOPER
+// 		printt("Calling LoadLgDuelSettings with: ", s1, s2, s3, s4, s5, s6, s7, s8 )
+// 	#endif
 
-	LGDuels_SetFromPersistence( s1, s2, s3, s4, s5, s6, s7, s8 )
-	//RunUIScript( "LoadLgDuelSettings", s1, s2, s3, s4, s5, s6, s7, s8 )
-}
+// 	LGDuels_SetFromPersistence( s1, s2, s3, s4, s5, s6, s7, s8 )
+// 	//RunUIScript( "LoadLgDuelSettings", s1, s2, s3, s4, s5, s6, s7, s8 )
+// }
 
 void function ServerCallback_FSDM_ChampionScreenHandle(bool shouldOpen, int TeamWon, int skinindex)
 {

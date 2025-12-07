@@ -286,7 +286,6 @@ void function Gamemode1v1_Init( int eMap )
 	RegisterSignal( "ChallengeEnded" )
 	
 	PrecacheOITCRoom()
-	AddCallback_EntitiesDidLoad( FS1v1_OnEntitiesDidLoad )
 	
 	#if DEVELOPER 
 		DEV_1v1Init()
@@ -328,11 +327,9 @@ void function Gamemode1v1_Init( int eMap )
 		//INIT_CC_playeradmins() //(mk): Already called in PIN_Init()
 		FS_Init_1v1_Coaching()
 	}
-	
+
 	if( Playlist() == ePlaylists.fs_lgduels_1v1 )
 		Flowstate_LgDuels1v1_Init()
-		
-	SpawnSystem_InitGamemodeOptions()
 		
 	SetHostInvetoryAttachments()
 	
@@ -409,6 +406,9 @@ void function Gamemode1v1_Init( int eMap )
 	
 	if( Playlist() == ePlaylists.fs_vamp_1v1 ) //Todo(mk): This should be handled by the mode's script file using AddCallback_SpawnsSettings
 		SpawnSystem_SetCustomPlaylist( "fs_1v1" )
+
+	SpawnSystem_InitGamemodeOptions() //init before or else entities may load
+	AddCallback_EntitiesDidLoad( FS1v1_OnEntitiesDidLoad )
 }
 
 void function INIT_WeaponsMenu()

@@ -41,14 +41,13 @@ void function Flowstate_LgDuels1v1_Init()
 				SpawnSystem_SetCustomPlaylist( AllPlaylistsArray()[ ePlaylists.fs_1v1 ] ) //override hack
 			}
 		)
-		
 	}
 
 	#if TRACKER && HAS_TRACKER_DLL
-		if( Flowstate_IsLGDuels() )
-		{
-			AddCallback_PlayerData( "LgDuelsSetting", LgDuelLoadSettings )
-		}	
+		// if( Flowstate_IsLGDuels() ) //deprecated
+		// {
+		// 	AddCallback_PlayerData( "LgDuelsSetting", LgDuelLoadSettings )
+		// }	
 	#endif
 	
 	AddCallback_OnClientConnected( INIT_LGDuels_Player )
@@ -78,7 +77,7 @@ void function INIT_LGDuels_Player( entity player )
 	AddClientCommandCallback( "handicap", ClientCommand_mkos_LGDuel_p_damage )
 	
 	#if TRACKER && HAS_TRACKER_DLL
-		AddClientCommandCallback( "SaveLgSettings", ClientCommand_mkos_LGDuel_settings )
+		//AddClientCommandCallback( "SaveLgSettings", ClientCommand_mkos_LGDuel_settings ) //deprecated
 	#endif
 	
 	player.p.hitsound = HIT_0
@@ -138,42 +137,42 @@ void function Player1v1Gamestate( entity player, int state )
 	}	
 }
 
-void function LgDuelLoadSettings( entity player, string data )
-{
-	if( data == "NA" || data == "" )
-		return
+// void function LgDuelLoadSettings( entity player, string data ) //deprecated
+// {
+// 	if( data == "NA" || data == "" )
+// 		return
 	
-	array<string> values = split( data, "|" )
+// 	array<string> values = split( data, "|" )
 	
-	if( values.len() < 8 )
-		return
+// 	if( values.len() < 8 )
+// 		return
 	
-	foreach( str in values )
-	{
-		if( !IsStringNumeric( str ) )
-		{
-			#if DEVELOPER
-				sqerror( "Data for lgduel setting not numeric: " + str + ";Data:" + data )
-			#endif 
+// 	foreach( str in values )
+// 	{
+// 		if( !IsStringNumeric( str ) )
+// 		{
+// 			#if DEVELOPER
+// 				sqerror( "Data for lgduel setting not numeric: " + str + ";Data:" + data )
+// 			#endif 
 			
-			return
-		}
-	}
+// 			return
+// 		}
+// 	}
 	
-	Remote_CallFunction_NonReplay
-	( 
-		player, 
-		"ServerCallback_SetLGDuelPesistenceSettings", 
-		values[0].tofloat(), 
-		values[1].tointeger(), 
-		values[2].tointeger(), 
-		values[3].tointeger(), 
-		values[4].tofloat(), 
-		values[5].tointeger(), 
-		values[6].tointeger(), 
-		values[7].tointeger() 
-	)
-}
+// 	Remote_CallFunction_NonReplay
+// 	( 
+// 		player, 
+// 		"ServerCallback_SetLGDuelPesistenceSettings", 
+// 		values[0].tofloat(), 
+// 		values[1].tointeger(), 
+// 		values[2].tointeger(), 
+// 		values[3].tointeger(), 
+// 		values[4].tofloat(), 
+// 		values[5].tointeger(), 
+// 		values[6].tointeger(), 
+// 		values[7].tointeger() 
+// 	)
+// }
 
 
 //LGDuel
