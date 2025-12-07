@@ -612,9 +612,12 @@ void function CodeCallback_BatchStatsLoaded()
 		callbackFunc()
 }
 
-void function CodeCallback_TrackerGlobalSettingsReady( string data )
+void function CodeCallback_TrackerGlobalSettingsReady( string inData )
 {
-	tracker.signalEnt.Signal( "TrackerGlobalSettingsFetched", { data = data } )
+	if( typeof( inData ) != "string" )
+		inData = ""
+
+	tracker.signalEnt.Signal( "TrackerGlobalSettingsFetched", { data = inData } )
 }
 
 bool function Tracker_IsBatchStatsLoaded()
@@ -3160,20 +3163,6 @@ void function RemoveDamageEvents( int attacker_handle, int victim_handle ) //Tod
 		#endif
 	}
 	
-int function SetWeaponSettingIntFromFile( string weaponRef, string setting )
-{
-	var data = GetWeaponInfoFileKeyField_Global( weaponRef, setting ) 
-
-	if( data != null )
-		return expect int( data )
-	
-	#if DEVELOPER
-		printw( "Invalid weapons settings for", weaponRef, setting )
-	#endif 
-	
-	return 0
-}
-
 
 // Checks from DamageSourceIDToStringTable as janu framework registered weapons 
 // assign to these tables at runtime. 

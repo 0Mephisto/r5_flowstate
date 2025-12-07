@@ -4175,7 +4175,7 @@ void function FS_1v1_MainLoop_THREAD( LocPair waitingRoomLocation )
 						newGroup.player2 = Lock1v1Opponent
 						
 						#if DEVELOPER
-						printw( "MATCH CREATED VIA CHALLENGE" )
+							printw( "MATCH CREATED VIA CHALLENGE" )
 						#endif
 						
 						newGroup.IsKeep = true

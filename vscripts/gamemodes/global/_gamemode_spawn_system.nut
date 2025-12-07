@@ -521,8 +521,6 @@ void function SpawnSystem_Init()
 		InitClonedSettings()
 		AutoSetupSettings()
 		thread __DeleteThread()
-		
-		SpawnSystem_SetValidateSpawnsOnLoad( true )
 	#endif
 }
 

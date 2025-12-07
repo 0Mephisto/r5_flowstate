@@ -2189,17 +2189,20 @@ void function FS_IBMM_Msg( string msgString, string subMsgString, float duration
 	)
 	// printt( "trying to show message:", file.fs_newMsgBoxString, file.fs_newMsgBoxSubString )
 
-	entity enemy = player.GetPlayerNetEnt( "FSDM_1v1_Enemy")
+	if( Playlist() == ePlaylists.fs_1v1 || Playlist() == ePlaylists.fs_vamp_1v1 || Playlist() == ePlaylists.fs_1v1_headshots_only || Playlist() == ePlaylists.fs_lgduels_1v1 )
+	{
+		entity enemy = player.GetPlayerNetEnt( "FSDM_1v1_Enemy" )
 
-	if( enemy != null )
-	{
-		if( subMsgString.find( "%s" ) != -1 )
-			subMsgString = StringReplaceLimited( subMsgString, "%s", enemy.GetPlayerName(), 1 )
-	}
-	else
-	{
-		if( subMsgString.find( "%s" ) != -1 )
-			subMsgString = StringReplaceLimited( subMsgString, "%s", "~unknown~", 1 )
+		if( enemy != null )
+		{
+			if( subMsgString.find( "%s" ) != -1 )
+				subMsgString = StringReplaceLimited( subMsgString, "%s", enemy.GetPlayerName(), 1 )
+		}
+		else
+		{
+			if( subMsgString.find( "%s" ) != -1 )
+				subMsgString = StringReplaceLimited( subMsgString, "%s", "~unknown~", 1 )
+		}
 	}
 
 	Hud_SetText( HudElement( "FS_IBMM_MsgText"), msgString )

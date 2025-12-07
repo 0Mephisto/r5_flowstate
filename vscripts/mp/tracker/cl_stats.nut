@@ -164,6 +164,9 @@ void function __StatQueueRemoveDuplicates()
 
 var function Tracker_FetchStat( entity player, string stat )
 {
+	if( !IsValid( player ) )
+		return null 
+		
 	ValidatePlayerStatTable( player )
 	
 	if( !( stat in file.playerStatTables[ player ] ) )
@@ -192,6 +195,9 @@ void function Tracker_PreloadStatArray( array<entity> players, array<string> sta
 {
 	foreach( player in players )
 	{
+		if( !IsValid( player ) )
+			continue 
+			
 		foreach( statname in stats )
 			__AddToStatQueue( player, statname )
 	}
@@ -256,7 +262,7 @@ var function __FetchPlayerStatInThread( entity player, string stat )
 	{
 		#if DEVELOPER && DEBUG_CL_STATS
 			printw( "Waiting for player stats to load for lookup: \"" + stat + "\" Player:", player )
-		#endif 
+		#endif
 		
 		WaitFrames( 5 )
 		

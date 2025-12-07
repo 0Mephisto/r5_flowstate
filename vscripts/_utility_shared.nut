@@ -5988,23 +5988,204 @@ vector function MapAngleToRadius( float angle, float radius )
 
 
 #if DEVELOPER && CLIENT
-	void function DEV_PrintReadableBackendNames()
+	void function DEV_GenerateBackendDamageSourceNames()
 	{
-		table<string, string> serverOutput =
-		{
-			//uses DEV_PrintBackendNames() output pasted here
-		}
-		
-		string printText = "TableForBackend:\n\n [\n"
-		
+		// table<string, string> serverOutput =
+		// {
+		// 	//uses DEV_PrintBackendNames() output pasted here
+			
+		// }
+
+		 table< string, string > serverOutput = {
+[ "damagedef_unknown" ] = "Unknown",
+[ "damagedef_unknownBugIt" ] = "UNKNOWN! BUG IT!",
+[ "damagedef_suicide" ] = "#DEATH_SUICIDE",
+[ "damagedef_DocDrone" ] = "DRONE",
+[ "mp_weapon_hemlok" ] = "#WPN_HEMLOK_SHORT",
+[ "mp_weapon_lmg" ] = "#WPN_LMG_SHORT",
+[ "mp_weapon_rspn101" ] = "#WPN_RSPN101_SHORT",
+[ "mp_weapon_vinson" ] = "#WPN_VINSON_SHORT",
+[ "mp_weapon_lstar" ] = "#WPN_LSTAR_SHORT",
+[ "mp_weapon_g2" ] = "#WPN_G2_SHORT",
+[ "mp_weapon_r97" ] = "#WPN_R97_SHORT",
+[ "mp_weapon_dmr" ] = "#WPN_DMR_SHORT",
+[ "mp_weapon_wingman" ] = "#WPN_WINGMAN_SHORT",
+[ "mp_weapon_semipistol" ] = "#WPN_P2011_SHORT",
+[ "mp_weapon_autopistol" ] = "#WPN_RE45_AUTOPISTOL_SHORT",
+[ "mp_weapon_sniper" ] = "#WPN_SNIPER_SHORT",
+[ "mp_weapon_sentinel" ] = "#WPN_SENTINEL_SHORT",
+[ "mp_weapon_shotgun" ] = "#WPN_SHOTGUN_SHORT",
+[ "mp_weapon_mastiff" ] = "#WPN_MASTIFF_SHORT",
+[ "mp_weapon_frag_grenade" ] = "#WPN_FRAG_GRENADE_SHORT",
+[ "mp_weapon_grenade_emp" ] = "#WPN_ARC_STAR_SHORT",
+[ "mp_weapon_thermite_grenade" ] = "#WPN_THERMITE_GRENADE_SHORT",
+[ "mp_weapon_shotgun_pistol" ] = "#WPN_SHOTGUN_PISTOL_SHORT",
+[ "mp_weapon_doubletake" ] = "#WPN_DOUBLETAKE_SHORT",
+[ "mp_weapon_alternator_smg" ] = "#WPN_ALTERNATOR_SMG_SHORT",
+[ "mp_weapon_esaw" ] = "#WPN_ESAW_SHORT",
+[ "mp_weapon_pdw" ] = "#WPN_PDW_SHORT",
+[ "mp_weapon_energy_ar" ] = "#WPN_ENERGY_AR_SHORT",
+[ "mp_weapon_volt_smg" ] = "#WPN_VOLT_SMG_SHORT",
+[ "mp_weapon_defender" ] = "#WPN_CHARGE_RIFLE_SHORT",
+[ "mp_ability_mobile_respawn_beacon" ] = "#SURVIVAL_PICKUP_MOBILE_RESPAWN",
+[ "mp_weapon_energy_shotgun_crate" ] = "#WPN_ENERGY_SHOTGUN_SHORT",
+[ "mp_weapon_doubletake_crate" ] = "#WPN_DOUBLETAKE_SHORT",
+[ "mp_weapon_car_r2" ] = "Car SMG",
+[ "mp_weapon_3030" ] = "30-30 Repeater",
+[ "mp_weapon_mgl" ] = "MGL Mag Launcher",
+[ "mp_weapon_dragon_lmg" ] = "Rampage LMG",
+[ "mp_weapon_throwingknife" ] = "Throwing Knife",
+[ "mp_weapon_softball" ] = "Softball",
+[ "mp_weapon_wingman_n" ] = "Wingman Elite",
+[ "mp_weapon_satchel" ] = "Satchel",
+[ "mp_extreme_environment" ] = "#DAMAGE_EXTREME_ENVIRONMENT",
+[ "mp_weapon_epg" ] = "EPG",
+[ "mp_weapon_smr" ] = "Sidewinder SMR",
+[ "mp_weapon_rocket_launcher" ] = "Archer",
+[ "mp_weapon_grenade_electric_smoke" ] = "Electric Smoke",
+[ "mp_weapon_grenade_gravity" ] = "Gravity Star",
+[ "mp_weapon_rspn101_og" ] = "R101",
+[ "sp_weapon_arc_tool" ] = "Arc Tool",
+[ "mp_weapon_pulse_lmg" ] = "EM-4 Cold War",
+[ "mp_weapon_mounted_turret_weapon" ] = "#WPN_MOUNTED_TURRET_WEAPON_SHORT",
+[ "mp_titanweapon_flightcore_rockets" ] = "#flightcore_rocket",
+[ "melee_pilot_emptyhanded" ] = "#DEATH_MELEE",
+[ "melee_pilot_arena" ] = "#DEATH_MELEE",
+[ "melee_pilot_sword" ] = "#DEATH_SWORD",
+[ "melee_titan_punch" ] = "#DEATH_TITAN_MELEE",
+[ "melee_titan_punch_ion" ] = "#DEATH_TITAN_MELEE",
+[ "melee_titan_punch_tone" ] = "#DEATH_TITAN_MELEE",
+[ "melee_titan_punch_legion" ] = "#DEATH_TITAN_MELEE",
+[ "melee_titan_punch_scorch" ] = "#DEATH_TITAN_MELEE",
+[ "melee_titan_punch_northstar" ] = "#DEATH_TITAN_MELEE",
+[ "melee_titan_punch_fighter" ] = "#DEATH_TITAN_MELEE",
+[ "melee_titan_punch_vanguard" ] = "#DEATH_TITAN_MELEE",
+[ "melee_titan_punch_stealth" ] = "#DEATH_TITAN_MELEE",
+[ "melee_titan_punch_rocket" ] = "#DEATH_TITAN_MELEE",
+[ "melee_titan_punch_drone" ] = "#DEATH_TITAN_MELEE",
+[ "melee_boxing_ring" ] = "Boxing Hands",
+[ "mp_weapon_melee_boxing_ring" ] = "Boxing Hands",
+[ "melee_data_knife" ] = "Dataknife",
+[ "mp_weapon_data_knife_primary" ] = "Dataknife",
+[ "melee_wraith_kunai" ] = "#DEATH_MELEE_WRAITH_KUNAI",
+[ "mp_weapon_wraith_kunai_primary" ] = "#DEATH_MELEE_WRAITH_KUNAI",
+[ "melee_bolo_sword" ] = "Bolo Sword Melee",
+[ "mp_weapon_bolo_sword_primary" ] = "Bolo Sword Melee",
+[ "melee_bloodhound_axe" ] = "#DEATH_MELEE_BLOODHOUND_AXE",
+[ "mp_weapon_bloodhound_axe_primary" ] = "#DEATH_MELEE_BLOODHOUND_AXE",
+[ "melee_lifeline_baton" ] = "#DEATH_MELEE_LIFELINE_BATON",
+[ "mp_weapon_lifeline_baton_primary" ] = "#DEATH_MELEE_LIFELINE_BATON",
+[ "melee_shadowsquad_hands" ] = "#DEATH_MELEE_SHADOWSQUAD_HANDS",
+[ "mp_weapon_shadow_squad_hands_primary" ] = "#DEATH_MELEE_SHADOWSQUAD_HANDS",
+[ "mp_weapon_tesla_trap" ] = "#DEATH_TESLA_TRAP",
+[ "mp_weapon_yh803" ] = "#WPN_LIGHT_TURRET",
+[ "mp_weapon_yh803_bullet" ] = "#WPN_LIGHT_TURRET",
+[ "mp_weapon_yh803_bullet_overcharged" ] = "#WPN_LIGHT_TURRET",
+[ "mp_weapon_mega_turret" ] = "#WPN_MEGA_TURRET",
+[ "mp_weapon_mega_turret_aa" ] = "#WPN_MEGA_TURRET",
+[ "mp_turretweapon_rockets" ] = "#WPN_ROCKET_TURRET",
+[ "mp_turretweapon_blaster" ] = "#WPN_BLASTER_TURRET",
+[ "mp_turretweapon_plasma" ] = "#WPN_PLASMA_TURRET",
+[ "mp_turretweapon_sentry" ] = "#WPN_SENTRY_TURRET",
+[ "mp_weapon_mobile_hmg" ] = "Sheila",
+[ "mp_weapon_smart_pistol" ] = "Smart Pistol",
+[ "mp_ability_octane_stim" ] = "#WPN_OCTANE_STIM_SHORT",
+[ "mp_ability_crypto_drone_emp" ] = "#WPN_DRONE_EMP",
+[ "mp_ability_crypto_drone_emp_trap" ] = "#WPN_DRONE_EMP",
+[ "mp_weapon_super_spectre" ] = "#WPN_SUPERSPECTRE_ROCKETS",
+[ "mp_weapon_dronebeam" ] = "#WPN_DRONERBEAM",
+[ "mp_weapon_dronerocket" ] = "#WPN_DRONEROCKET",
+[ "mp_weapon_droneplasma" ] = "#WPN_DRONEPLASMA",
+[ "mp_weapon_turretplasma" ] = "#WPN_TURRETPLASMA",
+[ "mp_weapon_turretrockets" ] = "#WPN_TURRETROCKETS",
+[ "mp_weapon_turretplasma_mega" ] = "#WPN_TURRETPLASMA_MEGA",
+[ "mp_weapon_gunship_launcher" ] = "#WPN_GUNSHIP_LAUNCHER",
+[ "mp_weapon_gunship_turret" ] = "#WPN_GUNSHIP_MISSILE",
+[ "rodeo" ] = "#DEATH_TITAN_RODEO",
+[ "rodeo_forced_titan_eject" ] = "#DEATH_TITAN_RODEO",
+[ "rodeo_execution" ] = "#DEATH_RODEO_EXECUTION",
+[ "human_melee" ] = "#DEATH_HUMAN_MELEE",
+[ "auto_titan_melee" ] = "#DEATH_AUTO_TITAN_MELEE",
+[ "berserker_melee" ] = "#DEATH_BERSERKER_MELEE",
+[ "mind_crime" ] = "Mind Crime",
+[ "charge_ball" ] = "Charge Ball",
+[ "grunt_melee" ] = "#DEATH_GRUNT_MELEE",
+[ "spectre_melee" ] = "#DEATH_SPECTRE_MELEE",
+[ "prowler_melee" ] = "#DEATH_PROWLER_MELEE",
+[ "spider_melee" ] = "#DEATH_SPIDER_MELEE",
+[ "super_spectre_melee" ] = "#DEATH_SUPER_SPECTRE",
+[ "titan_execution" ] = "#DEATH_TITAN_EXECUTION",
+[ "human_execution" ] = "#DEATH_HUMAN_EXECUTION",
+[ "eviscerate" ] = "#DEATH_EVISCERATE",
+[ "wall_smash" ] = "#DEATH_WALL_SMASH",
+[ "ai_turret" ] = "#DEATH_TURRET",
+[ "team_switch" ] = "#DEATH_TEAM_CHANGE",
+[ "rocket" ] = "#DEATH_ROCKET",
+[ "titan_explosion" ] = "#DEATH_TITAN_EXPLOSION",
+[ "flash_surge" ] = "#DEATH_FLASH_SURGE",
+[ "sticky_time_bomb" ] = "#DEATH_STICKY_TIME_BOMB",
+[ "vortex_grenade" ] = "#DEATH_VORTEX_GRENADE",
+[ "droppod_impact" ] = "#DEATH_DROPPOD_CRUSH",
+[ "ai_turret_explosion" ] = "#DEATH_TURRET_EXPLOSION",
+[ "rodeo_trap" ] = "#DEATH_RODEO_TRAP",
+[ "round_end" ] = "#DEATH_ROUND_END",
+[ "bubble_shield" ] = "#DEATH_BUBBLE_SHIELD",
+[ "evac_dropship_explosion" ] = "#DEATH_EVAC_DROPSHIP_EXPLOSION",
+[ "sticky_explosive" ] = "#DEATH_STICKY_EXPLOSIVE",
+[ "titan_grapple" ] = "#DEATH_TITAN_GRAPPLE",
+[ "fall" ] = "#DEATH_FALL",
+[ "splat" ] = "#DEATH_SPLAT",
+[ "burn" ] = "#DEATH_BURN",
+[ "outOfBounds" ] = "#DEATH_OUT_OF_BOUNDS",
+[ "deathField" ] = "#DEATH_DEATH_FIELD",
+[ "indoor_inferno" ] = "#DEATH_INDOOR_INFERNO",
+[ "submerged" ] = "#DEATH_SUBMERGED",
+[ "switchback_trap" ] = "#DEATH_ELECTROCUTION",
+[ "floor_is_lava" ] = "#DEATH_ELECTROCUTION",
+[ "suicideSpectreAoE" ] = "#DEATH_SUICIDE_SPECTRE",
+[ "titanEmpField" ] = "#DEATH_TITAN_EMP_FIELD",
+[ "stuck" ] = "NPC got Stuck (Don't Bug it!)",
+[ "deadly_fog" ] = "#DEATH_DEADLY_FOG",
+[ "weapon_cubemap" ] = "Cubemap",
+[ "mp_weapon_zipline" ] = "Zipline",
+[ "at_turret_override" ] = "AT Turret",
+[ "rodeo_battery_removal" ] = "#DEATH_RODEO_BATTERY_REMOVAL",
+[ "phase_shift" ] = "#WPN_SHIFTER",
+[ "gamemode_bomb_detonation" ] = "Bomb Detonation",
+[ "nuclear_turret" ] = "#DEATH_NUCLEAR_TURRET",
+[ "mp_titanability_slow_trap" ] = "#DEATH_SLOW_TRAP",
+[ "mp_weapon_arc_trap" ] = "#WPN_ARC_TRAP",
+[ "mp_weapon_arc_launcher" ] = "#WPN_ARC_LAUNCHER",
+[ "mp_weapon_flamethrower" ] = "Flame Thrower",
+[ "core_overload" ] = "#DEATH_CORE_OVERLOAD",
+[ "mp_ability_consumable" ] = "CONSUMABLE_PROTO",
+[ "snd_bomb" ] = "Bomb",
+[ "bleedout" ] = "#DEATH_BLEEDOUT",
+[ "mp_weapon_energy_shotgun" ] = "#WPN_ENERGY_SHOTGUN_SHORT",
+[ "nextbot" ] = "Nextbot",
+[ "mp_weapon_oddball_primary" ] = "Ball",
+[ "melee_oddball" ] = "Ball",
+[ "mp_weapon_flagpole_primary" ] = "Ball",
+[ "melee_flagpole" ] = "Ball",
+[ "mp_weapon_lightninggun" ] = "Lightning Gun",
+[ "mp_weapon_titan_sword" ] = "Sword",
+[ "mp_weapon_titan_sword_slam" ] = "Sword",
+[ "melee_titan_sword" ] = "Sword",
+} 
+	
+		string weaponNames = ""
 		foreach( string ref, string token in serverOutput )
-		{
-			printText += ( "'" + ref + "' => '" + Localize( token ) + "',\n" )
-		}
-		
-		printText += "]"
-		
-		print( printText )
+			weaponNames += format( "%s=%s\n", ref, Localize( token ) )
+
+		string file = "weapons_names.txt"
+		string directory = "scripts/devfiles/"
+
+		DevTextBufferClear()
+		DevTextBufferWrite( weaponNames )
+		DevP4Checkout( file )
+		DevTextBufferDumpToFile( directory + file )
+
+		printt( "Generated: ", directory + file )
 	}
 #endif 
 

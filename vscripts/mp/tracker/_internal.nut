@@ -1,5 +1,9 @@
 untyped																					//~mkos
 
+#if DEVELOPER
+	global function DEV_GenerateBackendSources
+#endif
+
 #if TRACKER && HAS_TRACKER_DLL
 //////////////////////////////
 // INTERNAL STATS FUNCTIONS //
@@ -679,3 +683,31 @@ array<float> function GetPlayerStatArrayFloat( string player_oid, string statnam
 array<bool> function GetPlayerStatArrayBool( string player_oid, string statname ){ return [] }
 void function PlayerStatArray_Append( string player_oid, string statname, var value ){}
 #endif // ELSE !TRACKER && !HAS_TRACKER_DLL
+
+// SHARED 
+
+#if DEVELOPER
+void function DEV_GenerateBackendSources()
+{
+	//File: weapons_projectiles_per_shot
+	string file = "weapon_projectiles_per_shot.txt"
+	string directory = "scripts/devfiles/"
+	DevTextBufferClear()
+
+	string weapon_projectiles_per_shot_string = ""
+	foreach( int id, string weapon in DamageSourceIDToStringTable() )
+	{
+		if( !WeaponIsPrecached( weapon ) ) //wont have a set file / wont be used.
+			continue
+
+		weapon_projectiles_per_shot_string += format( "%s=%s\n", weapon, SetWeaponSettingIntFromFile( weapon, "projectiles_per_shot" ).tostring() )
+	}
+
+	DevTextBufferWrite( weapon_projectiles_per_shot_string )
+	DevP4Checkout( file )
+	DevTextBufferDumpToFile( directory + file )
+	printt( "Generated: ", directory + file )
+
+	//File: 
+}
+#endif

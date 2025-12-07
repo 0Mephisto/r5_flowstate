@@ -717,7 +717,7 @@ bool function DecideRespawnPlayer_Retail( entity player, bool allowSpawnAsObserv
 	if ( IsPVEMode() && (player.p.respawnCount == 0) )
 		return false
 
-	if ( (GetGameState() <= eGameState.WaitingForPlayers) && !PreGame_GetWaitingForPlayersSpawningEnabled() )
+	if ( ( GetGameState() <= eGameState.WaitingForPlayers) && !PreGame_GetWaitingForPlayersSpawningEnabled() )
 	{
 		printf( "%s() - No spawning when waiting for players: %s", FUNC_NAME(), string( player ) )
 		return false

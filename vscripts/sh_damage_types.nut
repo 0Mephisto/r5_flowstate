@@ -862,7 +862,7 @@ string function PIN_GetDamageCause( var damageInfo )
 		printt( data )
 	}
 	
-	void function DEV_PrintBackendNames()
+	void function DEV_PrintBackendNames() //For use with client DEV_GenerateBackendDamageSourceNames()
 	{
 		string printText = "TableForClientScript:\n\n table< string, string > serverOutput = {\n"
 		
