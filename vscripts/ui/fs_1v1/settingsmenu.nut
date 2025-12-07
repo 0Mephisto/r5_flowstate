@@ -22,7 +22,7 @@ void function Init_1v1_SettingsMenu( var newMenuArg )
 
     // AddMenuEventHandler( menu, eUIEvent.MENU_SHOW, OnR5RSB_Show )
 	// AddMenuEventHandler( menu, eUIEvent.MENU_OPEN, OnR5RSB_Open )
-	AddMenuEventHandler( menu, eUIEvent.MENU_CLOSE, OnR5RSB_Close )
+	AddMenuEventHandler( menu, eUIEvent.MENU_CLOSE, OnR5RSB_CloseSendUpdate )
 	AddMenuEventHandler( menu, eUIEvent.MENU_NAVIGATE_BACK, OnR5RSB_Close )
 
 	AddButtonEventHandler( Hud_GetChild( file.menu, "GoBackButton"), UIE_CLICK, GoBackButtonFunct )
@@ -92,6 +92,26 @@ void function OnR5RSB_Close()
 	GoBackButtonFunct(null)
 }
 
+void function OnR5RSB_CloseSendUpdate() // (mk): This is where everything spammy should be sent
+{
+	if( GetConVarInt( "fs_1v1_maxibmmtime" ) <= 0 )
+	{
+		SetConVarInt( "fs_1v1_ibmm", 0 )
+		ClientCommand( "CC_1v1_IBMM 0" )
+	}
+	else if( GetConVarInt( "fs_1v1_ibmm" ) != 1 ) // (mk): Only send if necessary.
+	{
+		SetConVarInt( "fs_1v1_ibmm", 1 )
+		ClientCommand( "CC_1v1_IBMM 1" )
+	}
+
+	ClientCommand( "CC_1v1_MaxEnemyLatency " + GetConVarInt( "fs_1v1_maxenemylatency" ).tostring() )
+	ClientCommand( "CC_1v1_MaxIBMMTime " + GetConVarInt( "fs_1v1_maxibmmtime" ).tostring() )
+
+	GoBackButtonFunct(null)
+}
+
+
 void function ToggleRestButton(var button)
 {
 	ClientCommand( "rest" )
@@ -114,13 +134,13 @@ void function StartInRestButtonChange(var button)
 
 void function IBMMButtonChange(var button)
 {
-	ClientCommand( "CC_1v1_IBMM " + GetConVarInt("fs_1v1_ibmm").tostring())
+	ClientCommand( "CC_1v1_IBMM " + GetConVarInt("fs_1v1_ibmm").tostring() )
 	
-	if(GetConVarInt("fs_1v1_ibmm").tostring() == "0")
+	if( GetConVarInt("fs_1v1_ibmm").tostring() == "0" )
 	{
 		SetConVarInt( "fs_1v1_maxibmmtime", 0 )
 	}
-	else if(GetConVarInt("fs_1v1_ibmm").tostring() == "1")
+	else if( GetConVarInt("fs_1v1_ibmm").tostring() == "1" )
 	{
 		SetConVarInt( "fs_1v1_maxibmmtime", 3 )
 	}	
@@ -160,23 +180,23 @@ void function CharmButtonChange(var button)
 
 void function MaxEnemyLatencyButtonChange(var button)
 {
-	ClientCommand( "CC_1v1_MaxEnemyLatency " + GetConVarInt("fs_1v1_maxenemylatency").tostring())
+	//ClientCommand( "CC_1v1_MaxEnemyLatency " + GetConVarInt("fs_1v1_maxenemylatency").tostring()) //(mk): Don't spam this on change, just send it when the menu closes.
 }
 
 void function MaxIBMMTimeButtonChange(var button)
 {
-	ClientCommand( "CC_1v1_MaxIBMMTime " + GetConVarInt("fs_1v1_maxibmmtime").tostring())
+	//ClientCommand( "CC_1v1_MaxIBMMTime " + GetConVarInt("fs_1v1_maxibmmtime").tostring()) //(mk): Don't spam this on change, just send it when the menu closes.
 
-	if( GetConVarInt("fs_1v1_maxibmmtime") <= 0 )
-	{
-		SetConVarInt( "fs_1v1_ibmm", 0 )
-		ClientCommand( "CC_1v1_IBMM 0")
-	}
-	else
-	{
-		SetConVarInt( "fs_1v1_ibmm", 1 )
-		ClientCommand( "CC_1v1_IBMM 1")
-	}
+	// if( GetConVarInt("fs_1v1_maxibmmtime") <= 0 )
+	// {
+	// 	SetConVarInt( "fs_1v1_ibmm", 0 )
+	// 	ClientCommand( "CC_1v1_IBMM 0")
+	// }
+	// else
+	// {
+	// 	SetConVarInt( "fs_1v1_ibmm", 1 )
+	// 	ClientCommand( "CC_1v1_IBMM 1")
+	// }
 }
 
 void function SupportFS(var button)

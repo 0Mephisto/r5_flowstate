@@ -298,7 +298,10 @@ void function Gamemode1v1_Init( int eMap )
 	INIT_HostCustomWeapons()
 	
 	if( MapName() == eMaps.mp_rr_olympus_tt )
+	{
 		SpawnSystem_UseNavMeshCorrection( false )
+		SpawnSystem_SetValidateSpawnsOnLoad( false )
+	}
 		
 	if( !isScenariosMode() && !bIsCoachingMode() ) //intertwined D:
 	{
@@ -309,16 +312,16 @@ void function Gamemode1v1_Init( int eMap )
 		AddClientCommandCallback( "challenge", ClientCommand_mkos_challenge ) //todo(cafe): create UI to challenge players and deprecate this
 
 		//1v1 settings
-		AddClientCommandCallback("CC_1v1_StartInRest", CC_1v1_StartInRest)
-		AddClientCommandCallback("CC_1v1_IBMM", CC_1v1_IBMM)
-		AddClientCommandCallback("CC_1v1_AcceptChallenges", CC_1v1_AcceptChallenges) 
-		AddClientCommandCallback("CC_1v1_ShowInputBanner", CC_1v1_ShowInputBanner)
-		AddClientCommandCallback("CC_1v1_ShowVsUI", CC_1v1_ShowVsUI)
-		AddClientCommandCallback("CC_1v1_CamoColor", CC_1v1_CamoColor)
-		AddClientCommandCallback("CC_1v1_Heirloom", CC_1v1_Heirloom)
-		AddClientCommandCallback("CC_1v1_Charm", CC_1v1_WeaponCharm)
-		AddClientCommandCallback("CC_1v1_MaxEnemyLatency", CC_1v1_MaxEnemyLatency)
-		AddClientCommandCallback("CC_1v1_MaxIBMMTime", CC_1v1_MaxIBMMTime)
+		AddClientCommandCallback( "CC_1v1_StartInRest", CC_1v1_StartInRest )
+		AddClientCommandCallback( "CC_1v1_IBMM", CC_1v1_IBMM )
+		AddClientCommandCallback( "CC_1v1_AcceptChallenges", CC_1v1_AcceptChallenges ) 
+		AddClientCommandCallback( "CC_1v1_ShowInputBanner", CC_1v1_ShowInputBanner )
+		AddClientCommandCallback( "CC_1v1_ShowVsUI", CC_1v1_ShowVsUI )
+		AddClientCommandCallback( "CC_1v1_CamoColor", CC_1v1_CamoColor )
+		AddClientCommandCallback( "CC_1v1_Heirloom", CC_1v1_Heirloom )
+		AddClientCommandCallback( "CC_1v1_Charm", CC_1v1_WeaponCharm )
+		AddClientCommandCallback( "CC_1v1_MaxEnemyLatency", CC_1v1_MaxEnemyLatency )
+		AddClientCommandCallback( "CC_1v1_MaxIBMMTime", CC_1v1_MaxIBMMTime )
 	}
 	else if( bIsCoachingMode() )
 	{
