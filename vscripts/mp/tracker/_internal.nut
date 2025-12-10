@@ -700,7 +700,7 @@ void function DEV_GenerateBackendSources()
 		if( !WeaponIsPrecached( weapon ) ) //wont have a set file / wont be used.
 			continue
 
-		weapon_projectiles_per_shot_string += format( "%s=%s\n", weapon, SetWeaponSettingIntFromFile( weapon, "projectiles_per_shot" ).tostring() )
+		weapon_projectiles_per_shot_string += format( "%s=%s\n", weapon, GetWeaponSettingIntFromFile( weapon, "projectiles_per_shot" ).tostring() )
 	}
 
 	DevTextBufferWrite( weapon_projectiles_per_shot_string )

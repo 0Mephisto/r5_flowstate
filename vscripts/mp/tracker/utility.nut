@@ -33,7 +33,7 @@ global function sqwarning
 global function ParseWeapon
 global function IsWeaponValid
 global function TrackerWepTable
-global function SetWeaponSettingIntFromFile
+global function GetWeaponSettingIntFromFile
 global function ShouldExcludeDamageSourceShipping
 global function DEV_PrintTrackerWeapons
 
@@ -2646,7 +2646,7 @@ void function sqwarning( ... ) //changed to work like Warning() with format for 
 	#endif
 }
 
-int function SetWeaponSettingIntFromFile( string weaponRef, string setting )
+int function GetWeaponSettingIntFromFile( string weaponRef, string setting )
 {
 	var data = GetWeaponInfoFileKeyField_Global( weaponRef, setting ) 
 
