@@ -68,8 +68,8 @@ global function ValidateBlacklistedWeapons
 global function FS1v1_OnEntitiesDidLoad
 
 global typedef PanelTable table<string, entity>
-const bool DEBUG_STATE		= false
-const float penaltyDuration = 2.0
+const bool DEBUG_STATE			= false
+const float PENALTY_DURATION 	= 2.0
 
 //DEV 
 #if DEVELOPER
@@ -645,63 +645,43 @@ void function FS1v1_OnEntitiesDidLoad()
 //1v1 Settings Client Commands
 bool function CC_1v1_StartInRest( entity player, array<string> args )
 {
-	if( !IsValid( player ) || !IsStringNumeric( args[0] ) )
+	if( !IsValid( player ) || !args.len() || !IsStringNumeric( args[0] ) )
 		return false
 	
-	if(args[0] == "0")
-	{
-		player.p.start_in_rest_setting = false
-	}
-	else if(args[0] == "1")
-	{
-		player.p.start_in_rest_setting = true
-	}
-
+	player.p.start_in_rest_setting = args[0] == "0" ? false : true
 	return true
 }
 
 bool function CC_1v1_AcceptChallenges( entity player, array<string> args )
 {
-	if( !IsValid( player ) || !IsStringNumeric( args[0] ) )
+	if( !IsValid( player ) || !args.len() || !IsStringNumeric( args[0] ) )
 		return false
 	
-	if(args[0] == "0")
-		player.p.lock1v1_setting = false
-	else if(args[0] == "1")
-		player.p.lock1v1_setting = true
-
+	player.p.lock1v1_setting = args[0] == "0" ? false : true
 	return true
 }
 
 bool function CC_1v1_ShowInputBanner( entity player, array<string> args )
 {
-	if( !IsValid( player ) || !IsStringNumeric( args[0] ) )
+	if( !IsValid( player ) || !args.len()  || !IsStringNumeric( args[0] ) )
 		return false
 	
-	if(args[0] == "0")
-		player.p.enable_input_banner = false
-	else if(args[0] == "1")
-		player.p.enable_input_banner = true
-
+	player.p.enable_input_banner = args[0] == "0" ? false : true
 	return true
 }
 
 bool function CC_1v1_ShowVsUI( entity player, array<string> args )
 {
-	if( !IsValid( player ) || !IsStringNumeric( args[0] ) )
+	if( !IsValid( player ) || args.len() || !IsStringNumeric( args[0] ) )
 		return false
 	
-	if(args[0] == "0")
-		player.p.showvsui = false
-	else if(args[0] == "1")
-		player.p.showvsui = true
-
+	player.p.showvsui = args[0] == "0" ? false : true
 	return true
 }
 
 bool function CC_1v1_CamoColor( entity player, array<string> args )
 {
-	if( !IsValid( player ) || !IsStringNumeric( args[0] ) )
+	if( !IsValid( player ) || !args.len() || !IsStringNumeric( args[0] ) )
 		return false
 	
 	player.p.playerCamo = ClampInt( args[0].tointeger(), 0, 9 )
@@ -712,7 +692,8 @@ bool function CC_1v1_CamoColor( entity player, array<string> args )
 		{
 			player.SetSkin( 1 )
 			player.SetCamo( 0 )
-		} else if( args[0].tointeger() > 0 && args[0].tointeger() <= 9 ) 
+		} 
+		else if( args[0].tointeger() > 0 && args[0].tointeger() <= 9 ) 
 		{
 			player.SetSkin( 2 )
 			player.SetCamo( player.p.playerCamo == 9 ? RandomIntRangeInclusive( 0, 15 ) : player.p.playerCamo )
@@ -724,7 +705,7 @@ bool function CC_1v1_CamoColor( entity player, array<string> args )
 
 bool function CC_1v1_WeaponCharm( entity player, array<string> args )
 {
-	if( !IsValid( player ) || !IsStringNumeric( args[0] ) )
+	if( !IsValid( player ) || !args.len() || !IsStringNumeric( args[0] ) )
 		return false
 	
 	player.p.chosenCharm = ClampInt( args[0].tointeger(), 0, 8 )
@@ -734,7 +715,7 @@ bool function CC_1v1_WeaponCharm( entity player, array<string> args )
 
 bool function CC_1v1_Heirloom( entity player, array<string> args )
 {
-	if( !IsValid( player ) || !IsStringNumeric( args[0] ) )
+	if( !IsValid( player ) || !args.len() || !IsStringNumeric( args[0] ) )
 		return false
 	
 	player.p.chosenHeirloom = ClampInt( args[0].tointeger(), 0, 5 )
@@ -748,7 +729,7 @@ bool function CC_1v1_Heirloom( entity player, array<string> args )
 
 bool function CC_1v1_MaxEnemyLatency( entity player, array<string> args )
 {
-	if( !IsValid( player ) || !IsStringNumeric( args[0] ) )
+	if( !IsValid( player ) || !args.len() || !IsStringNumeric( args[0] ) )
 		return false
 	
 	player.p.max_enemy_ping = Clamp( args[0].tofloat(), 5.0, 999.0 )
@@ -758,34 +739,28 @@ bool function CC_1v1_MaxEnemyLatency( entity player, array<string> args )
 
 bool function CC_1v1_IBMM( entity player, array<string> args )
 {
-	if( !IsValid( player ) || !IsStringNumeric( args[0] ) )
+	if( !IsValid( player ) || !args.len() || !IsStringNumeric( args[0] ) )
 		return false
 	
-	if(args[0] == "0")
-	{
-		player.p.IBMM_grace_period = 0
-	}
-	else if(args[0] == "1")
-	{
-		player.p.IBMM_grace_period = 3
-	}
-
+	player.p.IBMM_grace_period = args[0] == "0" ? 0.0 : 3.0 //(mk): minimum of 3.0 is required for ibmm to function
 	return true
 }
 
 bool function CC_1v1_MaxIBMMTime( entity player, array<string> args )
 {
-	if( !IsValid( player ) || !IsStringNumeric( args[0] ) )
+	if( !IsValid( player ) || !args.len() || !IsStringNumeric( args[0] ) )
 		return false
-	
-	// if( args[0].tofloat() <= 0 )
-		// player.SetConVarInt( "fs_1v1_ibmm", 0 )
-	// else
-		// player.SetConVarInt( "fs_1v1_ibmm", 1 )
-	
-	player.p.IBMM_grace_period = Clamp( args[0].tofloat(), 0.0, 30.0 )
-	
+
+	player.p.IBMM_grace_period = NormalizeGracePeriod( Clamp( args[0].tofloat(), 0.0, 30.0 ) )
 	return true
+}
+
+float function NormalizeGracePeriod( float f_userSelection )
+{	
+	if( f_userSelection >= 0.0 && f_userSelection <= 3.0 )
+		return 3.0
+		
+	return f_userSelection
 }
 
 bool function MessagePlayer_Disabled( entity player, array<string> args )
@@ -1261,7 +1236,7 @@ void function ResetIBMM( entity player )
         file.soloPlayersWaiting[ handle ].ibmmTimeoutReached = false
 	#if DEVELOPER
 	else
-		printw( "player was not in waiting list:", player )
+		printw( "[ResetIBMM] player was not in waiting list:", player )
 	#endif
 }
 
@@ -1439,18 +1414,20 @@ int function getTimeOutPlayerAmount()
 
 entity function getTimeOutPlayer() 
 {
-    foreach ( playerHandle, eachPlayerStruct in file.soloPlayersWaiting ) 
+    foreach ( playerHandle, waitingPlayerStruct in file.soloPlayersWaiting ) 
 	{
-        if ( eachPlayerStruct.IsTimeOut ) 
+        if ( waitingPlayerStruct.IsTimeOut ) 
 		{
-			if(!IsValid(eachPlayerStruct) || !IsValid(eachPlayerStruct.player) || eachPlayerStruct.player.p.waitingFor1v1  )
+			if( !IsValid( waitingPlayerStruct ) 
+			|| !IsValid( waitingPlayerStruct.player ) 
+			|| waitingPlayerStruct.player.p.waitingFor1v1 )
 			{
 				continue
 			}
 			
-			//string set = eachPlayerStruct.player.p.waitingFor1v1 ? "true" : "false";
-			//sqprint(format("TIMEOUTPLAYER IS player: %s setting for waiting is: %s", eachPlayerStruct.player.p.name, set))
-            return eachPlayerStruct.player
+			//string set = waitingPlayerStruct.player.p.waitingFor1v1 ? "true" : "false";
+			//sqprint(format("TIMEOUTPLAYER IS player: %s setting for waiting is: %s", waitingPlayerStruct.player.p.name, set))
+            return waitingPlayerStruct.player
         }
     }
 	
@@ -1676,18 +1653,26 @@ void function addSoloPlayerResting( int playerHandle )
 
 void function Gamemode1v1_RemovePlayerFromWaitingList( int handle )
 {
-	// #if DEVELOPER
-	// printt( "player removed from waiting list", handle )
-	// #endif
-	
 	if ( handle in file.soloPlayersWaiting )
+	{
+		#if DEVELOPER
+			printt( "player removed from waiting list:", handle )
+		#endif
 		delete file.soloPlayersWaiting[ handle ]
+	}
+	#if DEVELOPER 
+		else
+			printt( "player was not in waiting list:", handle )
+	#endif
 }
 
 void function AddPlayerToWaitingList( soloPlayerStruct playerStruct ) 
 {
 	if( IsValid( playerStruct.player ) )
+	{
+		//printw( "[ADDING TO WAITING LIST] :", playerStruct.player )
 		file.soloPlayersWaiting[ playerStruct.player.p.handle ] <- playerStruct
+	}
 	else
 		sqerror( "[AddPlayerToWaitingList] player to add was invalid" )
 }
@@ -3010,7 +2995,7 @@ entity function GetNewRandomOpponentForPlayer_1v1( entity player )
 			continue
 		
 		// still dying, skip for MM until penalty expires
-		if (playerWaiting.victimPenaltyExpire > Time())
+		if ( playerWaiting.victimPenaltyExpire > Time() )
 			continue
 		
         if ( IsValid( playerWaiting.player ) && player != playerWaiting.player && !playerWaiting.player.p.waitingFor1v1 )
@@ -3064,9 +3049,9 @@ void function soloModePlayerToWaitingList( entity player, bool isWinner = false,
 		return
 	}
 	
-	if( !IsValid( player ) || Gamemode1v1_IsPlayerWaiting( player ) || IsBotEnt( player ) ) 	
+	if( !IsValid( player ) || Gamemode1v1_IsPlayerWaiting( player ) || IsBotEnt( player ) ) 
 		return
-	
+
 	if( !IsAlive( player ) ) //(cafe)This try catch shouldn't be necessary?
 	{
 		DecideRespawnPlayer( player, false )
@@ -3097,7 +3082,7 @@ void function soloModePlayerToWaitingList( entity player, bool isWinner = false,
 	if( !settings.isScenariosMode && !bIsCoachingMode() )
 	{
 		if( !isWinner ) 
-			playerStruct.victimPenaltyExpire = Time() + penaltyDuration
+			playerStruct.victimPenaltyExpire = Time() + PENALTY_DURATION
 		else
 			playerStruct.victimPenaltyExpire = Time()
 		
@@ -3241,7 +3226,7 @@ void function scenarios_soloModePlayerToWaitingList( entity player, bool isWinne
 	if( !settings.isScenariosMode && !bIsCoachingMode() )
 	{
 		if( !isWinner ) 
-			playerStruct.victimPenaltyExpire = Time() + penaltyDuration
+			playerStruct.victimPenaltyExpire = Time() + PENALTY_DURATION
 		else
 			playerStruct.victimPenaltyExpire = Time()
 		
@@ -3255,7 +3240,7 @@ void function scenarios_soloModePlayerToWaitingList( entity player, bool isWinne
 	float current_kd
 	
 	// weighted scoring
-	season_kd = getkd( ( player.GetPlayerNetInt( "kills" ) + player.p.season_kills), ( player.GetPlayerNetInt( "deaths" ) + player.p.season_deaths ) )
+	season_kd = getkd( ( player.GetPlayerNetInt( "kills" ) + player.p.season_kills ), ( player.GetPlayerNetInt( "deaths" ) + player.p.season_deaths ) )
 	current_kd = getkd( player.GetPlayerNetInt( "kills" ), player.GetPlayerNetInt( "deaths" )  )	
 	playerStruct.kd = ( ( season_kd * file.season_kd_weight ) + ( current_kd * file.current_kd_weight ) )
 
@@ -3817,7 +3802,7 @@ bool function ValidateSpawns( array<SpawnData> allSoloLocations )
 void function FS_1v1_MainLoop_THREAD( LocPair waitingRoomLocation )
 {
 	#if DEVELOPER
-	printw("SOLO MODE MAIN THREAD STARTED")
+		printw("SOLO MODE MAIN THREAD STARTED")
 	#endif
 	
 	OnThreadEnd
@@ -4208,22 +4193,22 @@ void function FS_1v1_MainLoop_THREAD( LocPair waitingRoomLocation )
 			/////////////////////////////////////////////////
 			// SET RELEVANT MATCHMAKING VARS FOR IBMM/SBMM //
 			/////////////////////////////////////////////////
-			foreach ( playerHandle, playerWaiting in file.soloPlayersWaiting )
+			foreach ( playerHandle, playerWaitingStruct in file.soloPlayersWaiting )
 			{
-				if ( !IsValidPlayer( playerWaiting.player ) )
+				if ( !IsValidPlayer( playerWaitingStruct.player ) )
 					continue
 
 				// still dying, skip for MM until penalty expires
-				if (playerWaiting.victimPenaltyExpire > Time())
+				if ( playerWaitingStruct.victimPenaltyExpire > Time() )
 					continue
 				
 				// ok, i’ve waited long enough. go ahead and match me with anyone even if they use a different control scheme
-				playerWaiting.ibmmTimeoutReached = (Time() - playerWaiting.queue_time > playerWaiting.player.p.IBMM_grace_period)
+				playerWaitingStruct.ibmmTimeoutReached = ( Time() - playerWaitingStruct.queue_time > playerWaitingStruct.player.p.IBMM_grace_period )
 				
 				// timeout preferred matchmaking (will choose a random player if sbmm fails)
-				if ( !bIsCoachingMode() && playerWaiting.waitingTime < Time() && !playerWaiting.IsTimeOut && IsValid(playerWaiting.player))
+				if ( !bIsCoachingMode() && playerWaitingStruct.waitingTime < Time() && !playerWaitingStruct.IsTimeOut && IsValid( playerWaitingStruct.player ) )
 				{
-					playerWaiting.IsTimeOut = true
+					playerWaitingStruct.IsTimeOut = true
 				}
 			}
 			
@@ -4245,9 +4230,12 @@ void function FS_1v1_MainLoop_THREAD( LocPair waitingRoomLocation )
 						ClearNotifications( newGroup.player1, eNotify.MATCHING )
 						newGroup.player2 = opponent
 						
-						printw( "MATCH CREATED VIA PLAYER TIMED OUT (RANDOM ENEMY)", getTimeOutPlayerAmount(), "TIMED OUT PLAYER:", newGroup.player1.GetPlayerName() )
+						#if DEVELOPER
+							printw( "MATCH CREATED VIA PLAYER TIMED OUT (RANDOM ENEMY)", getTimeOutPlayerAmount(), "TIMED OUT PLAYER:", newGroup.player1.GetPlayerName() )
+						#endif
+						
 						bMatchFound = true
-					} 
+					}
 					else
 					{
 						Gamemode1v1_NotifyPlayerOnce( newGroup.player1, eNotify.MATCHING, "#FS_MATCHING_FOR", FetchInputName( newGroup.player1 ) )
@@ -4397,11 +4385,12 @@ void function FS_1v1_MainLoop_THREAD( LocPair waitingRoomLocation )
 				newGroup.player1_handle = newGroup.player1.p.handle
 				newGroup.player2_handle = newGroup.player2.p.handle
 			
-				if( GroupIsLockable( newGroup ) )
+				if( GroupIsLockable( newGroup ) ) 
 					newGroup.inputLocked = true
 				else
 					newGroup.inputLocked = false
 				
+				//DEV_SetBreakPoint()
 				soloModePlayerToInProgressList( newGroup )
 				
 				foreach ( index, eachPlayer in players )
@@ -4421,11 +4410,11 @@ void function FS_1v1_MainLoop_THREAD( LocPair waitingRoomLocation )
 				if ( newGroup.inputLocked == true )
 				{
 					thread InputWatchdog( newGroup.player1, newGroup.player2, newGroup )
-					ibmmLockTypeToken = "#FS_InputLocked";
+					ibmmLockTypeToken = "#FS_InputLocked"
 				}
 				else 
 				{ 	
-					ibmmLockTypeToken = "#FS_CouldNotLock";
+					ibmmLockTypeToken = "#FS_CouldNotLock"
 				}
 				
 				//check for player 1's lock setting and that group isnt locked
@@ -4433,15 +4422,18 @@ void function FS_1v1_MainLoop_THREAD( LocPair waitingRoomLocation )
 					ibmmLockTypeToken = "#FS_AnyInput"
 				
 				//message player 1
-				if( newGroup.player1.p.enable_input_banner && !bMatchFound )
+				if( newGroup.player1.p.enable_input_banner )
 					IBMM_Notify( newGroup.player1, ibmmLockTypeToken, newGroup.player2.p.input )
+				
+				if( newGroup.inputLocked == false ) //(mk): reset base token
+					ibmmLockTypeToken = "#FS_CouldNotLock"
 				
 				//check for player 2 lock setting
 				if ( newGroup.player2.p.IBMM_grace_period <= 0 && newGroup.inputLocked == false )
-					ibmmLockTypeToken = "#FS_AnyInput";
-				
+					ibmmLockTypeToken = "#FS_AnyInput"
+
 				//msg player 2
-				if( newGroup.player2.p.enable_input_banner && !bMatchFound )
+				if( newGroup.player2.p.enable_input_banner )
 					IBMM_Notify( newGroup.player2, ibmmLockTypeToken, newGroup.player1.p.input )
 					
 			} //not waiting
@@ -4833,7 +4825,7 @@ void function ForceAllRoundsToFinish_solomode()
 			destroyRingsForGroup( group )		
 			group.IsFinished = true //tell solo thread this round has finished so it can be removed
 			#if DEVELOPER
-			printw( format("group %d forcedly marked as IsFinished", group.groupHandle) )
+				printw( format("group %d forcedly marked as IsFinished", group.groupHandle) )
 			#endif
 		}
 		
@@ -5344,7 +5336,9 @@ void function SetInput_IN_FORWARD( entity player )
 
 bool function GroupIsLockable( soloGroupStruct newGroup )
 {	//(mk): This can return "could not lock" message when the enemy has not moved yet for the match. Intended behavior.
-	return ( newGroup.player1.p.lastmoved > 2 && newGroup.player2.p.lastmoved > 2 && ( ( Fetch_IBMM_Timeout_For_Player( newGroup.player1 ) == false && Fetch_IBMM_Timeout_For_Player( newGroup.player2 ) == false ) || newGroup.player1.p.input == newGroup.player2.p.input ) )	
+	return ( newGroup.player1.p.lastmoved > 2 && newGroup.player2.p.lastmoved > 2 
+	&& ( ( Fetch_IBMM_Timeout_For_Player( newGroup.player1 ) == false && Fetch_IBMM_Timeout_For_Player( newGroup.player2 ) == false ) 
+	|| newGroup.player1.p.input == newGroup.player2.p.input ) )	
 }
 
 bool function ClientCommand_mkos_IBMM_wait( entity player, array<string> args )

@@ -2960,7 +2960,7 @@ void function DefinePanelCallbacks( PanelTable panels )
 		
 		void function( entity panel, entity user, int input )
 		{
-			if ( !IsValid(user) ) 
+			if ( !IsValid( user ) ) 
 				return
 				
 			if( !CheckRate( user ) )
@@ -2969,13 +2969,13 @@ void function DefinePanelCallbacks( PanelTable panels )
 			if ( user.p.start_in_rest_setting == true )
 			{
 				user.p.start_in_rest_setting = false
-				SavePlayerData( user, "start_in_rest_setting", false )
-				LocalMsg(user, "#FS_StartInRestDisabled")
+				//SavePlayerData( user, "start_in_rest_setting", false ) //Todo(mk):  use convar
+				LocalMsg( user, "#FS_StartInRestDisabled" )
 			}
 			else
 			{   
 				user.p.start_in_rest_setting = true
-				SavePlayerData( user, "start_in_rest_setting", true )
+				//SavePlayerData( user, "start_in_rest_setting", true ) //Todo(mk):  use convar
 				LocalMsg( user, "#FS_StartInRestEnabled" )
 			}
 		}
@@ -2986,7 +2986,7 @@ void function DefinePanelCallbacks( PanelTable panels )
 	( 
 		panels["#FS_REST_TOGGLE"], 
 		
-		void function(entity panel, entity user, int input )
+		void function( entity panel, entity user, int input )
 		{
 			if ( !IsValid( user ) ) 
 				return     
@@ -3012,7 +3012,7 @@ int function DetermineLowThreshold( int teamAmount, int playersPerTeam )
 #if TRACKER
 	void function Scenarios_PlayerDataCallbacks() //todo move to convar
 	{
-		AddCallback_PlayerData( "start_in_rest_setting", UpdateStartInRestSetting )
+		//AddCallback_PlayerData( "start_in_rest_setting", UpdateStartInRestSetting ) //deprecated
 	}
 #endif 
 

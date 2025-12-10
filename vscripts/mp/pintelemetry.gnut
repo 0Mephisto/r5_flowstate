@@ -1541,7 +1541,7 @@ void function PIN_Init()
 	if ( file.LogOn )
 	{
 		string message = format( "R5R.DEV metrics initialized at:  %d ", GetUnixTimestamp() )
-		print( message )
+		printl( message )
 		
 		AddCallback_OnClientDisconnected( PlayerDisconnectedCallback )		
 		AddCallback_OnWeaponAttack( WeaponAttack )
@@ -1919,9 +1919,6 @@ void function Init_NewGame()
 		
 		file.LogE
 	)
-	
-	// foreach( player in GetPlayerArray() )
-		// CheckPlayerStartInRest( player )
 	
 	PrintMatchIDtoAll()
 	
@@ -2498,7 +2495,7 @@ void function RemoveDamageEvents( int attacker_handle, int victim_handle ) //Tod
 	)
 }
 
-	void function __EndFight( entity victim, entity attacker, var damageInfo, float deathtime )
+	void function __EndFight( entity victim, entity attacker, var damageInfo, float deathtime, string attackerLocation, string victimLocation )
 	{
 		if( !damageInfo )
 		{
@@ -2525,7 +2522,7 @@ void function RemoveDamageEvents( int attacker_handle, int victim_handle ) //Tod
 		bool victimIsPlayer = victim.IsPlayer()
 		
 		//Increment fightid
-		int id = GetUniqueFightId()
+		int iFightID = GetUniqueFightId()
 		
 		//set player vars
 		string ornull victimName = victimIsPlayer ? victim.p.name : victim.GetNetworkedClassName()
@@ -2533,7 +2530,7 @@ void function RemoveDamageEvents( int attacker_handle, int victim_handle ) //Tod
 			if( victimName == null )
 			{
 				victimName = "worldspawn"
-				string msg = "Victimname was null during endfight id " + id.tostring()
+				string msg = "Victimname was null during endfight id " + iFightID.tostring()
 				
 				#if DEVELOPER
 					sqerror( msg )
@@ -2600,7 +2597,7 @@ void function RemoveDamageEvents( int attacker_handle, int victim_handle ) //Tod
 			attacker_handle = attacker.GetEncodedEHandle()
 		
 		//statement header
-		string logString = "|#Fight Recap:{" + GetUnixTimestamp() + "}| Fight ID:{" + id + "}| Victim: {" + victimUID + "};"
+		string logString = "|#Fight Recap:{" + GetUnixTimestamp() + "}| Fight ID:{" + iFightID + "}| Victim: {" + victimUID + "};"
 		
 		// initialize vars..
 		float totalDamageToVictim = 0.0
@@ -2996,112 +2993,114 @@ void function RemoveDamageEvents( int attacker_handle, int victim_handle ) //Tod
 		/////////////////////////////////////////////////////////////////////////////////////////
 
 
-            float timeRemaining = Tracker_DecideTimeRemaining()
-            int aliveTeams = GetNumTeamsRemaining() //ty ida
+            float fMatchTimeRemaining = Tracker_DecideTimeRemaining()
+            int iAliveTeams = GetNumTeamsRemaining() //ty ida
 
-			string attName = ""
-			string aController = ""
-			string attTeam = "-1"
+			string attackerInput = ""
+			int iAttackerTeam = -1
 			
 			if ( !attacker.IsPlayer() )
 			{
-				attTeam = "-1";
-				aController = "worldspawn";	
+				attackerInput = "worldspawn";	
 			} 
 			else 
 			{
-				attTeam = attacker.GetTeam().tostring()
-				aController = attacker.p.input.tostring()
+				iAttackerTeam = attacker.GetTeam()
+				attackerInput = attacker.p.input.tostring()
 			}
 
 
-            string team_of_killer = attTeam
-            string team_of_killed = victim.GetTeam().tostring()
+            int iVictimTeam = victim.GetTeam()
 			float pingVictim = victimIsPlayer ? ( victim.GetLatency() * 1000 - 40 ) : -1.0
 			float pingAttacker = 0
-			string a_OID = ""
-			string v_OID = victimUID
+			string attackerPlayerID = ""
+			string victimPlayerID = victimUID
 
 			int iAttackerScore = 0
 			if ( attacker.IsPlayer() )
 			{
-				attName = attacker.p.name;
+				attackerName = attacker.p.name;
 				pingAttacker = attacker.GetLatency() * 1000 - 40
-				a_OID = attacker.p.UID
+				attackerPlayerID = attacker.p.UID
 				iAttackerScore = attacker.p.season_score
 				
 				if ( bReportStats && attacker != victim )
-					AddToPlayerKills( a_OID )
+					AddToPlayerKills( attackerPlayerID )
 			}
 			else if( attacker.IsNPC() )
 			{
 				string ornull potentialName = attacker.GetNetworkedClassName() 
 				
 				if( potentialName != null )
-					attName = expect string( potentialName )
+					attackerName = expect string( potentialName )
 				else 
-					attName = "NULL_DEBUGIT"
+					attackerName = "NULL_DEBUGIT"
 				
-				a_OID = attName
+				attackerPlayerID = attackerName
 			}
 			else 
 			{
 				int attackerID = damageSourceID
 				
-				a_OID = GetWorldSpawnRef( attackerID )
+				attackerPlayerID = GetWorldSpawnRef( attackerID )
 				
 				if( !ShouldExcludeDamageSourceShipping( attackerID ) )
-					attName = DamageSourceIDToString( attackerID )			
+					attackerName = DamageSourceIDToString( attackerID )			
 			}
 			
 			if ( bReportStats && victimIsPlayer )
 			{
 				AddToPlayerDeaths( victim )
-				AddToPlayerShots( v_OID, victimTotalShots )
-				AddToPlayerHits ( v_OID, victimTotalHits )
+				AddToPlayerShots( victimPlayerID, victimTotalShots )
+				AddToPlayerHits ( victimPlayerID, victimTotalHits )
 			}
 			
-			string victimcontroller = victimIsPlayer ? victim.p.input.tostring() : "1"
+			int iVictimInput = victimIsPlayer ? victim.p.input : 1
 			int iVictimScore = victimIsPlayer ? victim.p.season_score : 0
 			
-			int isChal = bIsChal ? 1 : 0
-			int pA = pingAttacker.tointeger()
-			int pV = pingVictim.tointeger()
-			int currentTimeStamp = GetUnixTimestamp()
-            logString += format( "\n^^,%s,1,%d,%d,%s,%s,%s,%i,%d,%s,%d,%d,%s,%s,%i,%i,%i\n&&,%s,%d,%s,%d,%s,%s,%i,%d,%s,%d,%d,%s,%s,%s,%i,%i,%i\n",
-                a_OID, 					//0
-                GetNumTeamsRemaining(), //2
-                currentTimeStamp, 	//3
-                v_OID, 					//4
-                team_of_killer, 		//5
-                team_of_killed, 		//6
-                timeRemaining, 			//7
-                id, 					//8
-				aController, 			//9
-				pA, 					//10
-				pV, 					//11
-				attName, 				//12	
+			int iChallengeCode = bIsChal ? 1 : 0
+			int iAttackerPing = pingAttacker.tointeger()
+			int iVictimPing = pingVictim.tointeger()
+			int iCurrentTimeStamp = GetUnixTimestamp()
+            logString += format( "\n^^,%s,1,%d,%d,%s,%d,%d,%i,%d,%s,%d,%d,%s,%s,%i,%i,%i,%s,%s\n&&,%s,%d,%s,%d,%d,%d,%i,%d,%s,%d,%d,%d,%s,%s,%i,%i,%i,%s,%s\n",
+                attackerPlayerID, 		//0
+				// 1 is string literal
+                iAliveTeams, 			//2
+                iCurrentTimeStamp, 		//3
+                victimPlayerID, 		//4
+                iAttackerTeam, 			//5
+                iVictimTeam, 			//6
+                fMatchTimeRemaining, 	//7
+                iFightID, 				//8
+				attackerInput, 			//9
+				iAttackerPing, 			//10
+				iVictimPing, 			//11
+				attackerName, 			//12	
 				victimName, 			//13
 				iAttackerScore,			//14
 				iVictimScore,			//15
-				isChal,					//16
-                v_OID, 				//0
-                aliveTeams, 		//1
-                a_OID, 				//2
-                currentTimeStamp, 	//3
-                team_of_killer, 	//4
-                team_of_killed, 	//5
-                timeRemaining, 		//6
-                id, 				//7
-				aController, 		//8
-				pV, 				//9
-				pA, 				//10
-				victimcontroller, 	//11
-				attName, 			//12
+				iChallengeCode,			//16
+				attackerLocation,		//17
+				victimLocation,			//18
+                victimPlayerID, 	//0
+                iAliveTeams, 		//1
+                attackerPlayerID, 	//2
+                iCurrentTimeStamp, 	//3
+                iAttackerTeam, 		//4
+                iVictimTeam, 		//5
+                fMatchTimeRemaining,//6
+                iFightID, 			//7
+				attackerInput, 		//8
+				iVictimPing, 		//9
+				iAttackerPing, 		//10
+				iVictimInput, 		//11
+				attackerName, 		//12
 				victimName, 		//13
 				iAttackerScore,		//14
 				iVictimScore,		//15
-				isChal 				//16
+				iChallengeCode,		//16
+				attackerLocation,	//17
+				victimLocation		//18
             )
 
 			if ( bReportStats && file.bSafeLog )
@@ -5144,7 +5143,7 @@ void function PIN_PlayerRevived( entity injured, entity healer )
 void function PIN_PlayerKilled( entity victim, entity attacker, var damageInfo )
 {	
 	if ( file.LogOn && TrackerIsLogging__internal() && IsValid( victim ) && victim.IsPlayer() )
-		thread __EndFight( victim, attacker, damageInfo, Time() )
+		thread __EndFight( victim, attacker, damageInfo, Time(), VectorToString( attacker.GetOrigin() ), VectorToString( victim.GetOrigin() ) )
 }
 
 void function Tracker_EndFight( entity victim, entity attacker, var damageInfo )
@@ -5152,7 +5151,7 @@ void function Tracker_EndFight( entity victim, entity attacker, var damageInfo )
 	if( !Flowstate_IsTrackerSupportedMode() || !file.LogOn || !TrackerIsLogging__internal() )
 		return
 		
-	thread __EndFight( victim, attacker, damageInfo, Time() )
+	thread __EndFight( victim, attacker, damageInfo, Time(), VectorToString( attacker.GetOrigin() ), VectorToString( victim.GetOrigin() ) )
 }
 
 void function PIN_PlanePath( vector startPos, vector endPos, float duration )
