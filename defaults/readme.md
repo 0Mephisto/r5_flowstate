@@ -1,0 +1,2 @@
+Inside of here are files relative to root folder, where: ( 'audio','bin','cfg','license'...etc ) folders are.
+Copy the files inside of this directory (except this readme) to your root game folder to apply changes outside of this repos scope. - mkos
