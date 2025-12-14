@@ -308,7 +308,7 @@ void function PrecacheFSEntities()
 		
 		case "fs_1v1":
 		
-		if( !InvalidModesForTrackScoreBoard.contains( GameRules_GetGameMode() ) ) //prevent mapchange crash
+		if( !INVALID_MODES_FOR_TRACK_SCOREBOARD.contains( GameRules_GetGameMode() ) ) //prevent mapchange crash
 			thread FS_TrackPlayersPositionInScoreboard()
 		break
 
@@ -543,7 +543,7 @@ void function PrecacheSDKEntities()
 	PrecacheModel( $"mdl/Weapons/pathfinder_gloves/ptpov_pathfinder_gloves_gladcard.rmdl" )
 }
 
-const array<string> InvalidModesForTrackScoreBoard = //const values
+const array<string> INVALID_MODES_FOR_TRACK_SCOREBOARD = //const values
 [
 	SURVIVAL,
 	MENUFALL,

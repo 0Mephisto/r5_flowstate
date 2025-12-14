@@ -36,6 +36,7 @@ global function TrackerWepTable
 global function GetWeaponSettingIntFromFile
 global function ShouldExcludeDamageSourceShipping
 global function DEV_PrintTrackerWeapons
+global function PrintSupportedAttachpointsForWeapon
 
 //Client commands util
 global function __PlayerAdminsInit
