@@ -28,7 +28,7 @@ void function RefreshUIMaps()
 	{
 		var button = Hud_GetChild( scrollPanel, "GridButton" + id )
         var rui = Hud_GetRui( button )
-	    RuiSetString( rui, "buttonText", GetUIMapName(map) )
+	    RuiSetString( rui, "buttonText", GetUIMapName( map ) )
 
 		// If the button has not already had its event handlers registered, add them!
 		if ( !( button in file.map_button_table ) )
@@ -40,23 +40,25 @@ void function RefreshUIMaps()
 
 			// Store the map name that corresponds with this button
 			// so that we can skip adding event handlers on future calls
-			file.map_button_table[button] <- map
+			//file.map_button_table[ button ] <- map //(mk): do not leave stale data on refresh
 		}
+		
+		file.map_button_table[ button ] <- map //(mk): always update the button map for the newly selected playlist
 	}
 
-	Hud_SetHeight(Hud_GetChild(file.panel, "PanelBG"), Hud_GetHeight(file.listPanel) + 1)
+	Hud_SetHeight( Hud_GetChild( file.panel, "PanelBG" ), Hud_GetHeight( file.listPanel ) + 1 )
 }
 
 void function SelectServerMap( var button )
 {
 	//Set selected server map
 	EmitUISound( "menu_accept" )
-	SetSelectedServerMap(file.map_button_table[button])
+	SetSelectedServerMap( file.map_button_table[ button ] )
 }
 
 void function OnMapHover( var button )
 {
-	RuiSetImage( Hud_GetRui( Hud_GetChild( file.menu, "ServerMapImg" ) ), "loadscreenImage", GetUIMapAsset( file.map_button_table[button] ) )
+	RuiSetImage( Hud_GetRui( Hud_GetChild( file.menu, "ServerMapImg" ) ), "loadscreenImage", GetUIMapAsset( file.map_button_table[ button ] ) )
 }
 
 void function OnMapUnHover( var button )

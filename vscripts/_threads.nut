@@ -26,6 +26,9 @@ global function printl_spamLog
 global function printt_spam
 global function SpamWarning
 global function printt_verticle
+global function print_string_array
+global function print_var_table
+global function print_var_array
 
 global function LevelVarInit
 
@@ -109,6 +112,34 @@ void function PrintFunc( var val = null )
 	{
 		printt( "PrintFunc:", getstackinfos( 2 ).func )
 	}
+}
+
+void function print_string_array( array<string> args )
+{
+	string test = "\n\n------ PRINT STRING ARRAY ------\n\n"
+	
+	foreach( arg in args )
+		test += format( "	\"%s\", \n", arg )
+	
+	printl( test )
+}
+
+void function print_var_table( table<string,var> tbl )
+{
+	string prnt = "\n\n------ PRINT TABLE ------\n\n"
+	foreach( string k, var v in tbl )
+		prnt += format( "	[%s] = %s\n", k, string( v ) )
+	
+	printl( prnt )
+}
+
+void function print_var_array( array<var> arr )
+{
+	string prnt = "\n\n------ PRINT ARRAY ------\n\n"
+	foreach( i, v in arr )
+		prnt += format( "	[%d] = %s\n", i, string( v ) )
+	
+	printl( prnt )
 }
 
 string function VM_NAME()

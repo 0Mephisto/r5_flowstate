@@ -2969,13 +2969,11 @@ void function DefinePanelCallbacks( PanelTable panels )
 			if ( user.p.start_in_rest_setting == true )
 			{
 				user.p.start_in_rest_setting = false
-				//SavePlayerData( user, "start_in_rest_setting", false ) //Todo(mk):  use convar
 				LocalMsg( user, "#FS_StartInRestDisabled" )
 			}
 			else
 			{   
 				user.p.start_in_rest_setting = true
-				//SavePlayerData( user, "start_in_rest_setting", true ) //Todo(mk):  use convar
 				LocalMsg( user, "#FS_StartInRestEnabled" )
 			}
 		}
@@ -3010,9 +3008,9 @@ int function DetermineLowThreshold( int teamAmount, int playersPerTeam )
 }
 
 #if TRACKER
-	void function Scenarios_PlayerDataCallbacks() //todo move to convar
+	void function Scenarios_PlayerDataCallbacks() 
 	{
-		//AddCallback_PlayerData( "start_in_rest_setting", UpdateStartInRestSetting ) //deprecated
+		
 	}
 #endif 
 

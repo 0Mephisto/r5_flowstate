@@ -560,13 +560,6 @@ void function DM__OnEntitiesDidLoad()
 		
 		break
 		
-		/*case eMaps.mp_rr_arena_skygarden:
-			
-			if( flowstateSettings.patch_waiting_area )
-				Patch_SkyGardenRest()
-		break*/
-				
-			break
 		case eMaps.mp_rr_arena_empty:
 			entity skyboxCamera = GetEnt( "skybox_cam_level" )
 			file.ogSkyboxOrigin = skyboxCamera.GetOrigin()

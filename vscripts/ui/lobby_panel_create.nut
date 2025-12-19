@@ -134,26 +134,26 @@ void function SetSelectedServerPlaylist( string playlist )
 
 	//set playlist
 	ServerSettings.svPlaylist = playlist
-
 	//Get the maps of the new playlist
-	array<string> playlist_maps = GetPlaylistMaps(ServerSettings.svPlaylist)
-	
+	array<string> playlist_maps = GetPlaylistMaps( playlist )
+
 	//Set the panel to not visible
 	Hud_SetVisible( file.panels[1], false )
 
 	//Set the new playlist text
-	Hud_SetText(Hud_GetChild( file.panel, "PlaylistInfoEdit" ), GetUIPlaylistName( ServerSettings.svPlaylist ) )
+	Hud_SetText( Hud_GetChild( file.panel, "PlaylistInfoEdit" ), GetUIPlaylistName( ServerSettings.svPlaylist ) )
 
 	//This should never really be triggered but here just incase
-	if(playlist_maps.len() == 0) {
-		SetSelectedServerMap("mp_rr_canyonlands_64k_x_64k")
+	if( playlist_maps.len() == 0 ) 
+	{
+		SetSelectedServerMap( "mp_rr_canyonlands_64k_x_64k" )
 		RefreshUIMaps()
 		return
 	}
 
 	//Check to see if the current map is allowed on the new selected playlist
-	if(!playlist_maps.contains(ServerSettings.svMapName))
-		SetSelectedServerMap(playlist_maps[0])
+	if( !playlist_maps.contains( ServerSettings.svMapName ) )
+		SetSelectedServerMap( playlist_maps[0] )
 
 	//Refresh Maps
 	RefreshUIMaps()

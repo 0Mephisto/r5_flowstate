@@ -166,9 +166,6 @@ global function Tracker_IgnoreResync
 
 global function __TrackerStatsHook_Damage
 
-global function GetDefaultLock1v1Setting //todo deprecate
-global function GetDefaultEnableInputBannerSetting //todo deprecate
-
 ///////////////////////////// QUERIES ////////////////////////////////////////////
 // usage=   AddCallback_QueryString("category:query", resultHandleFunction )	//
 // 			see r5r.dev/info for details about available categories.		 	//
@@ -213,7 +210,6 @@ global function IsBotEnt //todo move to code
 global function SendServerMessage //todo move to code
 global function bBotEnabled //todo move to code
 global function isIntervalThreadRunning //todo rename
-global function UpdateStartInRestSetting //move
 
 global function NULL_PDATA
 global function Gamemode1v1_PlayerDataCallbacks //TODO: this probably shouldn't be here, but a bit of logic needs sorted into it's gamemode file (will do soonTM)
@@ -244,7 +240,7 @@ const float DAMAGE_LOOKBACK_TIME_WINDOW 		= 20.0
 const int 	MAX_SAY_MSG 						= 255
 const int 	RESTRICTED_ACCESS_STATUS_REQUIRED 	= 7 // refer to CheckIfPlayerHasAccess()
 const int 	REQUIRED_SYNC_DATA_FIELDS 			= 1  //amount of fields returned by stats the scripts require (non-settings values)
-const float TRACKER_VERSION 					= 2.1
+const float TRACKER_VERSION 					= 2.2
 
 const array<string> SERVER_MSG_EVENT_TYPES = 
 [
@@ -367,7 +363,7 @@ array< PlayerMetrics > PlayerMetricsArray
 array< PlayerVerifyCount > playerVerifyCounts
 
 #if SERVER   
-	bool function Logging_ShipStats() 				{ return GetCurrentPlaylistVarBool("logging_shipstats", false) }
+	bool function Logging_ShipStats() 				{ return GetCurrentPlaylistVarBool("tracker_shipstats", false) }
 	bool function Enable_CC_Administration() 		{ return GetCurrentPlaylistVarBool("cc_administration", false) }
 	bool function Ea_Verify_Server()				{ return ( GetCurrentPlaylistVarBool( "ea_verify_server", false ) && GetConVarInt( "sv_onlineAuthEnable" ) == 1 ) }
 #endif
@@ -433,7 +429,6 @@ struct //Todo: move appropriate to tracker.var
 	
 	bool sg_counter_msg
 	float FS_MaxHealth
-	int ibmm_wait_limit
 
 	string DISCORD_PLAYERS_WEBHOOK
 	string DISCORD_MATCHES_WEBHOOK
@@ -456,10 +451,6 @@ struct //Todo: move appropriate to tracker.var
 	array<string> Messages_EventStart
 	array<string> Messages_EventEnd
 	array<string> arrayLoopMessages = []
-	
-	bool DefaultLock1v1Setting
-	bool DefaultEnableInputBannerSetting
-	bool DefaultStartInRestSetting
 	
 	int flowstateRoundtime
 	int launchStartUnixTime
@@ -689,6 +680,11 @@ void function DEV_ManualLogKill( bool ship )
 	file.PIN_GameState_Start = false
 	svGlobal.levelEnt.Signal( "TrackerNoLog" )
 	TrackerStopLogging__internal( ship )
+}
+
+void function CodeCallback_ScriptTrackerShutdown()
+{
+	svGlobal.levelEnt.Signal( "TrackerNoLog" )
 }
 
 void function NULL_PDATA( entity player, string data ){}
@@ -1349,6 +1345,8 @@ void function __SetPlayerSyncData( entity player )
 		// we don't want to overwrite their server persistence settings 
 		// with the ones we just shipped in, as they will be older 
 		// than the data we have in the servers local memory.
+		// This is because persistence data gets shipped only at match end, 
+		// not when a player disconnects, to reduce network usage during the game.
 		UpdatePlayerData( player, persistenceData, GetIgnoreSyncFlag( player ) )		
 	}
 	
@@ -1462,7 +1460,7 @@ void function __CONTROLLED_LogInit()
 	EndSignal( svGlobal.levelEnt, "TrackerNoLog" )
 	
 	OnThreadEnd
-	( 
+	(
 		void function() : ()
 		{
 			file.scriptLogthreadRunning = false
@@ -1522,10 +1520,10 @@ void function PIN_Init()
 	if( file.LogOn )
 	{
 		SetServerVar( "tracker_enabled", true )
+		FlagInit( "START_LOG", true )
+		
 		AddCallback_OnTdmStateEnter_InProgress( Tracker_SetStartLog )
 		AddCallback_OnClientDisconnected( ShipFunction_OnDisconnected )
-		
-		FlagInit( "START_LOG", true )
 		thread __CONTROLLED_LogInit()
 	}
 	
@@ -1625,14 +1623,13 @@ void function Tracker_SetStartLog()
 void function Tracker_SettingsInit()
 {
 	//todo: cleanup mode related stuff
-	file.LogOn 										= GetCurrentPlaylistVarBool( "logging_enabled", false)
-	file.LogE 										= GetCurrentPlaylistVarBool( "logging_encryption", false)
+	file.LogOn 										= GetCurrentPlaylistVarBool( "tracker_enabled", false)
+	file.LogE 										= GetCurrentPlaylistVarBool( "tracker_encryption", false)
 	file.bChatbotEnabled							= ( !IsLobby() && TrackerGetSetting__internal( "settings.ENABLE_CHATBOT" ) == "true" ? true : false )
 	file.bClientCommandAdminEnabled					= ( GetConVarInt( "sv_onlineAuthEnable" ) == 1 && GetCurrentPlaylistVarBool( "cc_administration", false ) )
 	file.flowstateRoundtime 						= GetCurrentPlaylistVarInt( "flowstateRoundtime", 1800 )
 	file.afk_to_rest_enabled 						= GetCurrentPlaylistVarBool( "afk_to_rest_bool", false )
 	file.update_discord_player_counts 				= GetCurrentPlaylistVarBool( "stats_discord_webhook_player_count", false )
-	file.ibmm_wait_limit 							= GetCurrentPlaylistVarInt( "ibmm_wait_limit", 999 )
 	file.bBotAllowed 								= file.BotAllowedModes.contains( GetCurrentPlaylistName() ) //TODO: rework 
 	file.gamemode_type_1v1 							= g_bIs1v1GameType() //returns true if mode is confifugred as 1v1 type
 	file.stats_discord_webhook_matches_enabled		= GetCurrentPlaylistVarBool( "stats_discord_webhook_matches_enabled", false )
@@ -1647,9 +1644,6 @@ void function Tracker_SettingsInit()
 	//init stat bools (must be before string inits) todo: cleanup
 	file.global_stats 						= GetCurrentPlaylistVarBool( "use_global_stats", false )
 	file.restricted_server 					= GetCurrentPlaylistVarBool( "restricted_server", false )
-	file.DefaultLock1v1Setting 				= GetCurrentPlaylistVarBool( "default_lock1v1_setting", true )
-	file.DefaultEnableInputBannerSetting 	= GetCurrentPlaylistVarBool( "default_enable_input_banner_setting", true )
-	file.DefaultStartInRestSetting 			= GetCurrentPlaylistVarBool( "default_start_in_rest_setting", false )
 
 	//restricted init 
 	file.restricted_gamesplayed 			= GetCurrentPlaylistVarInt( "restricted_gamesplayed", 0 )
@@ -3926,11 +3920,7 @@ void function UpdateFromLocalPersistence( entity player )
 {		
 	SetIgnoreSyncFlag( player )
 	
-	// player.p.IBMM_grace_period 		= GetPlayer_wait_time( player )
 	player.p.weapon_loadout 		= GetPlayer_saved_weapons( player )
-	// player.p.lock1v1_setting		= GetPlayer_lock1v1_setting( player )	
-	// player.p.start_in_rest_setting 	= GetPlayer_start_in_rest_setting( player )
-	// player.p.enable_input_banner 	= GetPlayer_enable_input_banner_setting( player )
 	
 	player.SetPlayerNetInt( "kills", GetPlayerKills( player ) )
 	player.SetPlayerNetInt( "deaths", GetPlayerDeaths( player ) )
@@ -3944,11 +3934,7 @@ void function PlayerDataCallbacks_Init()
 
 void function Gamemode1v1_PlayerDataCallbacks()
 {
-	// AddCallback_PlayerData( "wait_time", UpdateIBMMWaitTime )
 	if( !FlowState_AdminTgive() ){ AddCallback_PlayerData( "saved_weapons", UpdateSavedWeapons ) }
-	// AddCallback_PlayerData( "lock1v1_setting", UpdateLock1v1Setting )
-	// AddCallback_PlayerData( "start_in_rest_setting", UpdateStartInRestSetting )
-	// AddCallback_PlayerData( "enable_input_banner", UpdateInputBannerSetting )
 }
 
 // utility funcitons for fetch/save playerdata 
@@ -4352,18 +4338,6 @@ bool function GetPlayerLeftFlag( entity player )
     return false
 }
 
-
-float function GetPlayer_wait_time( entity player ) //deprecated
-{
-	string setting = Tracker_FetchPlayerData( player.p.UID, "enable_input_banner" ) 
-	
-	if ( !empty( setting ) )
-		return setting.tofloat()
-	
-    return GetDefaultIBMM()
-}
-
-
 string function GetPlayer_saved_weapons( entity player )
 {	
 	string setting = Tracker_FetchPlayerData( player.p.UID, "saved_weapons" )
@@ -4372,71 +4346,6 @@ string function GetPlayer_saved_weapons( entity player )
 		return setting
 	
     return "NA"
-}
-
-
-bool function GetPlayer_lock1v1_setting( entity player ) //deprecated
-{	
-	string setting = Tracker_FetchPlayerData( player.p.UID, "lock1v1_setting" )
-	
-	if ( !empty( setting ) )
-		return ( setting == "1" )
-	
-    return GetDefaultLock1v1Setting() 
-}
-
-
-bool function GetPlayer_start_in_rest_setting( entity player ) //deprecated
-{	
-	string setting = Tracker_FetchPlayerData( player.p.UID, "start_in_rest_setting" )
-	
-	if ( !empty( setting ) )
-		return ( setting == "1" )
-	
-    return GetDefaultStartInRestSetting()
-}
-
-
-bool function GetPlayer_enable_input_banner_setting( entity player ) //deprecated
-{
-	string setting = Tracker_FetchPlayerData( player.p.UID, "enable_input_banner" )
-	
-	if ( !empty( setting ) )
-		return ( setting == "1" )
-	
-    return GetDefaultEnableInputBannerSetting() 
-}
-
-bool function GetDefaultLock1v1Setting() //deprecated
-{
-	return file.DefaultLock1v1Setting
-}
-
-bool function GetDefaultEnableInputBannerSetting() //deprecated
-{
-	return file.DefaultEnableInputBannerSetting
-}
-
-bool function GetDefaultStartInRestSetting() //deprecated
-{
-	return file.DefaultStartInRestSetting
-}
-
-
-void function UpdateIBMMWaitTime( entity player, string data ) //deprecated
-{	
-	if( empty( data ) )
-		data = string( GetDefaultIBMM() )
-	
-	float wait_time = 0.0
-	
-	if( IsStringNumeric( data ) )
-		wait_time = data.tofloat()
-	
-	if ( wait_time <= file.ibmm_wait_limit )
-		player.p.IBMM_grace_period = ValidateIBMMWaitTime( wait_time )
-	else 
-		player.p.IBMM_grace_period = GetDefaultIBMM()
 }
 
 void function UpdateSavedWeapons( entity player, string data )
@@ -4452,55 +4361,6 @@ void function UpdateSavedWeapons( entity player, string data )
 	
 	weaponlist[ player.GetPlayerName() ] <- data
 	player.p.weapon_loadout = data
-}
-
-
-void function UpdateLock1v1Setting( entity player, string data ) //deprecated
-{	
-	if ( empty( data ) ) 
-	{ 
-		player.p.lock1v1_setting = GetDefaultLock1v1Setting()
-		return 
-	}
-	
-	if( data == "0" )
-		player.p.lock1v1_setting = false
-	else if( data == "1" )
-		player.p.lock1v1_setting = true
-	else 
-		player.p.lock1v1_setting = GetDefaultLock1v1Setting()
-}
-
-void function UpdateStartInRestSetting( entity player, string data ) //deprecated
-{	
-	if ( empty( data ) ) 
-	{ 
-		player.p.start_in_rest_setting = GetDefaultStartInRestSetting()
-		return 
-	}
-
-	if( data == "0" )
-		player.p.start_in_rest_setting = false
-	else if( data == "1" )
-		player.p.start_in_rest_setting = true
-	else 
-		player.p.start_in_rest_setting = GetDefaultStartInRestSetting()
-}
-
-void function UpdateInputBannerSetting( entity player, string data ) //deprecated
-{	
-	if ( empty( data ) ) 
-	{ 
-		player.p.enable_input_banner = GetDefaultEnableInputBannerSetting()
-		return
-	}
-	
-	if( data == "0" )
-		player.p.enable_input_banner = false
-	else if( data == "1" )
-		player.p.enable_input_banner = true
-	else 
-		player.p.enable_input_banner = GetDefaultEnableInputBannerSetting()
 }
 
 // END PERSISTENCE //////////////////////////////////////////////////////////////
@@ -5029,16 +4889,6 @@ void function PIN_AddPlayer( entity player )
 	{	
 		thread CheckForPlayerAccess( player )
 	}
-	else 
-	{
-		if( player.p.start_in_rest_setting )
-		{
-			#if DEVELOPER
-				sqprint("Player sent to rest from rest setting")
-			#endif
-			Gamemode1v1_ForceRest( player )
-		}
-	}
 	
 	if( file.LogOn && TrackerIsLogging__internal() && IsValid( player ) )
 	{	
@@ -5167,24 +5017,6 @@ void function PIN_SetGameStartGetUnixTimestamp()
 	sqprint(message)
 	*/
 }
-
-bool function CheckPlayerStartInRest( entity player )
-{
-	if  ( !IsValid( player ) ) 
-		return false
-	
-	if ( file.gamemode_type_1v1 )
-	{
-		if ( player.p.start_in_rest_setting )
-			Gamemode1v1_ForceRest( player )
-	
-		if ( Gamemode1v1_IsPlayerResting( player ) )
-			return true 
-	}
-	
-	return false	
-}
-
 
 void function PIN_GameStartedForPlayer( entity player )
 {	

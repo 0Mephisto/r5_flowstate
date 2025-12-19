@@ -201,7 +201,7 @@ void function cmd_cringe( string tag, array<string> args, entity activator )
 void function cmd_wait( string tag, array<string> args, entity activator )
 {
 	args.remove( 0 )
-	ClientCommand_mkos_IBMM_wait( activator, args )
+	CC_1v1_IBMM( activator, args )
 }
 
 void function cmd_rest( string tag, array<string> args, entity activator )

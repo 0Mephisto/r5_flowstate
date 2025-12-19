@@ -26,7 +26,6 @@ global function Gamemode1v1_IsPlayerInChallenge
 global function Gamemode1v1_SetWaitingRoomRadius
 global function Gamemode1v1_FetchNotificationPanelCoordinates
 global function Gamemode1v1_FetchNotificationPanelAngles
-global function ClientCommand_mkos_IBMM_wait
 global function Gamemode1v1_IsRestEnabled
 global function AddEntityCalllback_OnPlayerGamestateChange_1v1
 global function RemoveEntityCalllback_OnPlayerGamestateChange_1v1
@@ -66,6 +65,8 @@ global function Gamemode1v1_SetWeaponAmmoStackAmount
 global function Gamemode1v1_IsPlayerInState
 global function ValidateBlacklistedWeapons
 global function FS1v1_OnEntitiesDidLoad
+
+global function CC_1v1_IBMM //for chat commands
 
 global typedef PanelTable table<string, entity>
 const bool DEBUG_STATE			= false
@@ -216,8 +217,6 @@ struct
 	array<string> hostSetAttachments
 	array<string> Weapons = []
 	
-	int ibmm_wait_limit = 30 //deprecate
-	float default_ibmm_wait = 0 //deprecate
 	bool enableChallenges = false
 	int groupID = 112250000
 	bool bGiveSameRandomLegendToBothPlayers = false
@@ -304,10 +303,6 @@ void function Gamemode1v1_Init( int eMap )
 		
 	if( !isScenariosMode() && !bIsCoachingMode() ) //intertwined D:
 	{
-		// AddClientCommandCallback( "start_in_rest", ClientCommand_mkos_start_in_rest_setting )  //deprecated as it was moved to UI
-		// AddClientCommandCallback( "wait", ClientCommand_mkos_IBMM_wait )  //deprecated as it was moved to UI
-		// AddClientCommandCallback( "lock1v1", ClientCommand_mkos_lock1v1_setting )  //deprecated as it was moved to UI
-		// AddClientCommandCallback( "enable_input_banner", ClientCommand_enable_input_banner )  //deprecated as it was moved to UI
 		AddClientCommandCallback( "challenge", ClientCommand_mkos_challenge ) //todo(cafe): create UI to challenge players and deprecate this
 
 		//1v1 settings
@@ -851,21 +846,6 @@ void function BannerImages_1v1Init()
 
 void function INIT_PregameCallbacks()
 {
-	float f_wait = settings.default_ibmm_wait
-		
-	if ( f_wait > 0.0 && f_wait < 3.0 )
-	{
-		//this shouldn't be defined out, it lets the host know they have an invalid setting
-		sqerror( format( "Default IBMM wait time was set as '%.2f' ; must be either 0 or >= 3. Resetting to 3.", f_wait ) )
-	}
-
-	//(mk):custom light for custom spawns
-	// if( MapName() == eMaps.mp_rr_arena_composite && GetCurrentPlaylistVarBool( "patch_for_dropoff", false ) )
-	// {
-		// DropoffPatch_Init()
-		// AddCallback_SpawnsPostInit( Init_DropoffPatchSpawns )
-	// }
-
 	if( Playlist() == ePlaylists.fs_1v1_headshots_only )
 	{
 		AddCallback_SpawnsSettings
@@ -1185,9 +1165,7 @@ void function INIT_PlaylistSettings()
 	settings.bGiveSameRandomLegendToBothPlayers		= GetCurrentPlaylistVarBool( "give_random_legend_on_spawn", false )
 	settings.bAllowLegend 							= GetCurrentPlaylistVarBool( "give_legend", true )
 	settings.bAllowAbilities 						= GetCurrentPlaylistVarBool( "give_legend_tactical", true ) //challenge only
-	settings.bChalServerMsg 						= bBotEnabled() ? GetCurrentPlaylistVarBool( "challenge_recap_server_message", true ) : false;
-	settings.ibmm_wait_limit 						= GetCurrentPlaylistVarInt( "ibmm_wait_limit", 999 )
-	settings.default_ibmm_wait 						= GetCurrentPlaylistVarFloat( "default_ibmm_wait", 3 )
+	settings.bChalServerMsg 						= bBotEnabled() ? GetCurrentPlaylistVarBool( "challenge_recap_server_message", true ) : false
 	settings.enableChallenges						= GetCurrentPlaylistVarBool( "enable_challenges", true )
 	settings.isScenariosMode						= Playlist() == ePlaylists.fs_scenarios
 	settings.customWeaponsChallengeOnly				= GetCurrentPlaylistVarBool( "custom_weapons_challenge_only", false )
@@ -5180,9 +5158,6 @@ void function Init_IBMM( entity player )
 		return 
 		
 	thread NotificationThread( player )
-	
-	// if( player.p.IBMM_grace_period == -1 )
-		// SetDefaultIBMM( player )
 }
 
 
@@ -5278,8 +5253,7 @@ void function HandlePlayer( entity player )
 	bool log_invalid_input = GetCurrentPlaylistVarBool( "log_invalid_input", false )
 	
 	switch (action)
-	{
-	
+	{	
 		case 1:
 			printt("Action: keeping as controller")
 			player.p.input = 1
@@ -5292,7 +5266,6 @@ void function HandlePlayer( entity player )
 			printt("Action: Ban")
 			//BanPlayerById( id, msg )
 			break
-	
 	}
 }
 
@@ -5339,226 +5312,6 @@ bool function GroupIsLockable( soloGroupStruct newGroup )
 	return ( newGroup.player1.p.lastmoved > 2 && newGroup.player2.p.lastmoved > 2 
 	&& ( ( Fetch_IBMM_Timeout_For_Player( newGroup.player1 ) == false && Fetch_IBMM_Timeout_For_Player( newGroup.player2 ) == false ) 
 	|| newGroup.player1.p.input == newGroup.player2.p.input ) )	
-}
-
-bool function ClientCommand_mkos_IBMM_wait( entity player, array<string> args )
-{
-	if ( !CheckRate( player ) ) 
-		return true
-
-	string param = ""
-	int limit = settings.ibmm_wait_limit
-	
-	if ( args.len() > 0 )
-		param = args[ 0 ]
-
-	if  ( args.len() < 1 )
-	{		
-		string status = " " //(mk): needs to be a char or var is treated as empty
-		if ( player.p.IBMM_grace_period == 0 )
-			status = " (disabled)"
-		
-		LocalVarMsg( player, "#FS_WAIT_TIME_CC", eMsgUI.VAR_SUBTEXT_SLOT, 15, limit.tostring(), player.p.IBMM_grace_period, status )
-		return true
-	}
-				
-	if ( args.len() > 0 && !IsStringNumeric( param, 0, limit ) )
-	{
-		LocalMsg( player, "#FS_FAILED", "#FS_IBMM_Time_Failed", eMsgUI.DEFAULT, 5, "", limit.tostring() )
-		return true
-	} 		
-	
-	try
-	{	
-		float user_value = float( param )
-		
-		if ( user_value > 0.0 && user_value < 3.0 )
-			user_value = 3
-		
-		player.p.IBMM_grace_period = user_value
-		SavePlayerData( player, "wait_time", user_value )
-		Remote_CallFunction_ByRef( player, "ForceScoreboardLoseFocus" )
-		
-		LocalMsg( player, "#FS_SUCCESS", "#FS_IBMM_Time_Changed", eMsgUI.DEFAULT, 3, "", user_value.tostring() )
-		return true
-	}
-	catch ( hiterr )
-	{
-		return true			
-	}				
-}
-
-bool function ClientCommand_mkos_lock1v1_setting( entity player, array<string> args )
-{
-	if ( !CheckRate( player ) ) 
-		return false
-	
-	string param = ""
-	
-	if ( args.len() > 0 )
-		param = args[ 0 ]
-	
-		if ( args.len() < 1 )
-			return true			
-		
-		if ( param == "" )
-			return true 
-		
-		
-		switch( param.tolower() )
-		{
-		
-		case "ON":
-		case "on":
-		case "1":
-		case "true":
-		case "enabled":
-		
-				player.p.lock1v1_setting = true
-				Remote_CallFunction_ByRef( player, "ForceScoreboardLoseFocus" )
-				SavePlayerData( player, "lock1v1_setting", true )
-				LocalMsg( player, "#FS_SUCCESS", "#FS_LOCK1V1_ENABLED", eMsgUI.DEFAULT, 3 )
-				return true
-
-		
-		case "OFF":
-		case "off":
-		case "0":
-		case "false":
-		case "disabled":
-		
-
-				player.p.lock1v1_setting = false
-				Remote_CallFunction_ByRef( player, "ForceScoreboardLoseFocus" )
-				SavePlayerData( player, "lock1v1_setting", false )
-				LocalMsg( player, "#FS_SUCCESS", "#FS_LOCK1V1_DISABLED", eMsgUI.DEFAULT, 3 )
-				return true
-				
-		}
-		
-	return false
-					
-}
-
-bool function ClientCommand_mkos_start_in_rest_setting( entity player, array<string> args )
-{
-	if ( !CheckRate( player ) ) 
-		return false
-	
-	string param = ""
-	
-	if ( args.len() > 0 )
-		param = args[ 0 ]
-		
-		if ( args.len() < 1 )
-		{
-			LocalMsg( player, "#FS_START_IN_REST_TITLE", "#FS_START_IN_REST_SUBSTR" )
-			return true
-		}
-		
-		if ( param == "" )
-			return true
-		
-		switch( param.tolower() )
-		{
-		
-		case "ON":
-		case "on":
-		case "1":
-		case "true":
-		case "enabled":
-		
-				player.p.start_in_rest_setting = true;
-				Remote_CallFunction_ByRef( player, "ForceScoreboardLoseFocus" )
-				
-				SavePlayerData( player, "start_in_rest_setting", true )
-				LocalMsg( player, "#FS_SUCCESS", "#FS_START_IN_REST_ENABLED", eMsgUI.DEFAULT, 3 )
-				
-				return true	
-		
-		case "OFF":
-		case "off":
-		case "0":
-		case "false":
-		case "disabled":
-		
-				player.p.start_in_rest_setting = false
-				Remote_CallFunction_ByRef( player, "ForceScoreboardLoseFocus" )
-				
-				SavePlayerData( player, "start_in_rest_setting", false )
-				LocalMsg( player, "#FS_SUCCESS", "#FS_START_IN_REST_DISABLED" )
-				
-				return true
-				
-		}
-		
-	return false					
-}
-
-bool function ClientCommand_enable_input_banner( entity player, array<string> args )
-{
-	if ( !CheckRate( player ) ) 
-		return false
-	
-	string param = ""	
-	if ( args.len() > 0 )
-		param = args[ 0 ]
-	
-		if ( args.len() < 1 )
-		{
-			LocalMsg( player, "#FS_INPUT_BANNER_DEPRECATED", "#FS_INPUT_BANNER_SUBSTR_DEP" )
-			return true
-		}				
-		
-		if ( param == "")
-			return true
-		
-		switch( param.tolower() )
-		{	
-			case "on":
-			case "1":
-			case "true":
-			case "enabled":
-			
-						try
-						{	
-							player.p.enable_input_banner = true
-							Remote_CallFunction_ByRef( player, "ForceScoreboardLoseFocus" )
-							
-							SavePlayerData( player, "enable_input_banner", true )
-							LocalMsg( player, "#FS_SUCCESS", "#FS_INPUT_BANNER_ENABLED_DEP", eMsgUI.DEFAULT, 3 )
-							
-							return true				
-						} 
-						catch ( rest_setting_err_1 )
-						{			
-							return true		
-						}
-			
-			case "off":
-			case "0":
-			case "false":
-			case "disabled":
-			
-						try
-						{
-							player.p.enable_input_banner = false
-							Remote_CallFunction_ByRef( player, "ForceScoreboardLoseFocus" )
-							
-							SavePlayerData( player, "enable_input_banner", false )
-							LocalMsg( player, "#FS_SUCCESS", "#FS_INPUT_BANNER_DISABLED_DEP", eMsgUI.DEFAULT, 3 )
-							
-							return true
-						} 
-						catch ( rest_setting_err_2 )
-						{
-							return true
-						}
-					
-			}
-		
-	return false
-					
 }
 
 void function Gamemode1v1_OnPlayerKilled( entity victim, entity attacker, var damageInfo )

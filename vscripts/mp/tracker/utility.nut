@@ -19,10 +19,10 @@ global function Concatenate
 global function LineBreak
 global function IsSafeString
 
-//print util
-global function print_string_array
-global function print_var_table
-global function print_var_array
+//print util -- moved to _threads
+// global function print_string_array
+// global function print_var_table
+// global function print_var_array
 
 //Tracker print-to console as native
 global function sqprint
@@ -43,11 +43,6 @@ global function __PlayerAdminsInit
 global function ClientCommand_mkos_return_data
 global function ClientCommand_mkos_admin
 global function CheckAdmin_OnConnect
-
-//ibmm util ( Todo: rework how this is done )
-global function GetDefaultIBMM
-global function SetDefaultIBMM
-global function ValidateIBMMWaitTime
 
 //misc
 global function TP
@@ -733,7 +728,12 @@ struct
 						return true
 					}
 				
-					BanPlayerById( b_playeroid, b_reason )
+					#if TRACKER && HAS_TRACKER_DLL
+						BanPlayerById( b_playeroid, b_reason, player.GetPlatformUID() )
+					#else 
+						BanPlayerById( b_playeroid, b_reason )
+					#endif
+					
 					UpdatePlayerCounts()
 					
 					Message( player, "Success", "Player: " + param + "\n\n was banned for: \n\n" + b_reason )
@@ -813,60 +813,51 @@ struct
 			case "banid":
 			{
 				#if TRACKER && HAS_TRACKER_DLL
-		
-				if ( args.len() < 2 )
-				{
-					Message( player, "Failed", "Command 'banid' requires oid for 1st param of command")
-					return false
-				}	
+					if ( args.len() < 2 )
+					{
+						Message( player, "Failed", "Command 'banid' requires oid for 1st param of command")
+						return false
+					}	
 
-				try 
-				{
-					if ( IsServerAdmin( param ) )
+					try 
 					{
-						Message( player, "Failed", param + " is an admin. Ban rejected.", 10 )
-						return false		
-					}
-					
-					if ( !IsStringNumber( param ) )
-					{			
-						Message( player, "Failed", param + " is not a valid oid format.", 10 )
-						return false	
-					}
-					
-					if ( param2 == "" )
-					{		
-						param2 = "0";							
-					}
-					
-					entity playerToBan = GetPlayerEntityByUID( param )
-					
-					if( IsValid( playerToBan ) )
-					{
-						BanPlayerById( param, param3 )
-						Message( player, "Success", param + " was added to the banlist and removed from the server.", 10 )
+						if ( IsServerAdmin( param ) )
+						{
+							Message( player, "Failed", param + " is an admin. Ban rejected.", 10 )
+							return false		
+						}
 						
-						return true
-					}
-					
-					if ( AddBanByID( param2, param ) )
-					{					
-						Message( player, "Success", param + " was added to the banlist.", 10 )
+						if ( !IsStringNumber( param ) )
+						{			
+							Message( player, "Failed", param + " is not a valid oid format.", 10 )
+							return false	
+						}
+						
+						if ( param2 == "" )
+							param2 = "unknown reason"							
+						
+						entity playerToBan = GetPlayerEntityByUID( param )
+						
+						if( IsValid( playerToBan ) )
+						{
+							BanPlayerById( param, param2, player.GetPlatformUID() )
+							Message( player, "Success", param + " was added to the banlist and removed from the server.", 10 )
+							return true
+						}
+							
+						Message( player, "Attempting banlist edit", format( "For user: [%s] with reason: \"%s\"", param, param2 ), 10 )
+						AddBanByID( param, param2, player.GetPlatformUID() )
+						
 						return true	
+						
+					} 
+					catch ( errbanid )
+					{
+						Message(player, "Failed", "Command failed because of: \n\n " + errbanid )
+						return false
 					}
-					else 
-					{	
-						Message( player, "Failed", "Failed to add player oid: " + param + " to the banlist.", 10 )
-						return true		
-					}
-					
-				} 
-				catch ( errbanid )
-				{
-					Message(player, "Failed", "Command failed because of: \n\n " + errbanid )
-					return false
-				}
-				#endif 
+				#endif // TRACKER && HAS_TRACKER_DLL
+				
 				return true
 			}
 			case "unban":				
@@ -1934,23 +1925,6 @@ string function Concatenate( string str1, string str2 )  //cleanup
     return str1 + str2;
 }
 
-float function GetDefaultIBMM()
-{
-	float f_wait = GetCurrentPlaylistVarFloat( "default_ibmm_wait", 0 )
-	return ValidateIBMMWaitTime( f_wait )
-}
-
-float function ValidateIBMMWaitTime( float f_wait )
-{
-	return f_wait > 0.0 && f_wait < 3.0 ? 3.0 : f_wait
-}
-
-void function SetDefaultIBMM( entity player )
-{	
-	float f_wait = GetCurrentPlaylistVarFloat("default_ibmm_wait", 0)
-	player.p.IBMM_grace_period = f_wait > 0.0 && f_wait < 3.0 ? 3.0 : f_wait
-}
-
 bool function IsStringNumber( string str ) 
 {
 	if ( str.len() == 0 )
@@ -2333,34 +2307,6 @@ string function StringRemoveControlCharacters( string str )
 	}
 
 	return sanitized
-}
-
-void function print_string_array( array<string> args )
-{
-	string test = "\n\n------ PRINT STRING ARRAY ------\n\n"
-	
-	foreach( arg in args )
-		test += format( "	\"%s\", \n", arg )
-	
-	sqprint( test )
-}
-
-void function print_var_table( table<string,var> tbl )
-{
-	string prnt = "\n\n------ PRINT TABLE ------\n\n"
-	foreach( string k, var v in tbl )
-		prnt += format( "	[%s] = %s\n", k, string( v ) )
-	
-	sqprint( prnt )
-}
-
-void function print_var_array( array<var> arr )
-{
-	string prnt = "\n\n------ PRINT ARRAY ------\n\n"
-	foreach( i, v in arr )
-		prnt += format( "	[%d] = %s\n", i, string( v ) )
-	
-	sqprint( prnt )
 }
 
 //Returns false on limited. 

@@ -40,7 +40,7 @@ void function RefreshUIPlaylists()
 
 			// Store the playlist name that corresponds with this button
 			// so that we can skip adding event handlers on future calls
-			file.playlist_button_table[button] <- playlist
+			file.playlist_button_table[ button ] <- playlist //(mk): This is fine, because playlists do not change depending on map.
 		}
 	}
 
@@ -69,7 +69,7 @@ void function SelectServerPlaylist( var button )
 {
 	//Set selected server playlist
 	EmitUISound( "menu_accept" )
-	thread SetSelectedServerPlaylist(file.playlist_button_table[button])
+	SetSelectedServerPlaylist(file.playlist_button_table[button])
 }
 
 void function OnPlaylistHover( var button )
