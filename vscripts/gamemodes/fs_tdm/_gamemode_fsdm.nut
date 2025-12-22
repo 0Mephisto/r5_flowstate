@@ -1787,10 +1787,13 @@ void function _HandleRespawn( entity player, bool isDroppodSpawn = false )
 		{
 			Inventory_SetPlayerEquipment( player, "backpack_pickup_lv3", "backpack")
 			
-			waitthread LoadCustomWeapon(player)		///TDM Auto-Reloaded Saved Weapons at Respawn
-			thread LoadCustomSkill(player)
+			//waitthread LoadCustomWeapon(player)		///TDM Auto-Reloaded Saved Weapons at Respawn
+			//thread LoadCustomSkill(player)
 			
-			WpnPulloutOnRespawn(player, 0)
+			LoadCustomWeapon( player ) //(mk): This doesn't need to be waitthreaded, the call context is already in a thread (this) and can run in this coroutine. 
+			LoadCustomSkill( player ) 
+			
+			WpnPulloutOnRespawn( player, 0 )
 		} else
 			HaloMod_HandlePlayerModel( player )
 
@@ -5582,57 +5585,60 @@ string function modChecker( string weaponMods )
 }
 
 //Auto-load TDM Saved Weapons on Respawn
-void function LoadCustomWeapon(entity player)
+void function LoadCustomWeapon( entity player )
 {
-	if ( !IsValid( player )) return
+	if ( !IsValid( player ) ) 
+		return
+		
+	if( is1v1EnabledAndAllowed() && Gamemode1v1_GetPlayerGamestate( player ) <= e1v1State.MATCH_START ) //(mk): don't give weapons yet. 
+		return
 	
-	if (player.GetPlayerName() in weaponlist)
+	if ( player.GetPlayerName() in weaponlist )
 	{
 		// TakeAllWeapons(player)
-		array<string> weapons =  split(weaponlist[player.GetPlayerName()] , ";")
+		array<string> weapons =  split( weaponlist[ player.GetPlayerName() ], ";" )
 		player.TakeNormalWeaponByIndexNow( WEAPON_INVENTORY_SLOT_PRIMARY_0 )
 		player.TakeNormalWeaponByIndexNow( WEAPON_INVENTORY_SLOT_PRIMARY_1 )
 		//check if weapon's mods is allowed by server
-		foreach(index,weapon in weapons)
+		foreach( index, weapon in weapons )
 		{	
-			if ( strip(weapon) == "" ) continue
+			if ( strip( weapon ) == "" ) 
+				continue
 			
-            weapon =modChecker(weapon)
-			weapons[index]=weapon
+            weapon = modChecker( weapon )
+			weapons[ index ] = weapon
 		}
 
-		foreach (index,rweapon in weapons)
+		foreach ( index,rweapon in weapons )
 		{	
 			#if DEVELOPER && HAS_TRACKER_DLL
 				sqprint(rweapon)
 			#endif
 			
-			if ( strip(rweapon) == "" ) continue
+			if ( strip( rweapon ) == "" ) 
+				continue
 			
 			int slot
-			if(index == 0)
-			{
+			if( index == 0 )
 				slot = WEAPON_INVENTORY_SLOT_PRIMARY_0
-			}
 			else
-			{
 				slot = WEAPON_INVENTORY_SLOT_PRIMARY_1
-			}
 
 			__GiveWeapon( player, weapons, slot, index )
 		}
 		
 		WaitFrame()
 		
-		if(!IsValid(player)) { return }			
+		if( !IsValid( player ) ) 
+			return		
 			
-		if(IsValid(player.GetNormalWeapon( WEAPON_INVENTORY_SLOT_PRIMARY_0 )))
+		if( IsValid( player.GetNormalWeapon( WEAPON_INVENTORY_SLOT_PRIMARY_0 ) ) )
 		{
-			player.SetActiveWeaponBySlot(eActiveInventorySlot.mainHand, WEAPON_INVENTORY_SLOT_PRIMARY_0)
+			player.SetActiveWeaponBySlot( eActiveInventorySlot.mainHand, WEAPON_INVENTORY_SLOT_PRIMARY_0 )
 		}
-		else if (IsValid(player.GetNormalWeapon( WEAPON_INVENTORY_SLOT_PRIMARY_1 )))
+		else if ( IsValid( player.GetNormalWeapon( WEAPON_INVENTORY_SLOT_PRIMARY_1 ) ) )
 		{
-			player.SetActiveWeaponBySlot(eActiveInventorySlot.mainHand, WEAPON_INVENTORY_SLOT_PRIMARY_1)
+			player.SetActiveWeaponBySlot( eActiveInventorySlot.mainHand, WEAPON_INVENTORY_SLOT_PRIMARY_1 )
 		}
 		else 
 		{
@@ -5849,7 +5855,7 @@ void function CreateAnimatedLegend(asset a, vector pos, vector ang , int solidty
 void function AnimationTiming( entity legend, float cycle )
 {
 	array<string> animationStrings = ["ACT_MP_MENU_LOBBY_CENTER_IDLE", "ACT_MP_MENU_READYUP_INTRO", "ACT_MP_MENU_LOBBY_SELECT_IDLE", "ACT_VICTORY_DANCE"]
-	while( IsValid(legend) )
+	while( IsValid( legend ) )
 	{
 		legend.SetCycle( cycle )
 		legend.Anim_Play( animationStrings[RandomInt(animationStrings.len())] )
@@ -5859,10 +5865,10 @@ void function AnimationTiming( entity legend, float cycle )
 
 void function LoadCustomSkill(entity player)
 {
-	if (!IsValid(player))
+	if ( !IsValid( player ) )
 		return
 
-	if (player.GetPlayerName() in skilllist) //列表里存在该玩家数据
+	if ( player.GetPlayerName() in skilllist ) //列表里存在该玩家数据
 	{	
 		array<string> splited = split(skilllist[player.GetPlayerName()] , ";")
         	ClientCommand( player, "tgive t "+ splited[0] )
