@@ -107,6 +107,10 @@ void function ClientStats_Think()
 			
 		while( StatQueueHasItems() )
 		{
+			__StatQueueRemoveDuplicatesAndInvalid()
+			if( !StatQueueHasItems() )
+				break
+			
 			StatData statData 	= __DequeueStatQueue()
 			
 			entity lookupPlayer = statData.player
@@ -120,7 +124,7 @@ void function ClientStats_Think()
 				WaitFrames( 5 )
 				
 				if( !IsValid( lookupPlayer ) )
-					break
+					continue
 			}
 				
 			if( !IsValid( lookupPlayer ) )
@@ -140,7 +144,7 @@ bool function StatQueueHasItems()
 	return ( file.statDataQueue.len() > 0 )
 }
 
-void function __StatQueueRemoveDuplicates()
+void function __StatQueueRemoveDuplicatesAndInvalid()
 {
 	array<StatData> returnQueue = []
 	table<string, bool> keyMap = {}
@@ -225,7 +229,6 @@ void function __AddToStatQueue( entity player, string stat )
 
 StatData function __DequeueStatQueue()
 {
-	__StatQueueRemoveDuplicates()
 	return file.statDataQueue.remove( 0 )
 }
 

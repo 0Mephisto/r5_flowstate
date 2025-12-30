@@ -222,7 +222,12 @@ void function DumpStack( int offset = 1 )
 	}
 }
 
-// dump the stack trace to the console
+void function PrintCallStack( int offset = 1 ) //(mk): alias because name was trash
+{
+	DumpStack( offset )
+}
+
+//(mk):return the stack trace as a string. 
 string function GetStack( int offset = 1 )
 {
 	string stackInfo = ""
@@ -237,6 +242,13 @@ string function GetStack( int offset = 1 )
 
 	return stackInfo
 }
+
+string function GetCallStack( int offset = 1 ) //(mk): alias because name was trash
+{
+	return GetStack( offset )
+}
+
+
 
 void function DumpPreviousFunction()
 {

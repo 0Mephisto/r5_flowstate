@@ -973,17 +973,16 @@ void function StartRound()
 	PIN_RoundEnd( file.currentRound )
 	file.currentRound++
 	
+	waitthread g__InternalCheckReload()
+	
 	if( Flowstate_IsHaloMode() && 
 		Flowstate_CycleHaloPlaylists() &&
 		file.maxRounds > -1 && 
 		file.currentRound >= file.maxRounds 
 	)
 	{
-		waitthread g__InternalCheckReload()
 		Halo_GotoNextPlaylist()
 	}
-	else 
-		waitthread g__InternalCheckReload()
 }
 
 void function Common_ClearPlayerData( entity player )

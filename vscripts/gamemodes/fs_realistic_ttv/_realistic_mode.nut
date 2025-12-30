@@ -7,7 +7,7 @@ global function RealisticMode_GetBestSpawnPointFFA
 
 #if DEVELOPER
 	global function DEV_PrintTrackedDoors
-#endif 
+#endif
 
 const vector TTV_BUILDING_ORIGIN = < 9864.35, 5497.93, -3567.97 >
 const float TTV_BUILDING_RADIUS = 4500.0
@@ -88,7 +88,10 @@ void function UpdateDestroyTime( entity door )
 	{
 		if( data.door == door )
 		{
-			printt( "UpdateDestroyTime() Found door, setting destroy time to:", Time() )
+			#if DEVELOPER
+				printt( "UpdateDestroyTime() Found door, setting destroy time to:", Time() )
+			#endif 
+			
 			int dataIndex = file.trackedDoors.find( data )
 			
 			if( dataIndex > -1 )
@@ -285,8 +288,7 @@ void function Realistic_OnWeaponAttachmentChanged( entity player, entity weapon,
 {
 	if( !CheckRate( player, "attachment_change", 0.05, false ) )
 		return
-		
-	//(mk):only intended for realistic ttv mode 		
+				
 	ClientCommand_SaveCurrentWeapons( player, [] )
 }
 
