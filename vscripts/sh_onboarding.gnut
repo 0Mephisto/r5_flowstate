@@ -926,7 +926,13 @@ void function OnPlayerKilled( entity victim, entity attacker, var damageInfo )
 	if( Gamemode() == eGamemodes.SURVIVAL )
 		Remote_CallFunction_NonReplay( victim, "ServerCallback_YouDied", attacker, GetHealthFrac( victim ), DamageInfo_GetDamageSourceIdentifier( damageInfo ), DamageInfo_GetDamage( damageInfo ) )
 
-	victim.SetPlayerGameStat( PGS_DEATHS, victim.GetPlayerGameStat( PGS_DEATHS ) + 1 )
+	/*
+		(mk): This is handled at a global level in CodeCallback_OnPlayerKilled 
+		via CodeCallback_OnPlayerKilled with player.AddToPlayerGameStat( PGS_DEATHS, 1 )
+		
+		Incrementing here will only inflate deaths. Commenting this.
+	*/
+	//victim.SetPlayerGameStat( PGS_DEATHS, victim.GetPlayerGameStat( PGS_DEATHS ) + 1 ) 
 	if( Gamemode() != eGamemodes.CUSTOM_CTF && Gamemode() != eGamemodes.fs_snd )
 		__IncrementPlayerNetInt( victim, "deaths" )
 
