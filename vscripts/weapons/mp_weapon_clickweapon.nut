@@ -1179,13 +1179,14 @@ void function LGDuels_SetModifyingLocalBeam( bool bModifyingLocalBeam )
 
 void function LGDuels_SetSettingsMenuOpen( bool open )
 {
+	if( Playlist() == ePlaylists.fs_dm_fast_instagib ) //(mk): I absolutely hate doing checks like this littered all over the codebase.
+		return
+		
 	s_bIsSettingsMenuOpen = open
 	if( open )
-	{
-		ForceHide1v1Scoreboard( )
-	} else {
-		ForceShow1v1Scoreboard( )
-	}
+		ForceHide1v1Scoreboard()
+	else 
+		ForceShow1v1Scoreboard()
 }
 
 void function LGDuels_SetR( int R, bool isLocalChosen )

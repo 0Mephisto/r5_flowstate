@@ -618,7 +618,7 @@ void function ForceShow1v1Scoreboard()
 	// }
 	// else
 	// {
-		if( GetGlobalNetInt( "FSDM_GameState" ) == eTDMState.IN_PROGRESS && player.GetPlayerNetEnt( "FSDM_1v1_Enemy" ) != null  && file.show1v1Scoreboard )
+		if( GetGlobalNetInt( "FSDM_GameState" ) == eTDMState.IN_PROGRESS && player.GetPlayerNetEnt( "FSDM_1v1_Enemy" ) != null && file.show1v1Scoreboard )
 		{
 			FS_1v1_ToggleUIVisibility( true, player.GetPlayerNetEnt( "FSDM_1v1_Enemy" ) )
 		}
