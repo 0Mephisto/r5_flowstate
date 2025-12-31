@@ -927,7 +927,7 @@ void function OnPlayerKilled( entity victim, entity attacker, var damageInfo )
 		Remote_CallFunction_NonReplay( victim, "ServerCallback_YouDied", attacker, GetHealthFrac( victim ), DamageInfo_GetDamageSourceIdentifier( damageInfo ), DamageInfo_GetDamage( damageInfo ) )
 
 	/*
-		(mk): This is handled at a global level in CodeCallback_OnPlayerKilled 
+		(mk): This is handled at a global level in \mp\_base_gametype_mp.gnut
 		via CodeCallback_OnPlayerKilled with player.AddToPlayerGameStat( PGS_DEATHS, 1 )
 		
 		Incrementing here will only inflate deaths. Commenting this.
