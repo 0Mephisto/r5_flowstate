@@ -8,6 +8,7 @@ struct
 	var status
 
 	bool is_working = false
+	
 } file
 
 void function InitR5RMainMenuPanel( var panel )
@@ -37,9 +38,15 @@ void function OpenEULAReviewFromFooter( var button )
 
 void function LaunchButton_OnActivate( var button )
 {
-	if(file.is_working)
+	if( file.is_working )
 		return
 	
+	if( !IsEULAAccepted() && !HasSeenEula() ) //(mk): Force open eula as a fallback during continue click if not accepted and also not seen.
+	{
+		OpenEULADialog( false )
+		return
+	}
+
 	thread LaunchLobby()
 }
 
@@ -47,20 +54,19 @@ void function LaunchLobby()
 {
 	file.is_working = true
 
-	ShowSpinner(true)
+	ShowSpinner( true )
 	
 	#if LISTEN_SERVER
-	wait 1
-
-	CreateServer("Lobby", "", "mp_lobby", "dev_default", eServerVisibility.OFFLINE)
+		wait 1
+		CreateServer("Lobby", "", "mp_lobby", "dev_default", eServerVisibility.OFFLINE)
 	#endif // LISTEN_SERVER
 	
-	ShowSpinner(false)
+	ShowSpinner( false )
 
 	file.is_working = false
 }
 
-void function ShowSpinner(bool show)
+void function ShowSpinner( bool show )
 {
 	RuiSetBool( file.status, "showSpinner", show )
 	RuiSetBool( file.status, "showPrompt", !show )

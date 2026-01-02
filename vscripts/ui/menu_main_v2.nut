@@ -15,8 +15,8 @@ void function InitR5RMainMenu( var newMenuArg )
 	file.menu = menu
 
 	//Setup menu event handlers
-    AddMenuEventHandler( menu, eUIEvent.MENU_SHOW, OnR5RSB_Show )
-	AddMenuEventHandler( menu, eUIEvent.MENU_CLOSE, OnR5RSB_Close )
+    AddMenuEventHandler( menu, eUIEvent.MENU_SHOW, OnMainMenuShow )
+	AddMenuEventHandler( menu, eUIEvent.MENU_CLOSE, OnMainMenuClose )
 	AddMenuEventHandler( menu, eUIEvent.MENU_NAVIGATE_BACK, OnR5RSB_NavigateBack )
 
 	//Setup titleArt
@@ -30,7 +30,7 @@ void function InitR5RMainMenu( var newMenuArg )
 	RuiSetString( subtitleRui, "subtitleText", "R5RELOADED".toupper() )
 }
 
-void function OnR5RSB_Show()
+void function OnMainMenuShow()
 {
 	thread SetAtMainMenu()
 
@@ -38,12 +38,12 @@ void function OnR5RSB_Show()
 	Hud_SetWidth( file.titleArt, width )
 	Hud_SetWidth( file.subtitle, width )
 
-	ActivatePanel( GetPanel( "MainMenuPanel" ) )
+	ActivateMainMenuPanel( GetPanel( "MainMenuPanel" ) )
 
 	Chroma_MainMenu()
 }
 
-void function OnR5RSB_Close()
+void function OnMainMenuClose()
 {
 	HidePanel( GetPanel( "MainMenuPanel" ) )
 }
@@ -61,7 +61,7 @@ void function SetAtMainMenu()
 	SetMainMenuBlackScreenVisible(false)
 }
 
-void function ActivatePanel( var panel )
+void function ActivateMainMenuPanel( var panel )
 {
 	Assert( panel != null )
 
@@ -72,14 +72,20 @@ void function ActivatePanel( var panel )
 			HidePanel( elem )
 	}
 
+	thread WaitForEulaBeforeContinue( panel )
+}
+
+void function WaitForEulaBeforeContinue( var panel )
+{
+	while( !IsEulaFetched() ) //(mk): Force waiting to enable continue button until sdk has returned success/failure
+		WaitFrame()
+	
 	ShowPanel( panel )
 
 	// check if eula version is greater than the last accepted version
 	// as this will require the user to view the EULA again
 	if( !IsEULAAccepted() )
-	{
-		OpenEULADialog(false)
-	}
+		OpenEULADialog( false )
 }
 
 void function SetMainMenuBlackScreenVisible(bool show)
