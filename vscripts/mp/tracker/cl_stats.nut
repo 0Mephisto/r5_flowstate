@@ -211,10 +211,6 @@ void function Tracker_PreloadStatArray( array<entity> players, array<string> sta
 
 void function __AddToStatQueue( entity player, string stat )
 {	
-	string checkName = player.GetPlayerName()
-	if( checkName.slice( 0, 1 ).find( "[" ) != -1 || checkName == "Unknown" ) //msgbot hack
-		return
-		
 	#if DEVELOPER && DEBUG_CL_STATS
 		printf( "Adding stat \"%s\" to statqueue for \"%s\"", stat, string( player ) )
 	#endif

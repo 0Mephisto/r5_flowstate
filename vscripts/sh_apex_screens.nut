@@ -34,8 +34,6 @@ global function ClApexScreens_AddScreenOverride
 global function DEV_CreatePerfectApexScreen
 global function DEV_ToggleActiveApexScreenDebug
 global function DEV_ToggleFloatyBitsPrototype
-global int countCreation = 0
-global int countDestruction = 0
 #endif
 
 #if CLIENT
@@ -223,6 +221,11 @@ struct {
 	#endif
 } file
 
+
+#if DEVELOPER 
+	int s_countCreation = 0
+	int s_countDestruction = 0
+#endif
 
 #if SERVER || CLIENT
 const string NV_ApexScreensEventTimeA = "NV_ApexScreensEventTimeA"
@@ -1013,16 +1016,32 @@ void function UpdateScreensContent( array<ApexScreenState> screenList )
 		else if ( screen.isOutsideCircle )
 			shouldShow = false
 
+		bool needShutdown = ((screen.rui != null) && (!shouldShow || (screen.ruiToCreate != screen.ruiLastCreated)))
+		if ( needShutdown )
+		{
+			// #if DEVELOPER
+				// ++s_countDestruction
+				// Warning ( "Destroying screen" )
+				// Warning( "------------------" + s_countDestruction )
+			// #endif
+			
+			screen.commenceTime = -1.0
+			Signal( screen, "ScreenOff" ) // to clean up any threads expecting the RUI to exist
+
+			CleanupNestedGladiatorCard( screen.nestedGladiatorCard0Handle )
+
+			RuiDestroyIfAlive( screen.rui )
+			screen.rui = null
+		}
 
 		bool doStandardVars = (!screen.overrideInfoIsValid || !screen.overrideInfo.skipStandardVars)
-
 		bool needStartup = (shouldShow && (screen.rui == null))
 		if ( needStartup )
 		{
 			// #if DEVELOPER
-				// ++countCreation
+				// ++s_countCreation
 				// Warning ( "Creating screen" )
-				// Warning( "------------------" + countCreation )
+				// Warning( "------------------" + s_countCreation )
 			// #endif
 			
 			screen.rui = CreateApexScreenRUIElement( screen )
@@ -1037,28 +1056,6 @@ void function UpdateScreensContent( array<ApexScreenState> screenList )
 			}
 		}
 		
-		// RUI: Couldn't allocate a client rui instance.
-		
-		//because this block sets the screen.rui to null on the same frame, the needstartup condition can potentially 
-		//execute due to the screen.rui being null and bool shouldshow being true
-		//(mk): TEMP FIX: moved shutdown after startup check. Needs more tracking to determine why shouldShow is not handling this (todo after release)
-		bool needShutdown = ((screen.rui != null) && (!shouldShow || (screen.ruiToCreate != screen.ruiLastCreated)))
-		if ( needShutdown )
-		{
-			// #if DEVELOPER
-				// ++countDestruction
-				// Warning( "Is this block being reached?? --------------------- " + countDestruction )
-			// #endif	
-			
-			screen.commenceTime = -1.0
-			Signal( screen, "ScreenOff" ) // to clean up any threads expecting the RUI to exist
-
-			CleanupNestedGladiatorCard( screen.nestedGladiatorCard0Handle )
-
-			RuiDestroyIfAlive( screen.rui )
-			screen.rui = null
-		}
-
 		if ( !shouldShow )
 			continue
 		if ( !doStandardVars )
@@ -1096,8 +1093,8 @@ void function UpdateScreensContent( array<ApexScreenState> screenList )
 
 		#if(false)
 
-
-#endif //
+		#endif //
+		
 
 		thread UpdateScreenDetails( screen, desiredTransitionStyle, gcardPresentation, desiredPlayerEHI, lifestateOverride )
 	}

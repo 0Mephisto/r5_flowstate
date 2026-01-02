@@ -155,6 +155,7 @@ struct FileLevelStruct
 		var                              backgroundRuiTopo
 		var                              backgroundRui
 		var                              countdownRui
+		var								 nameRuiTopo
 		array<var>                       ruiPlayerBarRuis
 		array<var>                       gCardRuiHandles
 		array<NestedGladiatorCardHandle> nestedGladiatorCardHandles
@@ -1539,6 +1540,8 @@ void function CreateCharacterSelectClientEnts()
 		}
 
 		// In-World RUI for name
+				
+			AssureFileRuiTopoDestroyed()
 
 			vector backgroundRuiOrigin = cameraOrigin + (targetCamera.GetForwardVector() * 200)
 			vector backgroundRuiAngles = targetPilot.GetAngles()
@@ -1622,6 +1625,8 @@ void function CreateCharacterSelectClientEnts()
 		// In-World RUI for name
 		vector backgroundRuiOrigin = cameraOrigin + (targetCamera.GetForwardVector() * 200)
 		vector backgroundRuiAngles = targetPilot.GetAngles()
+
+		AssureFileRuiTopoDestroyed()
 
 		fileLevel.backgroundRuiTopo = CreateRUITopology_Worldspace( backgroundRuiOrigin, backgroundRuiAngles * -1, RUI_NAME_PLATE_WIDTH, RUI_NAME_PLATE_HEIGHT )
 		fileLevel.backgroundRui = RuiCreate( $"ui/character_select_name_plate_new.rpak", fileLevel.backgroundRuiTopo, RUI_DRAW_WORLD, 0 )
@@ -2378,6 +2383,25 @@ void function ServerCallback_CharacterLockRejected()
 
 #if CLIENT
 
+void function AssureFileRuiTopoDestroyed()
+{
+	if ( fileLevel.backgroundRui != null )
+	{
+		RuiDestroyIfAlive( fileLevel.backgroundRui )
+		fileLevel.backgroundRui = null
+	}
+	if ( fileLevel.backgroundRuiTopo != null )
+	{
+		RuiTopology_Destroy( fileLevel.backgroundRuiTopo )
+		fileLevel.backgroundRuiTopo = null
+	}
+	if( fileLevel.nameRuiTopo != null )
+	{
+		RuiTopology_Destroy( fileLevel.nameRuiTopo )
+		fileLevel.nameRuiTopo = null
+	}
+}
+
 void function UpdateButtonStates()
 {
 	if ( !fileLevel.menuEntsReady )
@@ -3021,7 +3045,7 @@ array<ItemFlavor> function GetAllGoodAnimsFromGladcardStancesForCharacter( ItemF
 		return actualGoodAnimsForThisCharacter
 		
 			case "character_dummie":
-		actualGoodAnimsForThisCharacter.append( GetItemFlavorByAsset( $"settings/itemflav/gcard_stance/bangalore/common_01.rpak" ) )
+		//actualGoodAnimsForThisCharacter.append( GetItemFlavorByAsset( $"settings/itemflav/gcard_stance/bangalore/common_01.rpak" ) )
 		return actualGoodAnimsForThisCharacter
 		
 			case "character_bangalore":
@@ -3037,7 +3061,7 @@ array<ItemFlavor> function GetAllGoodAnimsFromGladcardStancesForCharacter( ItemF
 		actualGoodAnimsForThisCharacter.append( GetItemFlavorByGUID( ConvertItemFlavorGUIDStringToGUID( "SAID01817535639" ) ) )
 		actualGoodAnimsForThisCharacter.append( GetItemFlavorByGUID( ConvertItemFlavorGUIDStringToGUID( "SAID00921909335" ) ) )
 		actualGoodAnimsForThisCharacter.append( GetItemFlavorByGUID( ConvertItemFlavorGUIDStringToGUID( "SAID01299384641" ) ) )
-		actualGoodAnimsForThisCharacter.append( GetItemFlavorByGUID( ConvertItemFlavorGUIDStringToGUID( "SAID00924111436" ) ) )
+		//actualGoodAnimsForThisCharacter.append( GetItemFlavorByGUID( ConvertItemFlavorGUIDStringToGUID( "SAID00924111436" ) ) )
 		return actualGoodAnimsForThisCharacter
 		
 			case "character_caustic":
@@ -3064,7 +3088,7 @@ array<ItemFlavor> function GetAllGoodAnimsFromGladcardStancesForCharacter( ItemF
 		actualGoodAnimsForThisCharacter.append( GetItemFlavorByGUID( ConvertItemFlavorGUIDStringToGUID( "SAID00545796048" ) ) )
 		actualGoodAnimsForThisCharacter.append( GetItemFlavorByGUID( ConvertItemFlavorGUIDStringToGUID( "SAID00036505096" ) ) )
 		actualGoodAnimsForThisCharacter.append( GetItemFlavorByGUID( ConvertItemFlavorGUIDStringToGUID( "SAID01386679009" ) ) )
-		actualGoodAnimsForThisCharacter.append( GetItemFlavorByGUID( ConvertItemFlavorGUIDStringToGUID( "SAID01657023826" ) ) )
+		//actualGoodAnimsForThisCharacter.append( GetItemFlavorByGUID( ConvertItemFlavorGUIDStringToGUID( "SAID01657023826" ) ) )
 		return actualGoodAnimsForThisCharacter
 
 			case "character_mirage":
@@ -3089,7 +3113,7 @@ array<ItemFlavor> function GetAllGoodAnimsFromGladcardStancesForCharacter( ItemF
 		actualGoodAnimsForThisCharacter.append( GetItemFlavorByGUID( ConvertItemFlavorGUIDStringToGUID( "SAID01527711638" ) ) )
 		actualGoodAnimsForThisCharacter.append( GetItemFlavorByGUID( ConvertItemFlavorGUIDStringToGUID( "SAID01474484292" ) ) )
 		actualGoodAnimsForThisCharacter.append( GetItemFlavorByGUID( ConvertItemFlavorGUIDStringToGUID( "SAID01587991597" ) ) )
-		actualGoodAnimsForThisCharacter.append( GetItemFlavorByGUID( ConvertItemFlavorGUIDStringToGUID( "SAID02088801000" ) ) )
+		//actualGoodAnimsForThisCharacter.append( GetItemFlavorByGUID( ConvertItemFlavorGUIDStringToGUID( "SAID02088801000" ) ) )
 		return actualGoodAnimsForThisCharacter
 
 			case "character_wattson":
@@ -3205,16 +3229,7 @@ void function UpdatePlayerAnim( ItemFlavor character, int currentMenuState )
 			asset animtoplay = GetGlobalSettingsAsset( ItemFlavor_GetAsset( anim ), "movingAnimSeq" )		
 			thread PlayAnim( fileLevel.characterModel, animtoplay, fileLevel.characterNode )
 
-			if ( fileLevel.backgroundRui != null )
-			{
-				RuiDestroyIfAlive( fileLevel.backgroundRui )
-				fileLevel.backgroundRui = null
-			}
-			if ( fileLevel.backgroundRuiTopo != null )
-			{
-				RuiTopology_Destroy( fileLevel.backgroundRuiTopo )
-				fileLevel.backgroundRuiTopo = null
-			}
+			AssureFileRuiTopoDestroyed()
 
 			var nameRuiTopo = CreateRUITopology_Worldspace( fileLevel.camera.GetOrigin() + (fileLevel.camera.GetForwardVector() * 200) + (fileLevel.camera.GetRightVector() * 15) + (fileLevel.camera.GetUpVector() * 15 ), fileLevel.camera.GetAngles(), RUI_NAME_PLATE_WIDTH, RUI_NAME_PLATE_HEIGHT )
 			fileLevel.backgroundRui = RuiCreate( $"ui/character_select_name_plate_new.rpak", nameRuiTopo, RUI_DRAW_WORLD, 0 )
@@ -3237,18 +3252,11 @@ void function UpdatePlayerAnim( ItemFlavor character, int currentMenuState )
 			asset animtoplay = GetGlobalSettingsAsset( ItemFlavor_GetAsset( anim ), "movingAnimSeq" )		
 			thread PlayAnim( fileLevel.characterModel, animtoplay, fileLevel.characterNode )
 			
-			if ( fileLevel.backgroundRui != null )
-			{
-				RuiDestroyIfAlive( fileLevel.backgroundRui )
-				fileLevel.backgroundRui = null
-			}
-			if ( fileLevel.backgroundRuiTopo != null )
-			{
-				RuiTopology_Destroy( fileLevel.backgroundRuiTopo )
-				fileLevel.backgroundRuiTopo = null
-			}
+			AssureFileRuiTopoDestroyed()
 
 			var nameRuiTopo = CreateRUITopology_Worldspace( fileLevel.camera.GetOrigin() + (fileLevel.camera.GetForwardVector() * 200) + (fileLevel.camera.GetRightVector() * 10) + (fileLevel.camera.GetUpVector() * 15 ), fileLevel.camera.GetAngles(), RUI_NAME_PLATE_WIDTH, RUI_NAME_PLATE_HEIGHT )
+			
+			fileLevel.nameRuiTopo = nameRuiTopo
 			fileLevel.backgroundRui = RuiCreate( $"ui/character_select_name_plate_new.rpak", nameRuiTopo, RUI_DRAW_WORLD, 0 )
 			
 			RuiSetString( fileLevel.backgroundRui, "nameString", Localize( ItemFlavor_GetLongName( character ) ) )
@@ -3985,7 +3993,7 @@ bool function FS_ShouldShowCustomCharacterSelect()
 {
 	if( Playlist() == ePlaylists.fs_scenarios || Gamemode() == eGamemodes.WINTEREXPRESS )
 		return true
-
+	
 	return GetCurrentPlaylistVarBool( "r5reloaded_AnimatedCharacterSelect", false )
 }
 

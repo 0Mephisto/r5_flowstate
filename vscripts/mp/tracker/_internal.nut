@@ -122,7 +122,7 @@ var function Stats__RawGetStat( UIDString player_oid, string statname, bool onli
 {
 	table< UIDString, StatsTable > statsTable = online ? file.onlineStatsTables : file.localStatsTables
 
-	if (player_oid in statsTable && statname in statsTable[player_oid])
+	if ( player_oid in statsTable && statname in statsTable[player_oid] )
 		return statsTable[player_oid][statname]
 	else
 		return null
@@ -663,6 +663,7 @@ global function GetPlayerStatArrayString
 global function GetPlayerStatArrayBool
 global function GetPlayerStatArrayFloat
 global function PlayerStatArray_Append
+global function Stats__RawGetStat
 
 array<string> function Stats__GetStatKeys(){ return [] }
 
@@ -682,6 +683,7 @@ array<string> function GetPlayerStatArrayString( string player_oid, string statn
 array<float> function GetPlayerStatArrayFloat( string player_oid, string statname ){ return [] }
 array<bool> function GetPlayerStatArrayBool( string player_oid, string statname ){ return [] }
 void function PlayerStatArray_Append( string player_oid, string statname, var value ){}
+var function Stats__RawGetStat( string uid, string key ){ return "" }
 #endif // ELSE !TRACKER && !HAS_TRACKER_DLL
 
 // SHARED 

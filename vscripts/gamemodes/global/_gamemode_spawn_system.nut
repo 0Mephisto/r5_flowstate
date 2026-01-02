@@ -1026,9 +1026,8 @@ array<SpawnData> function FetchReturnAllLocations( int eMap, string set = "_set_
 			}
 			else 
 			{
-			
 				mAssert( NavMesh_IsUpToDate(), "Navmesh is not loaded or not the correct version. \n Cannot correct OOB spawn at origin %s", oobSpawnInfo )
-				mAssert( Flag( "EntitiesDidLoad" ), "Spawn system tried to run spawns correction, but EntitiesDidLoad flag is false. (navmesh not loaded)" )
+				mAssert( svGlobal.bEntitiesDidLoad, "Spawn system tried to run spawns correction, but EntitiesDidLoad flag is false. (navmesh not loaded)" )
 				
 				vector ornull newOrigin	
 				float fallbackAngle = 0.0				
@@ -1459,7 +1458,7 @@ bool function SpawnSystem_CheckSpawn( vector origin, vector mins = ZERO_VECTOR, 
 {
 	if( mins == ZERO_VECTOR || maxs == ZERO_VECTOR )
 	{
-		mins = <-16, -16, 0> //HULL_HUMAN
+		mins = <-16, -16, 4> //HULL_HUMAN + acceptable offset for feet
 		maxs = <16, 16, 72>  //HULL_HUMAN
 	}
 	

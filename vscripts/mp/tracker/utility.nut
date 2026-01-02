@@ -8,7 +8,7 @@ global function GetPlayerEntityByUID
 global function GetPlayerEntityByName
 global function IsServerAdmin
 global function GetAdminList
-global function IsAuthEnabled	
+global function IsAuthEnabled
 
 //string util
 global function IsStringNumeric
@@ -52,6 +52,7 @@ global function Tracker_DetermineNextMap
 global function Tracker_GotoNextMap
 global function PrepareForJson
 global function ArrayUniqueInt
+global function ResolveFormattersForPlayerMessage	
 
 #if DEVELOPER
 	global function RegExpUnitTest
@@ -372,7 +373,7 @@ struct
 		string pair
 		
 		#if TRACKER && HAS_TRACKER_DLL
-			admins_list = TrackerGetSetting__internal( "settings.ADMINS" )
+			admins_list = TrackerGetSetting( "settings.ADMINS" )
 		#endif
 		
 		if( admins_list != "" )
@@ -728,9 +729,9 @@ struct
 						return true
 					}
 				
-					#if TRACKER && HAS_TRACKER_DLL
+					#if HAS_TRACKER_DLL
 						BanPlayerById( b_playeroid, b_reason, player.GetPlatformUID() )
-					#else 
+					#else
 						BanPlayerById( b_playeroid, b_reason )
 					#endif
 					
@@ -812,7 +813,7 @@ struct
 			
 			case "banid":
 			{
-				#if TRACKER && HAS_TRACKER_DLL
+				#if HAS_TRACKER_DLL
 					if ( args.len() < 2 )
 					{
 						Message( player, "Failed", "Command 'banid' requires oid for 1st param of command")
@@ -1223,7 +1224,7 @@ struct
 					try 
 					{	
 						string return_str = ""
-						return_str = TrackerGetSetting__internal( param )	
+						return_str = TrackerGetSetting( param )	
 						
 						Message( player, param + ":", return_str )
 						return true
@@ -1386,7 +1387,7 @@ struct
 			case "start_interval_thread":
 
 					#if TRACKER
-						if( isIntervalThreadRunning() )
+						if( IsMessageBotIntervalThreadRunning() )
 						{
 							Message( player, "Interval thread is already running." )
 							return true 
@@ -1565,7 +1566,7 @@ struct
 					}
 					else 
 					{
-						Message( player, "Attempting Save", "Saving uid: " + param )
+						Message( player, "Attempting Save", "Offline player is being saved to muted list: " + param )
 					}
 				}
 				else 
@@ -1598,7 +1599,7 @@ struct
 					}
 					else 
 					{
-						Message( player, "Attempting Save", "Saving uid unmuted: " + param )
+						Message( player, "Attempting Save", "Offlie player is being saved unmuted: " + param )
 					}
 				}
 				else 
@@ -2605,4 +2606,80 @@ int function GetWeaponSettingIntFromFile( string weaponRef, string setting )
 	#endif 
 	
 	return 0
+}
+
+string function ConvertVarStatValuetoString( var stat )
+{
+	string statType = typeof stat
+	switch( statType )
+	{
+		case "string":
+			return expect string( stat )
+		case "int":
+			return expect int( stat ).tostring()
+		case "bool":
+			return expect bool( stat ).tostring()
+		case "float":
+			return expect float( stat ).tostring()
+		case "null":
+			return "INVALID_STAT"
+		
+		default:
+			mAssert( 0, "Stat type %s cannot be implicitely converted to string", statType )
+	}
+	
+	return "~error~"
+}
+
+const int STAT_PREFIX_POS = 6
+const int SETTING_PREFIX_POS = 9
+string function GetFormatterValueForPlayer( entity player, string formatter )
+{	
+	switch( formatter )
+	{
+		case "#player":
+			return player.GetPlayerName()
+			
+		case "#uid":
+			return player.GetPlatformUID()
+			
+		case "#ping":
+			return ( player.GetLatency() * 1000 ).tostring()
+			
+		default: 
+			if( formatter.find( "#stat_" ) == 0 )
+			{
+				string statKey = formatter.slice( STAT_PREFIX_POS, formatter.len() )
+				if( statKey == "" )
+					mAssert( 0, "Stat key formatter '%s' was incomplete", formatter )
+					
+				return ConvertVarStatValuetoString( Stats__RawGetStat( player.p.UID, statKey ) )
+			}
+			
+			if( formatter.find( "#setting_" ) == 0 )
+			{
+				string settingKey = formatter.slice( SETTING_PREFIX_POS, formatter.len() )
+				if( settingKey == "" )
+					mAssert( 0, "Setting key formatter '%s' was incomplete", formatter )
+					
+				return Tracker_FetchPlayerData( player.p.UID, settingKey )
+			}
+	}
+	
+	return formatter
+}
+
+string function ResolveFormattersForPlayerMessage( entity player, string message )
+{
+	return RegexpReplaceFuncPlayer
+	( 
+		message, 
+		"#[A-Za-z0-9_]+", 
+		
+		string function( array<string> captures, entity player = null )
+		{
+			return GetFormatterValueForPlayer( player, captures[ 0 ] )
+		},
+		player
+	)
 }

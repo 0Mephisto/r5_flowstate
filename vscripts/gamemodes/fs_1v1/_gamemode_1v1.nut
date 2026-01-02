@@ -667,7 +667,7 @@ bool function CC_1v1_ShowInputBanner( entity player, array<string> args )
 
 bool function CC_1v1_ShowVsUI( entity player, array<string> args )
 {
-	if( !IsValid( player ) || args.len() || !IsStringNumeric( args[0] ) )
+	if( !IsValid( player ) || !args.len() || !IsStringNumeric( args[0] ) )
 		return false
 	
 	player.p.showvsui = args[0] == "0" ? false : true
@@ -2789,12 +2789,6 @@ bool function ClientCommand_SpectateNew( entity user, array<string> args )
     {
         array<entity> enemiesArray = GetPlayerArray_AliveConnected()
         enemiesArray.fastremovebyvalue( user )
-        
-        #if TRACKER
-			entity messageBot = GetMessageBotEnt()
-			if ( bBotEnabled() && IsValid( messageBot ) && IsAlive( messageBot ) )
-				enemiesArray.fastremovebyvalue( messageBot )
-        #endif
 		
 		if ( enemiesArray.len() == 0 )
 		{
@@ -3027,7 +3021,7 @@ void function soloModePlayerToWaitingList( entity player, bool isWinner = false,
 		return
 	}
 	
-	if( !IsValid( player ) || Gamemode1v1_IsPlayerWaiting( player ) || IsBotEnt( player ) ) 
+	if( !IsValid( player ) || Gamemode1v1_IsPlayerWaiting( player ) ) 
 		return
 
 	if( !IsAlive( player ) ) //(cafe)This try catch shouldn't be necessary?
@@ -3120,7 +3114,7 @@ void function soloModePlayerToWaitingList( entity player, bool isWinner = false,
 
 void function scenarios_soloModePlayerToWaitingList( entity player, bool isWinner = false )
 {
-	if( !IsValid( player ) || Gamemode1v1_IsPlayerWaiting( player ) || IsBotEnt( player ) ) 	
+	if( !IsValid( player ) || Gamemode1v1_IsPlayerWaiting( player ) ) 	
 		return
 	
 	Gamemode1v1_SetPlayerGamestate( player, e1v1State.WAITING )
@@ -4845,9 +4839,6 @@ void function ClearAllNotifications()
 
 vector function Gamemode1v1_GetNotificationPanel_Coordinates()
 {
-	if( Playlist() == ePlaylists.fs_lgduels_1v1 && MapName() == eMaps.mp_rr_canyonlands_staging )
-		return file.WaitingRoom.origin + <0,-200,130> 
-	
 	return g_waitingRoomPanelLocation.origin + <0,0,155>
 }
 
@@ -5142,11 +5133,6 @@ void function TakeUltimate( entity player )
 
 void function Init_IBMM( entity player )
 {
-	#if TRACKER && HAS_TRACKER_DLL
-		if( IsBotEnt( player ) ) //Todo(mk): nuke.
-			return 
-	#endif
-			
 	thread Thread_CheckInput( player ) //Todo(mk): move to code
 	
 	AddButtonPressedPlayerInputCallback( player, IN_MOVELEFT, SetInput_IN_MOVELEFT )

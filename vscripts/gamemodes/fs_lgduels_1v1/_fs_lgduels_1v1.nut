@@ -30,7 +30,7 @@ void function Flowstate_LgDuels1v1_Init()
 		SpawnSystem_UseNavMeshCorrection( false )
 		AddCallback_SpawnsSettings( InitPreSpawnSystemSettings )	
 		//SpawnSystem_SetOffset( NewLocPair( LG_DUELS_OFFSET_ORIGIN, ZERO_VECTOR ) ) //used to move all spawns by an offset  //edit:  Spawns now have correct coordinates in pak.
-		AddCallback_SpawnsPostInit( Init_LGDuels_Spawns )
+		//AddCallback_SpawnsPostInit( Init_LGDuels_Spawns )
 	}
 	else
 	{
@@ -82,8 +82,8 @@ void function INIT_LGDuels_Player( entity player )
 	
 	player.p.hitsound = HIT_0
 	
-	CreatePanelText( player, "", "LG Duels by @CafeFPS and..", < 3450.38, -9592.87, -9888.37 >, < 354.541, 271.209, 0 >, false, 1.5, 1)
-	CreatePanelText( player, "mkos ", "", < 3472.44, -9592.87, -9888.37 >, < 354.541, 271.209, 0 >, false, 3, 2)
+	// CreatePanelText( player, "", "LG Duels by @CafeFPS and..", < 3450.38, -9592.87, -9888.37 >, < 354.541, 271.209, 0 >, false, 1.5, 1)
+	// CreatePanelText( player, "mkos ", "", < 3472.44, -9592.87, -9888.37 >, < 354.541, 271.209, 0 >, false, 3, 2)
 }
 
 void function Player1v1Gamestate( entity player, int state )

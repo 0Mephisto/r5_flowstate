@@ -19,9 +19,11 @@ void function CodeCallback_PostEntityInit()
 	Assert( !_initialized )
 	_initialized = true
 
+	svGlobal.bEntitiesDidLoad = true //(mk): Used to assert entities have loaded during or before EntitiesDidLoad callbacks.
+	
 	RunCallbacks_EntitiesDidLoad()
 
-	FlagSet( "EntitiesDidLoad" )
+	FlagSet( "EntitiesDidLoad" ) //(mk): All EntitiesDidLoad callbacks have completed.
 
 	#if DEVELOPER
 		array<entity> startPoints = GetEntArrayByClass_Expensive( "info_player_start" )

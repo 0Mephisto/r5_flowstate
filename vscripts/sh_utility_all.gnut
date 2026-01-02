@@ -859,6 +859,44 @@ string function RegexpReplace( string baseString, string patternString, string r
 }
 
 
+string function RegexpReplaceFuncPlayer( string baseString, string patternString, string functionref( array<string> captures, entity player = null ) replaceFunc, entity player = null )
+{
+	Assert( patternString.len() > 0, "cannot use RegexpReplace with an empty patternString" )
+
+	string newString = ""
+	var pattern      = regexp( patternString )
+
+	int searchIndex = 0
+	while( searchIndex < baseString.len() )
+	{
+		var captureListOrNull = pattern.capture( baseString, searchIndex )
+
+		if ( captureListOrNull == null )
+			break
+
+		array captureList = expect array( captureListOrNull )
+
+		table matchInfo = expect table( captureList[0] )
+
+		newString += baseString.slice( searchIndex, matchInfo.begin )
+
+		array<string> captureStrList = []
+		foreach( var captureInfoRaw in captureList )
+		{
+			table captureInfo = expect table( captureInfoRaw )
+			captureStrList.append( baseString.slice( captureInfo.begin, captureInfo.end ) )
+		}
+
+		newString += replaceFunc( captureStrList, player )
+
+		searchIndex = expect int( matchInfo.end )
+	}
+
+	newString += baseString.slice( searchIndex )
+
+	return newString
+}
+
 string function RegexpReplaceFunc( string baseString, string patternString, string functionref( array<string> captures ) replaceFunc )
 {
 	Assert( patternString.len() > 0, "cannot use RegexpReplace with an empty patternString" )

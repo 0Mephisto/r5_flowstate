@@ -26,11 +26,6 @@ void function BaseGametype_Init_MPSP()
 
 void function CodeCallback_OnClientConnectionCompleted( entity player )
 {
-	#if TRACKER && HAS_TRACKER_DLL //TODO(mk): server messages
-		if( IsBotEnt( player ) )
-			return
-	#endif
-		
 	player.p.activeGladiatorCardStatTrackerEntries = [0,0,0]
 
 	ShGRX_OnClientConnectionCompleted( player )

@@ -184,6 +184,8 @@ global struct SvGlobals
 	// voices passive
 	table< int, void functionref( entity, ThreatEventCallbackData ) > onThreatEventActivationCallbacks
 	table< int, void functionref( entity, ThreatEventCallbackData ) > onThreatEventStateChangeCallbacks
+
+	bool bEntitiesDidLoad //(mk): Added, due to Flag( "EntitiesDidLoad" ) only being set after EntitiesDidLoad callbacks execute.
 }
 
 global SvGlobals svGlobal

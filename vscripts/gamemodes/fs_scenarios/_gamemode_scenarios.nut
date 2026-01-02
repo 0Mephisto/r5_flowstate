@@ -256,11 +256,6 @@ void function EntitiesDidLoad()
 
 void function FS_Scenarios_ForceRest( entity player )
 {
-	#if TRACKER
-		if( IsBotEnt( player ) ) //temporary messagebot bullcrap hack ( all of these need removed )
-			return
-	#endif
-		
 	_CleanupPlayerEntities( player )
 	FS_Scenarios_HandleGroupIsFinished( player )
 	scenariosGroupStruct ornull group = FS_Scenarios_ReturnGroupForPlayer( player )
@@ -1696,11 +1691,6 @@ void function FS_Scenarios_Main_Thread()
 				
 			if( FS_Scenarios_IsPlayerWaitingForTeamates( player ) )
 				continue
-			
-			#if TRACKER
-				if( IsBotEnt( player ) ) //temporary messagebot bullcrap hack ( all of these need removed )
-					continue
-			#endif
 
 			// if( player.p.InDeathRecap ) //Has player closed Death Recap? //Not reliable until we solve all the death recap. Cafe
 				// continue

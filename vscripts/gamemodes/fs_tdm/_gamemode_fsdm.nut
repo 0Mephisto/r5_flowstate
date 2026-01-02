@@ -4751,24 +4751,26 @@ float function getkd(int kills, int deaths)
 
 void function SendScoreboardToClient()
 {
-	foreach(entity sPlayer in GetPlayerArray())
+	foreach( entity sPlayer in GetPlayerArray() )
 	{
-		if ( !IsValid( sPlayer ) ) continue
+		if ( !IsValid( sPlayer ) ) 
+			continue
 		
 		Remote_CallFunction_NonReplay(sPlayer, "ServerCallback_ClearScoreboardOnClient")
 		
-		thread function() : (sPlayer)
+		thread function() : ( sPlayer )
 		{
-			foreach(entity player in GetPlayerArray())
+			foreach( entity player in GetPlayerArray() )
 			{
-				if ( !IsValid( player ) ) continue
+				if ( !IsValid( player ) ) 
+					continue
 				
 				PlayerInfo p
 				p.eHandle = player.GetEncodedEHandle()
 				p.score = player.GetPlayerGameStat( PGS_KILLS )
 				p.deaths = player.GetPlayerGameStat( PGS_DEATHS )
-				p.kd = getkd(p.score,p.deaths)
-				p.damage = int(player.p.playerDamageDealt)
+				p.kd = getkd( p.score, p.deaths )
+				p.damage = int( player.p.playerDamageDealt)
 				p.lastLatency = int(player.GetLatency()* 1000)
 				
 				Remote_CallFunction_NonReplay(sPlayer, "ServerCallback_SendScoreboardToClient", p.eHandle, p.score, p.deaths, p.kd, p.damage, p.lastLatency)

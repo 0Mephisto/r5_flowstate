@@ -1,3 +1,5 @@
+untyped
+
 global function PIN_Init
 global function PIN_ItemPickup
 global function PIN_GameStart
@@ -39,7 +41,7 @@ global function GameSummary_GetPlayerData
 
 const LOG_ERRORS = true
 //do not edit below this line
-
+const int 	MAX_SAY_MSG 						= 255
 
 // ╔══════╗
 // ║ mkos ║
@@ -51,16 +53,18 @@ global function SavePlayerData
 global function Tracker_FetchPlayerData
 global function Tracker_SavePlayerData
 global function SetAfkToRest
-global function ArrayRemoveBot //todo move to code
 global function ClientCommand_RequestStat
 global function Tracker_SetStartLog
 global function Tracker_UpdateMOTDTextForPlayer
+global function TrackerGetSetting
+global function SendServerMessageToPlayer
+global function SendServerMessage
 
 #if TRACKER
-	global const bool STUB = false
+	const bool STUB = false
 #else
-	global const bool STUB = true 
-#endif 
+	const bool STUB = true 
+#endif
 
 #if STUB
 	
@@ -83,8 +87,6 @@ global function Tracker_UpdateMOTDTextForPlayer
 	
 	//shared
 	global function bBotEnabled
-	global function IsBotEnt //needs to go
-	global function SendServerMessage
 	global function Tracker_GetCurrentEventByPlayerHandle_expensive
 	global function Tracker_GetCurrentEventForAttackerOnVictim
 	
@@ -203,13 +205,9 @@ global function bAfkToRest  //todo deprecate
 global function bGlobalStats //todo deprecate
 global function bLog //todo deprecate
 global function bEnc //todo deprecate
+global function bBotEnabled
 
-global function __executeEventStart_messages
-global function GetMessageBotEnt //todo move to code
-global function IsBotEnt //todo move to code
-global function SendServerMessage //todo move to code
-global function bBotEnabled //todo move to code
-global function isIntervalThreadRunning //todo rename
+global function IsMessageBotIntervalThreadRunning
 
 global function NULL_PDATA
 global function Gamemode1v1_PlayerDataCallbacks //TODO: this probably shouldn't be here, but a bit of logic needs sorted into it's gamemode file (will do soonTM)
@@ -237,15 +235,15 @@ const int 	MAX_SECONDS_WAIT_FOR_BATCH_LOAD 	= 5
 const float MAX_FIGHT_HISTORY_TIME 				= 20
 const float MAX_WAIT_FOR_LOGGING_THREAD 		= 10 //5 seconds
 const float DAMAGE_LOOKBACK_TIME_WINDOW 		= 20.0
-const int 	MAX_SAY_MSG 						= 255
 const int 	RESTRICTED_ACCESS_STATUS_REQUIRED 	= 7 // refer to CheckIfPlayerHasAccess()
 const int 	REQUIRED_SYNC_DATA_FIELDS 			= 1  //amount of fields returned by stats the scripts require (non-settings values)
-const float TRACKER_VERSION 					= 2.2
+const float TRACKER_VERSION 					= 3.0
 
 const array<string> SERVER_MSG_EVENT_TYPES = 
 [
 	"start",
-	"end"		
+	"end",
+	"join"
 ]
 	
 
@@ -436,20 +434,15 @@ struct //Todo: move appropriate to tracker.var
 	string superglidetitle
 	
 	// Chatbot Messages
-	array<string> BotAllowedModes = [ "fs_1v1", "fs_lgduels_1v1", "fs_scenarios", "fs_dm", "fs_haloMod", "fs_movementrecorder", "fs_realistic_ttv" ]
-	bool bBotAllowed
 	bool bChatbotEnabled
 	bool bIntervalThreadRunning
-	int iLoopMessagesTime
-	
-	string sBotName //todo: move to code
-	string messageBotPrefix //todo: move to code
-	int iBotID //todo: move to code
-	entity entityBotEnt //todo: move to code
+	int iBotMessagesLoopTime
+	string msgBotPrefix = "SERVER"
 	
 	table < int, array<string> > MessageEvents
 	array<string> Messages_EventStart
 	array<string> Messages_EventEnd
+	array<string> Messages_EventJoin
 	array<string> arrayLoopMessages = []
 	
 	int flowstateRoundtime
@@ -864,6 +857,11 @@ void function Tracker_RegisterAllSettings()
 bool function Tracker_StatExists( string stat )
 {
 	return Stats__GetStatKeys().contains( stat )
+}
+
+string function TrackerGetSetting( string key )
+{
+	return TrackerGetSetting__internal( key )
 }
 
 ////////////////////////////////////////////
@@ -1505,10 +1503,9 @@ void function PIN_Init()
 	if( !bRunTracker )
 		file.LogOn = false
 	
-	if( file.bChatbotEnabled && file.bBotAllowed )
+	if( file.bChatbotEnabled )
 	{
-		INIT_IntervalMessages()
-		AddCallback_EntitiesDidLoad( PIN_OnEntitiesLoaded_Chatbot )
+		BroadcastIntervalMessagesInit()
 		AddCallback_GameStateEnter( eGameState.Playing, __executeEventStart_messages )
 	}
 	
@@ -1625,20 +1622,18 @@ void function Tracker_SettingsInit()
 	//todo: cleanup mode related stuff
 	file.LogOn 										= GetCurrentPlaylistVarBool( "tracker_enabled", false)
 	file.LogE 										= GetCurrentPlaylistVarBool( "tracker_encryption", false)
-	file.bChatbotEnabled							= ( !IsLobby() && TrackerGetSetting__internal( "settings.ENABLE_CHATBOT" ) == "true" ? true : false )
+	file.bChatbotEnabled							= ( !IsLobby() && TrackerGetSetting( "settings.ENABLE_CHATBOT" ) == "true" ? true : false )
 	file.bClientCommandAdminEnabled					= ( GetConVarInt( "sv_onlineAuthEnable" ) == 1 && GetCurrentPlaylistVarBool( "cc_administration", false ) )
 	file.flowstateRoundtime 						= GetCurrentPlaylistVarInt( "flowstateRoundtime", 1800 )
 	file.afk_to_rest_enabled 						= GetCurrentPlaylistVarBool( "afk_to_rest_bool", false )
 	file.update_discord_player_counts 				= GetCurrentPlaylistVarBool( "stats_discord_webhook_player_count", false )
-	file.bBotAllowed 								= file.BotAllowedModes.contains( GetCurrentPlaylistName() ) //TODO: rework 
 	file.gamemode_type_1v1 							= g_bIs1v1GameType() //returns true if mode is confifugred as 1v1 type
 	file.stats_discord_webhook_matches_enabled		= GetCurrentPlaylistVarBool( "stats_discord_webhook_matches_enabled", false )
 	
 	if( file.bChatbotEnabled )
 	{
-		string botPrefix = TrackerGetSetting__internal( "settings.CHATBOT_PREFIX" )
-		file.sBotName = botPrefix
-		file.messageBotPrefix = "["+ botPrefix +"]" //This is not set here.
+		string botPrefix = TrackerGetSetting( "settings.CHATBOT_PREFIX" )
+		file.msgBotPrefix = botPrefix
 	}
 	
 	//init stat bools (must be before string inits) todo: cleanup
@@ -1678,40 +1673,6 @@ void function PlayerConnectedCallback( entity player )
 	player.p.UID = playerUID
 	player.p.handle = playerHandle
 	//sqprint(format("Added handle as: %d,  saved state: %d", playerHandle, player.p.handle ))
-	
-	//HACK! Todo: Remove
-	if( file.bChatbotEnabled && playerName == file.messageBotPrefix )
-	{
-		file.entityBotEnt = player 
-		
-		if( IsValid( file.entityBotEnt ) )
-		{
-			AddEntityCallback_OnPlayerRespawned( file.entityBotEnt, CheckForMessageBot )
-			
-			AddCallback_OnPlayerChangedTeam
-			(
-				void function( entity ent, int old, int new )
-				{
-					if( IsBotEnt( ent ) )
-					{
-						if( new != 119 )
-							SetTeam( ent, 119 )
-					}
-				}
-			)
-			
-			player.p.InDeathRecap = true
-			Gamemode1v1_ForceRest( file.entityBotEnt )
-			file.entityBotEnt.p.start_in_rest_setting = true
-			file.entityBotEnt.SetDamageNotifications( false )
-			file.entityBotEnt.SetDeathNotifications( false )
-			thread MessageIntervalThread()
-		}
-		else 
-		{
-			sqerror( "ServerBot Entity Error" )
-		}
-	}//	
 	
 	string uid = player.GetPlatformUID()
 	int mID = InitializePlayerMetricsStructForPlayer( player )
@@ -1758,11 +1719,6 @@ void function PlayerConnectedCallback( entity player )
 	
 	if ( file.global_stats )
 		thread __SetPlayerSyncData( player )
-}
-
-void function PIN_OnEntitiesLoaded_Chatbot()
-{
-	thread __LoadServerBot()
 }
 
 void function PlayerCounts( string state, string name, string OID, string count )
@@ -1920,190 +1876,165 @@ void function Init_NewGame()
 }
 
 
-	bool function Tracker_IsRestrictedServer()
-	{
-		return file.restricted_server
-	}
-
-	void function Tracker_SetRestrictedServer( bool setting )
-	{
-		file.restricted_server = setting
-	}
-
-	
-	void function PlayerWhitelistInit()
-	{
-		string whitelistString = TrackerGetSetting__internal( "settings.PLAYER_WHITELIST" )	
-		if ( !empty( whitelistString ) )
-		{
-			try
-			{
-				file.whitelist = StringToArray( whitelistString, 2000 )	
-			}
-			catch(err)
-			{
-				sqerror( "Error: " + err )
-			}
-		}
-	}
-	
-	int function CheckIfPlayerHasAccess( entity player )
-	{	
-		string player_UID = player.GetPlatformUID()
-		
-		if ( GetAdminList().contains( player_UID ) )
-			return 7
-		
-		if ( file.whitelist.contains( player_UID ) )
-			return 8
-			
-		if( file.restricted_whitelist_only )
-			return -1
-		
-		if ( player.p.season_score < Tracker_GetQueryInt( "restricted_rank" ) )
-			return 6
-		
-		if ( player.p.season_gamesplayed < file.restricted_gamesplayed )
-			return 4
-		
-		if ( player.p.season_kills < file.restricted_kills )
-			return 3
-		
-		if ( getkd( player.p.season_kills, player.p.season_deaths ) < GetCurrentPlaylistVarFloat( "restricted_kd", 0 ) )
-			return 2
-		
-		if ( player.p.season_playtime < file.restricted_playtime )
-			return 1
-		
-		return 9
-	}
-	
-	string function GetPlayerAccessMessage( entity player, int result )
-	{
-		switch( result )
-		{
-			case 9:
-				return LineBreak( file.restricted_join_message )
-			
-			case 8:
-				return LineBreak( file.restricted_whitelist_message )
-				
-			case 7:
-				return LineBreak( file.restricted_admin_message )
-				
-			case 6: 
-				return "Your Rank is too low to play on this server. \n\n Your Score: " + player.p.season_score.tostring() + ". \nLowest rank allowed: " + file.restricted_rank.tostring() + " (Score: " + Tracker_GetQueryInt("restricted_rank").tostring() + ")" //this Tracker_GetQueryInt() setting should be named restricted_score for clarity
-			
-			case 4:
-				return "You do not have enough games played to play on this server. \n Your total games played: " + player.p.season_gamesplayed.tostring() + " \n Server required minimum: " + file.restricted_gamesplayed.tostring() + "\n You need to play " + ( file.restricted_gamesplayed - player.p.season_gamesplayed ).tostring() + " more games to play on this server."
-			
-			case 3:
-				return "You do not have enough kills to play on this server. \n Your kills: " + player.p.season_kills.tostring() + " \n Server required minimum: " + file.restricted_kills.tostring() + "\n You need " + ( file.restricted_kills - player.p.season_kills ).tostring() + " more kills to play on this server."
-			
-			case 2:
-				return "Your K/D ratio is too low to play on this server. \n Your K/D: " + getkd( player.p.season_kills, player.p.season_deaths ) + " \n Server required minimum: " + file.restricted_kd.tostring() + "\n You need to increase your K/D ratio by:  " + ( file.restricted_kd - getkd( player.p.season_kills, player.p.season_deaths )).tostring() + " to play on this server."
-				
-			case 1:
-				return "Your play time does not meet this server's required minimum play time of: " + PlayTimeFromSecondsString( file.restricted_playtime ) + "\n Your playtime: " + PlayTimeFromSecondsString( player.p.season_playtime ) + "\n\n You need to play for at least: " + PlayTimeFromSecondsString( ( file.restricted_playtime - player.p.season_playtime) ) + " more time."
-			
-			case -1:
-				return "This server has Private mode enabled. Please contact the admin to be added to the whitelist."
-				
-			default:
-				return "Error 404"
-		}
-		
-		unreachable
-	}
-	
-	void function force_rest( entity player )
-	{
-		EndSignal( player, "OnDisconnected", "OnDestroy" )
-		
-		while( IsValid( player ) )
-		{
-			player.FreezeControlsOnServer()
-			player.ForceStand()
-			Gamemode1v1_ForceRest( player )
-			wait 0.5
-		}
-	}
-	
-	void function CheckForPlayerAccess( entity player )
-	{	
-		EndSignal( player, "OnDisconnected", "OnDestroy" )
-		CommandsEnabled( player, false )
-		
-		if( Gamemode() == eGamemodes.SURVIVAL || Playlist() == ePlaylists.fs_scenarios )
-			wait 1 //allow setup callbacks to run
-		
-		Gamemode1v1_ForceRest( player )
-		
-		if( !GetServerVar( "batch_fetch_complete" ) )
-			WaitSignal( tracker.signalEnt, "BatchFetchComplete" )
-		
-		if( !Tracker_IsStatsReadyFor( player ) )
-			WaitSignal( player, "SyncDataFullyLoaded" )
-			
-		//this int must be set after stats have loaded
-		int access_status = CheckIfPlayerHasAccess( player )
-		
-		wait 2
-		
-		if ( access_status >= RESTRICTED_ACCESS_STATUS_REQUIRED )//Todo: Revisit for more modularity from a single defined source and remove CONST adjustments
-		{	
-			Gamemode1v1_ForceRest( player )
-			Message( player, "Welcome " + player.GetPlayerName(),  GetPlayerAccessMessage( player, access_status ), 30 )
-			CommandsEnabled( player, true )
-		}
-		else 
-		{	
-			thread force_rest( player )
-			
-			Message( player, "Sorry " + player.GetPlayerName(),  GetPlayerAccessMessage( player, access_status ), 30 )
-			wait 7	
-			
-			KickPlayerById( player.GetPlatformUID(), GetPlayerAccessMessage( player, access_status ) )
-			UpdatePlayerCounts()
-			
-			if( GetCurrentPlaylistVarBool( "restricted_kick_log", false ) )
-				sqprint( format( "\n\n Player: %s, Kick msg: %s", player.GetPlayerName(), GetPlayerAccessMessage( player, access_status ) ) )
-		}
-	}
-	
-
-//returns true if message was sent without truncation, false if truncated. 
-bool function SendServerMessage( string _msg )
-{	
-	if( !file.bChatbotEnabled )
-		return false
-		
-	bool status = true
-	int msg_length = _msg.len()
-	
-	if( msg_length > MAX_SAY_MSG )
-	{
-		_msg = truncate( _msg, MAX_SAY_MSG )
-		sqerror( "Message contained " + msg_length.tostring() + " characters ( " + (msg_length - MAX_SAY_MSG).tostring() + " too many ) and was truncated. Maxlength: " + MAX_SAY_MSG.tostring() )
-		status = false;
-	}
-	
-	TrackerServerMsg__internal( StringRemoveControlCharacters( _msg ), file.iBotID )
-	
-	//if cafe's save chat log enabled
-	//ReturnChatArray().append(_msg)
-	return status
+bool function Tracker_IsRestrictedServer()
+{
+	return file.restricted_server
 }
 
-void function INIT_IntervalMessages()
+void function Tracker_SetRestrictedServer( bool setting )
 {
-	string msg_ArrayString = strip( TrackerGetSetting__internal("settings.INTERVAL_MESSAGES") )
-	bool gotoLoopMessage = false 
+	file.restricted_server = setting
+}
+
+
+void function PlayerWhitelistInit()
+{
+	string whitelistString = TrackerGetSetting( "settings.PLAYER_WHITELIST" )	
+	if ( !empty( whitelistString ) )
+	{
+		try
+		{
+			file.whitelist = StringToArray( whitelistString, 2000 )	
+		}
+		catch(err)
+		{
+			sqerror( "Error: " + err )
+		}
+	}
+}
+
+int function CheckIfPlayerHasAccess( entity player )
+{	
+	string player_UID = player.GetPlatformUID()
+	
+	if ( GetAdminList().contains( player_UID ) )
+		return 7
+	
+	if ( file.whitelist.contains( player_UID ) )
+		return 8
+		
+	if( file.restricted_whitelist_only )
+		return -1
+	
+	if ( player.p.season_score < Tracker_GetQueryInt( "restricted_rank" ) )
+		return 6
+	
+	if ( player.p.season_gamesplayed < file.restricted_gamesplayed )
+		return 4
+	
+	if ( player.p.season_kills < file.restricted_kills )
+		return 3
+	
+	if ( getkd( player.p.season_kills, player.p.season_deaths ) < GetCurrentPlaylistVarFloat( "restricted_kd", 0 ) )
+		return 2
+	
+	if ( player.p.season_playtime < file.restricted_playtime )
+		return 1
+	
+	return 9
+}
+
+string function GetPlayerAccessMessage( entity player, int result )
+{
+	switch( result )
+	{
+		case 9:
+			return LineBreak( file.restricted_join_message )
+		
+		case 8:
+			return LineBreak( file.restricted_whitelist_message )
+			
+		case 7:
+			return LineBreak( file.restricted_admin_message )
+			
+		case 6: 
+			return "Your Rank is too low to play on this server. \n\n Your Score: " + player.p.season_score.tostring() + ". \nLowest rank allowed: " + file.restricted_rank.tostring() + " (Score: " + Tracker_GetQueryInt("restricted_rank").tostring() + ")" //this Tracker_GetQueryInt() setting should be named restricted_score for clarity
+		
+		case 4:
+			return "You do not have enough games played to play on this server. \n Your total games played: " + player.p.season_gamesplayed.tostring() + " \n Server required minimum: " + file.restricted_gamesplayed.tostring() + "\n You need to play " + ( file.restricted_gamesplayed - player.p.season_gamesplayed ).tostring() + " more games to play on this server."
+		
+		case 3:
+			return "You do not have enough kills to play on this server. \n Your kills: " + player.p.season_kills.tostring() + " \n Server required minimum: " + file.restricted_kills.tostring() + "\n You need " + ( file.restricted_kills - player.p.season_kills ).tostring() + " more kills to play on this server."
+		
+		case 2:
+			return "Your K/D ratio is too low to play on this server. \n Your K/D: " + getkd( player.p.season_kills, player.p.season_deaths ) + " \n Server required minimum: " + file.restricted_kd.tostring() + "\n You need to increase your K/D ratio by:  " + ( file.restricted_kd - getkd( player.p.season_kills, player.p.season_deaths )).tostring() + " to play on this server."
+			
+		case 1:
+			return "Your play time does not meet this server's required minimum play time of: " + PlayTimeFromSecondsString( file.restricted_playtime ) + "\n Your playtime: " + PlayTimeFromSecondsString( player.p.season_playtime ) + "\n\n You need to play for at least: " + PlayTimeFromSecondsString( ( file.restricted_playtime - player.p.season_playtime) ) + " more time."
+		
+		case -1:
+			return "This server has Private mode enabled. Please contact the admin to be added to the whitelist."
+			
+		default:
+			return "Error 404"
+	}
+	
+	unreachable
+}
+
+void function force_rest( entity player )
+{
+	EndSignal( player, "OnDisconnected", "OnDestroy" )
+	
+	while( IsValid( player ) )
+	{
+		player.FreezeControlsOnServer()
+		player.ForceStand()
+		Gamemode1v1_ForceRest( player )
+		wait 0.5
+	}
+}
+
+void function CheckForPlayerAccess( entity player )
+{	
+	EndSignal( player, "OnDisconnected", "OnDestroy" )
+	CommandsEnabled( player, false )
+	
+	if( Gamemode() == eGamemodes.SURVIVAL || Playlist() == ePlaylists.fs_scenarios )
+		wait 1 //allow setup callbacks to run
+	
+	Gamemode1v1_ForceRest( player )
+	
+	if( !GetServerVar( "batch_fetch_complete" ) )
+		WaitSignal( tracker.signalEnt, "BatchFetchComplete" )
+	
+	if( !Tracker_IsStatsReadyFor( player ) )
+		WaitSignal( player, "SyncDataFullyLoaded" )
+		
+	//this int must be set after stats have loaded
+	int access_status = CheckIfPlayerHasAccess( player )
+	
+	wait 2
+	
+	if ( access_status >= RESTRICTED_ACCESS_STATUS_REQUIRED )//Todo: Revisit for more modularity from a single defined source and remove CONST adjustments
+	{	
+		Gamemode1v1_ForceRest( player )
+		Message( player, "Welcome " + player.GetPlayerName(),  GetPlayerAccessMessage( player, access_status ), 30 )
+		CommandsEnabled( player, true )
+	}
+	else 
+	{	
+		thread force_rest( player )
+		
+		Message( player, "Sorry " + player.GetPlayerName(),  GetPlayerAccessMessage( player, access_status ), 30 )
+		wait 7	
+		
+		KickPlayerById( player.GetPlatformUID(), GetPlayerAccessMessage( player, access_status ) )
+		UpdatePlayerCounts()
+		
+		if( GetCurrentPlaylistVarBool( "restricted_kick_log", false ) )
+			sqprint( format( "\n\n Player: %s, Kick msg: %s", player.GetPlayerName(), GetPlayerAccessMessage( player, access_status ) ) )
+	}
+}
+	
+
+void function BroadcastIntervalMessagesInit()
+{
+	string msg_ArrayString = strip( TrackerGetSetting( "settings.INTERVAL_MESSAGES" ) )
+	bool gotoLoopMessage = false
 	
 	if( msg_ArrayString.len() == 0 )
-	{
 		gotoLoopMessage = true
-	}
 	
 	if( !gotoLoopMessage )
 	{
@@ -2160,10 +2091,13 @@ void function INIT_IntervalMessages()
 					switch( sm0Match )
 					{
 						case "start":
-							file.Messages_EventStart.append(sM1)
+							file.Messages_EventStart.append( sM1 )
 							break
 						case "end":
-							file.Messages_EventEnd.append(sM1)
+							file.Messages_EventEnd.append( sM1 )
+							break
+						case "join":
+							file.Messages_EventJoin.append( sM1 )
 							break
 					}
 				}
@@ -2173,32 +2107,36 @@ void function INIT_IntervalMessages()
 				}
 			}
 		}
+		
+		if( file.Messages_EventJoin.len() )
+			AddCallback_OnClientConnected( BroadcastPersonalMessage )
+			
 	}// if !goto
 	
 	//loop messages (every x seconds)
 	
-	string loopTime = TrackerGetSetting__internal( "settings.LOOP_MESSAGES_INTERVAL" )
+	string loopTime = TrackerGetSetting( "settings.LOOP_MESSAGES_INTERVAL" )
 	
 	if( !empty( loopTime ) && IsStringNumeric( loopTime ) )
 	{
 		int convert = loopTime.tointeger()
 		float iRound10 = ceil( float( convert ) / 10.0 ) * 10
 		int interval = ( iRound10 / 10 ).tointeger()
-		file.iLoopMessagesTime = interval //seconds rounded to thread cycle as multiple of 10
+		file.iBotMessagesLoopTime = interval //seconds rounded to thread cycle as multiple of 10
 	}
 	else 
 	{
 		if( !empty( loopTime ) )
 			sqerror( "[TRACKER] Invalid LOOP_MESSAGES_INTERVAL ; setting to 60" )
 		
-		file.iLoopMessagesTime = 6 //60 seconds default
+		file.iBotMessagesLoopTime = 6 //60 seconds default
 	}
 	
 	#if DEVELOPER
-		sqprint( format( "file.iLoopMessagesTime is: %d ", file.iLoopMessagesTime ) )
+		sqprint( format( "file.iBotMessagesLoopTime is: %d ", file.iBotMessagesLoopTime ) )
 	#endif
 		
-	string getLoopMessages = TrackerGetSetting__internal( "settings.LOOP_MESSAGES" )
+	string getLoopMessages = TrackerGetSetting( "settings.LOOP_MESSAGES" )
 
 	if( !empty( getLoopMessages ) && getLoopMessages.find("|") )
 	{
@@ -2213,7 +2151,6 @@ void function INIT_IntervalMessages()
 		}
 	}
 }
-
 
 void function __executeEventStart_messages()
 {	
@@ -2233,9 +2170,33 @@ void function __executeEventEnd_messages()
 		SendServerMessage( message )
 }
 
-void function InitPlayerWelcomeMessage()
+void function BroadcastPersonalMessage( entity player )
 {
-	//requires filter recipient
+	if( bGlobalStats() )
+		thread __BroadcastPersonalMessage( player )
+	else 
+		__BroadcastPersonalMessage( player )
+}
+
+void function __BroadcastPersonalMessage( entity player )
+{
+	if( IsNewThread() )
+	{
+		if( !IsValid( player ) )
+			return 
+			
+		if( !Tracker_IsStatsReadyFor( player ) )
+		{
+			player.EndSignal( "OnDestroy", "OnDisconnected" )
+			waitthread WaitSignalOrTimeout( player, 15.0, "SyncDataFullyLoaded" )
+		}
+	}
+		
+	foreach( int index, string message in file.Messages_EventJoin )
+	{
+		message = ResolveFormattersForPlayerMessage( player, message )
+		SendServerMessageToPlayer( player, message )
+	}
 }
 
 void function DEV_StartIntervalThread()
@@ -2251,8 +2212,8 @@ void function MessageIntervalThread()
 		return
 	}
 	
-	int threadCycleCount = 0;
-	int loopMsgCount = 1; //gets reset when last message in loop messages is reached
+	int threadCycleCount = 0
+	int loopMsgCount = 1 //gets reset when last message in loop messages is reached
 	
 	file.bIntervalThreadRunning = true
 	
@@ -2277,7 +2238,7 @@ void function MessageIntervalThread()
 	{		
 		wait 10	
 		
-		threadCycleCount += 1;
+		threadCycleCount += 1
 		
 		//events
 		foreach( interval, msgs in file.MessageEvents ) 
@@ -2285,9 +2246,7 @@ void function MessageIntervalThread()
 			if ( ( threadCycleCount % interval) == 0 ) 
 			{
 				foreach( index, _msg in msgs ) 
-				{
-					SendServerMessage( _msg );
-				}
+					SendServerMessage( _msg )
 			}
 		}	
 		
@@ -2299,7 +2258,7 @@ void function MessageIntervalThread()
 	file.bIntervalThreadRunning = false
 }
 
-bool function isIntervalThreadRunning()
+bool function IsMessageBotIntervalThreadRunning()
 {
 	return file.bIntervalThreadRunning
 }
@@ -2309,7 +2268,7 @@ int function SendLoopMessage( int threadCycleCount, int loopMsgCount  )
 	if( loopMsgCount > file.arrayLoopMessages.len() )
 		loopMsgCount = 1
 	
-	if( loopMsgCount > 0 && threadCycleCount > 0 && threadCycleCount % file.iLoopMessagesTime == 0  )
+	if( loopMsgCount > 0 && threadCycleCount > 0 && threadCycleCount % file.iBotMessagesLoopTime == 0  )
 	{
 		SendServerMessage( file.arrayLoopMessages[( loopMsgCount - 1 )] )
 		loopMsgCount++
@@ -2323,56 +2282,9 @@ void function EventMessageSystem()
 	//TODO
 }
 
-void function __LoadServerBot()
-{
-	wait 3.5 //todo: time this event based
-	
-	#if DEVELOPER
-		//printt(":(pin):: loaded server bot")
-	#endif
-	
-	array<int> result = TrackerCreateServerBot__internal( file.sBotName )
-	
-	if( result.len() < 1 )
-	{
-		file.bChatbotEnabled = false
-		return
-	}
-	
-	file.iBotID = result[0]
-	
-	if( file.iBotID == -1 )
-	{
-		file.bChatbotEnabled = false
-		return
-	}
-	
-	//file.iBotHandle = result[1]
-	//sqprint(format( "Bot id is: %d", file.iBotID ))
-}
-
-bool function IsBotEnt( entity player )
-{
-	if( player == file.entityBotEnt )
-		return true
-		
-	return false
-}
-
-entity function GetMessageBotEnt() //global
-{
-	return file.entityBotEnt
-}
-
 bool function bBotEnabled()
 {
 	return file.bChatbotEnabled
-}
-
-array<entity> function ArrayRemoveBot( array<entity> players )
-{
-	players.fastremovebyvalue( file.entityBotEnt )
-	return players
 }
 
 float function Tracker_GetMaxWaitForBatchLoad()
@@ -5433,6 +5345,32 @@ void function Tracker_UpdateMOTDTextForPlayer( entity player, string motdText )
 	LocalMsg( player, "", "", eMsgUI.VAR_MOTD, 10, motdText, "", "" )
 }
 
+void function SendServerMessageToPlayer( entity player, string message, bool bAdminMessage = false )
+{
+	if( IsValid( player ) )
+		player.SendServerTextMessage( file.msgBotPrefix, message, bAdminMessage )
+}
+
+//returns true if message was sent without truncation, false if truncated. 
+bool function SendServerMessage( string _msg, bool bIsAdmin = false )
+{	
+	bool status = true
+	int msg_length = _msg.len()
+	
+	if( msg_length > MAX_SAY_MSG )
+	{
+		_msg = truncate( _msg, MAX_SAY_MSG )
+		sqerror( "Message contained " + msg_length.tostring() + " characters ( " + (msg_length - MAX_SAY_MSG).tostring() + " too many ) and was truncated. Maxlength: " + MAX_SAY_MSG.tostring() )
+		status = false
+	}
+	
+	BroadcastServerTextMessage( file.msgBotPrefix, StringRemoveControlCharacters( _msg ), bIsAdmin )
+	
+	//if cafe's save chat log enabled
+	//ReturnChatArray().append(_msg)
+	return status
+}
+
 #if HAS_TRACKER_DLL
 //do nothing
 #else
@@ -5470,15 +5408,16 @@ enum eLogState
 	SAFE = 3	
 } 
 
-struct {
-
+struct 
+{
 	bool LogOn = false
 	bool LogE = false
 	bool bChatbotEnabled = false
 	bool global_stats = false
 	bool afk_to_rest_enabled = false
 	int launchStartUnixTime
-
+	string msgBotPrefix = "SERVER"
+	
 } file
 
 //flags
@@ -5493,17 +5432,14 @@ string function Tracker_FetchPlayerData( string UID, string setting ){ return ""
 void function Tracker_SavePlayerData( string UID, string setting, ... ){}
 void function SavePlayerData( entity player, string setting, ... ){}
 bool function Tracker_StatExists( string stat ){ return false }
-var function Stats__RawGetStat( string uid, string stat ){ return null }
+string function TrackerGetSetting( string key ){ return "" }
 
 //utility
-bool function IsBotEnt( entity _ ){ return false } //needs to go immediately... 
-void function SendServerMessage( string _ ){}
 DamageEvent function Tracker_GetCurrentEventByPlayerHandle_expensive( int attackerHandle, bool attacker = true ){ DamageEvent e; e.lastHitTimestamp = 0.0; return e }
 DamageEvent function Tracker_GetCurrentEventForAttackerOnVictim( int attackerHandle, int victimHandle ){ DamageEvent e; e.lastHitTimestamp = 0.0; return e }
 bool function Tracker_IsRestrictedServer(){ return false }
 void function Tracker_SetRestrictedServer( bool _ ){}
 SerializedData function Tracker_BuildAllPlayerMetrics( bool _ ){ return "" }
-array<entity> function ArrayRemoveBot( array<entity> _ ){ return _ }
 int function Tracker_GetStartUnixTime(){ return file.launchStartUnixTime }
 
 void function PIN_Init()
