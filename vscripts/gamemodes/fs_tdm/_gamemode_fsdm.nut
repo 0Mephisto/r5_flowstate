@@ -2920,9 +2920,9 @@ void function GiveGungameWeapon(entity player)
 
 void function RunTDM()
 {
-	#if DEVELOPER 
-	printw( "RunTDM" )
-	#endif
+	// #if DEVELOPER 
+		// printw( "RunTDM" )
+	// #endif
 	
     WaitForGameState(eGameState.Playing)
 	

@@ -250,9 +250,9 @@ void function CodeCallback_MapSpawn() // original script entry point
 	svGlobal.worldspawn = GetEnt( "worldspawn" )
 	svGlobal.worldspawn.kv.startdark = true
 
+	PlaylistPakLoadInit() //(mk): Currently will not work for paks that are needed to register loot data due to async nature. Needs engine solution
 	SV_CL_Shared_Init()
 	ClientCommands_Init()
-	
 	
 	thread FS_RestartServerAfterSomeTimeWithoutPlayers()
 	

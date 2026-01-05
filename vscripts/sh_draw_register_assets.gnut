@@ -47,17 +47,17 @@ struct
 
 void function WorldDrawAsset_RegisterAllAssets()
 {
-	if (!IsFlowstateActive())
-		return
-	
 	#if SERVER 
-		AddCallback_OnClientConnected
-		(
-			void function( entity player )
-			{
-				ValidateDataTable( player, AUDIO_DATA_TABLE )
-			}
-		)
+		if( IsFlowstateActive() )
+		{
+			AddCallback_OnClientConnected
+			(
+				void function( entity player )
+				{
+					ValidateDataTable( player, AUDIO_DATA_TABLE )
+				}
+			)
+		}
 	#endif 
 	
 	#if SERVER || CLIENT 
@@ -70,30 +70,33 @@ void function WorldDrawAsset_RegisterAllAssets()
 					WaitFrame()
 			#endif 
 		
-			var audioTbl 		= GetDataTable( AUDIO_DATA_TABLE )
+			if( IsFlowstateActive() )
+			{
+				var audioTbl 		= GetDataTable( AUDIO_DATA_TABLE )
+				
+				int audioCount 		= GetDatatableRowCount( audioTbl )
+				int pathCol 		= GetDataTableColumnByName( audioTbl, "path" )
+				int nameCol 		= GetDataTableColumnByName( audioTbl, "name" )
+				int catCol			= GetDataTableColumnByName( audioTbl, "category" )
 			
-			int audioCount 		= GetDatatableRowCount( audioTbl )
-			int pathCol 		= GetDataTableColumnByName( audioTbl, "path" )
-			int nameCol 		= GetDataTableColumnByName( audioTbl, "name" )
-			int catCol			= GetDataTableColumnByName( audioTbl, "category" )
-		
-			bool verify = audioCount != -1		
-			mAssert( verify, "No audio files?" )
-			
-			for ( int i = 0; i < audioCount; i++ )
-			{		
-				string bikAssetName  = GetDataTableString( audioTbl, i, nameCol )
-				string bikAssetRef   = GetDataTableString( audioTbl, i, pathCol )
-				string category		 = GetDataTableString( audioTbl, i, catCol )
+				bool verify = audioCount != -1		
+				mAssert( verify, "No audio files?" )
 				
-				#if DEVELOPER
-					print_data += "\"" + bikAssetRef + "\"\n"
-				#endif
-				
-				SortAsset( category, bikAssetRef )			
-				file.assets.append( bikAssetRef )
-				
-				WorldDrawAsset_AddToAssetTable( bikAssetName, bikAssetRef )
+				for ( int i = 0; i < audioCount; i++ )
+				{		
+					string bikAssetName  = GetDataTableString( audioTbl, i, nameCol )
+					string bikAssetRef   = GetDataTableString( audioTbl, i, pathCol )
+					string category		 = GetDataTableString( audioTbl, i, catCol )
+					
+					#if DEVELOPER
+						print_data += "\"" + bikAssetRef + "\"\n"
+					#endif
+					
+					SortAsset( category, bikAssetRef )			
+					file.assets.append( bikAssetRef )
+					
+					WorldDrawAsset_AddToAssetTable( bikAssetName, bikAssetRef )
+				}
 			}
 			
 			string assetList = GetCurrentPlaylistVarString( "banner_assets", "" )

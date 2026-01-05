@@ -575,6 +575,9 @@ void function FS1v1_OnEntitiesDidLoad()
 	//challenges cleanup
 	AddCallback_OnClientDisconnected( FS_1v1_OnPlayerDisconnected )
 	
+	if( !bIsCoachingMode() && Timeout_IsEnabled() )
+		AddCallback_TimedOut( OnTimeout )
+	
 	//resting room init ///////////////////////////////////////////////////////////////////////////////////////
 			
 	PanelTable panels = 
@@ -3671,6 +3674,7 @@ void function FS_1v1_StartGame_THREAD( LocPair waitingRoom )
 	#if DEVELOPER 
 		printt( "CHAMPION SCREEN FINISHED" )
 	#endif 	
+	
 	thread FS_1v1_MainLoop_THREAD( waitingRoom )
 }
 
@@ -5533,4 +5537,19 @@ void function Gamemode1v1_SetAllowLegendSelect( bool setting )
 void function Gamemode1v1_SetAllPlayersLegend( int index )
 {
 	AssignLegendToGroup( index, GetPlayerArray() )
+}
+
+void function OnTimeout( entity player, bool status )
+{
+	if( status )
+	{
+		CommandsEnabled( player, false )
+		Gamemode1v1_ForceRest( player )
+		
+		LocalMsg( player, "#FS_TIMEOUT", "", eMsgUI.EVENT, settings.roundTime )
+		return
+	}
+
+	CommandsEnabled( player, true )
+	LocalMsg( player, "#FS_UNTIMEOUT", "", eMsgUI.EVENT, settings.roundTime )
 }

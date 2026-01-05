@@ -4,7 +4,7 @@
 	"id" "Flowstate"
 	"description" "Mod for R5Reloaded, includes Flowstate required convars and client text in 13 language files."
 	"version" "1.1"
-	"author" "CafeFPS"
+	"author" "CafeFPS & mkos"
 
 	"LocalizationFiles"
 	{
@@ -45,8 +45,8 @@
 		"fs_spieslegends" 1
 		"fs_1v1_coaching" 1
 		"fs_aimtrainer" 1
-
-		//"survival_dev" 1
+		"dev_default" 1
+		"survival_dev" 1
 	}
 
 	"ConVars"

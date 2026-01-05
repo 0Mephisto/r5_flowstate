@@ -916,6 +916,7 @@ global struct ServerPlayerStruct
 	float portalPlaceTime = 0
 	bool eaVerifyProcessing = false
 	bool hasTeam
+	bool bIsTimedOut
 	
 	//for adding specific spawn behavior on a player basis.
 	array<void functionref(entity)> playerSpawnedCallbacks

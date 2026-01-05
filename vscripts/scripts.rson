@@ -222,6 +222,7 @@ Scripts:
 [
 	mp/tracker/commands.nut
 	mp/tracker/chat.nut
+	mp/tracker/timeout.nut
 	mp/tracker/utility.nut
 	mp/tracker/_internal.nut
 	mp/tracker/_register_stats.nut

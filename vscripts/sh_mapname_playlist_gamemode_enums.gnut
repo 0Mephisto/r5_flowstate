@@ -1,6 +1,4 @@
-//Todo: Make custom playlists synced
-
-//script init:
+//script init:																												//mkos
 global function PlayLists_Mapnames_Gamemodes_Init
 
 global function MapName
@@ -17,6 +15,10 @@ global function PrintRegisteredPlaylists
 
 #if SERVER 
 	global function GetPlaylistMaps //client has a copy already
+#endif
+
+#if DEVELOPER 
+	global function DEV_CheckPlaylistRegistration
 #endif
 
 //mode functions:
@@ -188,13 +190,28 @@ const PRINT_GAMEMODE_DEBUGS = true
 void function __EnumsToArrays_Init()
 {
 	foreach( string strname, int num in eMaps )
+	{
+		if( num == eMaps._MAP_COUNT )
+			continue 
+			
 		SH_globals.mapNames.append( strname.tolower() )
+	}
 	
 	foreach( string strname, int num in ePlaylists )
+	{
+		if( num == ePlaylists._PLAYLISTS_COUNT )
+			continue 
+			
 		SH_globals.playlists.append( strname.tolower() )
+	}
 	
 	foreach( string strname, int num in eGamemodes )
+	{
+		if( num == eGamemodes._GAMEMODES_COUNT )
+			continue 
+			
 		SH_globals.gamemodes.append( strname.tolower() )
+	}
 }
 
 void function __ClearEnumArrays()
@@ -292,13 +309,15 @@ int function getPlaylistEnumFromName( string playlistString )
 {
 	string playlistStringLower = playlistString.tolower()
 	
-	for ( int i = 0; i < ePlaylists._PLAYLISTS_COUNT; i++ ) 
+	int playlistsLen = SH_globals.playlists.len()
+	for ( int i = 0; i < playlistsLen; i++ ) 
 	{
 		if ( SH_globals.playlists[i].tolower() == playlistStringLower ) 
 			return i
 	}
 	
-	return -1
+	SH_globals.playlists.append( playlistStringLower )
+	return ePlaylists._PLAYLISTS_COUNT
 }
 
 int function getGamemodeEnumFromName( string gamemodeString ) 
@@ -316,7 +335,6 @@ int function getGamemodeEnumFromName( string gamemodeString )
 // 		global script functions			//
 //////////////////////////////////////////
 
-//Todo: Change these to eMap(), ePlaylist(), eGamemode()
 int function MapName()
 {
 	return SH_globals.currentMap
@@ -396,6 +414,31 @@ void function _printstringarray( array<string> arr, string title = "???" )
 		}
 
 		return mapsArray
+	}
+#endif 
+
+#if DEVELOPER 
+	void function DEV_CheckPlaylistRegistration() //verifies playlist_r5_patch.txt file with enum structs. Used for cleanup
+	{
+		array<string> allPlaylistsFromPlaylistsFile = GetAllPlaylists()
+		array<string> invalidPlaylists
+		
+		foreach( string playlistName, int idx in ePlaylists )
+		{
+			if( idx == ePlaylists._PLAYLISTS_COUNT )
+				continue
+				
+			if( !allPlaylistsFromPlaylistsFile.contains( playlistName ) )
+				invalidPlaylists.append( playlistName )
+		}
+		
+		if( invalidPlaylists.len() )
+		{
+			Warning( "The following playlists are registered in global enum ePlaylists but lack a playlist configuration in playlists_r5_patch.txt" )
+			_printstringarray( invalidPlaylists )
+		}
+		else 
+			printl( "All registered playlists in global enum ePlaylists are configured in playlists_r5_patch.txt" )
 	}
 #endif 
 
@@ -521,12 +564,17 @@ void function TrackerSupportedMode_Init()
 	#if DEVELOPER && PRINT_GAMEMODE_DEBUGS
 		if( !result )
 		{
-			printt( format( "PRINT_GAMEMODE_DEBUGS: Mode not supported for tracker. GamemodeEnum: %d - %s, PlaylistEnum: %d - %s", 
-				Gamemode(), 
-				Gamemode() > -1 ? AllGamemodesArray()[Gamemode()] : "_INVALID", 
-				Playlist(), 
-				Playlist() > - 1 ? AllPlaylistsArray()[Playlist()]  : "_INVALID"
-			))
+			printt
+			( 
+				format
+				( 
+					"PRINT_GAMEMODE_DEBUGS: Mode not supported for tracker. GamemodeEnum: %d - %s, PlaylistEnum: %d - %s", 
+					Gamemode(), 
+					Gamemode() > -1 ? AllGamemodesArray()[ Gamemode() ] : "_INVALID", 
+					Playlist(), 
+					Playlist() > - 1 ? AllPlaylistsArray()[ Playlist() ] : "_INVALID"
+				)
+			)
 		}
 	#endif 
 	

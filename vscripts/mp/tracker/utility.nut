@@ -9,6 +9,9 @@ global function GetPlayerEntityByName
 global function IsServerAdmin
 global function GetAdminList
 global function IsAuthEnabled
+global function AdminMessage
+global function SendResponse
+global function SendPM
 
 //string util
 global function IsStringNumeric
@@ -53,6 +56,7 @@ global function Tracker_GotoNextMap
 global function PrepareForJson
 global function ArrayUniqueInt
 global function ResolveFormattersForPlayerMessage	
+global function CodeCallback_SendMessage
 
 #if DEVELOPER
 	global function RegExpUnitTest
@@ -1257,24 +1261,21 @@ struct
 				
 				break
 			}
-			case "msg":
+			case "msgall":
 			{
-				if ( args.len() < 2)
+				if ( args.len() < 2 )
 				{
-					Message( player, "Failed", "Param 1 of command 'serversay' requires string")
+					Message( player, "Failed", "Param 1 of command 'msgall' requires string" )
 					return true
 				}
 				
-				
-				try 
+				try
 				{	
 					if( !SendServerMessage( param ) )
-					{
 						Message( player, "Error", "Message was truncated")
-					}
 					
 					return true
-				} 
+				}
 				catch ( errservermsg ) 
 				{		
 					Message( player, "Failed", "Command failed because of: \n\n " + errservermsg )
@@ -1282,9 +1283,101 @@ struct
 				}
 					
 				break
-			}		
+			}	
+			case "msg":
+			{
+				if ( args.len() < 2 )
+				{
+					Message( player, "Failed", "Param 1 of command 'msg' requires playername/uid" )
+					return true
+				}
+				
+				if( args.len() < 3 )
+				{
+					Message( player, "Failed", "Param 2 of command 'msg' requires string" )
+					return true
+				}
+				
+				if( param2 == "" )
+				{
+					Message( player, "Failed", "Cannot send empty message" )
+					return true
+				}
+				
+				try
+				{	
+					entity toPlayer = GetPlayer( param )
+					if( !IsValid( player ) )
+					{
+						Message( player, "Error", format( "Player '%s' is invalud", param ) )
+						return true
+					}
+					
+					if( player == toPlayer )
+					{
+						Message( player, "Error", "Cannot send a message to yourself" )
+						return true
+					}
+				
+					if( !SendPM( player, toPlayer, param2 ) )
+						Message( player, "Error", "Message was not sent" )
+					
+					return true
+				}
+				catch ( errservermsg ) 
+				{		
+					Message( player, "Failed", "Command failed because of: \n\n " + errservermsg )
+					return true		
+				}
+				
+				break
+			}
+			case "adminmsgall":
+			{
+				if( args.len() < 2 || param == "" )
+				{
+					Message( player, "Error", "Param 1 of adminmsgall requires string" )
+					return true
+				}
+				
+				foreach( sPlayer in GetPlayerArray() )
+					AdminMessage( player, sPlayer, param )
+					
+				Message( player, "Message sent" )
+				break
+			}
+			case "adminmsg":
+			{
+				if ( args.len() < 2 )
+				{
+					Message( player, "Failed", "Param 1 of command 'adminmsg' requires playername/uid" )
+					return true
+				}
+				
+				if( args.len() < 3 )
+				{
+					Message( player, "Failed", "Param 2 of command 'adminmsg' requires string" )
+					return true
+				}
+				
+				entity toPlayer = GetPlayer( param )
+				if( !IsValid( toPlayer ) )
+				{
+					Message( player, "Failed", format( "Player '%s' is not valid.", toPlayer ) )
+					return true 
+				}
+				
+				if( !AdminMessage( player, toPlayer, param2 ) )
+				{
+					Message( player, "Failed", "Message was not sent" )
+					return true
+				}
+				
+				Message( player, format( "Admin message sent to '%s'", toPlayer.GetPlayerName() ) )
+				break
+			}
 			case "vc":
-			
+			{
 				if ( args.len() < 2)
 				{
 					Message( player, "Failed", "Param 1 of command 'vc' requires bool: 1/0 true/false on/off enabled/disabled")
@@ -1349,14 +1442,14 @@ struct
 				}
 					
 				break	
-				
+			}	
 			case "startbr":
-			
+			{
 				FlagSet( "MinPlayersReached" )	
 				return true
-				
+			}	
 			case "pos":
-				
+			{	
 				#if DEVELOPER		
 					if ( args.len() < 2 )
 					{
@@ -1377,93 +1470,93 @@ struct
 				#else
 					return false
 				#endif
-			
+			}
 			case "groups":
+			{
 				Message( player, "\"groupsInProgress\"", Gamemode1v1_GetNumberOfGroupsInProgress().tostring() )
 				return true
+			}
 			case "groupmap":
+			{
 				Message( player, "\"playerToGroupMap\"", Gamemode1v1_GetNumberOfPlayersInGroupMap().tostring() )
 				return true
+			}
 			case "start_interval_thread":
-
-					#if TRACKER
-						if( IsMessageBotIntervalThreadRunning() )
-						{
-							Message( player, "Interval thread is already running." )
-							return true 
-						}
-						
-						Message( player, "INTERVAL THREAD STARTING" )
-						DEV_StartIntervalThread()
-					#endif
-					
+			{
+				#if TRACKER
+					if( IsMessageBotIntervalThreadRunning() )
+					{
+						Message( player, "Interval thread is already running." )
 						return true 
+					}
 					
-			case "kill_interval_thread":
-					
-					#if TRACKER
-						svGlobal.levelEnt.Signal( "KillIntervalThread" ) 
-						Message( player, "INTERVAL THREAD STOPPING" )
-					#endif
-					
-					return true
-					
-			//case "testsend":
-			
-					//SQ_MsgToClient( param.tointeger(), param2 )
-					
-					//return true
-			case "thumbsup":
+					Message( player, "INTERVAL THREAD STARTING" )
+					DEV_StartIntervalThread()
+				#endif
 				
+				return true 
+			}		
+			case "kill_interval_thread":
+			{		
+				#if TRACKER
+					svGlobal.levelEnt.Signal( "KillIntervalThread" ) 
+					Message( player, "INTERVAL THREAD STOPPING" )
+				#endif
+				
+				return true
+			}		
+			case "thumbsup":
+			{	
 				SendServerMessage(chat.effects["THUMBSUP"])		
 				return true
-				
+			}	
 			case "print_chat_effects":
-			
+			{
 				#if DEVELOPER
 					DEV_PrintAllChatEffects()
 				#endif 
 				
 				return true
-				
+			}	
 			case "msgeffect":
-					
+			{		
 				SendServerMessage( Chat_FindEffect( param ) )
 				return true
-				
+			}	
 			case "nextmap":
-			
+			{
 				Tracker_GotoNextMap()
 				return true
-			
+			}
 			case "fetchsetting":
-			
-			#if TRACKER
-				entity p = GetPlayer( param )
+			{
+				#if TRACKER
+					entity p = GetPlayer( param )
+					
+					if ( empty(param2) )
+					{
+						Message( player, "Parameter 2 was empty" )
+						return true 
+					}
+					
+					if( IsValid( p ) )
+						Message( player, "Data for: " + param, Tracker_FetchPlayerData( p.p.UID, param2 ) )
+					else 
+						Message( player, "Error", format( "Player: %s was invalid", StringRemoveControlCharacters( param ) ), 7 )
+					
+				#endif
 				
-				if ( empty(param2) )
-				{
-					Message( player, "Parameter 2 was empty" )
-					return true 
-				}
-				
-				if( IsValid( p ) )
-					Message( player, "Data for: " + param, Tracker_FetchPlayerData( p.p.UID, param2 ) )
-				else 
-					Message( player, "Error", format( "Player: %s was invalid", StringRemoveControlCharacters( param ) ), 7 )
-				
-			#endif
 				return true
-				
+			}	
 			case "testremote":
-			
+			{
 				#if DEVELOPER
 					Remote_CallFunction_NonReplay( player, "ServerCallback_SetPersistenceSettings", 1, 2, 3, 4)
 				#endif
 				return true
-				
+			}	
 			case "acceptchal":
-			
+			{
 				#if DEVELOPER
 					entity p = GetPlayer( param )
 					
@@ -1479,9 +1572,9 @@ struct
 				#endif 
 				
 				return true
-				
+			}	
 			case "draw":
-			
+			{
 				#if DEVELOPER 
 				
 					printt("Drawing...")
@@ -1494,9 +1587,9 @@ struct
 				#endif 
 				
 				return true 
-				
+			}	
 			case "disabledraw":
-			
+			{
 				#if DEVELOPER 
 				
 					printt("DisableDrawing...")
@@ -1509,10 +1602,10 @@ struct
 				#endif 
 				
 				return true 
-			
+			}		
 #if DEVELOPER			
 			case "stoplog":
-			
+			{
 				#if TRACKER && HAS_TRACKER_DLL
 				
 					bool ship = false 
@@ -1535,9 +1628,9 @@ struct
 				#endif
 				
 				return true
-				
+			}	
 			case "startlog":
-			
+			{
 				#if TRACKER && HAS_TRACKER_DLL
 					if( bLog() )
 					{
@@ -1551,11 +1644,12 @@ struct
 				#endif
 				
 				return true
+				
+			}
 #endif 
-
 			case "mute":
 			case "gag":
-				
+			{	
 				entity p = GetPlayer( param )				
 				if( !IsValid( p ) )
 				{
@@ -1571,24 +1665,24 @@ struct
 				}
 				else 
 				{
-					string reason = Chat_FindMuteReasonInArgs( args )
+					string reason = Chat_FindReasonInArgs( args )
 					LocalMsg( p, "#FS_MUTED", "", eMsgUI.DEFAULT, 5, "", reason )
 				}
 					
 				#if TRACKER
 					Tracker_SetForceUpdatePlayerData() //does nothing if already set.
-				#endif 
+				#endif
 				
-				if( !Chat_ToggleMuteForAll( p, true, true, args, -1, param ) )
+				if( !Chat_ToggleMuteForAll( p, true, true, args, -1, param, player ) )
 					Message( player, "Failed" )
 				else
 					Message( player, "Muted " + param )
 				
 				return true
-			
+			}
 			case "unmute":
 			case "ungag":
-			
+			{
 				entity p = GetPlayer( param )				
 				if( !IsValid( p ) )
 				{
@@ -1616,9 +1710,9 @@ struct
 				#endif 
 				
 				string uid = IsValid( p ) ? p.p.UID : param
-				if( Chat_ToggleMuteForAll( p, false, true, args ) )
+				if( Chat_ToggleMuteForAll( p, false, true, args, 0, "", player ) )
 				{
-					string reason = Chat_FindMuteReasonInArgs( args )			
+					string reason = Chat_FindReasonInArgs( args )			
 					LocalMsg( p, "#FS_UNMUTED", "", eMsgUI.DEFAULT, 5, "", reason )
 					Message( player, "Player " + uid, "UNMUTED" )
 				}
@@ -1636,10 +1730,10 @@ struct
 				}
 				
 				return true
-				
+			}	
 			case "is_muted":
 			case "is_gagged":
-				
+			{	
 				entity p = GetPlayer( param )				
 				if( !IsValid( p ) )
 				{
@@ -1661,10 +1755,10 @@ struct
 				}
 				
 				return true 
-				
+			}	
 			case "mute_reason":
 			case "gag_reason":
-				
+			{	
 				entity p = GetPlayer( param )
 				string uidLookup
 				
@@ -1680,10 +1774,10 @@ struct
 				
 				Message( player, "MUTED REASON:", reason )
 				return true
-				
+			}	
 			case "unmute_time":
 			case "ungag_time":
-			
+			{
 				entity p = GetPlayer( param )
 				string uidLookup
 				
@@ -1697,48 +1791,49 @@ struct
 				string timestring 		= "0"
 				
 				if( IsStringNumeric( unmuteTimestamp ) )
-					timestring = Chat_ReadableUnmuteTime( unmuteTimestamp.tointeger() )
+					timestring = Chat_ReadableTime( unmuteTimestamp.tointeger() )
 				
 				Message( player, "UNMUTE TIME: " + unmuteTimestamp, timestring )
 				return true
-				
+			}	
 			case "killme":
-			
-			#if DEVELOPER
-				if( IsAlive( player ) )
-				{
-					player.Die( null, null, { damageSourceId = eDamageSourceId.damagedef_suicide } )
-				}
-			#endif 	
-				return true
-						
-			case "dmg":
-			
-			#if DEVELOPER
-				entity p = GetPlayer( param )
-				
-				if( IsValid( p ) )
-				{
-					if( IsStringNumeric( param2 ) )
+			{
+				#if DEVELOPER
+					if( IsAlive( player ) )
 					{
-						int dmg = param2.tointeger()
-						entity worldspawn = GetEnt( "worldspawn" )
-						p.TakeDamage( dmg, worldspawn, worldspawn, {} )
+						player.Die( null, null, { damageSourceId = eDamageSourceId.damagedef_suicide } )
 					}
-				}
-			#endif 
+				#endif 	
+				
+				return true
+			}			
+			case "dmg":
+			{
+				#if DEVELOPER
+					entity p = GetPlayer( param )
+					
+					if( IsValid( p ) )
+					{
+						if( IsStringNumeric( param2 ) )
+						{
+							int dmg = param2.tointeger()
+							entity worldspawn = GetEnt( "worldspawn" )
+							p.TakeDamage( dmg, worldspawn, worldspawn, {} )
+						}
+					}
+				#endif 
 			
 				return true
-				
+			}	
 			case "gamerules":
-			
+			{
 				//TODO: mini framework for parsing valid map/playlist combos
 				// needs server function capable of swapping playlist & map
 				//CreateServer("","","mp_rr_desertlands_64k_x_64k","survival_solos", 0)
 				break
-				
+			}	
 			case "movement_recorder_playback_rate":
-			
+			{
 				if( IsStringNumeric( param ) )
 				{
 					MovementRecorder_SetPlaybackRate( float( param ) )
@@ -1750,19 +1845,19 @@ struct
 				}
 				
 				break
-				
+			}	
 			case "kill_banners":
-			
+			{
 				BannerAssets_KillAllBanners()
 				break 
-				
+			}	
 			case "start_banners":
-			
+			{
 				BannerAssets_Restart()
 				break
-				
+			}	
 			case "allow_legend_select":
-			
+			{
 				if( empty( param ) )
 				{
 					Message( player, "Command 'allow_legend_select' requires paramater of [true|1] / [false|0]" )
@@ -1791,8 +1886,9 @@ struct
 				
 				Message( player, "Legend Select was set to " + ( result ? "ENABLED" : "DISABLED" ) )
 				break
-				
+			}	
 			case "set_legend":
+			{
 			
 				if( empty( param ) || !IsStringNumeric( param ) )
 				{
@@ -1803,13 +1899,15 @@ struct
 				int index = param.tointeger()
 				Gamemode1v1_SetAllPlayersLegend( index )
 				break
-				
+			}
 			case "endround":
+			{
 				EndRound()
 				break
+			}
 				
 			case "addmotd":
-				
+			{			
 				if( empty( param ) )
 				{
 					Message( player, "Failed", "parameter 1 of 'addmotd' requires playername|uid" )
@@ -1833,6 +1931,73 @@ struct
 				Message( player, "Success", format( "Message was prepended to player \"%s\" as: \n\n %s", string( potentialPlayer ), param2 ), 15 )
 				
 				break 
+			}			
+			case "restart_ws":
+			{
+				#if TRACKER 
+					TrackerRestartWebsocket__internal() //useful if websocket server goes down for some reason and admin wants to manually reset connection from cc
+				#endif 
+				
+				break
+			}
+			case "timeout":  // criteria, toggle, timeoutAmount   
+			{
+				if( param == "" )
+				{
+					Message( player, "Error:", "Cmd timeout requires param 1 of playername/uid" )
+					return true
+				}
+				
+				entity timeoutPlayer = GetPlayer( param )
+				if( !IsValid( timeoutPlayer ) )
+				{
+					Message( player, "Error:", "Player was invalid" )
+					return true
+				}
+				
+				if( param2 == "" )
+				{
+					Message( player, "Error:", "Cmd timeout requires param 2 of bool: [true/false] timeout/untimeout" )
+					return true
+				}
+				
+				if( !IsStringBool( param2 ) )
+				{
+					Message( player, "Error:", "Param 2 was not a valid representation of bool. Example:  [true/false|1/0]" )
+					return true
+				}
+				
+				bool toggle = StringToBool( param2 )
+				
+				int timeoutAmount = -1
+				timeoutAmount = ParseTimeString( ReturnParsableTimestringArgsAtIndex( args, 3 ) )			
+				
+				string reason = Chat_FindReasonInArgs( args )
+				Timeout_SetPlayerTimedOut( timeoutPlayer, toggle, player.GetPlayerName(), timeoutAmount, reason )
+			
+				printt( timeoutPlayer, toggle, player.GetPlayerName(), timeoutAmount, reason )
+				break
+			}
+			
+			case "gettimeout":
+			{
+				if( param == "" )
+				{
+					Message( player, "Error:", "Cmd gettimeout requires param 1 as [player/uid]" )
+					return true
+				}
+				
+				entity candidate = GetPlayer( param )
+				if( !IsValid( player ) )
+				{
+					Message( player, "Error:", format( "Player '%s' was invalid.", param ) )
+					return true
+				}
+				
+				Message( player, "Info:", Timeout_PrintTimeoutData( candidate ), 15.0 )
+				
+				break
+			}
 			
 			default:	
 					Message( player, "Usage", "cc #command #param1 #param2 #..." )
@@ -2682,4 +2847,71 @@ string function ResolveFormattersForPlayerMessage( entity player, string message
 		},
 		player
 	)
+}
+
+const SYSTEM_RESPONSE = "System"
+bool function SendResponse( entity player, string msg, bool bAdmin = false )
+{
+	if( !IsValid( player ) )
+		return false
+		
+	player.SendServerTextMessage( SYSTEM_RESPONSE, msg, bAdmin )
+	
+	return true
+}
+
+bool function SendPM( entity fromPlayer, entity toPlayer, string msg )
+{
+	if( !IsValid( fromPlayer ) || ( !IsValid( toPlayer ) ) )
+		return false
+		
+	if( fromPlayer == toPlayer )
+		return false
+		
+	string fromName = format( "PM From: %s", fromPlayer.GetPlayerName() )
+	toPlayer.SendServerTextMessage( fromName, ResolveFormattersForPlayerMessage( toPlayer, msg ), false )
+	
+	string toMessage = format( "Message sent to %s", toPlayer.GetPlayerName() )	
+	SendResponse( fromPlayer, toMessage )
+	
+	return true
+}
+
+bool function AdminMessage( entity fromAdmin, entity toPlayer, string msg )
+{
+	if( !IsValid( toPlayer ) )
+		return false
+		
+	string formattedName = format( "ADMIN: %s", fromAdmin.GetPlayerName() )
+	toPlayer.SendServerTextMessage( formattedName, ResolveFormattersForPlayerMessage( toPlayer, msg ), true )
+	
+	return true
+}
+
+void function CodeCallback_SendMessage( string criteria, string fromWebPanelUser, string message, bool bToAll )
+{
+	string formattedName = format( "ADMIN: %s", fromWebPanelUser )
+	
+	if( bToAll )
+	{
+		BroadcastServerTextMessage( formattedName, message, true )
+		return
+	}
+	
+	entity candidate = GetPlayer( criteria )
+	if( !IsValid( candidate ) )
+		return 
+		
+	candidate.SendServerTextMessage( formattedName, message, true )
+}
+
+array<string> function ReturnParsableTimestringArgsAtIndex( array<string> args, int index )
+{
+	array<string> returnArgs
+	
+	int argLen = args.len()
+	for( int i = index; i < argLen; i++ )
+		returnArgs.append( args[ i ] )
+		
+	return returnArgs
 }

@@ -386,7 +386,6 @@ playlists
 				//// General Server Settings												///////
 				///////////////////////////////////////////////////////////////////////////////////
 				
-				ea_verify_server								0		// backend verifies this.
 				enable_banner_assets							1		// Enables the usage of video and image banners in-game
 				// Comma-separated list of assets (these sync to the client, but assets must exist)
 				banner_assets									"rui/world/flowstate1v1_banner02,rui/world/flowstate1v1_banner03,rui/world/flowstate1v1_banner04"
@@ -400,9 +399,6 @@ playlists
 				admins_list										""
 				
 				enable_motd 									1		// Enables message of the day for server (defined at bottom of file in SECTION 4:  MOTD_TEXT )
-				
-				// global auto mute system 
-				opt_in_global_mute								1 		// Globally muted players on tracker will auto mute.
 				
 				// every interval, a players msg count will be decreased by the threshold or set to 0 ( whichever is greater ).
 				// if the players msg count reaches threshold number they are auto muted for chat_timeout time or
@@ -419,6 +415,15 @@ playlists
 				
 				cycle_halo_playlists							1 		// Set this to 1 to make halomodes multi-playlist
 				
+				//Timeouts:
+				timeout_enable									1		// Enables the timeout system for admins (soon: vote-timeout)
+				timeout_default_time							120		// Default timeout time if the admin does not specify time		
+				// timeout_message & timeout_expired_message
+				// Both of these are parsed and accept placeholders that are dynamically applied to the user who receives the message 
+				// Available: #player, #uid, #expires, #reason, #amount, #admin
+				timeout_message									"#player, you've been timedout by #admin.\nReason: #reason. \nExpires in: #expires"
+				timeout_expired_message							"#player, your timeout has expired."
+				
 				///////////////////////////////////////////////////////////////////////////////////
 				//// Aim Assist																///////
 				///////////////////////////////////////////////////////////////////////////////////
@@ -426,36 +431,6 @@ playlists
 				aimassist_adspull_disabled						0 // a.k.a. "Slowdown"
 				aimassist_magnet_pc								0.3 // a.k.a. "Rotational"
 				aimassist_magnet								0.3 // a.k.a. "Rotational" (console?)
-				
-				
-				///////////////////////////////////////////////////////////////////////////////////
-				//// THE FOLLOWING SETTINGS REQUIRE TRACKER DLL (add-on mod)				///////
-				///////////////////////////////////////////////////////////////////////////////////
-				
-				tracker_enabled 								1		// Enabling this will run the tracker system (plugin required)
-				tracker_encryption								1		// will be deprecated in future release.
-				tracker_shipstats 								1		// Enabling this will transfer data at end of match
-				use_global_stats								1		// Enabling this will use API data ( which only transfers at the start/end of a match or when a non batched player connects for stat queries )
-				tracker_max_wait								7.0		// Max wait for batch load. Reducing means faster loading of data, at the trade off of missing some connecting players still loading, who will get individually queue tasks to fetch stats and codecallback when complete for each player respectively.
-				
-				// You should configure the following in "platform/r5rdev_config.json", but also set to 1 to enable here. ( in future build this will be deprecated for config file only )
-				stats_discord_webhook_player_count				0		// Sends player join and disconnect data to a discord webhook
-				stats_discord_webhook_matches_enabled			0		// Sends recap data to a discord webhook
-
-				// Restricted Servers ( Deprecation notice: will be moved to tracker config )
-				restricted_server								0		// Enables restricted (private) server settings
-				restricted_join_message							"Welcome to the restricted server. \n\n You meet the minimum requirements to play on this server."
-				restricted_whitelist_message					"You have been whitelisted for this restricted server"
-				restricted_whitelist_only						0
-				
-				//The following requires use_global_stats
-				restricted_kills								500		// Minimum kills required to join
-				restricted_kd									0.7		// Minimum K/D ratio required to join
-				restricted_playtime								10000	// Minimum play time in seconds required to join
-				restricted_gamesplayed							10		// Minimum games played required to join
-				restricted_rank									200		// Minimum rank required to join
-				restricted_kick_log								1
-				
 
 				///////////////////////////////////////////////////////////////////////////////////
 				///////////////////////////////////////////////////////////////////////////////////
@@ -1507,7 +1482,7 @@ playlists
 				mp_rr_desertlands_64k_x_64k_nx				 	1
 			} } }
 		}
-    
+		 
     fs_4d
 		{
 			inherit defaults
@@ -2261,7 +2236,7 @@ playlists
 				mp_rr_arena_composite 							1
 				mp_rr_arena_phase_runner 						1
 				mp_rr_party_crasher 							1
-				// mp_rr_olympus								1
+				mp_rr_olympus								1
 				// mp_rr_olympus_tt								1
 				mp_rr_desertlands_64k_x_64k						1
 				mp_rr_canyonlands_staging						1
@@ -2359,24 +2334,13 @@ playlists
 				
 				customAttachments 								"optic_cq_hcog_classic"	
 				player_max_fight_distance						2000
-				
-
-				logging_enabled 								0 //enables logging system
-				logging_encryption								0 //encrypts data for transfer (reccomended)
-				logging_shipstats 								1 // connects to tracker server to keep player stats up to date (only verified servers count towards leaderboard)
-									
+								
 				afk_to_rest_bool								1 // makes player rest when afk instead of kick
 				enable_ping_kick								0 // 0 disables ping kick for this mode
 				enable_afk_thread 								1 //0 disables afk thread for this mode
 				superglide_counter_msg							0 // Shows players' superglide counts
 				custom_superglide_msg							"Kewl beans" //shows custom msg under counter.
 
-				// DISCORD WEBHOOKS:
-				// For Discord webhooks help:  https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks
-					
-				stats_discord_webhook_player_count				0	   // 1 Sends player join and disconnect data to a discord channel
-				stats_discord_webhook_matches_enabled			0	// 1 sends match recap data to a discord webhook channel
-				
 				flowstate_disable_all_map_triggers				1
 				flowstate_give_random_custom_models_toall		0
 				flowstate_seconds_to_wait_without_players_before_restarting		3600 // 3600 : 1 hour
@@ -3803,7 +3767,75 @@ playlists
 			} } }
 		}
 
-
+		custom_playlist_example //example name, can be anything you want. You acn copy this template and make your own playlist.
+		{
+			inherit defaults  //not required
+			vars
+			{
+				visible											1  //doesn't have to be visible
+				
+				name							   				"My custom playlist"
+				description										"My description"
+				abbreviation					  				"abbreviation"
+				lobbytitle						 				"lobby title"
+        
+				image							  				worlds_edge
+				video							  				worlds_edge
+				panel_image										panel_worlds_edge
+				battlechatter_enabled			  				1			
+				flowstate_mod_active							0
+				
+				// This allows you to specify the paks to load from playlist.
+				// You don't need to add .rpak, however, if it is a starpak file, 
+				// .starpak must be in the name (as there is no way to differentiate in scripts)
+				// Comma separated list of paks - spaces are allowed between commas
+				
+				load_paks 										"" //"common_flowstate,fs_spawns,pc_fs.starpak,ui_fs" //Example: "common_flowstate,fs_spawns,pc_fs.starpak,ui_fs"
+				
+				// match teams will not fill with more than one party, up to max_teams of size max_team_size (or less) -- not exceeding max_players
+				max_team_size									1 // above 1 will enable tdm
+				max_players										25
+				min_players										0
+				
+				//Skip Intros:
+				character_select_time_min		  				0
+				character_select_time_max		  				0
+				charselect_picking_delay_after_all 				0
+				survival_enable_squad_intro						0
+				survival_enable_gladiator_intros   				0
+				jump_from_plane_enabled							0
+				match_ending_enabled			   				0
+				
+				//No circle:
+				sur_circle_start_paused							1
+				
+				//Replays: 
+				replay_enabled					 				1 		 
+				replay_delay					   				5
+				replay_new_ui 									1
+			}
+			gamemodes { fs_dm { maps {
+				mp_rr_desertlands_64k_x_64k						1
+				mp_rr_desertlands_64k_x_64k_nx				 	1
+				mp_rr_desertlands_64k_x_64k_tt				 	1
+				mp_rr_desertlands_64k_x_64k_mv				 	1
+				mp_rr_desertlands_mu1				 			1
+				mp_rr_desertlands_mu1_tt				 		1
+				mp_rr_desertlands_mu2					 		1
+				mp_rr_olympus						 			1
+				mp_rr_olympus_tt						 		1
+				mp_rr_canyonlands_staging					  	1
+				mp_rr_canyonlands_64k_x_64k						1
+				mp_rr_canyonlands_mu1						  	1
+				mp_rr_canyonlands_mu1_night						1
+				mp_rr_canyonlands_mu2							1
+				mp_rr_canyonlands_mu2_tt						1
+				mp_rr_party_crasher					 			1
+				mp_rr_aqueduct								 	1
+				mp_rr_arena_phase_runner						1
+				mp_rr_arena_composite							1
+			} } }
+		}
 	}
 	
 	"LocalizedStrings"

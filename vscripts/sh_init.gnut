@@ -390,6 +390,7 @@ void function Server_Init()
 	JumpPad_Init()
 	ObjectiveResourceSystem_ServerInit()
 	Chat_Init()
+	TimeoutInit()
 
 	LiveAPI_Init()
 	LootHelper_Init()

@@ -3030,3 +3030,62 @@ void function DEV_SetBreakPoint( bool bPrintLocals = true )
 			RunClientScript( "DEV_SetBreakPoint", bPrintLocals )
 	#endif
 }
+
+string function StripStringsFromString( array<string> removeStrings, string str )
+{
+	foreach( string removeString in removeStrings )
+		str = StringReplace( str, removeString, "" )
+	
+	return str
+}
+
+#if CLIENT
+	void function UnloadPak( entity player, string pak )
+	{
+		if( !IsValid( player ) )
+			return 
+			
+		player.ClientCommand( format( "pak_requestunload %s", pak ) )
+	}
+
+	void function LoadPak( entity player, string pak )
+	{
+		if( !IsValid( player ) )
+			return 
+			
+		player.ClientCommand( format( "pak_requestload %s", pak ) )
+	}
+#endif
+
+void function PlaylistPakLoadInit()
+{
+	string pakListLoad = GetCurrentPlaylistVarString( "load_paks", "" )
+	if( pakListLoad == "" )
+		return
+		
+	LoadPaksFromPlaylist( pakListLoad )		
+}
+		
+void function LoadPaksFromPlaylist( string pakListLoadString )
+{
+	#if DEVELOPER
+		printw( "[LoadPaksFromPlaylist] load_paks:", pakListLoadString )
+	#endif
+	
+	string candidate
+	
+	array<string> pakList = split( pakListLoadString, "," )
+	foreach( string pakFile in pakList )
+	{
+		candidate = strip( pakFile )
+		if( candidate.find( ".rpak" ) == -1 && candidate.find( ".starpak" ) == -1 )
+			candidate = format( "%s%s", candidate, ".rpak" )
+			
+		#if SERVER
+			LoadPak( candidate )	
+		#elseif CLIENT
+			entity player = GetLocalClientPlayer()
+			LoadPak( player, candidate )
+		#endif
+	}
+}

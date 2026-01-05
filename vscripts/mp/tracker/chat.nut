@@ -1,3 +1,4 @@
+//untyped
 																						//~mkos
 global function Chat_Init
 global function Chat_RegisterPlayerData
@@ -9,16 +10,20 @@ global function Chat_GlobalMuteEnabled
 global function Chat_CheckGlobalMute
 
 global function Chat_GetMutedReason
-global function Chat_FindMuteReasonInArgs
-global function Chat_ReadableUnmuteTime
+global function Chat_FindReasonInArgs
+global function Chat_ReadableTime
 
 global function Chat_GetAllEffects
 global function Chat_FindEffect
+
+global function ParseTimeString
 
 #if DEVELOPER
 	global function DEV_PrintAllChatEffects
 	global function DEV_PrintOffenceArray
 #endif
+
+global function CodeCallback_MuteFromRemote
 
 //CHAT EFFECTS
 global struct Chat 
@@ -60,7 +65,7 @@ global Chat chat
 typedef OffenceTiers array< int > 
 
 const string YES = "1"
-const bool PRINT_TIME_STRING_ARGS = false
+const bool PRINT_TIME_STRING_ARGS = true
 
 
 struct 
@@ -349,27 +354,23 @@ void function cmd_team( string tag, array<string> args, entity activator )
 
 void function Chat_Init()
 {
-	if( !IsFlowstateActive() )
-		return
-	
 	if( GetCurrentPlaylistVarBool( "disable_chat_monitor", false ) )
 		return
 	
 	//Init options first
 	settings.chatInterval 				= GetCurrentPlaylistVarFloat( "chat_interval", 12 )
 	settings.chatThreshhold 			= GetCurrentPlaylistVarInt( "chat_threshhold", 5 )
-	settings.bGlobalMuteEnabled 		= GetCurrentPlaylistVarBool( "opt_in_global_mute", true )
 	settings.opt_in_spam_mute 			= GetCurrentPlaylistVarBool( "opt_in_spam_mute", true )
 	settings.chatMutePenaltyDecayTime 	= GetCurrentPlaylistVarFloat( "textmute_offence_decay_time", 45.0 )
 	settings.chatMutePenaltyDecayAmount	= GetCurrentPlaylistVarInt( "textmute_offence_decay_amount", 1 )
 	settings.chatCommandsEnabled		= GetCurrentPlaylistVarBool( "enable_chat_commands", true )
 	settings.bLockableServer			= GetCurrentPlaylistVarBool( "enable_lock_command", false )
+	settings.bGlobalMuteEnabled 		= TrackerGetSettingBool( "settings.OPT_IN_GLOBAL_MUTE" )
 	
 	//Signals 
 	RegisterSignal( "MuteStateChanged" )
 	
 	//Callbacks
-	//AddClientCommandCallback( "FS_TT", SetRelayChallenge )
 	AddClientCommandCallbackVoid( "say", ChatWatchdog )
 	AddCallback_OnClientConnected( CheckForTextMute )
 	
@@ -456,7 +457,8 @@ void function Chat_CheckGlobalMute( entity player )
 	}
 }
 
-bool function Chat_ToggleMuteForAll( entity player, bool toggle = true, bool cmdLine = false, array<string> cmdStringArgs = [], int timeoutAmount = 0, string uid = "" )
+const string SERVER_MUTE = "SERVER"
+bool function Chat_ToggleMuteForAll( entity player, bool toggle = true, bool cmdLine = false, array<string> cmdStringArgs = [], int timeoutAmount = 0, string uid = "", entity entByPlayer = null, string byPlayer = "" )
 {
 	int eHandle
 	bool bSyncToPlayers = true
@@ -471,10 +473,9 @@ bool function Chat_ToggleMuteForAll( entity player, bool toggle = true, bool cmd
 	else 
 		return false
 	
+	int timestamp = -1
 	if ( toggle ) //mute
 	{
-		int timestamp = -1
-
 		if( cmdLine )
 		{
 			if( timeoutAmount > 0 ) //-1
@@ -494,7 +495,7 @@ bool function Chat_ToggleMuteForAll( entity player, bool toggle = true, bool cmd
 			#if TRACKER
 				table<string, string> settings //todo:_typed
 				
-				string reason = Chat_FindMuteReasonInArgs( cmdStringArgs )	 	
+				string reason = Chat_FindReasonInArgs( cmdStringArgs )	 	
 
 				settings[ "muted_reason" ] 	<- reason
 				settings[ "unmuteTime" ] 	<- timestamp.tostring()
@@ -533,7 +534,7 @@ bool function Chat_ToggleMuteForAll( entity player, bool toggle = true, bool cmd
 			#if TRACKER
 				table<string, string> settings
 				
-				string reason = Chat_FindMuteReasonInArgs( cmdStringArgs )	 	
+				string reason = Chat_FindReasonInArgs( cmdStringArgs )	 	
 				if( reason != "{none}" )
 					if( reason != Tracker_FetchPlayerData( uid, "muted_reason" ) )
 						settings[ "muted_reason" ] <- reason //ship reason as new unmute reason
@@ -554,21 +555,51 @@ bool function Chat_ToggleMuteForAll( entity player, bool toggle = true, bool cmd
 	
 	if( bSyncToPlayers )
 	{
-		ToggleMute( player, toggle )
-		
+		string reason
 		if( !cmdLine && toggle )
 		{
-			string reason = Tracker_FetchPlayerData( player.p.UID, "muted_reason" )
-			LocalMsg( player, "#FS_SPAM_MUTE", "", eMsgUI.DEFAULT, 5, "", reason )
-		}					//Token name is misleading..just trust.
-		
-		foreach ( s_player in GetPlayerArray() )
-		{
-			if( !IsValid( s_player ) || player == s_player )
-				continue
-				
-			Remote_CallFunction_NonReplay( s_player, "FS_Silence", toggle, eHandle )
+			reason = Tracker_FetchPlayerData( player.p.UID, "muted_reason" )
+			LocalMsg( player, "#FS_SPAM_MUTE", "", eMsgUI.DEFAULT, 5, "", reason )//Token name is misleading..just trust.
 		}
+		
+		#if TRACKER
+			if( cmdLine )
+			{
+				if( timeoutAmount > 0 ) //-1
+				{
+					timestamp = GetUnixTimestamp() + timeoutAmount
+				}
+				else
+				{
+					int determinedTime = ParseTimeString( cmdStringArgs )
+					
+					if( determinedTime > 0 )
+						timestamp = GetUnixTimestamp() + determinedTime
+					else 
+						timestamp = determinedTime
+				}
+				
+				reason = Chat_FindReasonInArgs( cmdStringArgs )
+			}
+			
+			string byPlayerUid = IsValid( entByPlayer ) && entByPlayer.IsPlayer() ? entByPlayer.p.UID : SERVER_MUTE
+			byPlayerUid = byPlayer != "" ? byPlayer : byPlayerUid
+			
+			string expiry = timestamp <= 0 ? "" : Chat_ReadableTime( timestamp )		
+			ToggleTextBan( uid, reason, expiry, byPlayerUid, toggle, timestamp )//code func
+		#else
+			ToggleMute( player, toggle )
+		#endif
+		
+		#if !TRACKER
+			foreach ( s_player in GetPlayerArray() )
+			{
+				if( !IsValid( s_player ) || player == s_player )
+					continue
+					
+				Remote_CallFunction_NonReplay( s_player, "FS_Silence", toggle, eHandle )
+			}
+		#endif
 	}
 	
 	return true
@@ -652,9 +683,11 @@ const array<string> SINGLE_ARGS =
 	"0",
 	"forever",
 	"infinite"
+	"true"
+	"false"
 ]
 const string TEXT_MUTE_REASON_ARG = "-r"
-string function Chat_FindMuteReasonInArgs( array<string> args ) 
+string function Chat_FindReasonInArgs( array<string> args ) 
 {
 	int i = 0
 	
@@ -748,9 +781,11 @@ void function __OffenceArray_IncrementCount( entity player )
 		return
 	}
 		
-	int offenceLevel = __OffenceArray_GetOffenceLevel( player )	
-	offenceLevel = minint( file.offencePenaltyTierCount, offenceLevel + 1 )
-	
+	int maxIndex = maxint( 0, file.offencePenaltyTierCount - 1 )
+	int offenceLevel = __OffenceArray_GetOffenceLevel( player )
+
+	offenceLevel = minint( maxIndex, offenceLevel + 1 )
+
 	__OffenceArray_SetOffenceLevel( player, offenceLevel )
 }
 
@@ -776,7 +811,7 @@ void function __OffenceArray_SetOffenceLevel( entity player, int level )
 OffenceTiers function CheckAndGenerateOffenceTierArray()
 {
 	if( file.bOffenceTierTblGenerated )
-		mAssert( false, "Tried to generate offence tier table more than once." )
+		mAssert( 0, "Tried to generate offence tier table more than once." )
 	
 	OffenceTiers offenceArray = []
 	
@@ -1014,13 +1049,13 @@ int function ParseTimeString( array<string> args )
 	return addTime
 }
 
-string function Chat_ReadableUnmuteTime( int unmuteTime )
+string function Chat_ReadableTime( int unmuteTime )
 {
 	int currentTime = GetUnixTimestamp()	
 	int diff = unmuteTime - currentTime
 
 	if ( diff <= 0 )
-		return "Already unmuted " + diff + " seconds ago."
+		return diff + " seconds ago."
 
 	int years = diff / 31557600
 	diff %= 31557600
@@ -1241,6 +1276,11 @@ void function ChatWatchdog( entity player, array<string> args )
 	if( !IsValid( player ) )
 		return
 		
+	#if TRACKER
+		if( player.IsMuted() )
+			return
+	#endif
+		
 	int wordCount = args.len()
 		
 	if( player.p.bTextmute && wordCount )
@@ -1328,4 +1368,16 @@ void function MutedList_Remove( string uid )
 {
 	if( Chat_InMutedList( uid ) )
 		delete GetMutedList()[ uid ]
+}
+
+void function CodeCallback_MuteFromRemote( string uid, string reason, bool toggle, int timeoutAmount, string byPlayerUID )
+{
+	entity player = GetPlayer( uid )
+	
+	if( IsValid( player ) && toggle )
+		SendResponse( player, format( "You were muted for: %s", reason ), true )
+	else 
+		SendResponse( player, "You were unmuted", true )
+		
+	Chat_ToggleMuteForAll( player, toggle, true, [ "-reason", reason ], timeoutAmount, uid, null, byPlayerUID  )
 }

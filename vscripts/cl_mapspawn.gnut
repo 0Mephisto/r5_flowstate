@@ -108,7 +108,7 @@ UISize function GetScaledVirtualScreenSize( UISize virtualScreenSize, UISize scr
 
 
 void function ClientCodeCallback_MapSpawn()
-{
+{	
 	LevelVarInit()
 	DynamicLight_Init()
 
@@ -140,7 +140,7 @@ void function ClientCodeCallback_MapSpawn()
 	#endif
 
 	CreateHUDRuiTopologies()
-
+	PlaylistPakLoadInit() //(mk): Currently will not work for paks that are needed to register loot data due to async nature. Needs engine solution
 	SV_CL_Shared_Init()
 }
 

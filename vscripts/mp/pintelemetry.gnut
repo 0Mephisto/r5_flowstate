@@ -47,18 +47,27 @@ const int 	MAX_SAY_MSG 						= 255
 // ║ mkos ║
 // ╚══════╝
 // SHARED GLOBAL //TODO: Reduce repeat declares between tracker/non tracker
-
 global function g__InternalCheckReload //todo: move somewhere ideal
+
 global function SavePlayerData
 global function Tracker_FetchPlayerData
 global function Tracker_SavePlayerData
-global function SetAfkToRest
-global function ClientCommand_RequestStat
 global function Tracker_SetStartLog
 global function Tracker_UpdateMOTDTextForPlayer
 global function TrackerGetSetting
+global function TrackerGetSettingBool
+global function TrackerGetSettingInt
+global function TrackerGetSettingFloat
 global function SendServerMessageToPlayer
 global function SendServerMessage
+
+global function SetAfkToRest
+global function ClientCommand_RequestStat
+
+global function bAfkToRest
+global function bGlobalStats
+global function bLog
+global function bEnc
 
 #if TRACKER
 	const bool STUB = false
@@ -67,12 +76,6 @@ global function SendServerMessage
 #endif
 
 #if STUB
-	
-	//flags
-	global function bAfkToRest
-	global function bGlobalStats
-	global function bLog
-	global function bEnc
 	
 	global struct GameSummarySquadData 
 	{
@@ -162,7 +165,6 @@ global function Tracker_RegisterStat
 global function Tracker_RegisterAllSettings
 global function Tracker_StatsMetricsByUID
 global function Tracker_EndFight
-//global function RemoveDamageEvents
 global function Tracker_StatLocalAllowed
 global function Tracker_IgnoreResync
 
@@ -201,12 +203,7 @@ global function Tracker_ReturnChampion
 global function Tracker_ReturnShots 
 global function Tracker_ReturnHits
 
-global function bAfkToRest  //todo deprecate
-global function bGlobalStats //todo deprecate
-global function bLog //todo deprecate
-global function bEnc //todo deprecate
 global function bBotEnabled
-
 global function IsMessageBotIntervalThreadRunning
 
 global function NULL_PDATA
@@ -238,14 +235,6 @@ const float DAMAGE_LOOKBACK_TIME_WINDOW 		= 20.0
 const int 	RESTRICTED_ACCESS_STATUS_REQUIRED 	= 7 // refer to CheckIfPlayerHasAccess()
 const int 	REQUIRED_SYNC_DATA_FIELDS 			= 1  //amount of fields returned by stats the scripts require (non-settings values)
 const float TRACKER_VERSION 					= 3.0
-
-const array<string> SERVER_MSG_EVENT_TYPES = 
-[
-	"start",
-	"end",
-	"join"
-]
-	
 
 //(respawns) game summary
 global struct GameSummarySquadData
@@ -360,10 +349,10 @@ table< int, DamageEvent > allDamageEventsMap = {}
 array< PlayerMetrics > PlayerMetricsArray
 array< PlayerVerifyCount > playerVerifyCounts
 
-#if SERVER   
-	bool function Logging_ShipStats() 				{ return GetCurrentPlaylistVarBool("tracker_shipstats", false) }
+#if SERVER
 	bool function Enable_CC_Administration() 		{ return GetCurrentPlaylistVarBool("cc_administration", false) }
-	bool function Ea_Verify_Server()				{ return ( GetCurrentPlaylistVarBool( "ea_verify_server", false ) && GetConVarInt( "sv_onlineAuthEnable" ) == 1 ) }
+	bool function Logging_ShipStats() 				{ return TrackerGetSettingBool( "server.TRACKER_SHIPSTATS" ) }
+	bool function Ea_Verify_Server()				{ return TrackerGetSettingBool( "server.EA_VERIFY_SERVER" ) && GetConVarInt( "sv_onlineAuthEnable" ) == 1 }
 #endif
 
 struct PlayerData 
@@ -407,8 +396,8 @@ struct //Todo: move appropriate to tracker.var
 	bool PIN_GameState_Start = false
 	bool global_stats
 
-	bool LogOn = false
-	bool LogE = true
+	bool bTrackerEnabled = false
+	bool bTrackerEncryption = true
 	bool scriptLogthreadRunning = false
 	bool restricted_server
 	bool bSyncedGlobal
@@ -428,8 +417,6 @@ struct //Todo: move appropriate to tracker.var
 	bool sg_counter_msg
 	float FS_MaxHealth
 
-	string DISCORD_PLAYERS_WEBHOOK
-	string DISCORD_MATCHES_WEBHOOK
 	string superglide_msg
 	string superglidetitle
 	
@@ -459,6 +446,7 @@ struct //Todo: move appropriate to tracker.var
 	string restricted_whitelist_message = "You are whitelisted to play on this restricted server."
 	string restricted_admin_message = "You are an admin."
 	bool restricted_whitelist_only
+	bool bRestrictedKickLog
 	
 	table<int,float> DamagePerBullet = {}
 	table<int,int> SpecialWeaponsBulletsPerShot = {}
@@ -659,7 +647,7 @@ void function DEV_ManualLogKill( bool ship )
 {
 	if( ship )
 	{
-		TrackerLogEvent__internal( Tracker_BuildAllPlayerMetrics( true ) + "\n" + GetShipWeaponVarData(), file.LogE )
+		TrackerLogEvent__internal( Tracker_BuildAllPlayerMetrics( true ) + "\n" + GetShipWeaponVarData(), file.bTrackerEncryption )
 		__UpdateMetricsNow()
 	}
 	
@@ -757,17 +745,15 @@ void function NULL_PDATA( entity player, string data ){}
 
 bool function bLog()
 {
-	return file.LogOn
+	return file.bTrackerEnabled
 }
 
 bool function bEnc( bool ornull setting = null )
 {
 	if( setting != null )
-	{
-		file.LogE = expect bool( setting )
-	}
+		file.bTrackerEncryption = expect bool( setting )
 	
-	return file.LogE
+	return file.bTrackerEncryption
 }
 
 bool function bGlobalStats()
@@ -859,10 +845,35 @@ bool function Tracker_StatExists( string stat )
 	return Stats__GetStatKeys().contains( stat )
 }
 
+// These are for r5rdev_config.json
 string function TrackerGetSetting( string key )
 {
 	return TrackerGetSetting__internal( key )
 }
+
+bool function TrackerGetSettingBool( string key )
+{
+	return TrackerGetSetting( key ) == "true"
+}
+
+int function TrackerGetSettingInt( string key )
+{
+	string setting = TrackerGetSetting( key )
+	if( IsStringNumeric( setting ) )
+		return setting.tointeger()
+	
+	return 0
+}
+
+float function TrackerGetSettingFloat( string key )
+{
+	string setting = TrackerGetSetting( key )
+	if( IsStringNumeric( setting ) )
+		return setting.tofloat()
+	
+	return 0.0
+}
+
 
 ////////////////////////////////////////////
 ////////		QUERY Data			////////
@@ -1501,7 +1512,7 @@ void function PIN_Init()
 	AddClientCommandCallbackVoid( "requestStat", ClientCommand_RequestStat )
 	
 	if( !bRunTracker )
-		file.LogOn = false
+		file.bTrackerEnabled = false
 	
 	if( file.bChatbotEnabled )
 	{
@@ -1514,7 +1525,7 @@ void function PIN_Init()
 		FlagInit( "PreviousChampionDetermined", false )
 	#endif
 	
-	if( file.LogOn )
+	if( file.bTrackerEnabled )
 	{
 		SetServerVar( "tracker_enabled", true )
 		FlagInit( "START_LOG", true )
@@ -1533,7 +1544,7 @@ void function PIN_Init()
 	if ( IsClientCommandAdminEnabled() )
 		AddClientCommandCallback( "cc", ClientCommand_mkos_admin ) 
 	
-	if ( file.LogOn )
+	if ( file.bTrackerEnabled )
 	{
 		string message = format( "R5R.DEV metrics initialized at:  %d ", GetUnixTimestamp() )
 		printl( message )
@@ -1549,10 +1560,6 @@ void function PIN_Init()
 	
 	if ( Ea_Verify_Server() ) //You should not attempt to enable this, the backend will verify..
 		AddClientCommandCallback( "ea_verify", ClientCommand_mkos_ea_verify )
-	
-	//moved to r5rdev_config.json for security reasons
-	file.DISCORD_PLAYERS_WEBHOOK = ( GetCurrentPlaylistVarString( "DISCORD_PLAYERS_WEBHOOK", "" ) )
-	file.DISCORD_MATCHES_WEBHOOK = ( GetCurrentPlaylistVarString( "DISCORD_MATCHES_WEBHOOK", "" ) )
 	
 	//initialize array/table maps
 	
@@ -1620,39 +1627,42 @@ void function Tracker_SetStartLog()
 void function Tracker_SettingsInit()
 {
 	//todo: cleanup mode related stuff
-	file.LogOn 										= GetCurrentPlaylistVarBool( "tracker_enabled", false)
-	file.LogE 										= GetCurrentPlaylistVarBool( "tracker_encryption", false)
-	file.bChatbotEnabled							= ( !IsLobby() && TrackerGetSetting( "settings.ENABLE_CHATBOT" ) == "true" ? true : false )
-	file.bClientCommandAdminEnabled					= ( GetConVarInt( "sv_onlineAuthEnable" ) == 1 && GetCurrentPlaylistVarBool( "cc_administration", false ) )
+	file.bTrackerEnabled 							= TrackerGetSettingBool( "server.TRACKER_ENABLED" )
+	file.bTrackerEncryption 						= TrackerGetSettingBool( "server.TRACKER_ENCRYPTION" )
+	file.bChatbotEnabled							= TrackerGetSettingBool( "settings.ENABLE_CHATBOT" )
+	file.bClientCommandAdminEnabled					= GetConVarInt( "sv_onlineAuthEnable" ) == 1 && GetCurrentPlaylistVarBool( "cc_administration", false )
 	file.flowstateRoundtime 						= GetCurrentPlaylistVarInt( "flowstateRoundtime", 1800 )
 	file.afk_to_rest_enabled 						= GetCurrentPlaylistVarBool( "afk_to_rest_bool", false )
-	file.update_discord_player_counts 				= GetCurrentPlaylistVarBool( "stats_discord_webhook_player_count", false )
+	file.update_discord_player_counts 				= TrackerGetSetting( "webhooks.PLAYERS_WEBHOOK" ) != ""
+	file.stats_discord_webhook_matches_enabled		= TrackerGetSetting( "webhooks.MATCHES_WEBHOOK" ) != ""
 	file.gamemode_type_1v1 							= g_bIs1v1GameType() //returns true if mode is confifugred as 1v1 type
-	file.stats_discord_webhook_matches_enabled		= GetCurrentPlaylistVarBool( "stats_discord_webhook_matches_enabled", false )
 	
 	if( file.bChatbotEnabled )
-	{
-		string botPrefix = TrackerGetSetting( "settings.CHATBOT_PREFIX" )
-		file.msgBotPrefix = botPrefix
-	}
+		file.msgBotPrefix = TrackerGetSetting( "settings.CHATBOT_PREFIX" )
 	
 	//init stat bools (must be before string inits) todo: cleanup
-	file.global_stats 						= GetCurrentPlaylistVarBool( "use_global_stats", false )
-	file.restricted_server 					= GetCurrentPlaylistVarBool( "restricted_server", false )
+	file.global_stats 						= TrackerGetSettingBool( "server.USE_GLOBAL_STATS" )
 
 	//restricted init 
-	file.restricted_gamesplayed 			= GetCurrentPlaylistVarInt( "restricted_gamesplayed", 0 )
-	file.restricted_kills 					= GetCurrentPlaylistVarInt( "restricted_kills", 0 )
-	file.restricted_playtime 				= GetCurrentPlaylistVarInt( "restricted_playtime", 0 )
-	file.restricted_rank 					= GetCurrentPlaylistVarInt( "restricted_rank", 0 )
-	file.restricted_kd 						= GetCurrentPlaylistVarFloat( "restricted_kd", 0.0 )
-	file.restricted_join_message 			= GetCurrentPlaylistVarString( "restricted_join_message", "You are able to play on this restricted server." )
-	file.restricted_whitelist_message 		= GetCurrentPlaylistVarString( "restricted_whitelist_message", "You are whitelisted to play on this restricted server." )
-	file.restricted_admin_message 			= GetCurrentPlaylistVarString( "restricted_admin_message", "You are an admin." )
-	file.restricted_whitelist_only			= GetCurrentPlaylistVarBool( "restricted_whitelist_only", false )
+	file.restricted_server 					= TrackerGetSettingBool( "private.RESTRICTED_SERVER" )
+	file.restricted_whitelist_only			= TrackerGetSettingBool( "private.RESTRICTED_WHITELIST_ONLY" )
+	
+	//messages
+	file.restricted_join_message 			= TrackerGetSetting( "private.RESTRICTED_JOIN_MESSAGE" )
+	file.restricted_whitelist_message 		= TrackerGetSetting( "private.RESTRICTED_WHITELIST_MESSAGE" )
+	file.restricted_admin_message 			= TrackerGetSetting( "private.RESTRICTED_ADMIN_MESSAGE" )
+	
+	//vetting vars
+	file.restricted_gamesplayed 			= TrackerGetSettingInt( "private.RESTRICTED_GAMESPLAYED" )
+	file.restricted_playtime 				= TrackerGetSettingInt( "private.RESTRICTED_PLAYTIME" )
+	file.restricted_rank 					= TrackerGetSettingInt( "private.RESTRICTED_RANK" )
+	file.restricted_kills 					= TrackerGetSettingInt( "private.RESTRICTED_KILLS" )
+	file.restricted_kd 						= TrackerGetSettingFloat( "private.RESTRICTED_KD" )
+	file.bRestrictedKickLog					= TrackerGetSettingBool( "private.RESTRICTED_KICK_LOG" )
 
-	//wait for players to connect before querying batch player stats
-	file.maxWaitForBatchLoad				= GetCurrentPlaylistVarFloat( "tracker_max_wait", 7.0 )
+	//max wait for players to connect before querying batch player stats
+	float trackerMaxWait 					= TrackerGetSettingFloat( "server.TRACKER_MAX_WAIT" )
+	file.maxWaitForBatchLoad				= trackerMaxWait != 0.0 ? trackerMaxWait : 7.0
 }
 
 //initplayer
@@ -1679,7 +1689,7 @@ void function PlayerConnectedCallback( entity player )
 	__GetPlayerMetrics( mID ).ent = player
 	
 	/////////////////////////////////////////////////////////////////////////////////////////
-	if( !file.LogOn )
+	if( !file.bTrackerEnabled )
 		return
 	/////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -1714,28 +1724,30 @@ void function PlayerConnectedCallback( entity player )
 		)
 	}
 	
-	if ( file.global_stats && GetServerVar( "batch_fetch_complete" ) )
-		thread __LoadPlayerSyncData( player )
-	
 	if ( file.global_stats )
+	{
+		if ( GetServerVar( "batch_fetch_complete" ) )
+			__LoadPlayerSyncData( player )
+		
 		thread __SetPlayerSyncData( player )
+	}
 }
 
 void function PlayerCounts( string state, string name, string OID, string count )
 {
 	//bad check for non fsdm gamemodes
 	if ( GetGlobalNetInt( "FSDM_GameState" ) == eTDMState.IN_PROGRESS || GetNumHumanPlayers() == 1 )
-		TrackerUpdatePlayerCount__internal( state, name, OID, count, file.DISCORD_PLAYERS_WEBHOOK )
+		TrackerUpdatePlayerCount__internal( state, name, OID, count )
 }
 
-void function __EndOfMatch( string recap, string DISCORD_MATCHES_WEBHOOK )
+void function __EndOfMatch( string recap )
 {
-	#if DEVELOPER 
-		mAssert( DiscordHook_MatchesRecapEnabled(), "Spawned a thread for no reason, discordhook matches was disabled." )
-	#endif 
+	#if DEVELOPER
+		mAssert( DiscordHook_MatchesRecapEnabled(), "discordhook matches was disabled, but __EndOfMatch was called" )
+	#endif
 	
 	if( DiscordHook_MatchesRecapEnabled() ) //In case forgets to check before calling.
-		TrackerEndMatchUpdate__internal( recap, DISCORD_MATCHES_WEBHOOK )
+		TrackerEndMatchUpdate__internal( recap )
 }
 
 bool function DiscordHook_MatchesRecapEnabled()
@@ -1765,7 +1777,7 @@ void function Init_NewGame()
 	if( MapName() == eMaps.mp_lobby )
 		return
 	
-	if ( !file.LogOn )
+	if ( !file.bTrackerEnabled )
 	{
 		sqprint( "::: Logging disabled -- to enable set in playlists file --" )
 		file.PIN_GameState_Start = true
@@ -1805,7 +1817,7 @@ void function Init_NewGame()
 	}
 	
 	
-	InitializeTrackerLogThread__internal( file.LogE )
+	InitializeTrackerLogThread__internal( file.bTrackerEncryption )
 	
 	waitlimit = 0
 	while( !TrackerGetLogState__internal( eLogState.READY ) )
@@ -1867,7 +1879,7 @@ void function Init_NewGame()
 			GetCurrentPlaylistVarFloat( "aimassist_magnet_pc", -1.0 )
 		),
 		
-		file.LogE
+		file.bTrackerEncryption
 	)
 	
 	PrintMatchIDtoAll()
@@ -1889,7 +1901,7 @@ void function Tracker_SetRestrictedServer( bool setting )
 
 void function PlayerWhitelistInit()
 {
-	string whitelistString = TrackerGetSetting( "settings.PLAYER_WHITELIST" )	
+	string whitelistString = TrackerGetSetting( "private.RESTRICTED_PLAYER_WHITELIST" )	
 	if ( !empty( whitelistString ) )
 	{
 		try
@@ -2022,11 +2034,18 @@ void function CheckForPlayerAccess( entity player )
 		KickPlayerById( player.GetPlatformUID(), GetPlayerAccessMessage( player, access_status ) )
 		UpdatePlayerCounts()
 		
-		if( GetCurrentPlaylistVarBool( "restricted_kick_log", false ) )
+		if( file.bRestrictedKickLog )
 			sqprint( format( "\n\n Player: %s, Kick msg: %s", player.GetPlayerName(), GetPlayerAccessMessage( player, access_status ) ) )
 	}
 }
 	
+	
+const array<string> SERVER_MSG_EVENT_TYPES = 
+[
+	"start",
+	"end",
+	"join"
+]
 
 void function BroadcastIntervalMessagesInit()
 {
@@ -3011,7 +3030,7 @@ void function RemoveDamageEvents( int attacker_handle, int victim_handle ) //Tod
 
 			if ( bReportStats && file.bSafeLog )
 			{
-				TrackerLogEvent__internal( logString, file.LogE )
+				TrackerLogEvent__internal( logString, file.bTrackerEncryption )
 				
 				#if DEVELOPER && DEBUGDMG
 					sqprint( logString )
@@ -4583,7 +4602,7 @@ void function DEV_WriteAllTrackerErrors()
 	foreach ( error in file.errorArray )
 		data += format( "|#error %s \n", error )
 	
-	if( file.LogOn && TrackerIsLogging__internal() )
+	if( file.bTrackerEnabled && TrackerIsLogging__internal() )
 		TrackerLogEvent__internal( data, false )
 }
 
@@ -4685,7 +4704,7 @@ void function FinishGameStatsRound()
 	{
 		process_end_round_complete = false
 
-		if ( file.LogOn && TrackerIsLogging__internal() )
+		if ( file.bTrackerEnabled && TrackerIsLogging__internal() )
 		{
 			if( !file.bSafeLog )
 			{
@@ -4700,7 +4719,7 @@ void function FinishGameStatsRound()
 			TrackerLogEvent__internal
 			(
 				format( "#|Season: %d\n|| Game ended at %d\n\n%s\n%s", Tracker_GetQueryInt( "season" ), GetUnixTimestamp(), Tracker_BuildAllPlayerMetrics( true ), GetShipWeaponVarData() ),
-				file.LogE
+				file.bTrackerEncryption
 			)
 
 			if( !Logging_ShipStats() )
@@ -4724,10 +4743,7 @@ void function FinishGameStatsRound()
 				
 				//send to discord:		
 				if( DiscordHook_MatchesRecapEnabled() )
-				{
-					string recap = Tracker_WinnerByKillsAndDamage()
-					thread __EndOfMatch( recap, file.DISCORD_MATCHES_WEBHOOK )
-				}
+					__EndOfMatch( Tracker_WinnerByKillsAndDamage() )
 				
 				if( Logging_ShipStats() )
 				{
@@ -4802,7 +4818,7 @@ void function PIN_AddPlayer( entity player )
 		thread CheckForPlayerAccess( player )
 	}
 	
-	if( file.LogOn && TrackerIsLogging__internal() && IsValid( player ) )
+	if( file.bTrackerEnabled && TrackerIsLogging__internal() && IsValid( player ) )
 	{	
 		TrackerLogEvent__internal
 		(
@@ -4816,7 +4832,7 @@ void function PIN_AddPlayer( entity player )
 				player.GetPlayerName()
 			),
 			
-			file.LogE
+			file.bTrackerEncryption
 		)
 	}	
 }
@@ -4841,7 +4857,7 @@ void function PIN_PlayerLeft( entity player, string reason )
 	//string message = format("%s disconnected ", pname )
 	//sqprint(message)
 	
-	if ( file.LogOn && file.bSafeLog )
+	if ( file.bTrackerEnabled && file.bSafeLog )
 	{
 		if ( TrackerIsLogging__internal() ) 
 		{
@@ -4862,7 +4878,7 @@ void function PIN_PlayerLeft( entity player, string reason )
 					playerName
 					),
 					
-				file.LogE
+				file.bTrackerEncryption
 			)
 		}
 	}
@@ -4904,13 +4920,13 @@ void function PIN_PlayerRevived( entity injured, entity healer )
 
 void function PIN_PlayerKilled( entity victim, entity attacker, var damageInfo )
 {	
-	if ( file.LogOn && TrackerIsLogging__internal() && IsValid( victim ) && victim.IsPlayer() )
+	if ( file.bTrackerEnabled && TrackerIsLogging__internal() && IsValid( victim ) && victim.IsPlayer() )
 		thread __EndFight( victim, attacker, damageInfo, Time(), VectorToString( attacker.GetOrigin() ), VectorToString( victim.GetOrigin() ) )
 }
 
 void function Tracker_EndFight( entity victim, entity attacker, var damageInfo )
 {
-	if( !Flowstate_IsTrackerSupportedMode() || !file.LogOn || !TrackerIsLogging__internal() )
+	if( !Flowstate_IsTrackerSupportedMode() || !file.bTrackerEnabled || !TrackerIsLogging__internal() )
 		return
 		
 	thread __EndFight( victim, attacker, damageInfo, Time(), VectorToString( attacker.GetOrigin() ), VectorToString( victim.GetOrigin() ) )
@@ -5208,7 +5224,7 @@ string function statPrintUID( string uid )
 	{
 		mAssert( IsThreadTop(), "This function should be called with waitthread" )
 		
-		if( file.LogOn )
+		if( file.bTrackerEnabled )
 		{
 			int max = 0
 			while( !TrackerGetLogState__internal( eLogState.READY ) )
@@ -5410,8 +5426,8 @@ enum eLogState
 
 struct 
 {
-	bool LogOn = false
-	bool LogE = false
+	bool bTrackerEnabled = false
+	bool bTrackerEncryption = false
 	bool bChatbotEnabled = false
 	bool global_stats = false
 	bool afk_to_rest_enabled = false
@@ -5421,8 +5437,8 @@ struct
 } file
 
 //flags
-bool function bLog(){ return file.LogOn }
-bool function bEnc(){ return file.LogE }
+bool function bLog(){ return file.bTrackerEnabled }
+bool function bEnc(){ return file.bTrackerEncryption }
 bool function bGlobalStats(){ return file.global_stats }
 bool function bBotEnabled(){ return file.bChatbotEnabled }
 void function Tracker_SetStartLog(){}
@@ -5433,6 +5449,9 @@ void function Tracker_SavePlayerData( string UID, string setting, ... ){}
 void function SavePlayerData( entity player, string setting, ... ){}
 bool function Tracker_StatExists( string stat ){ return false }
 string function TrackerGetSetting( string key ){ return "" }
+bool function TrackerGetSettingBool( string key ){ return false }
+int function TrackerGetSettingInt( string key ){ return 0 }
+float function TrackerGetSettingFloat( string key ){ return 0.0 }
 
 //utility
 DamageEvent function Tracker_GetCurrentEventByPlayerHandle_expensive( int attackerHandle, bool attacker = true ){ DamageEvent e; e.lastHitTimestamp = 0.0; return e }
@@ -5459,6 +5478,12 @@ void function PIN_Init()
 	
 	if ( GetCurrentPlaylistVarBool( "cc_administration", false ) )
 	{ 
+		if( GetConVarInt( "sv_onlineAuthEnable" ) != 1 )
+		{
+			Warning( "Tried to enable cc administration via playlist var 'cc_administration 1', but online auth is disabled. For security purposes, cc_administration is now disabled." )
+			return
+		}
+		
 		__PlayerAdminsInit()
 		AddClientCommandCallback( "cc", ClientCommand_mkos_admin ) 
 		AddCallback_OnClientConnected( CheckAdmin_OnConnect )

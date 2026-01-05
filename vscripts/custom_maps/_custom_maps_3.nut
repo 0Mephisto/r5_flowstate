@@ -1,7 +1,7 @@
 #if SERVER
-untyped
-globalize_all_functions
+	untyped
 #endif
+
 globalize_all_functions
 
 void function CreatePanelText( entity player, string title, string text, vector origin, vector angles, bool showPin, float textScale, id = 0 )

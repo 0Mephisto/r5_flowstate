@@ -28,6 +28,7 @@ global function PrintPlaylists
 global function GetEmblemColor
 #endif
 
+global function GetAllPlaylists
 
 //////////////////////
 //////////////////////
@@ -168,6 +169,21 @@ int function GetPlaylistIndexForName( PlaylistName playlistName )
 	return -1
 }
 #endif
+
+array<string> function GetAllPlaylists()
+{
+	array<string> playlists 
+	
+	int count = GetPlaylistCount()
+	for ( int idx = 0; idx < count; ++idx )
+	{
+		string ornull playlistName = GetPlaylistName( idx )
+		if ( playlistName != null )
+			playlists.append( expect string( playlistName ) )
+	}
+	
+	return playlists
+}
 
 //////////////////////////
 //////////////////////////

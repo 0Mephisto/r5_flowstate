@@ -116,16 +116,8 @@ void function ClientStats_Think()
 			entity lookupPlayer = statData.player
 			string stat 		= statData.statname
 			
-			if( !IsValid_ThisFrame( lookupPlayer ) )
-				continue
-			
-			while( !Tracker_IsStatsReadyFor( lookupPlayer ) )
-			{
+			while( IsValid( lookupPlayer ) && !Tracker_IsStatsReadyFor( lookupPlayer ) )
 				WaitFrames( 5 )
-				
-				if( !IsValid( lookupPlayer ) )
-					continue
-			}
 				
 			if( !IsValid( lookupPlayer ) )
 				continue
@@ -306,7 +298,8 @@ void function __RequestPlayerStat( entity player, string stat )
 	(
 		void function() : ( player, stat )
 		{
-			UnlockStat( player, stat )
+			if( IsValid( player ) )
+				UnlockStat( player, stat )
 		}
 	)
 
