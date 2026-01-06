@@ -118,7 +118,7 @@ bool function Timeout_SetPlayerTimedOut( entity player, bool toggle = true, stri
 	if( !toggle )
 	{
 		if( !player.p.bIsTimedOut )
-			return
+			return false
 	
 		formatMessage = ResolveFormattersForPlayerMessage( player, settings.sTimeoutExpiredMessage )
 		SendServerMessageToPlayer( player, formatMessage, false )
@@ -199,7 +199,7 @@ bool function IsTimeInSameMatch( int timestamp )//✓
 
 bool function Timeout_IsPlayerTimedOut( entity player )//✓
 {
-	return player.p.bIsTimedOut
+	return ( player.p.UID in file.m_timedoutPlayers )
 }
 
 bool function Timeout_IsUIDTimedOut( string uid )//✓
