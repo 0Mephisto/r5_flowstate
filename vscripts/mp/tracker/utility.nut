@@ -21,6 +21,10 @@ global function StringRemoveControlCharacters
 global function Concatenate
 global function LineBreak
 global function IsSafeString
+global function UnescapeWithRules
+global function FindFirstUnescaped
+global function SplitUnescapedWithRules
+global function ResolveFormattersForPlayerMessage	
 
 //print util -- moved to _threads
 // global function print_string_array
@@ -55,7 +59,6 @@ global function Tracker_DetermineNextMap
 global function Tracker_GotoNextMap
 global function PrepareForJson
 global function ArrayUniqueInt
-global function ResolveFormattersForPlayerMessage	
 global function CodeCallback_SendMessage
 
 #if DEVELOPER
@@ -67,6 +70,12 @@ global function CodeCallback_SendMessage
 #if TRACKER && HAS_TRACKER_DLL
 	global function PrintMatchIDtoAll
 #endif
+
+global struct ParseRules
+{
+	string escapeChar
+	table<string,string> escapeMap
+}
 
 struct
 {
@@ -2915,3 +2924,85 @@ array<string> function ReturnParsableTimestringArgsAtIndex( array<string> args, 
 		
 	return returnArgs
 }
+
+string function UnescapeWithRules( string s, ParseRules rules )
+{
+	string out = ""
+	int i = 0
+
+	while ( i < s.len() )
+	{
+		if ( i + 1 < s.len() && s.slice( i, i + 1 ) == rules.escapeChar )
+		{
+			string next = s.slice( i + 1, i + 2 )
+
+			if ( next in rules.escapeMap )
+			{
+				out += rules.escapeMap[ next ]
+				i += 2
+				continue
+			}
+		}
+
+		out += s.slice( i, i + 1 )
+		i++
+	}
+
+	return out
+}
+
+array<string> function SplitUnescapedWithRules( string s, string delimiter, ParseRules rules )
+{
+	mAssert( delimiter.len() == 1 )
+
+	array<string> parts
+	string current = ""
+
+	int i = 0
+	while ( i < s.len() )
+	{
+		if ( i + 1 < s.len() && s.slice( i, i + 1 ) == rules.escapeChar )
+		{
+			current += s.slice( i, i + 2 )
+			i += 2
+			continue
+		}
+
+		if ( s.slice( i, i + 1 ) == delimiter )
+		{
+			parts.append( current )
+			current = ""
+			i++
+			continue
+		}
+
+		current += s.slice( i, i + 1 )
+		i++
+	}
+
+	parts.append( current )
+	return parts
+}
+
+int function FindFirstUnescaped( string s, string delimiter, ParseRules rules )
+{
+	mAssert( delimiter.len() == 1 )
+
+	int i = 0
+	while ( i < s.len() )
+	{
+		if ( i + 1 < s.len() && s.slice( i, i + 1 ) == rules.escapeChar )
+		{
+			i += 2
+			continue
+		}
+
+		if ( s.slice( i, i + 1 ) == delimiter )
+			return i
+
+		i++
+	}
+
+	return -1
+}
+

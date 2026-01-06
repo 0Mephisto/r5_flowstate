@@ -2039,7 +2039,6 @@ void function CheckForPlayerAccess( entity player )
 	}
 }
 	
-	
 const array<string> SERVER_MSG_EVENT_TYPES = 
 [
 	"start",
@@ -2049,87 +2048,98 @@ const array<string> SERVER_MSG_EVENT_TYPES =
 
 void function BroadcastIntervalMessagesInit()
 {
-	string msg_ArrayString = strip( TrackerGetSetting( "settings.INTERVAL_MESSAGES" ) )
+	ParseRules rules
+	rules.escapeChar = "\\"
+	rules.escapeMap =
+	{
+		["\\"] = "\\",
+		["|"] = "|",
+		["="] = "="
+	}
+
 	bool gotoLoopMessage = false
-	
+
+	string msg_ArrayString = strip( TrackerGetSetting( "settings.INTERVAL_MESSAGES" ) )	
 	if( msg_ArrayString.len() == 0 )
 		gotoLoopMessage = true
 	
-	if( !gotoLoopMessage )
+	if ( !gotoLoopMessage )
 	{
-		array<string> interval_settings = split( msg_ArrayString , "|" )
-		
+		array<string> interval_settings = SplitUnescapedWithRules( msg_ArrayString, "|", rules )
+
 		int iMessageNum = 0
-		
-		foreach( msg_string in interval_settings )
+
+		foreach ( msg_string in interval_settings )
 		{
-			iMessageNum++;
-			
-			array<string> _msg = split( strip(msg_string), "=" )
-			if( _msg.len() > 1 )
+			iMessageNum++
+
+			string stripped = strip( msg_string )
+			int eqIndex = FindFirstUnescaped( stripped, "=", rules )
+
+			if ( eqIndex == -1 )
+				continue
+
+			string sM0 = strip( stripped.slice( 0, eqIndex ) )
+			string sM1 = strip( stripped.slice( eqIndex + 1 ) )
+
+			sM0 = UnescapeWithRules( sM0, rules )
+			sM1 = UnescapeWithRules( sM1, rules )
+
+			#if DEVELOPER
+				sqprint( format( "interval found: %s  ;message: %s", sM0, sM1 ) )
+			#endif
+
+			string sm0Match = sM0.tolower()
+
+			if ( IsStringNumeric( sM0, 0, file.flowstateRoundtime ) && sM1.len() > 0 && sM1.len() < 1000 )
 			{
-				string sM0 = strip(_msg[0])
-				string sM1 = strip(_msg[1])
-				
-				#if DEVELOPER
-					sqprint(format("interval found: %s  ;message: %s", sM0, sM1))
-				#endif
-				
-				string sm0Match = sM0.tolower()
-				
-				if( IsStringNumeric( sM0, 0, file.flowstateRoundtime ) && sM1.len() > 0 && sM1.len() < 1000 )
+				try
 				{
-					try
+					string sMsg = StringRemoveControlCharacters( sM1 )
+
+					int convert = sM0.tointeger()
+					float iRound10 = ceil( float( convert ) / 10.0 ) * 10
+					int interval = ( iRound10 / 10 ).tointeger()
+
+					if ( !( interval in file.MessageEvents ) )
 					{
-						string sMsg = StringRemoveControlCharacters( sM1 )
-						
-						int convert = sM0.tointeger()
-						float iRound10 = ceil(float(convert) / 10.0) * 10
-						int interval = (iRound10 / 10).tointeger()
-						
-						if ( !( interval in file.MessageEvents ) )
-						{
-							array<string> messages;
-							
-							messages.append( sMsg )
-							
-							file.MessageEvents[interval] <- messages
-						}
-						else 
-						{
-							file.MessageEvents[interval].append( sMsg )
-						}
+						array<string> messages
+						messages.append( sMsg )
+						file.MessageEvents[ interval ] <- messages
 					}
-					catch(c_err)
+					else
 					{
-						sqerror(format("Cannot add msg #[ %d ] to MessageEvents, improper format", iMessageNum ))
+						file.MessageEvents[ interval ].append( sMsg )
 					}
 				}
-				else if( SERVER_MSG_EVENT_TYPES.contains( sm0Match ) && sM1.len() > 0 && sM1.len() < 1000 )
+				catch ( c_err )
 				{
-					switch( sm0Match )
-					{
-						case "start":
-							file.Messages_EventStart.append( sM1 )
-							break
-						case "end":
-							file.Messages_EventEnd.append( sM1 )
-							break
-						case "join":
-							file.Messages_EventJoin.append( sM1 )
-							break
-					}
-				}
-				else
-				{
-					sqerror( format( "InitIntervalMessages parsing error with: %s, %s", sM0, sM1 ) )
+					sqerror( format( "Cannot add msg #[ %d ] to MessageEvents, improper format", iMessageNum ) )
 				}
 			}
+			else if ( SERVER_MSG_EVENT_TYPES.contains( sm0Match ) && sM1.len() > 0 && sM1.len() < 1000 )
+			{
+				switch ( sm0Match )
+				{
+					case "start":
+						file.Messages_EventStart.append( sM1 )
+						break
+					case "end":
+						file.Messages_EventEnd.append( sM1 )
+						break
+					case "join":
+						file.Messages_EventJoin.append( sM1 )
+						break
+				}
+			}
+			else
+			{
+				sqerror( format( "InitIntervalMessages parsing error with: %s, %s", sM0, sM1 ) )
+			}
 		}
-		
-		if( file.Messages_EventJoin.len() )
+
+		if ( file.Messages_EventJoin.len() )
 			AddCallback_OnClientConnected( BroadcastPersonalMessage )
-			
 	}// if !goto
 	
 	//loop messages (every x seconds)
