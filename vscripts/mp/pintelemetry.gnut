@@ -2167,15 +2167,21 @@ void function BroadcastIntervalMessagesInit()
 		
 	string getLoopMessages = TrackerGetSetting( "settings.LOOP_MESSAGES" )
 
-	if( !empty( getLoopMessages ) && getLoopMessages.find("|") )
+	if ( !empty( getLoopMessages ) )
 	{
-		array<string> aLoopMessages = split( getLoopMessages, "|" )
-		
-		foreach( message in aLoopMessages )
+		array<string> arrLoopMessages = SplitUnescapedWithRules( getLoopMessages, "|", rules )
+
+		foreach ( message in arrLoopMessages )
 		{
-			file.arrayLoopMessages.append( strip( message ) )
+			string msg = strip( UnescapeWithRules( message, rules ) )
+
+			if ( msg.len() == 0 )
+				continue
+
+			file.arrayLoopMessages.append( msg )
+
 			#if DEVELOPER
-				sqprint( format("Initialized loop message: %s", message ) )
+				sqprint( format( "Initialized loop message: %s", message ) )
 			#endif
 		}
 	}
