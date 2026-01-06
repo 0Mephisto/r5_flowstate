@@ -115,8 +115,11 @@ bool function Timeout_SetPlayerTimedOut( entity player, bool toggle = true, stri
 		return false
 	
 	string formatMessage	
-	if( !toggle && player.p.bIsTimedOut )
+	if( !toggle )
 	{
+		if( !player.p.bIsTimedOut )
+			return
+	
 		formatMessage = ResolveFormattersForPlayerMessage( player, settings.sTimeoutExpiredMessage )
 		SendServerMessageToPlayer( player, formatMessage, false )
 		
