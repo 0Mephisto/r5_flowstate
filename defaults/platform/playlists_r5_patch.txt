@@ -1839,6 +1839,7 @@ playlists
 				ground_loot_enable 				   				0
 				lootbin_loot_enable								0
 				
+				// does not seem to work correctly
 				survival_jumpkit_enabled		   				0
 				survival_wallrun_enabled		   				0
 				
@@ -2118,7 +2119,7 @@ playlists
 				
 				
 				
-				default_shield_hp				  				125
+				default_shield_hp				  				100
 				survival_shields				   				1
 				skydive_ziplines_enabled		   				1
 				ground_loot_enable 				   				0
@@ -2237,7 +2238,7 @@ playlists
 				mp_rr_arena_composite 							1
 				mp_rr_arena_phase_runner 						1
 				mp_rr_party_crasher 							1
-				mp_rr_olympus								1
+				// mp_rr_olympus								1
 				// mp_rr_olympus_tt								1
 				mp_rr_desertlands_64k_x_64k						1
 				mp_rr_canyonlands_staging						1
@@ -2268,7 +2269,7 @@ playlists
 				max_players										120
 				min_players										0
 				
-				default_shield_hp				  				125
+				default_shield_hp				  				100
 				survival_shields				   				1
 				skydive_ziplines_enabled		   				1
 				ground_loot_enable 				   				0
@@ -2369,7 +2370,7 @@ playlists
 				visible											1
 				
 				name							   				"1v1 Headshots Only"
-				description										"DM or FFA with multiple settings, customize your own server"
+				description										"1v1 Headshots Only"
 				abbreviation					   				"1v1 Headshots Only"
 				lobbytitle						 				"1v1 Headshots Only"
 			
@@ -2385,7 +2386,7 @@ playlists
 				max_players										120
 				min_players										0
 				
-				default_shield_hp				  				125
+				default_shield_hp				  				100
 				survival_shields				   				1
 				skydive_ziplines_enabled		   				1
 				ground_loot_enable 				   				0
@@ -2410,12 +2411,12 @@ playlists
 				sur_circle_start_paused							1
 				
 				//Replays:
-				replay_enabled					 				1  
+				replay_enabled					 				0
 				replay_delay					   				5
 				replay_new_ui 									1
 				
 				
-
+				// for some reason its still random character even after forcing?
 				flowstateForceCharacter 						1	//It enables the following settings
 				flowstateChosenCharacter 						8	// 0 Bang// 1 Bloodhound// 2 Caustic// 3 Gibby// 4 Lifeline// 5 Mirage// 6 Octane// 7 Pathy// 8 Wraith// 9 Watty// 10 Crypto
 				
@@ -2429,10 +2430,10 @@ playlists
 				flowstateAdminTgive 							0 //admin is for tgive only, 0 will enable dev menu weapons for players
 				flowstate1v1MatchLoadout						0
 				afk_to_rest_bool								0
-				flowstate_headshots_only_gamemode 				1 //i recommend a wingman only in respawn kit above
+				flowstate_headshots_only_gamemode 				1 //i recommend a wingman only in custom weapons list below
 
 				flowstate_disable_all_map_triggers				1
-				flowstate_give_random_custom_models_toall		1
+				flowstate_give_random_custom_models_toall		0
 				flowstate_seconds_to_wait_without_players_before_restarting		3600 // 3600 : 1 hour
 				
 				/////////////////////////
@@ -2458,10 +2459,10 @@ playlists
 				// Each string you place here can only be 1000 characters long, 
 				// use _continue respectively for large lists
 				
-				custom_1v1_weapons_primary 						""
+				custom_1v1_weapons_primary 						"mp_weapon_wingman optic_cq_hcog_classic sniper_mag_l3"
 				custom_1v1_weapons_primary_continue 			""
 				
-				custom_1v1_weapons_secondary 					""
+				custom_1v1_weapons_secondary 					"mp_weapon_wingman optic_cq_hcog_classic sniper_mag_l3"
 				custom_1v1_weapons_secondary_continue 			""
 				
 				//challenges
@@ -2485,25 +2486,18 @@ playlists
 				custom_match_ending_title						"Match complete"
 				custom_match_ending_message						"Don't leave. Server is going to change maps."
 				
-				
-				//The following is for when 
-				//installing or enabling extra spawn paks
-				// to add paks, prefix a mapname with spawnsets_  and list the paks to enable "1,2,3"
-				
-				mp_rr_canyonlands_64k_x_64k						"1"
-				spawnsets_mp_rr_aqueduct 						"1,2"
-				spawnsets_mp_rr_arena_composite 				"1,2"
-				mp_rr_arena_phase_runner						"1,2,3"
-				// mp_rr_olympus_mu1							"1,2,3,4,5"
-				
-				spawnpaks_use_random							0	// bool, loads random configured pak on mapstart
-				spawnpaks_preferred_pak							2 	// integer, pak number, 0 to disable
+				//required to get 1v1 spawns
+				custom_playlist_spawnpak						"fs_1v1"
 			}
 			gamemodes { fs_dm { maps {
 				mp_rr_canyonlands_64k_x_64k						1
 				mp_rr_aqueduct									1
-				mp_rr_arena_composite 							1
+				mp_rr_arena_composite							1
 				mp_rr_arena_phase_runner						1
+				// mp_rr_olympus								1
+				// mp_rr_olympus_tt								1
+				mp_rr_desertlands_64k_x_64k						1
+				mp_rr_canyonlands_staging						1
 			} } }
 		}
 
@@ -3339,6 +3333,13 @@ playlists
 				max_team_size									3
 				max_players										60
 				min_players										15
+
+				// disabling revenant seems to break something in scripts, disaling loba and rampart messes up legend menu
+				//character_loba									DISABLED
+				//character_revenant								DISABLED
+				//character_rampart								DISABLED
+				character_dummie								DISABLED
+				character_random								DISABLED
 				
 				custom_loot               						0
 				
@@ -3350,7 +3351,7 @@ playlists
 				enable_apex_screens								1
 				skydive_ziplines_enabled					   	1
 				charselect_intro_countdown_duration				0.0
-				dev_loadout_changeable_at_any_time 1
+				dev_loadout_changeable_at_any_time				1
 				
 				r5reloaded_AnimatedCharacterSelect				0
 				flowstate_spectator_team_only					1
@@ -3358,7 +3359,7 @@ playlists
 				survival_server_restart_after_end				1
 				enable_bullet_slow					1
 				
-				activate_passive_abilities				1
+				activate_passive_abilities						1
 				enable_motd										0
 				flowstate_mod_active							0
 				enable_global_chat								0
@@ -3400,6 +3401,13 @@ playlists
 				max_team_size									2
 				max_players										60
 				min_players										16
+
+				// disabling revenant seems to break something in scripts, disaling loba and rampart messes up legend menu
+				//character_loba									DISABLED
+				//character_revenant								DISABLED
+				//character_rampart								DISABLED
+				character_dummie								DISABLED
+				character_random								DISABLED
 				
 				custom_loot               						0
 				
@@ -3416,9 +3424,9 @@ playlists
 				flowstate_spectator_team_only					1
 
 				survival_server_restart_after_end				1
-				enable_bullet_slow					1
+				enable_bullet_slow								1
 				
-				activate_passive_abilities				1
+				activate_passive_abilities						1
 				enable_motd										0
 				flowstate_mod_active							0
 				enable_global_chat								0
@@ -3461,6 +3469,13 @@ playlists
 				max_players										60
 				min_players										15
 
+				// disabling revenant seems to break something in scripts, disaling loba and rampart messes up legend menu
+				//character_loba									DISABLED
+				//character_revenant								DISABLED
+				//character_rampart								DISABLED
+				character_dummie								DISABLED
+				character_random								DISABLED
+
 				custom_loot               						0
 				
 				bleedout_enabled								1
@@ -3478,10 +3493,10 @@ playlists
 				r5reloaded_AnimatedCharacterSelect				0
 				flowstate_spectator_team_only					0
 
-				survival_server_restart_after_end				0
-				enable_bullet_slow					1
+				survival_server_restart_after_end				1
+				enable_bullet_slow								1
 				
-				activate_passive_abilities				1
+				activate_passive_abilities						1
 				enable_motd										0
 				flowstate_mod_active							0
 				enable_global_chat								0
@@ -3865,7 +3880,7 @@ playlists
 				"MOTD_TEXT" "An R5Reloaded Server" //set your servers message of the day. 1000 char max.  Use \n for newline.
 				"MOTD_TEXT_EXTENDED" "" // appends to first, 1000 char max.
 			
-				"BETA_BUILD_WATERMARK" "R5Reloaded - v2.6.14"
+				"BETA_BUILD_WATERMARK" "R5Reloaded - v2.6.2"
 
 				//////////////////////////////////////////////////
 				// TEMP TOKENS (remove before release shipping )//
