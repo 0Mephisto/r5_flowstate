@@ -346,12 +346,15 @@ string function Ping_GetSoundForItemPing( int pingType, bool isOurs )
 
 void function ShPing_Init()
 {
-	AddCallback_RegisterRootItemFlavors( void function() {
-		foreach( var block in IterateSettingsAssetArray( $"settings/itemflavlist/pings.rpak", "list" ) )
+	AddCallback_RegisterRootItemFlavors
+	( 
+		void function() 
 		{
-			ItemFlavor ornull pingOrNull = RegisterItemFlavorFromSettingsAsset( GetSettingsBlockAsset( block, "flavor" ) )
-		}
-	} )
+			foreach( var block in IterateSettingsAssetArray( $"settings/itemflavlist/pings.rpak", "list" ) )
+				ItemFlavor ornull pingOrNull = RegisterItemFlavorFromSettingsAsset( GetSettingsBlockAsset( block, "flavor" ) )
+		} 
+	)
+	
 	#if CLIENT
 		RegisterSignal( "UpdatePingBlockingHintAfterDelay" )
 
@@ -367,6 +370,7 @@ void function ShPing_Init()
 		AddCallback_OnCommsMenuStateChanged( OnCommsMenuChanged )
 		AddCallback_OnPlayerLifeStateChanged( OnLifeStateChanged )
 	#elseif SERVER
+		file.canPingFuncCallback = NULL_CAN_PING_CALLBACK
 		AddCallback_OnPlayerMatchStateChanged( OnPlayerMatchStateChanged )
 		AddCallback_OnClientConnected( OnPlayerConnected )
 
@@ -374,8 +378,6 @@ void function ShPing_Init()
 		AddClientCommandCallbackVoid( CMDNAME_PING_NEW_LOOT, ClientCommand_PingNewLoot )
 		AddClientCommandCallbackVoid( CMDNAME_PING_REPLY, ClientCommand_PingReply )
 		AddClientCommandCallbackVoid( CMDNAME_CANCEL_PING_BY_TICKETID, ClientCommand_CancelPingByTicketID )
-		
-		file.canPingFuncCallback = NULL_CAN_PING_CALLBACK
 	#endif
 
 	#if CLIENT
