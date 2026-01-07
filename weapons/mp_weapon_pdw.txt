@@ -129,7 +129,7 @@ WeaponData
 	// Behavior
 	"fire_rate"   									"21"
 	"burst_fire_count"								"5"
-	"burst_fire_delay"								"0.300000"
+	"burst_fire_delay"								"0.260000"
 
 	"reload_time" 									"2.000000"
 	"reload_time_late1"								"1.670000"
