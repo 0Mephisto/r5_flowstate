@@ -486,7 +486,7 @@ void function CodeCallback_PingCommandExecuteQueued( entity player, int pingType
 	if ( !player.p.pingQueuedTraceIsValid )
 		return
 
-	if( file.canPingFuncCallback( player ) )
+	if( !file.canPingFuncCallback( player ) )
 		return
 		
 	CreateWaypoint_Ping_Location( player, pingType, player.p.pingQueuedTraceEnt, player.p.pingQueuedTraceOrigin, userTicketId, false )
