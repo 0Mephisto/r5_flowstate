@@ -439,7 +439,9 @@ void function CoolCameraOnMenu()
 		break
 	}
 
-
+	if( !cutsceneSpawns.len() )
+		return
+		
     //EmitSoundOnEntity( player, "music_skyway_04_smartpistolrun" )
 
     float playerFOV = player.GetFOV()

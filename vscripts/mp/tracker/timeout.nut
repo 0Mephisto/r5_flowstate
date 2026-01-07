@@ -111,7 +111,7 @@ int function __GetTimeoutExpiresTimestamp( entity player ) //✓
 
 bool function Timeout_SetPlayerTimedOut( entity player, bool toggle = true, string sByPlayer = "", int iTimeoutAmount = -1, string reason = "" ) //✓
 {
-	if( !IsValid( player ) ) 
+	if( !IsValid( player ) || !settings.bIsTimeoutEnabled ) 
 		return false
 	
 	string formatMessage	

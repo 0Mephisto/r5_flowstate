@@ -382,6 +382,8 @@ struct
 		if( !IsAuthEnabled() )
 			sqwarning( "WARNING: Client Command Admin is enabled but online auth is disabled" )
 	
+		file.ADMINS.resize( 0 )
+	
 		string admins_list
 		string pair
 		
@@ -476,16 +478,41 @@ struct
 			param4 = args[ 4 ]
 		
 		switch( command.tolower() )
-		{  	
+		{
 			case "help":
 			{
+				const array<string> commandHelp = 
+				[
+					"\n\n\n\n\n\n\n\n\n\n\n\n\n\nA command is entered as:\n\n cc command #param #param2 ...\n\n",
+					"cc afk [0|1|true|false]   - disabled or enables afk to rest mode\n",
+					"cc kick [name|oid]   - Kicks a player by name/oid\n",
+					"cc kicksay [name|oid] [reason]    - Kicks a player and announces the reason to the whole server.\n",
+					"cc timeout [name|oid] [true|false] [-r \"reason\"] [timestring]    - Times out the player\n",
+					"cc gettimeout [name|oid]    - Returns data about a timeout\n",
+					"cc mute/unmute [name|oid] [-r \"[reason]\"] [timestring]     - Mutes / unmutes\n", 
+					"cc msg [name|oid] \"message\"    - Sends a PM to a player. A way to communicate with other admins\n",
+					"cc sayto [name|oid] [title] [msg] [dur]    - Sends a titled message to a specific player (duration defaults to ~3s if omitted)\n"
+					"cc sayall '#title' '#message' #duration   - Broadcasts a titled message to all clients with a duration (seconds).\n",
+					"cc adminmsg [name|oid] \"message\"    - Sends an admin-branded message to a specific player\n",
+					"cc adminmsgall \"message\"    - Sends an admin-branded message to all players.\n",
+					"cc bansay [name|oid] [reason]    - Bans a player and announces the reason to the whole server.\n",
+					"cc ban #name/oid #reason    - Bans a player\n",
+					"cc unban #oid   - attempts to unban a player by OID\n",
+					"cc map #name #mode   - reloads map. partials match i.e. \"cc map drop\" will load dropoff\n", 
+					"cc endround    - forces the round timer to end now\n",
+					"cc playerinput #name/oid   - shows players input\n", 
+					"cc playerinfo  - some stats",
+					"\n\n For more commands, see https://docs.r5r.dev"
+				]
+				
 				try 
 				{
-					Message( player, "Commands:", "A command is entered as: \n\n cc command #param #param2.  \n\n cc kick #name/oid   - Kicks a player by name/oid \n cc afk #0/1   - disabled or enables afk to rest mode \n cc playself #audiofile   - Plays audiofile to self \n cc playall #audiofile    - Plays audiofile to all player \n cc sayall '#title' '#message' #duration   - says to all \n cc ban #name/oid #reason    - Bans a player \n cc unban #oid   - attempts to unban a player by OID \n cc map #name #mode   - reloads map \n cc playerinput #name/oid   - shows players input \n cc playerinfo  - some stats", 20 )
+					Message( player, "Commands:", commandHelp.join( "" ), 20 )
 				}
 				catch ( err ) 
 				{
-					return false 
+					sqerror( string( err ) )
+					return true 
 				}
 		
 				return true
@@ -495,7 +522,7 @@ struct
 				if ( args.len() < 2 )
 				{
 					Message( player, "Failed", "kick requires name/id for 1st param of command" )
-					return false
+					return true
 				}
 
 				try 
@@ -509,7 +536,7 @@ struct
 					
 					if ( !IsValid( k_player ) )
 					{
-						Message( player, "Failed", "Player: " + param + " - is invalid. " )
+						Message( player, "Failed", format( "Player: '%s' is invalid. ", param ) )
 						return true
 					}
 						
@@ -525,7 +552,7 @@ struct
 					KickPlayerById( k_playeroid, reason )
 					UpdatePlayerCounts()
 					
-					Message( player, "Kicked player", "PUID: " + k_playeroid + "\nName: " + k_playername )
+					Message( player, "Kicked player", format( "PUID: '%s'\nName: '%s'", k_playeroid, k_playername ) )
 					return true	
 				}
 				catch ( erraaarg )
@@ -537,52 +564,42 @@ struct
 				return true	
 			}	
 			case "afk":
-			{
-				try 
-				{					
-					if ( args[1] == "1" )
-					{
-						SetAfkToRest( true )
-						Message( player, "Command sent", "Afk to rest was ENABLED" )
-						return true
-					} 
-					else if ( args[1] == "0" )
-					{
-						SetAfkToRest( false )
-						Message( player, "Command sent", "Afk to rest was disabled" )
-						return true
-					} 
-				} 
-				catch( erroreo )
-				{		
-					Message( player, "Error", "argument missing" )
-					return false
+			{	
+				if( !IsStringBool( param ) )
+				{
+					Message( player, "Param 1 of command 'afk' requires bool. [0|1|true|false]" )
+					return true
 				}
 				
+				if ( StringToBool( param ) )
+				{
+					SetAfkToRest( true )
+					Message( player, "Command sent", "Afk to rest was ENABLED" )
+					return true
+				}
+
+				SetAfkToRest( false )
+				Message( player, "Command sent", "Afk to rest was disabled" )
+			
 				return true
 			}		
 			case "restricted":
 			{
-				try 
+				if( !IsStringBool( param ) )
 				{
-					if ( args[1] == "1" )
-					{
-						Tracker_SetRestrictedServer( true )
-						Message( player, "Command sent", "restricted_server was ENABLED" )
-						return true
-					} 
-					else if ( args[1] == "0" )
-					{
-						Tracker_SetRestrictedServer( false )
-						Message( player, "Command sent", "restricted_server was disabled" )
-						return true
-					} 
-				} 
-				catch( errorres )
-				{
-					Message( player, "Error", "argument missing" )
-					return false
+					Message( player, "Param 1 of command 'restricted' requires bool. [0|1|true|false]" )
+					return true
 				}
+				
+				if ( StringToBool( param ) )
+				{
+					Tracker_SetRestrictedServer( true )
+					Message( player, "Command sent", "restricted_server was ENABLED" )		
+					return true
+				}
+
+				Tracker_SetRestrictedServer( false )
+				Message( player, "Command sent", "restricted_server was disabled" )
 
 				return true
 			}
@@ -591,7 +608,7 @@ struct
 				if ( args.len() < 2 )
 				{
 					Message( player, "Failed", "playself requires param of audiofile as string" )
-					return false
+					return true
 				} 
 					
 				try 
@@ -601,7 +618,7 @@ struct
 				catch ( erra )
 				{
 					Message(player, "Failed", "Command failed because of: \n\n " + erra )
-					return false	
+					return true	
 				}
 				
 				return true
@@ -611,7 +628,7 @@ struct
 				if ( args.len() < 2 )
 				{
 					Message( player, "Failed", "Command 'playself' requires param of audiofile as string" )
-					return false
+					return true
 				} 
 					
 				try 
@@ -621,7 +638,7 @@ struct
 				catch ( erra )
 				{			
 					Message(player, "Failed", "Command failed because of: \n\n " + erra )
-					return false	
+					return true	
 				}
 				
 				return true
@@ -638,9 +655,8 @@ struct
 					catch ( errb )
 					{	
 						Message(player, "Failed", "Command failed because of: \n\n " + errb )
-						return false	
+						return true	
 					}
-				
 				}
 
 				return true
@@ -657,7 +673,7 @@ struct
 					catch ( errb )
 					{	
 						Message(player, "Failed", "Command failed because of: \n\n " + errb )
-						return false
+						return true
 					}
 				}
 
@@ -668,7 +684,7 @@ struct
 				if ( args.len() < 4 )
 				{	
 					Message( player, "Failed", "Command 'sayall' requires duration for third param of command as float" )
-					return false
+					return true
 				} 
 				
 				foreach ( say_to_player in GetPlayerArray())
@@ -716,7 +732,7 @@ struct
 				if ( args.len() < 2 )
 				{		
 					Message( player, "Failed", "Command 'ban' requires name/id for 1st param of command" )
-					return false
+					return true
 				}			
 				
 				try 
@@ -756,7 +772,7 @@ struct
 				catch ( erre )
 				{
 					Message(player, "Failed", "Command failed because of: \n\n " + erre )
-					return false
+					return true
 				}
 					
 				return true
@@ -766,7 +782,7 @@ struct
 				if ( args.len() < 2 )
 				{
 					Message( player, "Failed", "Command 'bansay' requires player for 1st param of command" )
-					return false
+					return true
 				}
 				
 				args[0] = "ban"	
@@ -797,7 +813,7 @@ struct
 				if ( args.len() < 2 )
 				{
 					Message( player, "Failed", "Command 'kicksay' requires player for 1st param of command" )
-					return false
+					return true
 				}
 				
 				args[ 0 ] = "kick"
@@ -830,7 +846,7 @@ struct
 					if ( args.len() < 2 )
 					{
 						Message( player, "Failed", "Command 'banid' requires oid for 1st param of command")
-						return false
+						return true
 					}	
 
 					try 
@@ -838,13 +854,13 @@ struct
 						if ( IsServerAdmin( param ) )
 						{
 							Message( player, "Failed", param + " is an admin. Ban rejected.", 10 )
-							return false		
+							return true		
 						}
 						
 						if ( !IsStringNumber( param ) )
 						{			
 							Message( player, "Failed", param + " is not a valid oid format.", 10 )
-							return false	
+							return true	
 						}
 						
 						if ( param2 == "" )
@@ -868,7 +884,7 @@ struct
 					catch ( errbanid )
 					{
 						Message(player, "Failed", "Command failed because of: \n\n " + errbanid )
-						return false
+						return true
 					}
 				#endif // TRACKER && HAS_TRACKER_DLL
 				
@@ -879,7 +895,7 @@ struct
 				if ( args.len() < 2 )
 				{		
 					Message( player, "Failed", "Command 'unban' requires id for 1st param of command as string" )
-					return false	
+					return true	
 				}
 				
 				try 
@@ -892,7 +908,7 @@ struct
 				catch ( erre )
 				{	
 					Message(player, "Failed", "Command failed because of: \n\n " + erre )
-					return false
+					return true
 				}
 				
 				return true
@@ -917,7 +933,7 @@ struct
 				catch ( errf )
 				{	
 					Message( player, "Failed", "Command failed because of: \n\n " + errf )
-					return false
+					return true
 				}
 			}
 			//for testing
@@ -983,7 +999,7 @@ struct
 					if ( !IsStringBool( a_str ) )
 					{	
 						Message( player, "Failed", "Incorrect usage, setting input using: " + a_str )
-						return false	
+						return true	
 					}
 					
 					bool newInputBool = StringToBool( a_str )
@@ -1016,7 +1032,7 @@ struct
 				catch( errj ) 
 				{		
 					Message( player, "Failed", "Command failed because of: \n\n " + errj )
-					return false
+					return true
 				}
 #endif 
 				return true
@@ -2005,6 +2021,21 @@ struct
 				
 				Message( player, "Info:", Timeout_PrintTimeoutData( candidate ), 15.0 )
 				
+				break
+			}
+			case "noclip":
+			{
+				if( !GetCurrentPlaylistVarBool( "enable_admin_noclip", false ) )
+				{
+					Message( player, "Failed", "Server operator has 'enable_admin_noclip' disabled" )
+					return true 
+				}
+			
+				  if ( player.IsNoclipping() )
+					player.SetPhysics( MOVETYPE_WALK )
+				  else
+					player.SetPhysics( MOVETYPE_NOCLIP )
+					
 				break
 			}
 			
@@ -3005,4 +3036,3 @@ int function FindFirstUnescaped( string s, string delimiter, ParseRules rules )
 
 	return -1
 }
-

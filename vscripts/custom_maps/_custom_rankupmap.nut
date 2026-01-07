@@ -81,20 +81,30 @@ void function rankupmap_precache() {
 }
 
 
-struct {
+struct 
+{
     table<entity, bool> is_practicing = {}
     table<entity, vector> current_cp = {}
     table<entity, vector> current_angles = {}
-}
-file
+	bool bCanPlayerPing
+}file
 
-void function rankupmap_init() {
-  AddCallback_OnClientConnected( rankupmap_player_setup )
+void function rankupmap_init()
+{
+	AddCallback_OnClientConnected( rankupmap_player_setup )
 	AddCallback_EntitiesDidLoad( rankupmapEntitiesDidLoad )
-  AddClientCommandCallback("tp", tp_to_cp)
+	AddClientCommandCallback("tp", tp_to_cp)
 	AddClientCommandCallback("pm", practice_mode)	  
-  AddClientCommandCallback("hub", hub_command)
-  rankupmap_precache()
+	AddClientCommandCallback("hub", hub_command)
+	rankupmap_precache()
+	
+	file.bCanPlayerPing = GetCurrentPlaylistVarBool( "player_can_ping", true )
+	Ping_SetCanPingCallback( CanPing )
+}
+
+bool function CanPing( entity player )
+{
+	return file.bCanPlayerPing
 }
 
 void function rankupmapEntitiesDidLoad()

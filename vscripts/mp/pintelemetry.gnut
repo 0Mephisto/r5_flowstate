@@ -148,6 +148,7 @@ global function CodeCallback_BatchStatsLoaded
 global function CodeCallback_PlayerStatsReady
 global function CodeCallback_VerifyEaAccount
 global function CodeCallback_TrackerGlobalSettingsReady
+global function CodeCallback_SettingsUpdate
 
 global function AddCallback_OnBatchStatsLoaded
 global function RemoveCallback_OnBatchStatsLoaded
@@ -435,7 +436,7 @@ struct //Todo: move appropriate to tracker.var
 	int flowstateRoundtime
 	int launchStartUnixTime
 	
-	//restricted settings ( configure in playlists file )
+	//restricted settings ( configure in r5rdev_config.json file )
 	array< string > whitelist
 	int restricted_gamesplayed = 0
 	int restricted_kills = 0
@@ -571,6 +572,18 @@ void function ShipFunction_OnDisconnected( entity player )
 	__t_runshipDisconnect( player.p.UID )
 }
 
+void function CodeCallback_SettingsUpdate()
+{
+	Tracker_SettingsInit()
+	__PlayerAdminsInit()
+	PlayerWhitelistInit()
+	
+	Signal( svGlobal.levelEnt, "KillIntervalThread" )
+	BroadcastIntervalMessagesInit()
+	DEV_StartIntervalThread()
+	
+	Chat_GlobalMuteEnabled( TrackerGetSettingBool( "settings.OPT_IN_GLOBAL_MUTE" ) )
+}
 
 void function CodeCallback_BatchStatsLoaded()
 {
@@ -1280,7 +1293,7 @@ void function __LoadPlayerSyncData( entity player )
 }
 
 void function __SetPlayerSyncData( entity player )
-{	
+{
 	if( !GetServerVar( "batch_fetch_complete" ) )
 	{
 		#if DEVELOPER
@@ -1502,6 +1515,7 @@ void function PIN_Init()
 	RegisterSignal( "PlayerStatsReady" )
 	RegisterSignal( "TrackerNoLog" )
 	RegisterSignal( "TrackerGlobalSettingsFetched" )
+	RegisterSignal( "KillIntervalThread" )
 	
 	__internals()
 	Tracker_SettingsInit()
@@ -1901,6 +1915,8 @@ void function Tracker_SetRestrictedServer( bool setting )
 
 void function PlayerWhitelistInit()
 {
+	file.whitelist.clear()
+
 	string whitelistString = TrackerGetSetting( "private.RESTRICTED_PLAYER_WHITELIST" )	
 	if ( !empty( whitelistString ) )
 	{
@@ -1908,7 +1924,7 @@ void function PlayerWhitelistInit()
 		{
 			file.whitelist = StringToArray( whitelistString, 2000 )	
 		}
-		catch(err)
+		catch( err )
 		{
 			sqerror( "Error: " + err )
 		}
@@ -1937,7 +1953,7 @@ int function CheckIfPlayerHasAccess( entity player )
 	if ( player.p.season_kills < file.restricted_kills )
 		return 3
 	
-	if ( getkd( player.p.season_kills, player.p.season_deaths ) < GetCurrentPlaylistVarFloat( "restricted_kd", 0 ) )
+	if ( getkd( player.p.season_kills, player.p.season_deaths ) < file.restricted_kd )
 		return 2
 	
 	if ( player.p.season_playtime < file.restricted_playtime )
@@ -1951,16 +1967,16 @@ string function GetPlayerAccessMessage( entity player, int result )
 	switch( result )
 	{
 		case 9:
-			return LineBreak( file.restricted_join_message )
+			return LineBreak( ResolveFormattersForPlayerMessage( player, file.restricted_join_message ) )
 		
 		case 8:
-			return LineBreak( file.restricted_whitelist_message )
+			return LineBreak( ResolveFormattersForPlayerMessage( player, file.restricted_whitelist_message ) )
 			
 		case 7:
-			return LineBreak( file.restricted_admin_message )
+			return LineBreak( ResolveFormattersForPlayerMessage( player, file.restricted_admin_message ) )
 			
-		case 6: 
-			return "Your Rank is too low to play on this server. \n\n Your Score: " + player.p.season_score.tostring() + ". \nLowest rank allowed: " + file.restricted_rank.tostring() + " (Score: " + Tracker_GetQueryInt("restricted_rank").tostring() + ")" //this Tracker_GetQueryInt() setting should be named restricted_score for clarity
+		case 6:
+			return "Your Rank is too low to play on this server. \n\n Your Score: " + player.p.season_score.tostring() + ". \nLowest rank allowed: " + file.restricted_rank.tostring() + " (Score: " + Tracker_GetQueryInt( "restricted_rank" ).tostring() + ")" //this Tracker_GetQueryInt() setting should be named restricted_score for clarity
 		
 		case 4:
 			return "You do not have enough games played to play on this server. \n Your total games played: " + player.p.season_gamesplayed.tostring() + " \n Server required minimum: " + file.restricted_gamesplayed.tostring() + "\n You need to play " + ( file.restricted_gamesplayed - player.p.season_gamesplayed ).tostring() + " more games to play on this server."
@@ -2048,6 +2064,11 @@ const array<string> SERVER_MSG_EVENT_TYPES =
 
 void function BroadcastIntervalMessagesInit()
 {
+	file.MessageEvents.clear()
+	file.Messages_EventStart.clear()
+	file.Messages_EventEnd.clear()
+	file.Messages_EventJoin.clear()
+
 	ParseRules rules
 	rules.escapeChar = "\\"
 	rules.escapeMap =
@@ -2252,7 +2273,6 @@ void function MessageIntervalThread()
 	
 	file.bIntervalThreadRunning = true
 	
-	RegisterSignal( "KillIntervalThread" )
 	Signal( svGlobal.levelEnt, "KillIntervalThread" )
 	EndSignal( svGlobal.levelEnt, "KillIntervalThread" )
 	

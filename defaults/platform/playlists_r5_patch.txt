@@ -397,6 +397,7 @@ playlists
 				// usage: Comma Separated list of server admin uids
 				// example: "15423978654235,620652652562,72462626522253"
 				admins_list										""
+				enable_admin_noclip								0 		// protected commmand, set to 1 to allow admins to do 'cc noclip'
 				
 				enable_motd 									1		// Enables message of the day for server (defined at bottom of file in SECTION 4:  MOTD_TEXT )
 				
@@ -2909,6 +2910,11 @@ playlists
 				min_players                                    1
 				enable_nessies                                 0
 
+				//disable changing legend with client command 
+				enable_loadouts_set								0
+				
+				//can player ping 
+				player_can_ping									0
 			}
 			gamemodes { survival { maps {
 				mp_rr_desertlands_64k_x_64k                    	1

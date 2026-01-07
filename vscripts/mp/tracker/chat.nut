@@ -65,7 +65,7 @@ global Chat chat
 typedef OffenceTiers array< int > 
 
 const string YES = "1"
-const bool PRINT_TIME_STRING_ARGS = true
+const bool PRINT_TIME_STRING_ARGS = false
 
 
 struct 
@@ -441,8 +441,11 @@ bool function Chat_OffenceTiersEnabled()
 	return file.offenceTiersEnabled
 }
 
-bool function Chat_GlobalMuteEnabled()
+bool function Chat_GlobalMuteEnabled( bool ornull toggle = null )
 {
+	if( toggle != null )
+		settings.bGlobalMuteEnabled = expect bool( toggle )
+		
 	return settings.bGlobalMuteEnabled
 }
 
@@ -1373,8 +1376,10 @@ void function MutedList_Remove( string uid )
 void function CodeCallback_MuteFromRemote( string uid, string reason, bool toggle, int timeoutAmount, string byPlayerUID )
 {
 	entity player = GetPlayer( uid )
+	if ( IsValid( !player ) )//this should never happen, natives verifies player is in server before calling this function. Todo: Just send the SQEntity
+		return
 	
-	if( IsValid( player ) && toggle )
+	if( toggle )
 		SendResponse( player, format( "You were muted for: %s", reason ), true )
 	else 
 		SendResponse( player, "You were unmuted", true )

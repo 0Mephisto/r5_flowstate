@@ -237,6 +237,8 @@ void function Init_FS_Scenarios()
 	
 	if( GetCurrentPlaylistVarBool( "fs_scenarios_allow_teams", true ) )
 		FS_Scenarios_CustomTeamInit()
+		
+	Ping_SetCanPingCallback( FS_Scenarios_PlayerCanPing )
 }
 
 int function FS_Scenarios_PlayersPerTeam()

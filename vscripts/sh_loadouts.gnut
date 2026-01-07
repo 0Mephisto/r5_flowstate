@@ -227,7 +227,10 @@ void function ShLoadouts_LevelInit_Begin()
 	#if SERVER
 		//AddCallback_OnClientConnected( OnPlayerConnected )
 		AddCallback_UpgradePlayerPersistentData( UpgradePlayerPersistentData )
-		AddClientCommandCallback( "loadouts_set", ClientCommand_loadouts_set )
+		
+		if( GetCurrentPlaylistVarBool( "enable_loadouts_set", true ) )
+			AddClientCommandCallback( "loadouts_set", ClientCommand_loadouts_set )
+			
 		AddClientCommandCallback( "loadouts_reset_persistent", ClientCommand_loadouts_reset_persistent )
 		AddClientCommandCallback( "loadouts_devset", ClientCommand_loadouts_devset )
 		#if DEVELOPER
