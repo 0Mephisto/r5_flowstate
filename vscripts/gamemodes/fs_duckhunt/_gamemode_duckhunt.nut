@@ -242,6 +242,14 @@ void function DUCKHUNT_StartGameThread()
 		DUCKHUNT_Lobby()
 		DUCKHUNT_GameLoop()
 		WaitFrame()
+		
+		waitthread g__InternalCheckReload()		
+		
+		if( IsMapPlaylistGamemodeRotationEnabled() )
+		{
+			DecideNextMapPlaylistGamemodeRotation()
+			return 
+		}
 	}
 }
 

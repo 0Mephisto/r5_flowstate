@@ -1499,6 +1499,7 @@ void function __CONTROLLED_LogInit()
 
 void function PIN_Init()
 {
+	TrackerUtilityInit()			
 	file.launchStartUnixTime = GetUnixTimestamp()
 	
 	#if !SERVER
@@ -1749,8 +1750,13 @@ void function PlayerConnectedCallback( entity player )
 
 void function PlayerCounts( string state, string name, string OID, string count )
 {
-	//bad check for non fsdm gamemodes
-	if ( GetGlobalNetInt( "FSDM_GameState" ) == eTDMState.IN_PROGRESS || GetNumHumanPlayers() == 1 )
+	bool bIsPlaying
+	if( Gamemode() == eGamemodes.fs_dm )
+		bIsPlaying = GetGlobalNetInt( "FSDM_GameState" ) == eTDMState.IN_PROGRESS
+	else 
+		bIsPlaying = GamePlaying()
+		
+	if ( bIsPlaying || GetNumHumanPlayers() == 1 )
 		TrackerUpdatePlayerCount__internal( state, name, OID, count )
 }
 
@@ -5505,6 +5511,8 @@ void function PIN_Init()
 	
 	if( IsLobby() )
 		return
+
+	TrackerUtilityInit()
 
 	file.launchStartUnixTime = GetUnixTimestamp()
 	SetServerVar( "batch_fetch_complete", true ) //lets users use chat.

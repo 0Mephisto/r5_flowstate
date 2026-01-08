@@ -135,6 +135,14 @@ void function PROPHUNT_StartGameThread()
 		PROPHUNT_Lobby()
 		PROPHUNT_GameLoop()
 		WaitFrame()
+		
+		waitthread g__InternalCheckReload()
+
+		if( IsMapPlaylistGamemodeRotationEnabled() )
+		{
+			DecideNextMapPlaylistGamemodeRotation()
+			return 
+		}
 	}
 }
 

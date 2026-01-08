@@ -973,7 +973,13 @@ void function StartRound()
 	PIN_RoundEnd( file.currentRound )
 	file.currentRound++
 	
-	waitthread g__InternalCheckReload()
+	waitthread g__InternalCheckReload()	
+	
+	if( IsMapPlaylistGamemodeRotationEnabled() )
+	{
+		DecideNextMapPlaylistGamemodeRotation()
+		return 
+	}
 	
 	if( Flowstate_IsHaloMode() && 
 		Flowstate_CycleHaloPlaylists() &&

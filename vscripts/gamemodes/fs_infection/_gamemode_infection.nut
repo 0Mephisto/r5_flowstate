@@ -283,6 +283,14 @@ void function Infection_StartGameThread()
 		Infection_Lobby()
 		Infection_GameLoop()
 		WaitFrame()
+		
+		g__InternalCheckReload()
+		
+		if( IsMapPlaylistGamemodeRotationEnabled() )
+		{
+			DecideNextMapPlaylistGamemodeRotation()
+			return 
+		}
 	}
 }
 

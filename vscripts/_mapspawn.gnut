@@ -192,6 +192,7 @@ global SvGlobals svGlobal
 
 void function CodeCallback_MapSpawn() // original script entry point
 {	
+	PlaylistOverrideInit() //(mk): Chadded.
 	ShWeapons_LevelInit()
 	//seterrorhandler(void function() {})
 	//ScriptCompilerTest()
@@ -257,6 +258,14 @@ void function CodeCallback_MapSpawn() // original script entry point
 	thread FS_RestartServerAfterSomeTimeWithoutPlayers()
 	
 	FS_ResetMapLighting()
+}
+
+void function PlaylistOverrideInit()
+{
+	string playlistOverride = Dev_CommandLineParmValue( "playlistOverride" )
+		
+	if( playlistOverride != "" )
+		SetCurrentPlaylist( playlistOverride )
 }
 
 void function PrecacheFSEntities()

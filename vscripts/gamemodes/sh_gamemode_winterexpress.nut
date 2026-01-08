@@ -370,7 +370,7 @@ void function WinterExpress_Init()
 	#endif
 
 	#if CLIENT
-		
+		RegisterSignal( "Destroy1v1SettingsHint" ) //flowstate based
 		RegisterSignal( "ReviveRuiThread" )
 		RegisterSignal( "CaptureEndTimeRui" )
 		RegisterSignal( "GameStateChanged" )
@@ -1337,6 +1337,15 @@ void function OnWinnerDetermined()
 	thread function () : ()
 	{
 		wait 8
+		
+		g__InternalCheckReload()
+		
+		if( IsMapPlaylistGamemodeRotationEnabled() )
+		{
+			DecideNextMapPlaylistGamemodeRotation()
+			return 
+		}
+		
 		GameRules_ChangeMap( "mp_rr_desertlands_holiday", "winterexpress" )
 	}()
 }

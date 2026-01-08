@@ -40,6 +40,14 @@ void function RunSURF()
 	{
 		ActualSURFLobby()
 		ActualSURFGameLoop()
+			
+		waitthread g__InternalCheckReload()
+			
+		if( IsMapPlaylistGamemodeRotationEnabled() )
+		{
+			DecideNextMapPlaylistGamemodeRotation()
+			return 
+		}
 	}
 	WaitForever()
 }

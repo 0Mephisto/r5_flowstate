@@ -2174,8 +2174,9 @@ void function FS_IBMM_Msg( string msgString, string subMsgString, float duration
 	clGlobal.levelEnt.EndSignal( "FS_CloseNewMsgBox" )
 	player.EndSignal( "OnDestroy" )
 
-	OnThreadEnd(
-		function() : ( )
+	OnThreadEnd
+	(
+		void function() : ( )
 		{
 			Hud_SetVisible( HudElement( "FS_IBMM_MsgBg" ), false )
 			Hud_SetVisible( HudElement( "FS_IBMM_MsgText" ), false )
@@ -2189,19 +2190,22 @@ void function FS_IBMM_Msg( string msgString, string subMsgString, float duration
 	)
 	// printt( "trying to show message:", file.fs_newMsgBoxString, file.fs_newMsgBoxSubString )
 
-	if( Playlist() == ePlaylists.fs_1v1 || Playlist() == ePlaylists.fs_vamp_1v1 || Playlist() == ePlaylists.fs_1v1_headshots_only || Playlist() == ePlaylists.fs_lgduels_1v1 )
+	const array<int> ALLOWED_IBMM_BANNER_PLAYLISTS = 
+	[
+		ePlaylists.fs_1v1,
+		ePlaylists.fs_vamp_1v1
+		ePlaylists.fs_1v1_headshots_only,
+		ePlaylists.fs_lgduels_1v1
+	]
+	
+	if( ALLOWED_IBMM_BANNER_PLAYLISTS.contains( Playlist() ) )
 	{
 		entity enemy = player.GetPlayerNetEnt( "FSDM_1v1_Enemy" )
 
-		if( enemy != null )
+		if( subMsgString.find( "%s" ) != -1 )
 		{
-			if( subMsgString.find( "%s" ) != -1 )
-				subMsgString = StringReplaceLimited( subMsgString, "%s", enemy.GetPlayerName(), 1 )
-		}
-		else
-		{
-			if( subMsgString.find( "%s" ) != -1 )
-				subMsgString = StringReplaceLimited( subMsgString, "%s", "~unknown~", 1 )
+			string enemyPlayerName = enemy != null ? enemy.GetPlayerName() : "~unknown~"	
+			subMsgString = StringReplaceLimited( subMsgString, "%s", enemyPlayerName, 1 )
 		}
 	}
 
@@ -2249,8 +2253,9 @@ void function FS_Show1v1Banner( entity player )
 	clGlobal.levelEnt.EndSignal( "FS_1v1Banner" )
 	player.EndSignal( "OnDestroy" )
 
-	OnThreadEnd(
-		function() : ( )
+	OnThreadEnd
+	(
+		void function() : ( )
 		{
 			Hud_SetVisible( HudElement( "FS_1v1Banner" ), false )
 		}

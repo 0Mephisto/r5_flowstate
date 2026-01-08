@@ -82,25 +82,22 @@ void function __CheckIsTimedOut( entity player ) //✓
 	}
 	
 	if( IsTimeInSameMatch( untimeoutTimestamp ) )
-		thread __AutoUnTimeoutAtTime( player )
+		thread __AutoUnTimeoutPlayer( player )
 }
 
-void function __AutoUnTimeoutAtTime( entity player ) //✓
+void function __AutoUnTimeoutPlayer( entity player ) //✓
 {
 	if( !IsValid( player ) )
 		return
 	
 	player.EndSignal( "OnDestroy", "OnDisconnected", "NewTimeout" )
 	int timeoutExpiresAt = __GetTimeoutExpiresTimestamp( player )
+	int currentTime = GetUnixTimestamp()
 	
 	for( ; ; )
 	{
-		wait 1
-		if( GetUnixTimestamp() >= timeoutExpiresAt )
-		{
-			Timeout_SetPlayerTimedOut( player, false )
-			return
-		}
+		wait maxint( 0, timeoutExpiresAt - currentTime )
+		Timeout_SetPlayerTimedOut( player, false )
 	}
 }
 

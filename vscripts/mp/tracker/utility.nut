@@ -60,6 +60,9 @@ global function Tracker_GotoNextMap
 global function PrepareForJson
 global function ArrayUniqueInt
 global function CodeCallback_SendMessage
+global function TrackerUtilityInit
+global function IsMapPlaylistGamemodeRotationEnabled
+global function DecideNextMapPlaylistGamemodeRotation
 
 #if DEVELOPER
 	global function RegExpUnitTest
@@ -77,14 +80,39 @@ global struct ParseRules
 	table<string,string> escapeMap
 }
 
+struct PlaylistGamemodeRotateData
+{
+	string map 
+	string playlist
+	string gamemode
+	int minplayers
+	int maxplayers
+}
+
 struct
 {
-	table< string,int > WeaponIdentifiers
-	array< string > ADMINS
-	bool bStopUpdateMsg = false
-	
+	table< PlaylistGamemodeRotateData, array< string > > errorRotationData
+	array< PlaylistGamemodeRotateData > allRotationData
+	table< string, table< string, string > > tbl_adminConfirmations
+	table< string, int > tbl_weaponIdentifiers
+	array< string > adminsArray
+	bool bStopUpdateMsg
+	bool bAutoRotationEnabled
+
 } file
 
+void function TrackerUtilityInit()
+{
+	RegisterSignal( "ConfirmAction" )
+	
+	string autoRotateList = GetCurrentPlaylistVarString( "auto_rotate_list", "" )
+	if( autoRotateList != "" )
+	{
+		file.bAutoRotationEnabled = true
+		AutoMapPlaylistGamemodeRotationInit( autoRotateList )
+		AddCallback_GameStateEnter( eGameState.Postmatch, DecideNextMapPlaylistGamemodeRotation )
+	}
+}
 	
 	//client command: show
 		bool function ClientCommand_mkos_return_data( entity player, array<string> args )
@@ -92,7 +120,7 @@ struct
 			if ( !CheckRate( player, "verbose_stream", 5.0, true ) ) 
 				return false
 			
-			if ( args.len() < 1)
+			if ( args.len() < 1 )
 			{	
 				Message( player, "\n\n\nUsage: ", " showdata argument \n\n\n Arguments:\n map - Shows current map name \n round - Shows current round number \n input - Shows a list of players and their current input", 5 )
 				return true	
@@ -138,69 +166,66 @@ struct
 							return true
 						}
 							
-							try
-							{	
-								
-								if ( param.len() > 16 )
-								{
-									Message( player, "Failed", "Input exceeds char limit. " )
-									return true
-								}
-								
-								entity l_player = GetPlayer( param )
-								
-								if ( !IsValid( l_player ) )
-								{
-									Message( player, "Failed", "Player: " + param + " - is invalid. " )
-									return true
-								}			
-								
-								if ( Flowstate_IsLGDuels() )
-								{
-									handicap = l_player.p.p_damage == 2 ? "On" : "Off"
-									stringHandicap = "---- Handicap: " + handicap 
-								}
-								
-								p_input = l_player.p.input > 0 ? "Controller" : "MnK" 
-								kills = l_player.p.season_kills + player.GetPlayerNetInt( "kills" )
-								deaths = l_player.p.season_deaths + player.GetPlayerNetInt( "deaths" )
-								l_name = l_player.GetPlayerName()
-								l_oid = l_player.GetPlatformUID()
-								l_wait = l_player.p.IBMM_grace_period
-								inputmsg = "Player: " + l_name + " OID: " + l_oid
-								
-								if ( deaths > 0 ) 
-									kd = getkd( kills, deaths )
-								
-								data += "Season Kills: " + kills + " ---- Deaths: " + deaths + " ---- KD: " + kd + "\n"
-								data += "Input:  " + p_input + stringHandicap + "\n"
-								data += "wait time:  " + l_wait.tostring() + "\n" 
-								data += GetScore(l_player) + "\n"
-								data += "Season playtime: " + PlayTimeFromSecondsString( l_player.p.season_playtime ) + "\n"
-								data += "Season games: " + l_player.p.season_gamesplayed + "\n"
-								data += "Season score: " + l_player.p.season_score
-								
-								if( ( inputmsg.len() + data.len() ) > 2800 )
-								{
-									Message( player, "Failed", "Cannot execute this command currently due to return data resulting in overflow" )
-									return true
-								}
-								
-								Message( player, inputmsg, data, 15 )
-								
-							} 
-							catch ( errlookup ) 
+						try
+						{			
+							if ( param.len() > 16 )
 							{
-								Message(player, "Failed", "Command failed because of: \n\n " + errlookup )
-								return false
+								Message( player, "Failed", "Input exceeds char limit. " )
+								return true
 							}
 							
-							return true
-		
+							entity l_player = GetPlayer( param )
+							
+							if ( !IsValid( l_player ) )
+							{
+								Message( player, "Failed", "Player: " + param + " - is invalid. " )
+								return true
+							}			
+							
+							if ( Flowstate_IsLGDuels() )
+							{
+								handicap = l_player.p.p_damage == 2 ? "On" : "Off"
+								stringHandicap = "---- Handicap: " + handicap 
+							}
+							
+							p_input = l_player.p.input > 0 ? "Controller" : "MnK" 
+							kills = l_player.p.season_kills + player.GetPlayerNetInt( "kills" )
+							deaths = l_player.p.season_deaths + player.GetPlayerNetInt( "deaths" )
+							l_name = l_player.GetPlayerName()
+							l_oid = l_player.GetPlatformUID()
+							l_wait = l_player.p.IBMM_grace_period
+							inputmsg = "Player: " + l_name + " OID: " + l_oid
+							
+							if ( deaths > 0 ) 
+								kd = getkd( kills, deaths )
+							
+							data += "Season Kills: " + kills + " ---- Deaths: " + deaths + " ---- KD: " + kd + "\n"
+							data += "Input:  " + p_input + stringHandicap + "\n"
+							data += "wait time:  " + l_wait.tostring() + "\n" 
+							data += GetScore(l_player) + "\n"
+							data += "Season playtime: " + PlayTimeFromSecondsString( l_player.p.season_playtime ) + "\n"
+							data += "Season games: " + l_player.p.season_gamesplayed + "\n"
+							data += "Season score: " + l_player.p.season_score
+							
+							if( ( inputmsg.len() + data.len() ) > 2800 )
+							{
+								Message( player, "Failed", "Cannot execute this command currently due to return data resulting in overflow" )
+								return true
+							}
+							
+							Message( player, inputmsg, data, 15 )
+							
+						} 
+						catch ( errlookup ) 
+						{
+							Message(player, "Failed", "Command failed because of: \n\n " + errlookup )
+							return false
+						}
+						
+						return true
 				
 				case "input":
-						
-						
+											
 						string handicap = ""
 						string p_input = ""					
 						string data = ""
@@ -213,8 +238,7 @@ struct
 								handicap = active_player.p.p_damage == 2 ? "On" : "Off"
 								p_input = active_player.p.input > 0 ? "Controller" : "MnK"
 								data += "Player: " + active_player.GetPlayerName() + " is using: " + p_input + " ---- Handicap: " + handicap + "\n"
-							}
-							
+							}				
 							
 							if( ( inputmsg.len() + data.len()) > 2800 )
 							{
@@ -228,8 +252,7 @@ struct
 						{
 							Message( player, "Failed", "Command failed because of: \n\n " + show_err )
 							return false			
-						}
-						
+						}		
 						
 						return true
 						
@@ -241,18 +264,13 @@ struct
 						foreach ( active_player in GetPlayerArray() )
 						{
 							if ( active_player.p.input == 0 )
-							{
 								mnkCount++
-							}
 							else if ( active_player.p.input == 1 )
-							{
 								controllerCount++
-							}
 						}
 						
 						string cplural = controllerCount > 1 || controllerCount == 0 ? "s" : ""
 						string mplural = mnkCount > 1 || mnkCount == 0 ? "s" : "";
-						
 						
 						string countMsg = format("%d controller player%s \n %d mnk player%s", controllerCount, cplural, mnkCount, mplural );
 						Message( player, "There is currently", countMsg, 7 )
@@ -270,8 +288,7 @@ struct
 						string global_stats_msg = bGlobalStats() ? " Season Stats:" : " Current Round Stats:"
 						
 						try 
-						{
-						
+						{				
 							foreach ( active_player in GetPlayerArray() )
 							{
 								kills = active_player.p.season_kills + player.GetPlayerNetInt( "kills" )
@@ -294,15 +311,13 @@ struct
 								return true
 							}
 							
-							Message( player, inputmsg, data, 20 )
-						
+							Message( player, inputmsg, data, 20 )	
 						} 
 						catch ( show_err2 ) 
 						{
 							Message( player, "Failed", "Command failed because of: \n\n " + show_err2 )
 							return false						
-						}
-						
+						}		
 						
 						return true
 						
@@ -312,19 +327,17 @@ struct
 						string inputmsg = "Server AA values:"
 						
 						try 
-						{
-							
-							data += format("\n Console Aim Assist: %.1f ", GetCurrentPlaylistVarFloat( "aimassist_magnet", 0.0 ) )
-							data += format("\n PC Aim Assist: %.1f", GetCurrentPlaylistVarFloat("aimassist_magnet_pc", 0.0 ) )
+						{			
+							data += format( "\n Console Aim Assist: %.1f ", GetCurrentPlaylistVarFloat( "aimassist_magnet", 0.0 ) )
+							data += format( "\n PC Aim Assist: %.1f", GetCurrentPlaylistVarFloat( "aimassist_magnet_pc", 0.0 ) )
 									
-							if( (inputmsg.len() + data.len()) > 2800 )
+							if( ( inputmsg.len() + data.len() ) > 2800 )
 							{	
 								Message( player, "Failed", "Cannot execute this command currently due to return data resulting in overflow" )
 								return true		
 							}
 							
 							Message( player, inputmsg, data, 20 )
-						
 						} 
 						catch ( show_err3 ) 
 						{	
@@ -382,7 +395,7 @@ struct
 		if( !IsAuthEnabled() )
 			sqwarning( "WARNING: Client Command Admin is enabled but online auth is disabled" )
 	
-		file.ADMINS.resize( 0 )
+		file.adminsArray.resize( 0 )
 	
 		string admins_list
 		string pair
@@ -415,10 +428,10 @@ struct
 				if( admin_pair.find( "-" ) != -1 )
 				{
 					array<string> a_format = split( admin_pair, "-" )
-					file.ADMINS.append( a_format[ 1 ] )
+					file.adminsArray.append( a_format[ 1 ] )
 				}
 				else 
-					file.ADMINS.append( admin_pair ) //new format only uid
+					file.adminsArray.append( admin_pair ) //new format only uid
 			}
 		}
 		catch( erradmin )
@@ -429,7 +442,7 @@ struct
 	
 	array<string> function GetAdminList()
 	{
-		return file.ADMINS
+		return file.adminsArray
 	}
 
 	string function PlayTimeFromSecondsString( int iSeconds ) 
@@ -447,10 +460,9 @@ struct
 	//cc commands
 	bool function ClientCommand_mkos_admin( entity player, array<string> args )
 	{	
-		if ( !CheckRate( player ) ) 
+		if ( !CheckRate( player, "admin_commands" ) ) 
 			return false
 		
-		string PlayerName = player.GetPlayerName()
 		string PlayerUID = player.GetPlatformUID()
 
 		if( !IsServerAdmin( PlayerUID ) )
@@ -498,7 +510,7 @@ struct
 					"cc bansay [name|oid] [reason]    - Bans a player and announces the reason to the whole server.\n",
 					"cc ban #name/oid #reason    - Bans a player\n",
 					"cc unban #oid   - attempts to unban a player by OID\n",
-					"cc map #name #mode   - reloads map. partials match i.e. \"cc map drop\" will load dropoff\n", 
+					"cc map #name #playlist #gamemode   - reloads map. partials match i.e. \"cc map comp\" will load mp_rr_arena_composite\n", 
 					"cc endround    - forces the round timer to end now\n",
 					"cc playerinput #name/oid   - shows players input\n", 
 					"cc playerinfo  - some stats",
@@ -507,7 +519,7 @@ struct
 				
 				try 
 				{
-					Message( player, "Commands:", commandHelp.join( "" ), 20 )
+					LocalMsg( player, "#FS_NULL", "#FS_NULL", eMsgUI.DEFAULT, 20, "Commands:", commandHelp.join( "" ) )
 				}
 				catch ( err ) 
 				{
@@ -515,6 +527,37 @@ struct
 					return true 
 				}
 		
+				return true
+			}
+			case "addbot":
+			{
+				if( param == "" )
+				{
+					Message( player, "Failed", "addbot requires name for 1st param of command" )
+					return true
+				}
+				
+				if( param2 == "" )
+				{
+					Message( player, "Failed", "addbot requires team for 2nd param of command" )
+					return true
+				}
+				
+				if( !IsStringNumber( param2 ) )
+				{
+					Message( player, "Failed", "addbot requires team as number for 2nd param of command" )
+					return true
+				}
+				
+				int calc = param2.tointeger()
+				if( calc > 129 || calc < 0 )
+				{
+					Message( player, "Invalid team. Must be > 0 and < 129" )
+					return true
+				}
+				
+				__ServerCommand( format( "sv_addbot %s %s", param, param2 ) )
+				Message( player, format( "Bot '%s' created on team '%s'", param, param2 ) )
 				return true
 			}
 			case "kick":
@@ -537,6 +580,15 @@ struct
 					if ( !IsValid( k_player ) )
 					{
 						Message( player, "Failed", format( "Player: '%s' is invalid. ", param ) )
+						return true
+					}
+					
+					if( k_player.IsBot() )
+					{
+						string botName = k_player.GetPlayerName()
+						__ServerCommand( format( "kick %s", botName ) )
+						
+						Message( player, format( "Bot player %s was kicked", botName ) )
 						return true
 					}
 						
@@ -564,7 +616,7 @@ struct
 				return true	
 			}	
 			case "afk":
-			{	
+			{
 				if( !IsStringBool( param ) )
 				{
 					Message( player, "Param 1 of command 'afk' requires bool. [0|1|true|false]" )
@@ -880,7 +932,7 @@ struct
 						
 						return true	
 						
-					} 
+					}
 					catch ( errbanid )
 					{
 						Message(player, "Failed", "Command failed because of: \n\n " + errbanid )
@@ -981,7 +1033,6 @@ struct
 					return true		
 				}
 				
-				
 				if ( args.len() < 2)
 				{	
 					Message( player, "Failed", "Param 2 of command 'input' requires type 0/1.")
@@ -1026,8 +1077,7 @@ struct
 					else 
 					{
 						Message( player, "Failed", "Player is already input type: " + sayInput )
-					}
-				
+					}		
 				} 
 				catch( errj ) 
 				{		
@@ -1072,7 +1122,7 @@ struct
 				if( param == "" )
 					map = GetMapName()
 				else 
-					map = GetMap( param )
+					map = FindMap( param )
 				
 				if( map == "" )
 				{
@@ -1081,20 +1131,129 @@ struct
 					return true
 				}
 				
-				if( !GetPlaylistMaps( GetCurrentPlaylistName() ).contains( map ) )
+				string playlist = FindPlaylistName( param2 )
+				string errorMsg
+				bool bIsPlaylistValid
+						
+				if( param2 != "" )
 				{
-					Message( player, "MAP NOT IN PLAYLIST" )
-					sqerror( "Map not in playlist - rejecting load" )
+					if( playlist == "" )
+						errorMsg = format( "Could not find a valid playlist via partial matching for criteria '%s'", playlist )
+				
+					if( !GetPlaylistMaps( playlist ).contains( map ) )
+						errorMsg = format( "Map '%s' not in playlist '%s' - rejecting cc map load", map, playlist )
+
+					if( errorMsg != "" )
+					{
+						Message( player, "ERROR", errorMsg )
+						sqerror( errorMsg )
+						
+						return true
+					}
+					
+					string actionKey = "playlist_max_players"
+					int requestedPlaylistMaxPlayers = GetMaxPlayersForPlaylistName( playlist )
+					int currentConnectedPlayerCount = GetConnectedPlayerCount()
+					
+					if( !__AdminHasConfirmedAction( player, actionKey ) && requestedPlaylistMaxPlayers < currentConnectedPlayerCount )
+					{
+						int lostPlayers = currentConnectedPlayerCount - requestedPlaylistMaxPlayers
+						string confirmMessage = format
+						( 
+							"The requested map change for map: '%s', Playlist: '%s' will lose some players.\nCurrent Player Count: %d\nMax Players for new playlist: %d\n[%d] players will not get in.\n\nIf this is acceptable, enter 'cc confirm' to proceed",
+							map,
+							playlist,
+							currentConnectedPlayerCount,
+							requestedPlaylistMaxPlayers,
+							lostPlayers,	
+							actionKey
+						)
+						
+						string action = args.join( " " )
+						AdminNeedsConfirmAction( player, actionKey, action )
+						Message( player, "Notice:", confirmMessage )
+						
+						return true
+					}
+					
+					bIsPlaylistValid = true
+				}
+				
+				string gamemode = GameRules_GetGameMode()
+				if( param3 != "" )
+				{
+					gamemode = FindModeName( param3 )
+					if( gamemode == "" )
+					{
+						errorMsg = format( "Could not match '%s' to a gamemode", param3 )
+						Message( player, errorMsg )
+						sqerror( errorMsg )
+						return true
+					}
+					
+					if( bIsPlaylistValid )
+						Dev_CommandLineAddParm( "playlistOverride", playlist )
+				}
+					
+				if( !DoesPlaylistSupportGamemode( playlist, gamemode ) )
+				{
+					errorMsg = format( "Playlist '%s' does not support gamemode '%s'", playlist, gamemode )
+					Message( player, "Error:", errorMsg )
+					sqerror( errorMsg )
+					
+					return true 
+				}
+				
+				printf( "Admin Changing to map: %s, Gamemode: %s, playlist: %s", map, gamemode, playlist != "" ? playlist : GetCurrentPlaylistName() )
+				GameRules_ChangeMap( map, gamemode )
+					
+				return true
+			}
+			case "confirm":
+			{
+				array< string > storedCmdArgs = GetStoredAdminCommand( player )
+				
+				if( !storedCmdArgs.len() )
+				{
+					Message( player, "Invalid action", "No action was stored for confirm." )
 					return true
 				}
 				
-				GameRules_ChangeMap( map, GetMode( param2 ) )
+				Message( player, "Success", format( "Running command: %s", storedCmdArgs.join( " " ) ) )
+				
+				thread void function() : ( player, storedCmdArgs )
+				{
+					if( !IsValid( player ) )
+						return 
+						
+					player.Signal( "ConfirmAction" )
+					player.EndSignal( "ConfirmAction", "OnDestroy", "OnDisconnected" )
+				
+					wait 3
 					
+					ClientCommand_mkos_admin( player, storedCmdArgs )
+				}()
+						
+				return true
+			}
+			case "playlist":
+			{
+				string playlistOverride = Dev_CommandLineParmValue( "playlistOverride" )
+				
+				string playlistConfig = format
+				(
+					"Active Playlist: %s\nActive Gamemode: %s\nActive Playlist Override:%s",
+					GetCurrentPlaylistName(),
+					GameRules_GetGameMode(),
+					playlistOverride != "" ? playlistOverride : "{none}"
+				)
+				
+				Message( player, "Current playlist config:", playlistConfig )
 				return true
 			}
 			case "score":
 			{
-				if ( args.len() < 1)
+				if ( args.len() < 1 )
 				{		
 					Message( player, "Info", "Param 1 of command 'score' requires player name/oid/*/current/season/difference. \n\n Usage: score player | score * | score current")
 					return true			
@@ -1144,28 +1303,25 @@ struct
 						Message( player, "Failed", "Command failed because of: \n\n " + errallscore )
 						return true
 					}
-				
 				}
 				else
 				{
-					entity s_player;
-							
-					s_player = GetPlayer( param )
+					entity s_player = GetPlayer( param )
 					
 					if ( !IsValid( s_player ) )
 					{	
-						Message( player, "Failed", "Player: " + param + " -- is invalid" );
+						Message( player, "Failed", "Player: " + param + " -- is invalid" )
 						return true
 					}
 					
 					try 
 					{
-						Message( player, "Success", GetScore( s_player ) );		
+						Message( player, "Success", GetScore( s_player ) )	
 					} 
-					catch (errscore) 
+					catch ( errscore ) 
 					{
 						Message( player, "Failed", "Command failed because of: \n\n " + errscore )
-						return true;			
+						return true			
 					}
 				
 				}
@@ -1174,15 +1330,15 @@ struct
 			}
 			case "scoreconfig":
 			{
-				if ( args.len() < 2)
+				if ( args.len() < 2 )
 				{
-					Message( player, "Failed", "Param 1 of command 'scoreconfig' requires type: current/season/difference.")
+					Message( player, "Failed", "Param 1 of command 'scoreconfig' requires type: current/season/difference." )
 					return true
 				}
 				
-				if ( args.len() < 3)
+				if ( args.len() < 3 )
 				{	
-					Message( player, "Failed", "Param 2 of command 'scoreconfig' requires float")
+					Message( player, "Failed", "Param 2 of command 'scoreconfig' requires float" )
 					return true	
 				}
 				
@@ -1212,10 +1368,10 @@ struct
 						return true
 					}	
 					
-					Message( player, "Success", "Weight for " + param + " KD -- was set to: " + param2 , 5 );
+					Message( player, "Success", "Weight for " + param + " KD -- was set to: " + param2 , 5 )
 				
 				} 
-				catch (errsetweight) 
+				catch ( errsetweight ) 
 				{
 					Message( player, "Failed", "Command failed because of: \n\n " + errsetweight )
 					return true;			
@@ -1247,8 +1403,7 @@ struct
 					{
 						Message( player, "Failed", "Param 1 of command 'setting' requires key name")
 						return true
-					}
-					
+					}				
 					
 					try 
 					{	
@@ -1259,8 +1414,7 @@ struct
 						return true
 					} 
 					catch ( errset ) 
-					{
-						
+					{			
 						Message( player, "Failed", "Command failed because of: \n\n " + errset )
 						return true		
 					}
@@ -1856,7 +2010,7 @@ struct
 				// needs server function capable of swapping playlist & map
 				//CreateServer("","","mp_rr_desertlands_64k_x_64k","survival_solos", 0)
 				break
-			}	
+			}
 			case "movement_recorder_playback_rate":
 			{
 				if( IsStringNumeric( param ) )
@@ -1874,11 +2028,13 @@ struct
 			case "kill_banners":
 			{
 				BannerAssets_KillAllBanners()
+				Message( player, "Banners stopped" )		
 				break 
 			}	
 			case "start_banners":
 			{
 				BannerAssets_Restart()
+				Message( player, "Banners restarted" )	
 				break
 			}	
 			case "allow_legend_select":
@@ -1914,7 +2070,6 @@ struct
 			}	
 			case "set_legend":
 			{
-			
 				if( empty( param ) || !IsStringNumeric( param ) )
 				{
 					Message( player, "Command 'set_legend' requires numeric paramater for legend index" )
@@ -1965,7 +2120,7 @@ struct
 				
 				break
 			}
-			case "timeout":  // criteria, toggle, timeoutAmount   
+			case "timeout":  // criteria, toggle, timeoutAmount + -reason "reason" 
 			{
 				if( param == "" )
 				{
@@ -2000,10 +2155,9 @@ struct
 				string reason = Chat_FindReasonInArgs( args )
 				Timeout_SetPlayerTimedOut( timeoutPlayer, toggle, player.GetPlayerName(), timeoutAmount, reason )
 			
-				printt( timeoutPlayer, toggle, player.GetPlayerName(), timeoutAmount, reason )
+				Message( player, "Success", format( "'%s' was put in timeout for '%s'\nReason: %s", player.GetPlayerName(), Chat_ReadableTime( timeoutAmount ), reason != "" ? reason : "{empty}" ) )
 				break
 			}
-			
 			case "gettimeout":
 			{
 				if( param == "" )
@@ -2048,8 +2202,7 @@ struct
 	}
 
 void function RunUpdateMsg()
-{	
-	
+{		
 	string update_title = GetCurrentPlaylistVarString( "update_title", "Server about to UPDATE" )
 	string update_msg = GetCurrentPlaylistVarString( "update_msg", "Server will go down briefly" )
 	
@@ -2378,9 +2531,7 @@ bool function IsStringBool( string str )
 }
 
 bool function StringToBool( string str )
-{
-	mAssert( IsStringBool( str ), "Tried to convert \"%s\" to bool", str )
-	
+{	
 	switch( str )
 	{
 		case "0":
@@ -2390,9 +2541,12 @@ bool function StringToBool( string str )
 		case "1":
 		case "true":
 			return true 
+			
+		default:
+			mAssert( IsStringBool( str ), "Tried to convert \"%s\" to bool. Should have used IsStringBool() on criteria before calling", str )
 	}
 	
-	unreachable
+	return false
 }
 
 entity function GetPlayerEntityByName( string name ) //deprecate use universal lookup for both name/uid
@@ -2475,7 +2629,7 @@ entity function GetPlayer( string str ) //todo:deprecate
 	return GetPlayerEntityByName( str )	
 }
 
-string function GetMap( string query )
+string function FindMap( string query )
 {
 	foreach( mapname in AllMapsArray() )
 	{
@@ -2486,10 +2640,30 @@ string function GetMap( string query )
 	return ""
 }
 
-string function GetMode( string str )
+string function FindPlaylistName( string str )
 {
-	//Todo: scan / find match modes when playlist is able to swap
-	return GameRules_GetGameMode()
+	array<string> registeredPlaylists = AllPlaylistsArray() //includes custom
+	
+	foreach( string playlist in registeredPlaylists )
+	{
+		if( playlist.find( str ) != -1 )
+			return playlist
+	}
+	
+	return ""
+}
+
+string function FindModeName( string str )
+{
+	array<string> registeredModes = AllGamemodesArray()
+	
+	foreach( string gamemode in registeredModes )
+	{
+		if( gamemode.find( str ) != -1 )
+			return gamemode
+	}
+	
+	return ""
 }
 
 bool function IsControlCharacter( string c ) 
@@ -2547,7 +2721,7 @@ void function ResetRate( entity player, string key = DEFAULT_RATE_KEY )
 #if SERVER	
 bool function IsServerAdmin( string uid )
 {	
-	return file.ADMINS.contains( uid )
+	return file.adminsArray.contains( uid )
 }
 #endif //SERVER
 
@@ -2566,19 +2740,19 @@ int function WeaponToIdentifier( string weaponName )
 		return 2
 	}
 	
-	return file.WeaponIdentifiers[ weaponName ]
+	return file.tbl_weaponIdentifiers[ weaponName ]
 }
 
 bool function IsWeaponValid( string weaponref )
 {
-	return ( weaponref in file.WeaponIdentifiers )
+	return ( weaponref in file.tbl_weaponIdentifiers )
 }
 
 void function DEV_PrintTrackerWeapons()
 {
 	string prnt = "\n\n ---------- TRACKER WEAPON IDENTIFIERS --------- \n\n";
 	
-	foreach( weapon, id in file.WeaponIdentifiers )
+	foreach( weapon, id in file.tbl_weaponIdentifiers )
 	{
 		prnt += format( "[\"%s\"] = %d, \n", weapon, id )
 	}
@@ -2588,7 +2762,7 @@ void function DEV_PrintTrackerWeapons()
 
 table<string, int> function TrackerWepTable() 
 {
-    return file.WeaponIdentifiers
+    return file.tbl_weaponIdentifiers
 }
 
 bool function ShouldExcludeDamageSourceShipping( int weaponSource )
@@ -2711,6 +2885,12 @@ string function Tracker_DetermineNextMap()
 
 void function Tracker_GotoNextMap()
 {
+	if( IsMapPlaylistGamemodeRotationEnabled() )
+	{
+		DecideNextMapPlaylistGamemodeRotation()
+		return
+	}
+
 	string to_map = Tracker_DetermineNextMap()
 	sqprint( "Changing map to: " + to_map + " - Mode: " + GameRules_GetGameMode() )
 	GameRules_ChangeMap( to_map, GameRules_GetGameMode() )	
@@ -3035,4 +3215,375 @@ int function FindFirstUnescaped( string s, string delimiter, ParseRules rules )
 	}
 
 	return -1
+}
+
+void function AdminNeedsConfirmAction( entity player, string actionKey, string action )
+{
+	string uid = __EnsureAdminConfirmTable( player, actionKey )
+	file.tbl_adminConfirmations[ uid ][ actionKey ] = action
+}
+
+bool function __AdminHasConfirmedAction( entity player, string actionKey )
+{
+	string uid = __EnsureAdminConfirmTable( player, actionKey )
+	return file.tbl_adminConfirmations[ uid ][ actionKey ] != ""
+}
+
+array< string > function GetStoredAdminCommand( entity player )
+{
+	array< string > args
+	string uid = player.GetPlatformUID()
+	if( !( uid in file.tbl_adminConfirmations ) )
+		return args
+	
+	string actionKey = file.tbl_adminConfirmations[ uid ][ "last_action_key" ]	
+	if( actionKey == "" )
+		return args
+		
+	if( !__AdminHasConfirmedAction( player, actionKey ) )
+		return args
+		
+	string command = file.tbl_adminConfirmations[ uid ][ actionKey ]
+	return split( command, " " )
+}
+
+string function __EnsureAdminConfirmTable( entity player, string actionKey )
+{
+	string uid = player.GetPlatformUID()
+	
+	if( !( uid in file.tbl_adminConfirmations ) )
+	{
+		table< string, string > confirmations
+		file.tbl_adminConfirmations[ uid ] <- confirmations
+	}
+	
+	if( !( "last_action_key" in file.tbl_adminConfirmations[ uid ] ) )
+		file.tbl_adminConfirmations[ uid ][ "last_action_key" ] <- actionKey
+	else 
+		file.tbl_adminConfirmations[ uid ][ "last_action_key" ] = actionKey
+	
+	if( !( actionKey in file.tbl_adminConfirmations[ uid ] ) )
+		file.tbl_adminConfirmations[ uid ][ actionKey ] <- ""
+		
+	return uid
+}
+
+array<string> function GetGamemodesForPlaylist( PlaylistName playlist )
+{
+	array< string > modesArray
+
+	int numModes = GetPlaylistGamemodesCount( playlist )
+	for ( int modeIndex = 0; modeIndex < numModes; modeIndex++ )
+		modesArray.append( GetPlaylistGamemodeByIndex( playlist, modeIndex ) )
+
+	return modesArray
+}
+
+bool function DoesPlaylistSupportGamemode( PlaylistName playlist, string gamemode )
+{
+	return GetGamemodesForPlaylist( playlist ).contains( gamemode )	
+}
+
+const string ERROR_STR = "{error}"
+void function AutoMapPlaylistGamemodeRotationInit( string autoRotateList )
+{
+	array< string > rotationList = split( autoRotateList, "," )
+	if( !rotationList.len() )
+		return
+		
+	int entryIdx = 0
+	foreach( string entry in rotationList )
+	{
+		++entryIdx
+		
+		entry = strip( entry )
+		array< string > args = split( entry, " " ) // [ "map", "playlist", "gamemode", "5" ]
+		
+		PlaylistGamemodeRotateData thisRotationData
+		int rotationParamsLen = args.len()
+		
+		if( rotationParamsLen == 0 )
+		{
+			string errorMsg = format
+			(
+				"Rotation data #[%d] was empty",
+				entryIdx
+			)
+		
+			__AppendRotationErrorDataMessage( thisRotationData, errorMsg )
+			continue
+		}
+		
+		for( int i = 0; i < rotationParamsLen; i++ )
+		{	
+			string rotateParam = strip( args[ i ] )
+			switch( i )
+			{
+				case 0:	
+				{
+					string map = FindMap( rotateParam )
+					if( map == "" )
+					{
+						__CouldNotMatchMessage( thisRotationData, entryIdx, "map", rotateParam, i, entry )
+						thisRotationData.map = ERROR_STR
+						break 
+					}
+					
+					thisRotationData.map = map
+					break
+				}
+				case 1:
+				{
+					string playlist = FindPlaylistName( rotateParam )
+					if( playlist == "" )
+					{
+						__CouldNotMatchMessage( thisRotationData, entryIdx, "playlist", rotateParam, i, entry )
+						thisRotationData.playlist = ERROR_STR
+						break
+					}
+				
+					thisRotationData.playlist = playlist
+					break
+				}	
+				case 2: 
+				{
+					string gamemode = FindModeName( rotateParam )
+					if( gamemode == "" )
+					{
+						__CouldNotMatchMessage( thisRotationData, entryIdx, "gamemode", rotateParam, i, entry )
+						thisRotationData.gamemode = ERROR_STR
+						break
+					}
+					
+					thisRotationData.gamemode = gamemode
+					break
+				}
+				case 3: 
+				{
+					if( !IsStringNumber( rotateParam ) )
+					{
+						string errorMsg = format
+						(
+							"Rotation data #[%d] expected an integer(number) for minplayers param 4 -- Got: '%s'. For Entry: '%s'",
+							entryIdx,
+							rotateParam,
+							entry
+						)
+					
+						__AppendRotationErrorDataMessage( thisRotationData, errorMsg )
+						break
+					}
+					
+					thisRotationData.minplayers = rotateParam.tointeger()
+					break
+				}
+				case 4: 
+				{
+					if( !IsStringNumber( rotateParam ) )
+					{
+						string errorMsg = format
+						(
+							"Rotation data #[%d] expected an integer(number) for maxplayers param 5 -- Got: '%s'. For Entry: '%s'",
+							entryIdx,
+							rotateParam,
+							entry
+						)
+					
+						__AppendRotationErrorDataMessage( thisRotationData, errorMsg )
+						break
+					}
+					
+					thisRotationData.maxplayers = rotateParam.tointeger()
+					break
+				}
+				default:
+				{
+					string errorMsg = format
+					(
+						"Rotation data #[%d] contained an extra argument: '%s'. For Entry: '%s'",
+						entryIdx,
+						rotateParam,
+						entry
+					)
+					
+					__AppendRotationErrorDataMessage( thisRotationData, errorMsg )	
+					break
+				}
+			} //switch		
+		} // rotation params for loop
+		
+		if( thisRotationData.playlist == "" )
+			thisRotationData.playlist = GetCurrentPlaylistName()
+			
+		if( thisRotationData.map == "" )
+			thisRotationData.map = GetMapName()
+			
+		if( thisRotationData.gamemode == "" )
+			thisRotationData.gamemode = GameRules_GetGameMode()
+			
+		int maxPlaylistPlayers = GetPlaylistVarInt( thisRotationData.playlist, "max_players", 129 )
+		if( thisRotationData.maxplayers <= 0 )
+			thisRotationData.maxplayers = maxPlaylistPlayers >= 0 ? maxPlaylistPlayers : 129
+			
+		int minPlaylistPlayers = GetPlaylistVarInt( thisRotationData.playlist, "min_players", 0 )
+		if( thisRotationData.minplayers <= 0 )
+			thisRotationData.minplayers = minPlaylistPlayers >= 0 ? minPlaylistPlayers : 0
+			
+		if( thisRotationData.playlist != ERROR_STR && thisRotationData.map != ERROR_STR )
+		{
+			if( !GetPlaylistMaps( thisRotationData.playlist ).contains( thisRotationData.map ) )
+			{
+				string errorMsg = format
+				( 
+					"Error in rotation data #[%d]: Map '%s' is not in playlist '%s'. For Entry: '%s'",
+					entryIdx,
+					thisRotationData.map,
+					thisRotationData.playlist, 
+					entry
+				)
+				
+				__AppendRotationErrorDataMessage( thisRotationData, errorMsg )	
+			}
+		
+			if( !DoesPlaylistSupportGamemode( thisRotationData.playlist, thisRotationData.gamemode ) )
+			{
+				string errorMsg = format
+				( 
+					"Error in rotation data #[%d]: Playlist '%s' does not support gamemode '%s'. For Entry: '%s'",
+					entryIdx,
+					thisRotationData.playlist,
+					thisRotationData.gamemode,
+					entry
+				)
+				
+				__AppendRotationErrorDataMessage( thisRotationData, errorMsg )	
+			}
+		}
+		
+		file.allRotationData.append( thisRotationData )
+	} // combination foreach 
+	
+	__ValidateAllRotationData()
+}
+
+void function __ValidateAllRotationData()
+{
+	if( !file.errorRotationData.len() )
+		return 
+		
+	int iErrorCount	
+	int iRepeatAsterisk	= 120
+		
+	string errorAlert = format( "\n%s*\n*\n*\n*\n*\n*\n==== The following rotation data errors occurred ==== \n\n", RepeatString( "*", iRepeatAsterisk ) )
+	foreach( PlaylistGamemodeRotateData errorRotationData, array< string > errorStrings in file.errorRotationData )
+	{
+		iErrorCount += errorStrings.len()
+		foreach( string message in errorStrings )
+			errorAlert += format( "%s\n", message )
+	}
+	
+	errorAlert += format( "\n*\n*\n*\n*\n*\n*\n%s", RepeatString( "*", iRepeatAsterisk ) )
+	
+	thread
+	(		
+		void function() : ( errorAlert, iErrorCount )
+		{
+			Dev_CommandLineAddParm( "playlistOverride", "" )
+			wait 3
+					
+			sqerror( errorAlert )
+			mAssert( 0, "AutoRotation via playlist setting 'auto_rotate_list' encountered [%d] errors\nSee console or logs for information.", iErrorCount )
+		}
+	)()
+}
+
+void function __AppendRotationErrorDataMessage( PlaylistGamemodeRotateData data, string msg )
+{
+	array< string > emptyMessages
+	if( !( data in file.errorRotationData ) )
+		file.errorRotationData[ data ] <- emptyMessages
+	
+	file.errorRotationData[ data ].append( msg )
+}
+
+void function __CouldNotMatchMessage( PlaylistGamemodeRotateData rotateData, int entryIdx, string matchFor, string criteria, int iParam, string thisEntry  )
+{
+	string errorMsg = format
+	(
+		"Rotation data #[%d] could not match a *%s* with criteria '%s' @param#:[%d] For Entry: '%s'",
+		entryIdx,
+		matchFor,
+		criteria,
+		iParam + 1,
+		thisEntry
+	)
+	
+	__AppendRotationErrorDataMessage( rotateData, errorMsg )
+}
+
+int function FindCurrentRotationIndex()
+{
+	array< PlaylistGamemodeRotateData > rotationData = file.allRotationData
+	
+	string map = GetMapName()
+	string playlist = GetCurrentPlaylistName()
+	string gamemode = GameRules_GetGameMode()
+	
+	int i = 0
+	foreach( PlaylistGamemodeRotateData data in rotationData )
+	{
+		if
+		( 
+			data.map 		== map 			&&
+			data.playlist 	== playlist		&&
+			data.gamemode	== gamemode
+		)
+		{
+			return i
+		}
+		
+		i++
+	}
+	
+	return -1
+}
+
+array< PlaylistGamemodeRotateData > function GetCurrentRotationSet()
+{
+	return file.allRotationData
+}
+
+void function DecideNextMapPlaylistGamemodeRotation()
+{
+	if( !file.bAutoRotationEnabled )
+		return
+
+	array< PlaylistGamemodeRotateData > allRotationData = file.allRotationData 
+	int rotationMaxIndex = allRotationData.len()
+	int currentRotationIndex = FindCurrentRotationIndex()
+	int rotationIndexToLoad = -1
+	
+	mAssert( rotationMaxIndex != 0, "Rotation is enabled, but there is no valid rotation data." )
+	
+	PlaylistGamemodeRotateData rotationDataToLoad
+	int playerCount = GetConnectedPlayerCount()
+	
+	for( int i = 0; i < rotationMaxIndex; i++ )
+	{
+		rotationIndexToLoad = ( currentRotationIndex + 1 + i ) % rotationMaxIndex		
+		rotationDataToLoad = file.allRotationData[ rotationIndexToLoad ]
+		
+		if( playerCount >= rotationDataToLoad.minplayers && playerCount <= rotationDataToLoad.maxplayers )
+			break
+			
+		currentRotationIndex++
+	}
+	
+	Dev_CommandLineAddParm( "playlistOverride", rotationDataToLoad.playlist )
+	GameRules_ChangeMap( rotationDataToLoad.map, rotationDataToLoad.gamemode )
+}
+
+bool function IsMapPlaylistGamemodeRotationEnabled()
+{
+	return file.bAutoRotationEnabled
 }

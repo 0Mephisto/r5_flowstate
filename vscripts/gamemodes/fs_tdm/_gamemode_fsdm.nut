@@ -2053,17 +2053,20 @@ void function __GiveWeapon( entity player, array<string> WeaponData, int slot, i
 {
 	array<string> Data = split(WeaponData[select], " ")
 	
-	if ( Data.len() == 0 ) return 
+	if ( Data.len() == 0 ) 
+		return 
 	
 	string weaponclass = Data[0]
 	
-	if(weaponclass == "tgive") return
+	if( weaponclass == "tgive") 
+		return
 	
 	array<string> Mods
-	foreach(string mod in Data)
+	foreach( string mod in Data )
 	{
-		if(strip(mod) != "" && strip(mod) != weaponclass)
-		    Mods.append( strip(mod) )
+		string modString = strip( mod )
+		if( modString != "" && modString != weaponclass)
+		    Mods.append( modString )
 	}
 	
 	try{
@@ -4025,6 +4028,12 @@ void function SimpleChampionUI()
 			to_map = Tracker_DetermineNextMap()
 
 		waitthread g__InternalCheckReload()
+		
+		if( IsMapPlaylistGamemodeRotationEnabled() )
+		{
+			DecideNextMapPlaylistGamemodeRotation()
+			return 
+		}
 		
 		GameRules_ChangeMap( to_map, GetCurrentPlaylistName() )
 		return
@@ -7382,6 +7391,12 @@ const array<int> CYCLE_HALO_PLAYLISTS_ARR =
 
 void function Halo_GotoNextPlaylist()
 {
+	if( IsMapPlaylistGamemodeRotationEnabled() )
+	{
+		DecideNextMapPlaylistGamemodeRotation()
+		return 
+	}
+		
 	if( !Flowstate_IsHaloMode() || !Flowstate_CycleHaloPlaylists() )
 		return
 		

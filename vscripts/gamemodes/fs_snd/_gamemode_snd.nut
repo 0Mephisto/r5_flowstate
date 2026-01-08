@@ -181,6 +181,14 @@ void function SND_StartGameThread()
 	{
 		SND_Lobby()
 		SND_GameLoop()
+		
+		waitthread g__InternalCheckReload()
+		
+		if( IsMapPlaylistGamemodeRotationEnabled() )
+		{
+			DecideNextMapPlaylistGamemodeRotation()
+			return 
+		}
 	}
 }
 

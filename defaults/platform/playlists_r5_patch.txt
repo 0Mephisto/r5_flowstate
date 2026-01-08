@@ -401,6 +401,29 @@ playlists
 				
 				enable_motd 									1		// Enables message of the day for server (defined at bottom of file in SECTION 4:  MOTD_TEXT )
 				
+				//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+				// This section is for configuring the new auto rotator. This is comma separated, lists of:
+				// mapname playlist gamemode minplayers maxplayers.  Mapnames/playlists/gamemodes do not have to be complete, they will match partials.
+				//
+				// Example:  "aque 1v1 fs_dm 0 20"  --- will match for: "mp_rr_aqueduct fs_1v1 fs_dm NO_MIN 20MAX".
+				// Each combination on the rotation list should be unique, as it will be used to determine the current map
+				//
+				// You can specify any map/playlist/gamemode combination separated by commas, gamemode is optional, but reccomended.
+				// minplayers is also optional, but reccomended, as some playlists may have player count restrictions. 
+				// If a map is due for rotation, but there are not enough players in the server for it, it will be skipped.
+				// If minplayers is not provided, a default value of NO_MIN will be used
+				//
+				// "comp 1v1 fs_dm, holiday winter winter 8, desert scenarios fs_dm, aque instagib fs_dm"
+				//
+				// If a combination is not valid, you will receive an assert error on startup with details about all of
+				// the incorrect combinations. 
+				//
+				// Leave blank to disable.
+				
+				auto_rotate_list								""
+				//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+				
+				
 				// every interval, a players msg count will be decreased by the threshold or set to 0 ( whichever is greater ).
 				// if the players msg count reaches threshold number they are auto muted for chat_timeout time or
 				// respective textmute_offence_tiers for that player's offence count based on decay time/amount

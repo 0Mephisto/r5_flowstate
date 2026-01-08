@@ -232,14 +232,14 @@ bool function DoesHealthBarExist( entity player )
 
 void function Flowstate_CustomHealthBar_UpdateBarAngles( entity player, entity vgui )
 {
-	EndSignal( player, "OnDestroy", "StopShowingHealthbars" )
+	EndSignal( player, "OnDestroy", "StopShowingHealthbars", "OnDisconnected" )
 
-	while( true )
+	for( ; ; )
 	{
 		WaitFrame()
 
-		if( !IsValid( player ) )
-			break
+		// if( !IsValid( player ) ) //(mk): This check is burning cycles for no reason, EndSignal will end this thread before player is invalid.
+			// break
 		
 		if( !IsValid( vgui ) )
 		{
@@ -256,7 +256,7 @@ void function Flowstate_CustomHealthBar_UpdateBarAngles( entity player, entity v
 		vector closestPoint = GetClosestPointOnLine( GetLocalViewPlayer().CameraPosition(), GetLocalViewPlayer().CameraPosition() + (AnglesToRight( GetLocalViewPlayer().CameraAngles() ) * 100.0), vgui.GetOrigin() )		
 		vector angles = VectorToAngles( vgui.GetOrigin() - closestPoint )
 		vgui.SetAngles( Vector( -90, angles.y, 0 ) )
-		vgui.SetOrigin( player.GetOrigin() + AnglesToUp( player.GetAngles() ) * 80 + AnglesToRight( GetLocalViewPlayer().CameraAngles() ) * 20 )
+		vgui.SetOrigin( ClampToWorldspace( player.GetOrigin() + AnglesToUp( player.GetAngles() ) * 80 + AnglesToRight( GetLocalViewPlayer().CameraAngles() ) * 20 ) )
 	}
 }
 
