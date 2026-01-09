@@ -2131,13 +2131,16 @@ void function PerksSystem(entity attacker)
 				array<entity> weapons = attacker.GetMainWeapons()
 				foreach ( weapon in weapons )
 				{
+					if( !IsValid( weapon ) )
+						continue 
+						
 					array<string> mods = weapon.GetMods()
 					foreach(mag in InfectionMags)
 					{
 						if( CanAttachToWeapon( mag, weapon.GetWeaponClassName() ) )
 							mods.append( mag )
 					}
-					try{weapon.SetMods( mods )} catch(e42069){printt(weapon.GetWeaponClassName() + " failed to put infectionPerkQuickReload mod.")}
+					try{weapon.SetMods( mods )} catch(e42069){printt(" failed to put infectionPerkQuickReload mod.")}
 				}
 				
 				Remote_CallFunction_NonReplay( attacker, "ServerCallback_RefreshInventory" )
@@ -2160,9 +2163,12 @@ void function PerksSystem(entity attacker)
 				array<entity> weapons = attacker.GetMainWeapons()
 				foreach ( weapon in weapons )
 				{
+					if( !IsValid( weapon ) )
+						continue 
+						
 					array<string> mods = weapon.GetMods()
 					mods.append( "infectionPerkQuickReload" )
-					try{weapon.SetMods( mods )} catch(e42069){printt(weapon.GetWeaponClassName() + " failed to put infectionPerkQuickReload mod.")}
+					try{weapon.SetMods( mods )} catch(e42069){printt(" failed to put infectionPerkQuickReload mod.")}
 				}
 				
 				foreach(player in GetPlayerArray())

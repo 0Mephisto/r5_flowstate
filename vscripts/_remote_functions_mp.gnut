@@ -447,7 +447,7 @@ void function RemoteFunctions_Init_Begin()
 			ScriptRegisterNetworkedVariable( "flowstate_DMRoundEndTime", SNDC_GLOBAL, SNVT_TIME, -1 )
 			ScriptRegisterNetworkedVariable( "FSDM_GameState", SNDC_GLOBAL, SNVT_INT, -1 )
 			
-			if( Playlist() == ePlaylists.fs_1v1 || Playlist() == ePlaylists.fs_vamp_1v1 || Playlist() == ePlaylists.fs_1v1_headshots_only || Playlist() == ePlaylists.fs_lgduels_1v1 )
+			if( G_REGISTER_1V1_NETVARS_FOR_PLAYLIST.contains( Playlist() )  )
 			{
 				ScriptRegisterNetworkedVariable( "FSDM_1v1_Enemy", SNDC_PLAYER_GLOBAL, SNVT_ENTITY )
 				ScriptRegisterNetworkedVariable( "FSDM_1v1_PositionInScoreboard", SNDC_PLAYER_GLOBAL, SNVT_INT, -1 )

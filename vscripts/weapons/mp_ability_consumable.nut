@@ -2317,7 +2317,7 @@ bool function Consumable_CanUseConsumable( entity player, int consumableType, bo
 int function TryUseConsumable( entity player, int consumableType )
 {
 #if CLIENT
-	if( Playlist() == ePlaylists.fs_1v1 || Playlist() == ePlaylists.fs_vamp_1v1 || Playlist() == ePlaylists.fs_1v1_headshots_only || Playlist() == ePlaylists.fs_lgduels_1v1 )
+	if( G_REGISTER_1V1_NETVARS_FOR_PLAYLIST.contains( Playlist() ) )
 	{
 		if( player.GetPlayerNetInt( "FS_1v1_PlayerState" ) == e1v1State.RESTING || player.GetPlayerNetInt( "FS_1v1_PlayerState" ) == e1v1State.SPECTATING )
 			return eUseConsumableResult.DENY_NONE

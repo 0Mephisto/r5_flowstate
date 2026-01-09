@@ -992,14 +992,15 @@ void function StartLiftUpChallenge(entity player)
 	entity weapon = player.GetNormalWeapon( WEAPON_INVENTORY_SLOT_PRIMARY_0 )
 	array<string> mods = weapon.GetMods()
 	mods.append( "elevator_shooter" )
-	try{weapon.SetMods( mods )} catch(e42069){printt(weapon.GetWeaponClassName() + " failed to put elevator_shooter mod. DEBUG THIS.")}
+	try{weapon.SetMods( mods )} catch(e42069){printt(" failed to put elevator_shooter mod. DEBUG THIS.")}
 	
 	OnThreadEnd(
 		function() : ( player, mods, weapon)
 		{
 			SetConVarToDefault( "sv_gravity" ) //hack
 			mods.removebyvalue("elevator_shooter")
-			try{weapon.SetMods( mods )} catch(e42069){printt(weapon.GetWeaponClassName() + " failed to remove elevator_shooter mod. DEBUG THIS.")}
+			try{weapon.SetMods( mods )} catch(e42069){printt(" failed to remove elevator_shooter mod. DEBUG THIS.")}
+			
 			OnChallengeEnd(player)
 		}
 	)
