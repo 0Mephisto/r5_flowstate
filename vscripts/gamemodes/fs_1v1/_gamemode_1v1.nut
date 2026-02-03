@@ -809,13 +809,13 @@ void function BannerImages_1v1Init()
 	float defaultWidth 	= 480 //todo playlistvar
 	float defaultHeight	= 270 //todo playlistvar
 	
-	LocPair setBannerLoc = NewLocPair( BannerAssets_BannerVisibilityMover( getWaitingRoomLocation().origin, getWaitingRoomLocation().angles, testOrigin, testAngles, defaultWidth, defaultHeight ), testAngles )
+	LocPair setBannerLoc = NewLocPair( WorldAssets_BannerVisibilityMover( getWaitingRoomLocation().origin, getWaitingRoomLocation().angles, testOrigin, testAngles, defaultWidth, defaultHeight ), testAngles )
 	
-	BannerAssets_SetAllGroupsFunc
+	WorldAssets_SetAllGroupsFunc
 	(
 		void function() : ( setBannerLoc, defaultWidth, defaultHeight )
 		{
-			BannerAssets_RegisterGroup
+			WorldAssets_RegisterGroup
 			(
 				"main_banner",
 				setBannerLoc,
@@ -827,7 +827,7 @@ void function BannerImages_1v1Init()
 		}
 	)
 	
-	BannerAssets_SetAllAssetsFunc
+	WorldAssets_SetAllAssetsFunc
 	(
 		void function()
 		{
@@ -836,25 +836,15 @@ void function BannerImages_1v1Init()
 				string assetList = GetCurrentPlaylistVarString( "banner_assets", "" )
 				
 				if( !empty( assetList ) )
-				{	
-					array<string> playlistBannerAssets = StringToArray( assetList )
+				{
+					array<string> playlistWorldAssets = StringToArray( assetList )
 					
-					foreach( assetRef in playlistBannerAssets )
+					foreach( assetRef in playlistWorldAssets )
 					{
-						int refID = WorldDrawAsset_AssetRefToID( assetRef )
-						
-						if( refID != -1 )
-						{
-							BannerAssets_GroupAppendAsset
-							(
-								"main_banner",
-								refID
-							)
-						}
+						if( WorldDrawAsset_IsAssetRefValid( assetRef ) )
+							WorldAssets_GroupAppendAsset( "main_banner", assetRef )
 						else
-						{
 							sqerror( format( "Invalid BannerAsset. Skipping asset: '%s'", assetRef ) )
-						}
 					}
 				}
 			}
@@ -865,7 +855,7 @@ void function BannerImages_1v1Init()
 		}
 	)
 	
-	BannerAssets_Init()
+	WorldAssets_Init()
 }
 
 void function INIT_PregameCallbacks()

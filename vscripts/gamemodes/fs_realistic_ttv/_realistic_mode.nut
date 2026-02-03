@@ -68,7 +68,7 @@ void function RealisticMode_Init()
 	
 	AddCallback_EntitiesDidLoad( InitializeDoorTracking )
 	AddCallback_OnPlayerWeaponAttachmentChanged( Realistic_OnWeaponAttachmentChanged )
-	AddCallback_OnPlayerRespawned( RealisticMode_OnSpawned )
+	AddFSCallback_OnRespawned( RealisticMode_OnSpawned )
 
 	SpawnSystem_InitGamemodeOptions()
 	
@@ -372,51 +372,37 @@ void function Realistic_OnWeaponAttachmentChanged( entity player, entity weapon,
 }
 
 void function RealisticMode_OnSpawned( entity player )
-{
-	thread
-	(
-		void function() : ( player )
-		{
-			if( !IsValid( player ) )
+{		
+	Inventory_SetPlayerEquipment( player, "", "helmet" )
+	player.TakeOffhandWeapon( OFFHAND_SLOT_FOR_CONSUMABLES )
+	player.TakeNormalWeaponByIndexNow( WEAPON_INVENTORY_SLOT_PRIMARY_2 )
+	player.TakeOffhandWeapon( OFFHAND_MELEE )
+
+	RealisticMode_GivePlayerBonusHeals( player, true )	
+	
+	bool bHasValidLegend
+	if( file.bLegendChangeEnabled )
+	{
+		if( ( player in file.tbl_selectedLegends ) && file.tbl_selectedLegends[ player ] != null )
+		{		
+			ItemFlavor ornull character = file.tbl_selectedLegends[ player ]
+			if( character == null )
 				return
 				
-			player.EndSignal( "OnDestroy", "OnDeath" )	
-			wait 3 //todo, unweave fsdm logic
-			
-			Inventory_SetPlayerEquipment( player, "", "helmet" )
-			player.TakeOffhandWeapon( OFFHAND_SLOT_FOR_CONSUMABLES )
-			player.TakeNormalWeaponByIndexNow( WEAPON_INVENTORY_SLOT_PRIMARY_2 )
-			player.TakeOffhandWeapon( OFFHAND_MELEE )
-			
-			WaitFrame()
-
-			RealisticMode_GivePlayerBonusHeals( player, true )	
-			
-			bool bHasValidLegend
-			if( file.bLegendChangeEnabled )
-			{
-				if( ( player in file.tbl_selectedLegends ) && file.tbl_selectedLegends[ player ] != null )
-				{		
-					ItemFlavor ornull character = file.tbl_selectedLegends[ player ]
-					if( character == null )
-						return
-						
-					bHasValidLegend = true	
-					expect ItemFlavor ( character )
-					CharacterSelect_AssignCharacter( ToEHI( player ), character )
-				}
-			}
-			
-			if( file.bAllowLegendAbilities && bHasValidLegend )
-				GiveLoadoutRelatedWeapons( player )
-			else
-			{
-				player.GiveOffhandWeapon( CONSUMABLE_WEAPON_NAME, OFFHAND_SLOT_FOR_CONSUMABLES, [] )
-				player.GiveWeapon( "mp_weapon_melee_survival", WEAPON_INVENTORY_SLOT_PRIMARY_2, [] )
-				player.GiveOffhandWeapon( "melee_pilot_emptyhanded", OFFHAND_MELEE, [] )
-			}
+			bHasValidLegend = true	
+			expect ItemFlavor ( character )
+			CharacterSelect_AssignCharacter( ToEHI( player ), character )
 		}
-	)()
+	}
+	
+	if( file.bAllowLegendAbilities && bHasValidLegend )
+		GiveLoadoutRelatedWeapons( player )
+	else
+	{
+		player.GiveOffhandWeapon( CONSUMABLE_WEAPON_NAME, OFFHAND_SLOT_FOR_CONSUMABLES, [] )
+		player.GiveWeapon( "mp_weapon_melee_survival", WEAPON_INVENTORY_SLOT_PRIMARY_2, [] )
+		player.GiveOffhandWeapon( "melee_pilot_emptyhanded", OFFHAND_MELEE, [] )
+	}
 }
 
 //taken from fsdm, similar function

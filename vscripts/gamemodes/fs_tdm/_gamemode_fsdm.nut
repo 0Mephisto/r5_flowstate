@@ -80,6 +80,7 @@ global function FS_GiveRandomMelee
 global function AddCallback_OnTdmStateEnter_InProgress
 global function AddCallback_OnTdmStateEnter_EndGame
 global function AddFSCallback_ShouldTimerEnd
+global function AddFSCallback_OnRespawned
 
 global function Message_New //deprecated, use LocalEventMsg() ~mkos
 global function ServerMsgToBox //not used
@@ -171,6 +172,8 @@ struct
 	
 	array< void functionref() > tdmStateInProgressCallbacks
 	array< void functionref() > tdmStateEndGameCallbacks
+	array< void functionref( entity ) > flowstateOnRespawnedCallbacks
+	
 	bool bIsChampionShowing
 	table<string, LocationSettings> locationSettingsMap = {}
 	
@@ -236,6 +239,8 @@ struct
 	bool bIs1v1ModeEnabled
 	bool show_short_champion_screen
 	bool bIsRealisticMode
+	bool bEnableHelmets
+	bool flowstate_givecharms_weapons
 	
 	//string settings 
 	string custom_match_ending_title
@@ -298,6 +303,8 @@ void function InitializePlaylistSettings()
 	flowstateSettings.show_short_champion_screen			= GetCurrentPlaylistVarBool( "show_short_champion_screen", true )
 	flowstateSettings.bIsRealisticMode 						= Playlist() == ePlaylists.fs_realistic_ttv
 	flowstateSettings.give_weapon_stack_count_amount		= GetCurrentPlaylistVarInt( "give_weapon_stack_count_amount", 0 )
+	flowstateSettings.bEnableHelmets						= GetCurrentPlaylistVarBool( "enable_helmets", false )
+	flowstateSettings.flowstate_givecharms_weapons			= GetCurrentPlaylistVarBool( "flowstate_givecharms_weapons", false )
 }
 
 void function AddFSCallback_ShouldTimerEnd( bool functionref( int ) callbackFunc )
@@ -306,6 +313,12 @@ void function AddFSCallback_ShouldTimerEnd( bool functionref( int ) callbackFunc
 		mAssert( 0, "Tried to add callback %s with %s but it was already set as %s", string( callbackFunc ), FUNC_NAME(), string( file.ShouldTimerEnd ) )
 
 	file.ShouldTimerEnd = callbackFunc
+}
+
+void function AddFSCallback_OnRespawned( void functionref( entity ) callbackFunc )
+{
+	mAssert( !file.flowstateOnRespawnedCallbacks.contains( callbackFunc ), "Tried to add callbackfunc %s() with AddFSCallback_OnRespawned more than once", string( callbackFunc ) )
+	file.flowstateOnRespawnedCallbacks.append( callbackFunc )
 }
 
 bool function Flowstate_IsRealisticMode()
@@ -355,6 +368,7 @@ void function _CustomTDM_Init()
 	RegisterSignal( "EndScriptedPropsThread" )
 	RegisterSignal( "FS_WaitForBlackScreen" )
 	RegisterSignal( "FS_ForceDestroyAllLifts" )
+	RegisterSignal( "FSOnRespawned" )
 	
 	if( FlowState_RandomGunsMetagame() )
 	{
@@ -385,10 +399,10 @@ void function _CustomTDM_Init()
 	
 	if( !is1v1EnabledAndAllowed() && Playlist() != ePlaylists.fs_scenarios )
 	{
-			PrecacheCustomMapsProps()
-			de_NCanals_precache()
-			PrecacheZeesMapProps()
-			PrecacheDEAFPSMapProps()
+		PrecacheCustomMapsProps()
+		de_NCanals_precache()
+		PrecacheZeesMapProps()
+		PrecacheDEAFPSMapProps()
 	}
 	
 	if( flowstateSettings.is_halo_gamemode )
@@ -425,8 +439,10 @@ void function _CustomTDM_Init()
 
     __InitAdmins()
 
+	if( Playlist() == ePlaylists.fs_grapples_n_guns ) //init before callbacks
+		GrapplesNGunsInit()
+
     AddCallback_EntitiesDidLoad( DM__OnEntitiesDidLoad )
-	
 
     AddCallback_OnClientConnected( void function(entity player) {
         if (FlowState_SURF())
@@ -526,9 +542,6 @@ void function _CustomTDM_Init()
 	
 	if( is1v1EnabledAndAllowed() )
 		Gamemode1v1_Init( MapName() )
-		
-	if( Playlist() == ePlaylists.fs_grapples_n_guns )
-		GrapplesNGunsInit()
 }
 
 void function __OnEntitiesDidLoadCTF()
@@ -1822,6 +1835,9 @@ void function _HandleRespawn( entity player, bool isDroppodSpawn = false )
 
 	thread function () : ( player )
 	{
+		if( !IsValid( player ) ) //(mk): threaded off.
+			return
+	
 		EndSignal( player, "OnDestroy" )
 		
 		if( !flowstateSettings.is_halo_gamemode && !Flowstate_IsFastInstaGib() )
@@ -1869,6 +1885,11 @@ void function _HandleRespawn( entity player, bool isDroppodSpawn = false )
 			
 		// if( is1v1EnabledAndAllowed() ) //(mk): handle respawn is only fired for newjoins in 1v1 type gamemodes.
 			// Gamemode1v1_TakeAll( player )
+			
+		foreach( callbackFunc in file.flowstateOnRespawnedCallbacks )
+			callbackFunc( player )
+			
+		player.Signal( "FSOnRespawned" )
 	}()
 	// #if DEVELOPER
 		// printt( "End of _HandleRespawn function" )//Cafe debugging halo mod stuff
@@ -1950,7 +1971,10 @@ void function TpPlayerToSpawnPoint(entity player)
 
 void function Flowstate_GrantSpawnImmunity(entity player, float duration)
 {
-	if(!IsValid(player) || !player.IsPlayer() || is1v1EnabledAndAllowed() ) return
+	if(!IsValid(player) || !player.IsPlayer() || is1v1EnabledAndAllowed() ) 
+		return
+	
+	player.EndSignal( "OnDestroy" )
 	
 	EmitSoundOnEntityOnlyToPlayer( player, player, "PhaseGate_Enter_1p" )
 	EmitSoundOnEntityExceptToPlayer( player, player, "PhaseGate_Enter_3p" )
@@ -1969,8 +1993,6 @@ void function Flowstate_GrantSpawnImmunity(entity player, float duration)
 	
 	while(Time() <= endTime)
 		wait 0.1
-	
-	if ( !IsValid( player ) ) return
 	
 	player.MakeVisible()
 	player.ClearInvulnerable()
@@ -1997,47 +2019,61 @@ void function Flowstate_GrantSpawnImmunity(entity player, float duration)
 	//maki script
 }
 
-void function WpnPulloutOnRespawn(entity player, float duration)
+const array<string> FS_CHARMS_TO_USE = 
+[ 
+	"SAID00701640565", 
+	"SAID01451752993", 
+	"SAID01334887835", 
+	"SAID01993399691", 
+	"SAID00095078608", 
+	"SAID01439033541", 
+	"SAID00510535756", 
+	"SAID00985605729" 
+]
+void function WpnPulloutOnRespawn( entity player, float duration )
 {
-	if(!IsValid( player ) || !IsAlive(player) ) return
+	if( !IsValid( player ) || !IsAlive( player ) ) 
+		return
 	
 	player.ClearFirstDeployForAllWeapons()
 	if( flowstateSettings.ReloadTacticalOnRespawn )
 	{
 		entity tactical = player.GetOffhandWeapon( OFFHAND_TACTICAL )
 		//maki script
-		if ( !IsValid( tactical ) ) return
+		if ( !IsValid( tactical ) ) 
+			return
+			
 		tactical.SetWeaponPrimaryClipCount( tactical.GetWeaponPrimaryClipCountMax() )
 	}
+	
 	if( flowstateSettings.ReloadUltimateOnRespawn )
 	{
 		entity ultimate = player.GetOffhandWeapon( OFFHAND_ULTIMATE )
 		//maki script
 		if ( !IsValid( ultimate ) ) return
 		ultimate.SetWeaponPrimaryClipCount( ultimate.GetWeaponPrimaryClipCountMax() )
-	}
+	}	
 	
-	array<string> fsCharmsToUse = [ "SAID00701640565", "SAID01451752993", "SAID01334887835", "SAID01993399691", "SAID00095078608", "SAID01439033541", "SAID00510535756", "SAID00985605729" ]
-	
-	if(IsValid( player.GetNormalWeapon( WEAPON_INVENTORY_SLOT_PRIMARY_1 )))
+	if( IsValid( player.GetNormalWeapon( WEAPON_INVENTORY_SLOT_PRIMARY_1 ) ) )
 	{
 		entity weapon = player.GetNormalWeapon( WEAPON_INVENTORY_SLOT_PRIMARY_1 )
 		
-		if( weapon.LookupAttachment( "CHARM" ) != 0 )
-			WeaponCosmetics_Apply( weapon, null, GetItemFlavorByGUID( ConvertItemFlavorGUIDStringToGUID( fsCharmsToUse.getrandom() ) ) )
+		if( flowstateSettings.flowstate_givecharms_weapons && weapon.LookupAttachment( "CHARM" ) != 0 )
+			WeaponCosmetics_Apply( weapon, null, GetItemFlavorByGUID( ConvertItemFlavorGUIDStringToGUID( FS_CHARMS_TO_USE.getrandom() ) ) )
 	}
-	if(IsValid( player.GetNormalWeapon( WEAPON_INVENTORY_SLOT_PRIMARY_0 )))
+	
+	if( IsValid( player.GetNormalWeapon( WEAPON_INVENTORY_SLOT_PRIMARY_0 ) ) )
 	{
 		entity weapon = player.GetNormalWeapon( WEAPON_INVENTORY_SLOT_PRIMARY_0 )
 		
-		if( weapon.LookupAttachment( "CHARM" ) != 0 )
-			WeaponCosmetics_Apply( weapon, null, GetItemFlavorByGUID( ConvertItemFlavorGUIDStringToGUID( fsCharmsToUse.getrandom() ) ) )
+		if( flowstateSettings.flowstate_givecharms_weapons && weapon.LookupAttachment( "CHARM" ) != 0 )
+			WeaponCosmetics_Apply( weapon, null, GetItemFlavorByGUID( ConvertItemFlavorGUIDStringToGUID( FS_CHARMS_TO_USE.getrandom() ) ) )
 			
-		player.SetActiveWeaponBySlot(eActiveInventorySlot.mainHand, WEAPON_INVENTORY_SLOT_PRIMARY_0)
+		player.SetActiveWeaponBySlot( eActiveInventorySlot.mainHand, WEAPON_INVENTORY_SLOT_PRIMARY_0 )
 	}
 	
-	player.SetActiveWeaponBySlot(eActiveInventorySlot.mainHand, WEAPON_INVENTORY_SLOT_PRIMARY_1)
-	player.SetActiveWeaponBySlot(eActiveInventorySlot.mainHand, WEAPON_INVENTORY_SLOT_PRIMARY_0)
+	player.SetActiveWeaponBySlot( eActiveInventorySlot.mainHand, WEAPON_INVENTORY_SLOT_PRIMARY_1 )
+	player.SetActiveWeaponBySlot( eActiveInventorySlot.mainHand, WEAPON_INVENTORY_SLOT_PRIMARY_0 )
 }
 
 void function WpnAutoReloadOnKill( entity player )
@@ -2125,7 +2161,7 @@ void function __GiveWeapon( entity player, array<string> WeaponData, int slot, i
 			ItemFlavor ornull weaponSkinOrNull = null
 			array<string> fsCharmsToUse = [ "SAID00701640565", "SAID01451752993", "SAID01334887835", "SAID01993399691", "SAID00095078608", "SAID01439033541", "SAID00510535756", "SAID00985605729" ]
 			int chosenCharm = ConvertItemFlavorGUIDStringToGUID( fsCharmsToUse.getrandom() )
-			ItemFlavor ornull weaponCharmOrNull = GetCurrentPlaylistVarBool( "flowstate_givecharms_weapons", false ) == true ? GetItemFlavorByGUID( chosenCharm ) : null
+			ItemFlavor ornull weaponCharmOrNull = flowstateSettings.flowstate_givecharms_weapons ? GetItemFlavorByGUID( chosenCharm ) : null
 			ItemFlavor ornull weaponFlavor = GetWeaponItemFlavorByClass( weaponclass )
 
 			if( weaponFlavor != null )
@@ -4536,7 +4572,7 @@ void function PlayerRestoreHP( entity player, float health, float shields )
 	if ( !IsValid( player ) ) 
 		return
 		
-	if( !IsAlive( player) ) 
+	if( !IsAlive( player) )
 		return
 	
 	/* Debug code */
@@ -4552,8 +4588,13 @@ void function PlayerRestoreHP( entity player, float health, float shields )
 	// }
 
 	player.SetHealth( health )
-	Inventory_SetPlayerEquipment(player, "helmet_pickup_lv3", "helmet")
-	if(shields == 0) return
+	
+	if( flowstateSettings.bEnableHelmets )
+		Inventory_SetPlayerEquipment( player, "helmet_pickup_lv3", "helmet" )
+	
+	if(shields == 0) 
+		return
+		
 	else if(shields <= 50)
 		Inventory_SetPlayerEquipment(player, "armor_pickup_lv1", "armor")
 	else if(shields <= 75)
@@ -6236,39 +6277,39 @@ void function HisWattsons_HaloModFFA_KillStreakAnnounce( entity attacker )
 		switch( attacker.p.downedEnemy )
 		{
 			case 10:
-				BannerAssets_PlayAudioName( attacker, "halo_killionaire" )
+				WorldAssets_PlayAudioName( attacker, "halo_killionaire" )
 			break 
 			
 			case 9:
-				BannerAssets_PlayAudioName( attacker, "halo_killpocalypse" )
+				WorldAssets_PlayAudioName( attacker, "halo_killpocalypse" )
 			break 
 			
 			case 8:
-				BannerAssets_PlayAudioName( attacker, "halo_killtastrophe" )
+				WorldAssets_PlayAudioName( attacker, "halo_killtastrophe" )
 			break 
 			
 			case 7:
-				BannerAssets_PlayAudioName( attacker, "halo_killimanjaro" )
+				WorldAssets_PlayAudioName( attacker, "halo_killimanjaro" )
 			break 
 			
 			case 6:
-				BannerAssets_PlayAudioName( attacker, "halo_killtrocity" )
+				WorldAssets_PlayAudioName( attacker, "halo_killtrocity" )
 			break 
 			
 			case 5:
-				BannerAssets_PlayAudioName( attacker, "halo_killtacular" )
+				WorldAssets_PlayAudioName( attacker, "halo_killtacular" )
 			break 
 			
 			case 4:
-				BannerAssets_PlayAudioName( attacker, "halo_overkill" )
+				WorldAssets_PlayAudioName( attacker, "halo_overkill" )
 			break 
 			
 			case 3:
-				BannerAssets_PlayAudioName( attacker, "halo_triple_kill" )
+				WorldAssets_PlayAudioName( attacker, "halo_triple_kill" )
 			break 
 			
 			case 2:
-				BannerAssets_PlayAudioName( attacker, "halo_double_kill" )
+				WorldAssets_PlayAudioName( attacker, "halo_double_kill" )
 			break 
 		}
 
@@ -7306,11 +7347,11 @@ void function Common_DissolveDropable( entity prop )
 
 void function HaloAssets()
 {
-	BannerAssets_SetAllGroupsFunc
+	WorldAssets_SetAllGroupsFunc
 	(
 		void function()
 		{
-			BannerAssets_RegisterAudioGroup
+			WorldAssets_RegisterAudioGroup
 			(
 				"halo_audio",
 				false //(audio interruptable, false = queued for audio from this group. )
@@ -7318,24 +7359,18 @@ void function HaloAssets()
 		}
 	)
 	
-	BannerAssets_SetAllAssetsFunc
+	WorldAssets_SetAllAssetsFunc
 	(
 		void function()
 		{
 			array<string> haloAudio = WorldDrawAsset_GetAssetArrayByCategory( "halo" )
 
 			foreach( assetRef in haloAudio )
-			{
-				BannerAssets_GroupAppendAsset
-				(
-					"halo_audio",
-					WorldDrawAsset_AssetRefToID( assetRef )
-				)
-			}
+				WorldAssets_GroupAppendAsset( "halo_audio", assetRef )
 		}
 	)
 	
-	BannerAssets_Init()
+	WorldAssets_Init()
 	
 	AddCallback_OnTdmStateEnter_InProgress
 	(
@@ -7357,7 +7392,7 @@ void function HaloAssets()
 			}
 		
 			foreach( player in GetPlayerArray() )
-				BannerAssets_PlayAudio( player, audio )
+				WorldAssets_PlayAudio( player, audio )
 		}
 	)
 	
@@ -7382,7 +7417,7 @@ void function HaloPlayAnnounce( float roundEndTime )
 	if( targetTime in eventTimes )
 	{
 		foreach( entity player in GetPlayerArray() )
-			BannerAssets_PlayAudio( player, eventTimes[ targetTime ] )
+			WorldAssets_PlayAudio( player, eventTimes[ targetTime ] )
 	}
 }
 

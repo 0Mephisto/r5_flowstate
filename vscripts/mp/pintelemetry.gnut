@@ -1543,7 +1543,7 @@ void function PIN_Init()
 	if( file.bTrackerEnabled )
 	{
 		SetServerVar( "tracker_enabled", true )
-		SetUIVar( level, "tracker_enabled", true )
+		//SetUIVar( level, "tracker_enabled", true ) Todo(mk): next update
 		FlagInit( "START_LOG", true )
 		
 		AddCallback_OnTdmStateEnter_InProgress( Tracker_SetStartLog )

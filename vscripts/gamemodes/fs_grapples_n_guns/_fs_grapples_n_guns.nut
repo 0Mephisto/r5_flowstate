@@ -3,78 +3,108 @@ global function GrapplesNGunsInit
 struct
 {
 	
-	
 } file 
 
 
-const table GRAPPLES_N_GUNS_PLAYER_SETTINGS = 
+const table<string, string> GRAPPLES_N_GUNS_PLAYER_SETTINGS = 
 {
-	["acceleration"] = 550.0,
-	["airacceleration"] = 1000.0,
-	["airspeed"] = 150.0,
-	["automantle_enable"] = 1.0,
-	["doublejump"] = 0.0,
-	["gravityscale"] = 0.85,
-	["grapple_detachAwaySpeed"] = 4000.0,
-	["impactSpeed"] = 380.0,
-	["jumpheight"] = 120.0,
-	["landslowdownduration"] = 0.0,
-	["leech_range"] = 64.0,
-	["slidedecel"] = 50.0,
-	["slidevelocitydecay"] = 0.7,
-	["stepheight"] = 18.0,
-	["superjumpHorzSpeed"] = 180.0,
-	["superjumpMaxHeight"] = 60.0,
-	["superjumpMinHeight"] = 60.0,
-	["wallrun"] = 0.0,
-	["wallrunAccelerateHorizontal"] = 1500.0,
-	["wallrunAccelerateVertical"] = 360.0,
-	["wallrunJumpInputDirSpeed"] = 80.0,
-	["wallrunJumpOutwardSpeed"] = 205.0,
-	["wallrunJumpUpSpeed"] = 230.0,
-	["wallrunMaxSpeedHorizontal"] = 420.0,
-	["wallrunMaxSpeedVertical"] = 225.0,
-	["wallrun_timeLimit"] = 1.75,
-	["ziplineSpeed"] = 600.0,
-	["skip_time"] = 0.0,
-	["antiMultiJumpHeightFrac"] = 1.0
+	["acceleration"] = "550.0",
+	["airacceleration"] = "1000.0",
+	["airspeed"] = "150.0",
+	["automantle_enable"] = "1.0",
+	/* ["doublejump"] = "0.0", */
+	["gravityscale"] = "0.85",
+	["grapple_detachAwaySpeed"] = "4000.0",
+	["impactSpeed"] = "380.0",
+	["jumpheight"] = "120.0",
+	["landslowdownduration"] = "0.0",
+	["leech_range"] = "64.0",
+	["slidedecel"] = "50.0",
+	["slidevelocitydecay"] = "0.7",
+	["stepheight"] = "18.0",
+	["superjumpHorzSpeed"] = "180.0",
+	["superjumpMaxHeight"] = "60.0",
+	["superjumpMinHeight"] = "60.0",
+	["wallrun"] = "1.0",
+	["wallrunAccelerateHorizontal"] = "1500.0",
+	["wallrunAccelerateVertical"] = "360.0",
+	["wallrunJumpInputDirSpeed"] = "80.0",
+	["wallrunJumpOutwardSpeed"] = "205.0",
+	["wallrunJumpUpSpeed"] = "230.0",
+	["wallrunMaxSpeedHorizontal"] = "420.0",
+	["wallrunMaxSpeedVertical"] = "225.0",
+	["wallrun_timeLimit"] = "1.75",
+	["ziplineSpeed"] = "600.0",
+	["skip_time"] = "0.0",
+	["antiMultiJumpHeightFrac"] = "1.0"
 }
 
 void function GrapplesNGunsInit()
-{	
-	AddCallback_OnClientConnected( OnConnected )
-	AddCallback_OnPlayerRespawned( OnRespawned )
+{		
+	if( GetCurrentPlaylistVarBool( "use_custom_audio", true ) )
+	{
+		WorldAssets_SetAllGroupsFunc( RegisterAudioGroups )
+		WorldAssets_SetAllAssetsFunc( RegisterGroupAssets )
+		WorldAssets_Init() //init early before callbacks
+
+		AddCallback_OnClientConnected( OnConnected )
+		//AddFSCallback_ShouldTimerEnd( TimerFunction ) //not used yet.
+		AddCallback_OnTdmStateEnter_InProgress( OnGamePlaying )
+		AddCallback_OnTdmStateEnter_EndGame( OnGameEnd )
+	}
+	
+	AddFSCallback_OnRespawned( OnRespawned )
 	AddHeadshotCallback( "player", OnHeadshot )
-	
-	AddFSCallback_ShouldTimerEnd( TimerFunction )
-	AddCallback_OnTdmStateEnter_InProgress( OnGamePlaying )
-	AddCallback_OnTdmStateEnter_EndGame( OnGameEnd )
-	
-	BannerAssets_SetAllGroupsFunc( RegisterAudioGroup )	//must be called first
-	BannerAssets_SetAllAssetsFunc( RegisterGroupAssets )
-	BannerAssets_Init()
 }
 
-void function RegisterAudioGroup()
+void function RegisterAudioGroups()
 {
-	BannerAssets_RegisterAudioGroup
+	WorldAssets_RegisterAudioGroup
 	(
 		"grapples_n_guns_audio",
 		true //is audio interruptable: true, or queued: false
+	)
+	
+	WorldAssets_RegisterAudioGroup
+	(
+		"grapples_n_guns_audio_announce",
+		false //is audio interruptable: true, or queued: false
 	)
 }
 
 void function RegisterGroupAssets()
 {
 	array<string> audioAssets = WorldDrawAsset_GetAssetArrayByCategory( "grapples_n_guns" )
-
 	foreach( assetRef in audioAssets )
-		BannerAssets_GroupAppendAsset( "grapples_n_guns_audio", WorldDrawAsset_AssetRefToID( assetRef ) )
+		WorldAssets_GroupAppendAsset( "grapples_n_guns_audio", assetRef )
+		
+	array<string> audioAnnounceAssets = WorldDrawAsset_GetAssetArrayByCategory( "grapples_n_guns_announce" )
+	foreach( assetRef in audioAnnounceAssets )
+		WorldAssets_GroupAppendAsset( "grapples_n_guns_audio_announce", assetRef )
 }
 
 void function OnConnected( entity player )
 {
-	
+	if( GetTDMState() != eTDMState.IN_PROGRESS )
+		return 
+		
+	thread
+	(
+		void function() : ( player )
+		{
+			if( !IsValid( player ) )
+				return 
+
+			player.EndSignal( "OnDestroy" )
+			player.WaitSignal( "FSOnRespawned" )
+			
+			if( GetTDMState() != eTDMState.IN_PROGRESS )
+				return
+		
+			WorldAssets_WaitForChannelCreation( player, "grapples_n_guns_audio_announce" )	
+			WorldAssets_PlayAudioName( player, INTRO_AUDIO.getrandom(), "grapples_n_guns_audio_announce" )
+		}
+	)()
 }
 
 const array INTRO_AUDIO =
@@ -104,7 +134,7 @@ void function OnGameEnd()
 void function Announce( string audioName )
 {
 	foreach( player in GetPlayerArray() )
-		BannerAssets_PlayAudioName( player, audioName )
+		WorldAssets_PlayAudioName( player, audioName, "grapples_n_guns_audio_announce" )
 }
 
 const table< int, string > EVENT_ANNOUNCE_TIMES =
@@ -122,23 +152,15 @@ bool function TimerFunction( int timeRemaining )
 
 void function OnRespawned( entity player )
 {
-	thread
-	(
-		void function() : ( player )
-		{
-			if( !IsValid( player ) )
-				return 
-				
-			player.EndSignal( "OnDestroy", "OnDeath" )
-				
-			wait 3 //Todo: unweave fsdm logic, so fsdm modes have more control.
-			
-			foreach( string key, float value in GRAPPLES_N_GUNS_PLAYER_SETTINGS )
-				player.SetClassVar( key, value.tostring() )
-				
-			Inventory_SetPlayerEquipment( player, "helmet_pickup_lv1", "helmet" )
-		}
-	)()
+	foreach( string key, string value in GRAPPLES_N_GUNS_PLAYER_SETTINGS )
+		player.SetClassVar( key, value )
+		
+	Inventory_SetPlayerEquipment( player, "helmet_pickup_lv1", "helmet" )
+	
+	player.TakeNormalWeaponByIndexNow( WEAPON_INVENTORY_SLOT_PRIMARY_2 )
+	player.TakeOffhandWeapon( OFFHAND_MELEE )
+	player.GiveWeapon( "mp_weapon_melee_survival", WEAPON_INVENTORY_SLOT_PRIMARY_2, [] )
+	player.GiveOffhandWeapon( "melee_pilot_emptyhanded", OFFHAND_MELEE, [] )
 }
 
 const array< string > HEADSHOT_SOUND_NAMES =
@@ -160,6 +182,6 @@ void function OnHeadshot( entity player, var damageInfo )
 	if( DamageInfo_GetCustomDamageType( damageInfo ) & DF_HEADSHOT )
 	{
 		string sound = HEADSHOT_SOUND_NAMES.getrandom()
-		BannerAssets_PlayAudioName( attacker, sound )
+		WorldAssets_PlayAudioName( attacker, sound )
 	}
 }

@@ -558,6 +558,7 @@ void function TrackerSupportedMode_Init()
 		ePlaylists.fs_dm_fast_instagib,
 		ePlaylists.fs_snd,
 		ePlaylists.fs_realistic_ttv
+		ePlaylists.fs_grapples_n_guns
 		//ePlaylists.survival_duos,
 		//ePlaylists.survival_trios,
 	]

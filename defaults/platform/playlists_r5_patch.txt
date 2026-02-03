@@ -385,7 +385,7 @@ playlists
 				//// General Server Settings												///////
 				///////////////////////////////////////////////////////////////////////////////////
 				
-				enable_banner_assets							1		// Enables the usage of video and image banners in-game
+				enable_world_assets								1		// Enables the usage of video/image banners or custom audio queues
 				// Comma-separated list of assets (these sync to the client, but assets must exist)
 				banner_assets									"rui/world/flowstate1v1_banner02,rui/world/flowstate1v1_banner03,rui/world/flowstate1v1_banner04"
 				
@@ -1413,8 +1413,8 @@ playlists
 				//Replays: 
 				use_r2_deathcam									1
 				deathcam_enabled								1
-				replay_enabled					 				1 		 
-				replay_delay					   				5
+				replay_enabled					 				1	 
+				replay_delay					   				7
 				replay_new_ui 									1
 
 
@@ -1960,7 +1960,7 @@ playlists
 				image							  				worlds_edge
 				video							  				worlds_edge
 				panel_image										panel_worlds_edge
-				battlechatter_enabled			  				1
+				battlechatter_enabled			  				0
 				
 				// match teams will not fill with more than one party, up to max_teams of size max_team_size (or less) -- not exceeding max_players
 				max_team_size									1 // above 1 will enable tdm
@@ -2095,6 +2095,8 @@ playlists
 				
 				enable_headshot_sounds							0
 				enable_killshot_sounds							0
+				use_custom_audio								1
+				
 			}
 			gamemodes { fs_dm { maps {
 				mp_rr_canyonlands_64k_x_64k						1

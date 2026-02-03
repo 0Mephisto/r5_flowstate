@@ -374,7 +374,7 @@ void function UpdateSystemPanel( var panel )
 		if( uiGlobal.is1v1GameType && Playlist() != ePlaylists.fs_1v1_coaching || Playlist() == ePlaylists.fs_realistic_ttv )
 			SetButtonData( panel, buttonIndex++, file.LegendSelect[ panel ] )
 		
-		if( Flowstate_IsTrackerSupportedMode() && UIVarExists( "tracker_enabled" ) && GetUIVar( null, "tracker_enabled" ) )
+		if( Flowstate_IsTrackerSupportedMode() )// && UIVarExists( "tracker_enabled" ) && GetUIVar( null, "tracker_enabled" ) ) (mk)Todo: Postponed to next update
 			SetButtonData( panel, buttonIndex++, file.OpenChampionCard[ panel ] )
 
 		if( Playlist() == ePlaylists.fs_lgduels_1v1 || Playlist() == ePlaylists.fs_dm_fast_instagib )		

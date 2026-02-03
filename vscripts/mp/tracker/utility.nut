@@ -431,7 +431,7 @@ void function TrackerUtilityInit()
 			foreach ( admin_pair in list ) //backwards compat
 			{
 				pair = admin_pair			
-				if( admin_pair.find( "-" ) != -1 )
+				if( admin_pair.find( "-" ) != -1 ) //todo: problematic backwards compat for usernames containing hyphen.
 				{
 					array<string> a_format = split( admin_pair, "-" )
 					file.adminsArray.append( a_format[ 1 ] )
@@ -819,12 +819,15 @@ void function TrackerUtilityInit()
 					
 					if ( IsServerAdmin( banPlayerUID ) )
 					{
-						Message( player, "Cannot ban admin" )
+						Message( player, format( "Cannot ban admin %s", banPlayerName ) )
 						return true
 					}
 				
 					#if HAS_TRACKER_DLL
-						BanPlayerById( banPlayerUID, banReason, player.GetPlatformUID() )
+						// if( args.contains( "-id" ) )
+							// BanPlayerByIdOnly( banPlayerUID, banReason, player.GetPlatformUID() ) //not released yet.
+						// else
+							BanPlayerById( banPlayerUID, banReason, player.GetPlatformUID() )
 					#else
 						BanPlayerById( banPlayerUID, banReason )
 					#endif
@@ -2001,13 +2004,13 @@ void function TrackerUtilityInit()
 			}	
 			case "kill_banners":
 			{
-				BannerAssets_KillAllBanners()
+				WorldAssets_KillAllBanners()
 				Message( player, "Banners stopped" )		
 				break 
 			}	
 			case "start_banners":
 			{
-				BannerAssets_Restart()
+				WorldAssets_Restart()
 				Message( player, "Banners restarted" )	
 				break
 			}	
@@ -2985,7 +2988,7 @@ void function sqerror( ... )
 	#endif
 }
 
-void function sqwarning( ... ) //changed to work like Warning() with format for consistency.
+void function sqwarning( ... ) //changed to work as format 
 {
 	if ( vargc <= 0 )
 		return

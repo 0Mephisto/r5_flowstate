@@ -497,7 +497,7 @@ void function RemoteFunctions_Init_Begin()
 		
 		case eGamemodes.fs_aimtrainer:
 			
-			BannerAssets_SetEnabled( false )
+			WorldAssets_SetEnabled( false )
 			
 			ScriptRemote_RegisterUIFunction( "OpenFRChallengesMenu" )
 			ScriptRemote_RegisterUIFunction( "CloseFRChallengesMenu" )
@@ -530,7 +530,7 @@ void function RemoteFunctions_Init_Begin()
 		
 		case eGamemodes.fs_snd: //(mk): can save 15 slots byRef || save buffer by using entity over encodedEhandle
 			
-			BannerAssets_SetEnabled( false )
+			WorldAssets_SetEnabled( false )
 			
 			ScriptRemote_RegisterClientFunction("Sh_SetAttackingLocations", "int", 0, 10)
 			ScriptRemote_RegisterClientFunction("Sh_SetAttackerTeam", "int", 0, 10, "int", INT_MIN, INT_MAX)
@@ -574,7 +574,7 @@ void function RemoteFunctions_Init_Begin()
 		
 		case eGamemodes.fs_infected:
 		
-			BannerAssets_SetEnabled( false )
+			WorldAssets_SetEnabled( false )
 		
 			ScriptRegisterNetworkedVariable( "isPlayerShadowForm", SNDC_PLAYER_GLOBAL, SNVT_BOOL, false )
 			ScriptRemote_RegisterClientFunction("ApplyInfectedHUD")
@@ -631,7 +631,7 @@ void function RemoteFunctions_Init_Begin()
 			
 		case eGamemodes.fs_prophunt:
 		
-			BannerAssets_SetEnabled( false )
+			WorldAssets_SetEnabled( false )
 			
 			ScriptRemote_RegisterClientFunction("ServerCallback_FSDM_SetScreen", "int", 0, 255, "int", INT_MIN, INT_MAX, "int", INT_MIN, INT_MAX, "int", 0, 255)
 			ScriptRemote_RegisterClientFunction("ServerCallback_FSDM_OpenVotingPhase", "bool")
@@ -663,7 +663,7 @@ void function RemoteFunctions_Init_Begin()
 		case eGamemodes.CUSTOM_CTF:
 			// CTF: Server to Client
 			
-			BannerAssets_SetEnabled( false )
+			WorldAssets_SetEnabled( false )
 			
 			ScriptRemote_RegisterClientFunction( "ServerCallback_CTF_AddPointIcon", "entity", "entity", "int", 0, 255)
 			ScriptRemote_RegisterClientFunction( "ServerCallback_CTF_RecaptureFlag", "int", 0, 999, "float", 0.0, 999.0, 32, "float", 0.0, 999.0, 32, "bool")
@@ -1135,7 +1135,7 @@ void function RemoteFunctions_Init_Begin()
 	ScriptRegisterNetworkedVariable( "stats_loaded", SNDC_PLAYER_GLOBAL, SNVT_BOOL, false )
 
 	
-	if( BannerAssets_IsEnabled() )
+	if( WorldAssets_IsEnabled() )
 	{
 		ScriptRemote_RegisterUntypedFunction_deprecated( "__BuildWorldAssetString" ) //optional, else called by int ref (should be deprecated feature of server asset system)
 		
