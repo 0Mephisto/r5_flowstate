@@ -1483,24 +1483,28 @@ void function PlayerKillStreakAnnounce( entity attacker, string doubleKill, stri
 
 void function CheckForObservedTarget(entity player)
 {
-	OnThreadEnd(
+	OnThreadEnd
+	(
 		function() : ( player )
 		{
-			if( !IsValid(player) ) return
+			if( !IsValid( player ) ) 
+				return
 			
-			if(IsValid(player.p.lastFrameObservedTarget))
+			if( IsValid( player.p.lastFrameObservedTarget ) )
 			{
-				player.p.lastFrameObservedTarget.SetPlayerNetInt( "playerObservedCount", max(0, player.p.lastFrameObservedTarget.GetPlayerNetInt( "playerObservedCount" ) - 1) )
+				player.p.lastFrameObservedTarget.SetPlayerNetInt( "playerObservedCount", max( 0, player.p.lastFrameObservedTarget.GetPlayerNetInt( "playerObservedCount" ) - 1 ) )
 				player.p.lastFrameObservedTarget = null
 			}
 			
-			if(!IsValid( player.GetObserverTarget() ) && GetGameState() == eGameState.Playing )
+			if( !IsValid( player.GetObserverTarget() ) && GetGameState() == eGameState.Playing )
 			{
 				player.p.isSpectating = false
 				player.SetPlayerNetInt( "spectatorTargetCount", 0 )
 				player.SetSpecReplayDelay( 0 )
 				player.SetObserverTarget( null )
 				player.StopObserverMode()
+				
+				Remote_CallFunction_ByRef( player, "ServerCallback_KillReplayHud_Deactivate" )
 				player.p.lastTimeSpectateUsed = Time()
 				_HandleRespawn( player )
 			}
@@ -1508,17 +1512,18 @@ void function CheckForObservedTarget(entity player)
 	)
 	
 	entity observerTarget
-	while(IsValid(player) && player.IsObserver() && IsValid( player.GetObserverTarget() ) )
+	while( IsValid( player ) && player.IsObserver() && IsValid( player.GetObserverTarget() ) )
 	{		
 		observerTarget = player.GetObserverTarget()
-		if(observerTarget != player.p.lastFrameObservedTarget)
+		if( observerTarget != player.p.lastFrameObservedTarget )
 		{
-			if(IsValid(player.p.lastFrameObservedTarget))
-				player.p.lastFrameObservedTarget.SetPlayerNetInt( "playerObservedCount", max(0, player.p.lastFrameObservedTarget.GetPlayerNetInt( "playerObservedCount" ) - 1) )
+			if( IsValid( player.p.lastFrameObservedTarget ) )
+				player.p.lastFrameObservedTarget.SetPlayerNetInt( "playerObservedCount", max(0, player.p.lastFrameObservedTarget.GetPlayerNetInt( "playerObservedCount" ) - 1 ) )
 			
-			if(IsValid(observerTarget))
+			if( IsValid( observerTarget ) )
 				observerTarget.SetPlayerNetInt( "playerObservedCount", observerTarget.GetPlayerNetInt( "playerObservedCount" ) + 1 )
 		}
+		
 		player.p.lastFrameObservedTarget = player.GetObserverTarget()
 		WaitFrame()
 	}
@@ -1537,7 +1542,8 @@ void function _HandleRespawn( entity player, bool isDroppodSpawn = false )
     {
 		player.SetSpecReplayDelay( 0 )
 		player.SetObserverTarget( null )
-		player.StopObserverMode()
+		player.StopObserverMode()	
+		
         Remote_CallFunction_ByRef( player, "ServerCallback_KillReplayHud_Deactivate" )
     }
 

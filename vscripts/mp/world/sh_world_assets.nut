@@ -29,7 +29,8 @@ global function WorldAssets_PlayAudioID				// ( entity player, int assetId = -1,
 global function WorldAssets_PlayAudioName			// ( entity player, string audioName, string groupName = "" )
 global function WorldAssets_GetPlayCountForPlayer	// ( entity player, int assetId )
 global function WorldAssets_GetLastPlayTime			// ( entity player, int assetId )
-global function WorldAssets_WaitForChannelCreation	// ( entity player )
+global function WorldAssets_WaitForChannelCreation	// ( entity player, string groupName )
+global function WorldAssets_IsChannelCreatedForPlayer//( entity player, string groupName )
 
 global const MAX_VIDEO_CHANNELS = 10 //this must not surpass engine internals.
 global const CURRENT_RESERVED_CHANNELS = 5 //this is the limit we start from. (todo: disable systems where posible)
@@ -570,6 +571,15 @@ void function WorldAssets_WaitForChannelCreation( entity player, string groupNam
 		return 
 		
 	player.WaitSignal( format( "AudioChannelReady_%d", groupId ) )
+}
+
+bool function WorldAssets_IsChannelCreatedForPlayer( entity player, string groupName )
+{
+	int groupId = WorldAssets_GetGroupIdByName( groupName )
+	if( groupId < 0 )
+		return false 
+		
+	return IsChannelCreatedForPlayerForGroup( player, groupId )
 }
 
 bool function IsChannelCreatedForPlayerForGroup( entity player, int groupId )

@@ -222,7 +222,9 @@ void function Gamemode1v1_OnSelectedLegend( ItemFlavor character )
 void function RealisticTTVMode_OnSelectedLegend( ItemFlavor character )
 {
 	entity player = GetLocalClientPlayer()
-	
+	if( player != GetLocalViewPlayer() )
+		return
+		
 	thread 
 	(
 		void function() : ( player, character )
@@ -719,6 +721,9 @@ void function Flowstate_ShowRoundEndTimeUI( float new )
 		if( !IsValid( player ) )
 			return 
 			
+		if( player != GetLocalViewPlayer() )
+			return
+			
 		Signal( player, "FSDM_EndTimer")
 		Hud_SetVisible( HudElement( "FS_DMCountDown_Text" ), false )
 		Hud_SetVisible( HudElement( "FS_DMCountDown_Frame" ), false )
@@ -742,6 +747,10 @@ void function Flowstate_ShowRoundEndTimeUI( float new )
 void function Flowstate_DMTimer_Thread( float endtime )
 {
 	entity player = GetLocalClientPlayer()
+	
+	if( player != GetLocalViewPlayer() )
+		return
+	
 	Signal( player, "FSDM_EndTimer")
 	EndSignal( player, "FSDM_EndTimer")
 
@@ -833,7 +842,9 @@ void function Flowstate_ShowStartTimeUI( float new )
 void function Flowstate_StartTime_Thread( float endtime )
 {
 	entity player = GetLocalClientPlayer()
-
+	if( player != GetLocalViewPlayer() )
+		return
+		
 	OnThreadEnd(
 		function() : ()
 		{

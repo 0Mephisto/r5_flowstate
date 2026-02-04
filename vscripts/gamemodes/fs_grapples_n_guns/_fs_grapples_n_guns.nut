@@ -152,15 +152,28 @@ bool function TimerFunction( int timeRemaining )
 
 void function OnRespawned( entity player )
 {
-	foreach( string key, string value in GRAPPLES_N_GUNS_PLAYER_SETTINGS )
-		player.SetClassVar( key, value )
-		
-	Inventory_SetPlayerEquipment( player, "helmet_pickup_lv1", "helmet" )
-	
-	player.TakeNormalWeaponByIndexNow( WEAPON_INVENTORY_SLOT_PRIMARY_2 )
-	player.TakeOffhandWeapon( OFFHAND_MELEE )
-	player.GiveWeapon( "mp_weapon_melee_survival", WEAPON_INVENTORY_SLOT_PRIMARY_2, [] )
-	player.GiveOffhandWeapon( "melee_pilot_emptyhanded", OFFHAND_MELEE, [] )
+	thread
+	(
+		void function() : ( player )
+		{
+			if( !IsValid( player ) )
+				return
+			
+			player.EndSignal( "OnDestroy" )			
+			
+			wait 1 //yet to determine why calling SetClassVar causes sync issues closely with SetPlayerSettingsWithMods, which is called during DecideRespawn
+			
+			foreach( string key, string value in GRAPPLES_N_GUNS_PLAYER_SETTINGS )
+				player.SetClassVar( key, value )
+				
+			Inventory_SetPlayerEquipment( player, "helmet_pickup_lv1", "helmet" )
+			
+			player.TakeNormalWeaponByIndexNow( WEAPON_INVENTORY_SLOT_PRIMARY_2 )
+			player.TakeOffhandWeapon( OFFHAND_MELEE )
+			player.GiveWeapon( "mp_weapon_melee_survival", WEAPON_INVENTORY_SLOT_PRIMARY_2, [] )
+			player.GiveOffhandWeapon( "melee_pilot_emptyhanded", OFFHAND_MELEE, [] )
+		}
+	)()
 }
 
 const array< string > HEADSHOT_SOUND_NAMES =

@@ -1099,9 +1099,8 @@ void function TrackerUtilityInit()
 					playlist = FindPlaylistName( param2 )
 				
 					if( playlist == "" )
-						errorMsg = format( "Could not find a valid playlist via partial matching for criteria '%s'", playlist )
-				
-					if( !GetPlaylistMaps( playlist ).contains( map ) )
+						errorMsg = format( "Could not find a valid playlist via partial matching for criteria '%s'", param2 )
+					else if( !GetPlaylistMaps( playlist ).contains( map ) )
 						errorMsg = format( "Map '%s' not in playlist '%s' - rejecting cc map load", map, playlist )
 
 					if( errorMsg != "" )

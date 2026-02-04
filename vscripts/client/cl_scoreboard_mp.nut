@@ -94,6 +94,12 @@ const array<int> IGNORE_SCORE_BOARD_RESET =
 	eGamemodes.fs_aimtrainer
 ]
 
+const array< int > MAP_TRIGGERS_SCOREBOARD_PLAYLISTS =
+[
+	ePlaylists.fs_vamp_1v1,
+	ePlaylists.fs_grapples_n_guns
+]
+
 void function ClScoreboardMp_Init()
 {
 	clGlobal.initScoreboardFunc = InitScoreboardMP
@@ -109,7 +115,7 @@ void function ClScoreboardMp_Init()
 	file.bResetScoreboardIgnore = IGNORE_SCORE_BOARD_RESET.contains( Gamemode() )
 	file.max_teams = GetCurrentPlaylistVarInt( "max_teams", MAX_TEAM_SLOTS )
 	
-	if( Playlist() == ePlaylists.fs_vamp_1v1 )
+	if( MAP_TRIGGERS_SCOREBOARD_PLAYLISTS.contains( Playlist() ) )
 		RegisterConCommandTriggeredCallback( "toggle_map", ScoreboardToggleFocus )
 }
 
