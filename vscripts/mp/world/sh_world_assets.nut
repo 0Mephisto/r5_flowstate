@@ -1,39 +1,41 @@
 // world assets																					//mkos
 
-global function WorldAssets_SetEnabled				// ( bool state )
-global function WorldAssets_IsEnabled				// ()
+global function WorldAssets_SetEnabled						// ( bool state )
+global function WorldAssets_IsEnabled						// ()
 
 #if SERVER
 global function WorldAssets_Init
-global function WorldAssets_RegisterGroup			// ( string name, LocPair groupLoc, float width, float height, float alpha = 1.0, bool visible = true, int cycleTime = 10, bool useRandom = false, float intermediateTime = 0.0, int fadeSpeed = SLOWEST )
-global function WorldAssets_SetAllGroupsFunc		// ( void functionref() callbackFunc )
-global function WorldAssets_SetAllAssetsFunc 		// ( void functionref() callbackFunc )
-global function WorldAssets_GroupAppendAsset 		// ( string groupName, string assetResourceRef = "", int assetId = -1, bool bLoopVideo = false, string assetName = "" )
+global function WorldAssets_RegisterGroup					// ( string name, LocPair groupLoc, float width, float height, float alpha = 1.0, bool visible = true, int cycleTime = 10, bool useRandom = false, float intermediateTime = 0.0, int fadeSpeed = SLOWEST )
+global function WorldAssets_SetAllGroupsFunc				// ( void functionref() callbackFunc )
+global function WorldAssets_SetAllAssetsFunc 				// ( void functionref() callbackFunc )
+global function WorldAssets_GroupAppendAsset 				// ( string groupName, string assetResourceRef = "", int assetId = -1, bool bLoopVideo = false, string assetName = "" )
 
-global function WorldAssets_GetAssetRefByName		// ( string assetName )
-global function WorldAssets_ModifyGroupData 		// ( string groupName, table tbl )
-global function WorldAssets_SyncAllPlayers			// ( int assetRefId = -1, bool bLocked = false, int groupId = -1, string assetRef = "",  ) //groupId -1 for all groups, assetRefId -1 for restarting all groups to first asset for each respective group
-global function WorldAssets_DoesSignalExist    		// ( string signal )
-global function WorldAssets_LockGroupsTo			// ( int assetId, int groupId = -1 ) //-1 is all groups.
-global function WorldAssets_Lock					// ( int groupId )
-global function WorldAssets_Unlock					// ( int groupId )
-global function WorldAssets_KillAllBanners			// ()
-global function WorldAssets_Restart					// ()
-global function WorldAssets_SetVisible				// ( string groupName, bool toggle )
-global function WorldAssets_BannerVisibilityMover 	// ( vector initialPosition, vector initialAngles, float bannerWidth, float bannerHeight, float adjustmentDistance = 5.0, float maxIterations = 1000 ) 
-global function WorldAssets_GetGroupIdByName		// ( string groupName )
+global function WorldAssets_GetAssetRefByName				// ( string assetName )
+global function WorldAssets_ModifyGroupData 				// ( string groupName, table tbl )
+global function WorldAssets_SyncAllPlayers					// ( int assetRefId = -1, bool bLocked = false, int groupId = -1, string assetRef = "",  ) //groupId -1 for all groups, assetRefId -1 for restarting all groups to first asset for each respective group
+global function WorldAssets_DoesSignalExist    				// ( string signal )
+global function WorldAssets_LockGroupsTo					// ( int assetId, int groupId = -1 ) //-1 is all groups.
+global function WorldAssets_Lock							// ( int groupId )
+global function WorldAssets_Unlock							// ( int groupId )
+global function WorldAssets_KillAllBanners					// ()
+global function WorldAssets_Restart							// ()
+global function WorldAssets_SetVisible						// ( string groupName, bool toggle )
+global function WorldAssets_GroupVisibilityMover 			// ( vector initialPosition, vector initialAngles, float bannerWidth, float bannerHeight, float adjustmentDistance = 5.0, float maxIterations = 1000 ) 
+global function WorldAssets_GetGroupIdByName				// ( string groupName )
+global function WorldAssets_GetGroupNameByID				// ( int groupId )
+global function WorldAssets_SwitchToPlayerAssetForGroupNow	// ( entity player, string assetRef, string groupName )
 
-global function WorldAssets_RegisterAudioGroup		// ( string name, bool interupt = true, bool isVisible = true )
-global function WorldAssets_PlayAudio				// ( entity player, string assetRef, string groupName = "" )
-global function WorldAssets_PlayAudioID				// ( entity player, int assetId = -1, string groupName = "" )
-global function WorldAssets_PlayAudioName			// ( entity player, string audioName, string groupName = "" )
-global function WorldAssets_GetPlayCountForPlayer	// ( entity player, int assetId )
-global function WorldAssets_GetLastPlayTime			// ( entity player, int assetId )
-global function WorldAssets_WaitForChannelCreation	// ( entity player, string groupName )
-global function WorldAssets_IsChannelCreatedForPlayer//( entity player, string groupName )
+global function WorldAssets_RegisterAudioGroup				// ( string name, bool interupt = true, bool isVisible = true )
+global function WorldAssets_PlayAudio						// ( entity player, string assetRef, string groupName = "" )
+global function WorldAssets_PlayAudioID						// ( entity player, int assetId = -1, string groupName = "" )
+global function WorldAssets_PlayAudioName					// ( entity player, string audioName, string groupName = "" )
+global function WorldAssets_GetPlayCountForPlayer			// ( entity player, int assetId )
+global function WorldAssets_GetLastPlayTime					// ( entity player, int assetId )
+global function WorldAssets_WaitForChannelCreation			// ( entity player, string groupName )
+global function WorldAssets_IsChannelCreatedForPlayer		//( entity player, string groupName )
 
-global const MAX_VIDEO_CHANNELS = 10 //this must not surpass engine internals.
-global const CURRENT_RESERVED_CHANNELS = 5 //this is the limit we start from. (todo: disable systems where posible)
+global const MAX_BIK_CHANNELS 			= 10 //this must not surpass engine internals.
+global const CURRENT_RESERVED_CHANNELS 	= 5 //this is the limit we start from. (todo: disable systems where posible)
 
 const int SLOWEST	= -4
 const int SLOWER	= -3
@@ -43,7 +45,9 @@ const int NORMAL 	= 0
 const int FAST 		= 1
 const int FASTER	= 2
 
+const string INVALID = "_INVALID"
 const bool DEBUG_BANNER_ASSET = false
+
 
 /*
 											DOCUMENTATION:
@@ -60,8 +64,9 @@ const bool DEBUG_BANNER_ASSET = false
 		You can position them anywhere you want, with additional functionality for game logic such as:
 		
 		- Syncing all players to a specific asset, for instance, on a specific game event such as end game via WorldAssets_SyncAllPlayers
-		- Auto adjusting visibility to specific eye coordinates via WorldAssets_BannerVisibilityMover
-		- ..more 	
+		- Displaying a specific group's asset to a specific player for example: WorldAssets_SwitchToPlayerAssetForGroupNow( p(0), "rui/world/flowstate1v1_banner02", "main_banner" )
+		- Auto adjusting visibility to specific eye coordinates via WorldAssets_GroupVisibilityMover
+		- ..more
 		
 	====================================================================================================================================================	
 	Registering Assets:
@@ -116,7 +121,7 @@ const bool DEBUG_BANNER_ASSET = false
 							WorldAssets_RegisterGroup
 							(
 								"group1", 	// string: 		name				- the name of your assets group
-								myLocPair, 	// LocPair: 	groupLoc 			- ( origin and angles ), created with NewLocPair() function. This is where your group apppears. Additionally, WorldAssets_BannerVisibilityMover is a viable utility to automatically move the display to a best effort position so that images/videos are always visible to a player
+								myLocPair, 	// LocPair: 	groupLoc 			- ( origin and angles ), created with NewLocPair() function. This is where your group apppears. Additionally, WorldAssets_GroupVisibilityMover is a viable utility to automatically move the display to a best effort position so that images/videos are always visible to a player
 								width,		// float: 		width 				- of the display
 								height,		// float: 		height				- of the display
 								.95,		// float: 		alpha				- transparency between 0.0 (fully transparent) and 1.0 (fully solid)
@@ -196,7 +201,7 @@ const bool DEBUG_BANNER_ASSET = false
 		A good example utilizing this system is in: \platform\scripts\vscripts\gamemodes\fs_grapples_n_guns\_fs_grapples_n_guns.nut
 */
 
-struct BannerAssetData
+struct AssetData
 {
 	int id
 	int assetType
@@ -206,10 +211,10 @@ struct BannerAssetData
 	bool isValid
 }
 
-struct BannerGroupData
+struct AssetGroupData
 {
 	string groupName
-	array<BannerAssetData> groupBanners
+	array<AssetData> groupBanners
 	vector org 
 	vector ang
 	int groupId			= -1
@@ -245,7 +250,7 @@ struct
 {
 	#if SERVER
 		table< string, table< int, AudioHistory > > audioHistoryMap
-		table< string, BannerGroupData > groupDataMap
+		table< string, AssetGroupData > groupDataMap
 		table< string, bool > groupSignals
 		array< int > __channelRequiredGroups
 		table< int, int > audioAssetToGroupMap
@@ -259,14 +264,14 @@ struct
 		int iDefaultAudioGroup		= -1
 	#endif //SERVER
 	
-	bool _bBannerImages_Loaded 	= false
+	bool _bAssetGroups_Loaded 	= false
 	bool isEnabled = true
 	
 } file
 
 void function WorldAssets_SetEnabled( bool state )
 {
-	mAssert( !file._bBannerImages_Loaded, "[WorldAssets] Tried to set banner assets enabled state with %s() but initialization is already complete. ( Not called early enough )", FUNC_NAME() )
+	mAssert( !file._bAssetGroups_Loaded, "[WorldAssets] Tried to set banner assets enabled state with %s() but initialization is already complete. ( Not called early enough )", FUNC_NAME() )
 	file.isEnabled = state
 }
 
@@ -292,12 +297,13 @@ void function WorldAssets_Init()
 			file.runAssetAppendtoGroupsFunc()
 			
 			array<int> bikGroups
-			foreach( BannerGroupData bannerGroup in file.groupDataMap )
+			foreach( AssetGroupData bannerGroup in file.groupDataMap )
 			{
 				if( bannerGroup.bikCount > 0 )
 					bikGroups.append( bannerGroup.groupId )
 					
 				__RegisterGroupSignal( "VisibilityChanged", bannerGroup.groupId )
+				__RegisterGroupSignal( "KillGroupForPlayer", bannerGroup.groupId )
 			}
 			
 			foreach( groupId in bikGroups )
@@ -305,7 +311,7 @@ void function WorldAssets_Init()
 			
 			// not used -- no validation is needed from the server, clients validate via client command, and invalid assets are removed from that player's queueable assets
 			// array<int> invalidAssets = WorldDrawAsset_GetInvalid()
-			// foreach( string groupName, BannerGroupData bannerData in file.groupDataMap )
+			// foreach( string groupName, AssetGroupData bannerData in file.groupDataMap )
 			// {
 				// foreach( banner in bannerData.groupBanners )
 				// {
@@ -327,7 +333,7 @@ void function WorldAssets_Init()
 		__SetupThreads()
 	}
 	
-	file._bBannerImages_Loaded = true
+	file._bAssetGroups_Loaded = true
 }
 
 bool function WorldAssets_DoesSignalExist( string signal )
@@ -337,9 +343,9 @@ bool function WorldAssets_DoesSignalExist( string signal )
 
 void function WorldAssets_RegisterGroup( string name, LocPair groupLoc, float width, float height, float alpha = -1.0, float startDelay = 0, bool isVisible = true, int cycleTime = 10, bool useRandom = false, float intermediateTime = 2.00, int fadeSpeed = SLOWEST, bool isAudioQueue = false, bool interupt = true )
 {	
-	mAssert( !file._bBannerImages_Loaded, "[WorldAssets] Tried to register WorldAssets_RegisterGroup [" + name + "] but group registration is already complete." )
+	mAssert( !file._bAssetGroups_Loaded, "[WorldAssets] Tried to register WorldAssets_RegisterGroup [" + name + "] but group registration is already complete." )
 
-	BannerGroupData bannerGroup 	
+	AssetGroupData bannerGroup 	
 	int iGroupId = ++file._uniqueGroupId
 	
 	bannerGroup.groupId		= iGroupId
@@ -438,19 +444,19 @@ void function WorldAssets_RegisterAudioGroup( string name, bool interupt = true,
 
 void function WorldAssets_SetAllGroupsFunc( void functionref() callbackFunc )
 {
-	mAssert( !file._bBannerImages_Loaded, "[WorldAssets] Tried to register WorldAssets_SetAllGroupsFunc [ " + string( callbackFunc ) + "() ] but group registration is already complete." )
+	mAssert( !file._bAssetGroups_Loaded, "[WorldAssets] Tried to register WorldAssets_SetAllGroupsFunc [ " + string( callbackFunc ) + "() ] but group registration is already complete." )
 	file.groupsInitCallbackFunc = callbackFunc
 }
 
 void function WorldAssets_SetAllAssetsFunc( void functionref() callbackFunc )
 {
-	mAssert( !file._bBannerImages_Loaded, "[WorldAssets] Tried to register " + FUNC_NAME() + "() [ " + string( callbackFunc ) + "() ] but group registration is already complete." )
+	mAssert( !file._bAssetGroups_Loaded, "[WorldAssets] Tried to register " + FUNC_NAME() + "() [ " + string( callbackFunc ) + "() ] but group registration is already complete." )
 	file.runAssetAppendtoGroupsFunc = callbackFunc
 }
 
-BannerGroupData function GetBannerGroup( string groupName )
+AssetGroupData function GetAssetGroup( string groupName )
 {
-	BannerGroupData group 
+	AssetGroupData group 
 	
 	if( groupName in file.groupDataMap )
 		return file.groupDataMap[ groupName ]
@@ -458,9 +464,9 @@ BannerGroupData function GetBannerGroup( string groupName )
 	return group
 }
 
-string function GetBannerGroupName( int groupId )
+string function GetAssetGroupName( int groupId )
 {
-	foreach( string groupName, BannerGroupData groupData in file.groupDataMap )
+	foreach( string groupName, AssetGroupData groupData in file.groupDataMap )
 	{
 		if( groupData.groupId == groupId )
 			return groupName
@@ -469,14 +475,14 @@ string function GetBannerGroupName( int groupId )
 	return "_INVALID"
 }
 
-BannerGroupData function GetBannerGroupByID( int groupId )
+AssetGroupData function GetAssetGroupByID( int groupId ) //check with .isValid
 {
-	return GetBannerGroup( GetBannerGroupName( groupId ) )
+	return GetAssetGroup( GetAssetGroupName( groupId ) )
 }
 
 void function WorldAssets_GroupAppendAsset( string groupName, string assetResourceRef = "", int assetId = -1, bool bLoopVideo = false, string assetName = "" )
 {
-	BannerGroupData group = GetBannerGroup( groupName )
+	AssetGroupData group = GetAssetGroup( groupName )
 	
 	if( !group.isValid ) 
 	{
@@ -487,7 +493,7 @@ void function WorldAssets_GroupAppendAsset( string groupName, string assetResour
 		return
 	}
 	
-	BannerAssetData banner
+	AssetData banner
 	asset potentialAsset
 	int assetType 
 	
@@ -545,7 +551,7 @@ void function WorldAssets_InitPlayerVideoChannels( entity player )
 {
 	foreach( int iter, int groupId in file.__channelRequiredGroups )
 	{
-		if( iter + CURRENT_RESERVED_CHANNELS > MAX_VIDEO_CHANNELS )
+		if( iter + CURRENT_RESERVED_CHANNELS > MAX_BIK_CHANNELS )
 		{
 			mAssert( 0, "[WorldAssets] Cannot create any more channels for clients." )
 			return
@@ -602,7 +608,14 @@ void function WorldAssets_LockGroupsTo( int assetId, int groupId = -1 )
 
 void function WorldAssets_Lock( int groupId )
 {
-	string group = GetBannerGroupName( groupId )
+	string group = GetAssetGroupName( groupId )
+	
+	if( group == INVALID )
+	{
+		Warning( "groupId '%d' was invalid", groupId )
+		return
+	}
+	
 	WorldAssets_ModifyGroupData( group, { bLocked = true } )
 }
 
@@ -613,13 +626,20 @@ void function WorldAssets_Restart()
 
 void function WorldAssets_Unlock( int groupId )
 {
-	string group = GetBannerGroupName( groupId )
+	string group = GetAssetGroupName( groupId )
+	
+	if( group == INVALID )
+	{
+		Warning( "groupId '%d' was invalid", groupId )
+		return
+	}
+		
 	WorldAssets_ModifyGroupData( group, { bLocked = false } )
 }
 
-BannerAssetData function __GetBannerDataForID( array<BannerAssetData> banners, int bannerId )
+AssetData function __GetBannerDataForID( array<AssetData> banners, int bannerId )
 {
-	BannerAssetData invalidBanner
+	AssetData invalidBanner
 	
 	foreach( bannerData in banners )
 	{
@@ -638,7 +658,7 @@ void function WorldAssets_SetVisible( string groupName, bool setting )
 
 bool function WorldAssets_ModifyGroupData( string groupName, table tbl )
 {
-	BannerGroupData group = GetBannerGroup( groupName )
+	AssetGroupData group = GetAssetGroup( groupName )
 	
 	if( !group.isValid )
 		return false
@@ -710,7 +730,7 @@ bool function WorldAssets_ModifyGroupData( string groupName, table tbl )
 				break
 				
 			default:
-				mAssert( 0, "[WorldAssets] key name [" + key + "] does not exist in struct BannerGroupData" )
+				mAssert( 0, "[WorldAssets] key name [" + key + "] does not exist in struct AssetGroupData" )
 				return true
 		}
 	}
@@ -721,7 +741,7 @@ bool function WorldAssets_ModifyGroupData( string groupName, table tbl )
 
 void function __SetupThreads()
 {
-	foreach( string name, BannerGroupData data in file.groupDataMap )
+	foreach( string name, AssetGroupData data in file.groupDataMap )
 	{		
 		#if DEVELOPER && DEBUG_BANNER_ASSET
 			Warning( "Spawning banner group: " + name )
@@ -759,7 +779,7 @@ void function WorldAssets_SyncAllPlayers( int assetRefId = -1, bool bLocked = fa
 			
 			foreach( player in GetPlayerArray() )
 			{
-				foreach( string name, BannerGroupData data in file.groupDataMap )
+				foreach( string name, AssetGroupData data in file.groupDataMap )
 				{	
 					data = clone data
 					data.syncToAsset = assetRefId 
@@ -778,12 +798,12 @@ void function WorldAssets_SyncAllPlayers( int assetRefId = -1, bool bLocked = fa
 	)()
 }
 
-void function __HideAllBanners( entity player, BannerGroupData groupData )
+void function __HideAllBanners( entity player, AssetGroupData groupData )
 {
 	if( !IsValid( player ) ) //player might have disconnected
 		return
 		
-	array<BannerAssetData> banners = groupData.groupBanners
+	array<AssetData> banners = groupData.groupBanners
 		
 	int iter = -1
 	foreach( banner in banners )
@@ -860,13 +880,13 @@ void function SetRUIID( entity player, int groupId, int assetType, int RUIID )
 	player.p.groupTypeToRuiID[ groupId ][ assetType ] = RUIID
 }
 
-array<BannerAssetData> function DeepCopyBanner( array<BannerAssetData> banners )
+array<AssetData> function DeepCopyBanner( array<AssetData> banners )
 {
-	array<BannerAssetData> returnBanners = []
+	array<AssetData> returnBanners = []
 	
-	foreach ( BannerAssetData banner in banners )
+	foreach ( AssetData banner in banners )
 	{
-		BannerAssetData bannerClone
+		AssetData bannerClone
 		
 		bannerClone.id = banner.id
 		bannerClone.assetType = banner.assetType
@@ -881,7 +901,7 @@ array<BannerAssetData> function DeepCopyBanner( array<BannerAssetData> banners )
     return returnBanners
 }
 
-vector function WorldAssets_BannerVisibilityMover( vector eyePos, vector eyeAngles, vector initialPosition, vector initialAngles, float bannerWidth, float bannerHeight, float adjustmentDistance = 5.0, float maxIterations = 1000 ) 
+vector function WorldAssets_GroupVisibilityMover( vector eyePos, vector eyeAngles, vector initialPosition, vector initialAngles, float bannerWidth, float bannerHeight, float adjustmentDistance = 5.0, float maxIterations = 1000 ) 
 {
 	array<vector> corners
 	vector forward, right, up, simulateEyePos, playerEyeAngles
@@ -1008,12 +1028,20 @@ float function WorldAssets_GetLastPlayTime( entity player, int assetId )
 	return history.lastPlayTime
 }
 
-void function __AudioQueue( entity player, BannerAssetData baseBannerVideo, BannerGroupData groupData )
+void function __AudioQueue( entity player, AssetData baseBannerVideo, AssetGroupData groupData )
 {
 	if( !IsValid( player ) )//threaded off
 		return
 
-	player.EndSignal( "OnDestroy", "KillAllBannerGroups" )	
+	string groupKillSignal = GetGroupSignal( "KillGroupForPlayer", groupData.groupId )
+	
+	player.Signal( groupKillSignal )
+	player.EndSignal
+	( 
+		"OnDestroy", 
+		"KillAllBannerGroups", 
+		groupKillSignal
+	)
 	
 	SetupAudioQueueForPlayer( player, groupData.groupId )
 	__SignalAudioChannelReadyForPlayerForGroup( player, groupData.groupId )
@@ -1070,7 +1098,7 @@ void function __AudioQueue( entity player, BannerAssetData baseBannerVideo, Bann
 			audioAssetId = expect int( results.assetRefId )
 		}
 		
-		BannerAssetData banner = __GetBannerDataForID( groupData.groupBanners, audioAssetId )	
+		AssetData banner = __GetBannerDataForID( groupData.groupBanners, audioAssetId )	
 		if( !banner.isValid )
 		{
 			Warning( format( "Audio AssetId [%d] does not exist in group [%d]", audioAssetId, groupData.groupId ) )
@@ -1161,6 +1189,9 @@ void function MapAudioAssetToGroup( int audioAssetId, int groupId )
 
 void function AudioMonitor( entity player, int groupId, int audioId )
 {
+	if( !IsValid( player ) )
+		return
+
 	IsPlayingAudioForPlayer( player, groupId, true )
 	UpdateAudioHistory( player, audioId )
 		
@@ -1173,7 +1204,7 @@ void function AudioMonitor( entity player, int groupId, int audioId )
 		}
 	)
 	
-	player.EndSignal( "VideoFinishedPlaying_" + groupId, "OnDestroy" )
+	player.EndSignal( "OnDestroy", "VideoFinishedPlaying_" + groupId, "OnDestroy" ) //potential abuse without a timeout
 	WaitForever()
 }
 
@@ -1310,7 +1341,62 @@ string function WorldAssets_GetAssetRefByName( string assetName )
 	return ""
 }
 
-void function __Singlethread( entity player, BannerGroupData groupData )
+void function __PrintAssetMissingForGroup( int assetId, int groupId )
+{
+	Warning
+	( 
+		"[WorldAssets] AssetId [%d]\"%s\" does not exist in group [%d]\"%s\"", 
+		assetId, 
+		WorldDrawAsset_GetAssetRefById( assetId ),
+		groupId, 
+		WorldAssets_GetGroupNameByID( groupId )
+	)
+}
+
+string function WorldAssets_GetGroupNameByID( int groupId )
+{
+	return GetAssetGroupName( groupId )
+}
+
+void function SetupGroupSyncAssetsForPlayer( entity player, int groupId )
+{
+	if( !( groupId in player.p.syncGroupToAssetForPlayer )  )
+		player.p.syncGroupToAssetForPlayer[ groupId ] <- -1
+}
+
+void function WorldAssets_SwitchToPlayerAssetForGroupNow( entity player, string assetRef, string groupName )
+{
+	AssetGroupData group = GetAssetGroup( groupName )
+	if( !group.isValid )
+	{
+		Warning( "[WorldAssets] Group \"%s\" is not a valid group name.", groupName )
+		return
+	}
+	
+	int groupId 	= group.groupId 
+	int assetId 	= WorldDrawAsset_AssetRefToID( assetRef )
+	
+	if( assetId == -1 )
+	{
+		Warning( "[WorldAssets] Asset Ref \"%s\" is not a valid asset or is not registered", assetRef )
+		return
+	}
+	
+	if( !( groupId in player.p.syncGroupToAssetForPlayer ) )
+		player.p.syncGroupToAssetForPlayer[ groupId ] <- assetId 
+	else 
+		player.p.syncGroupToAssetForPlayer[ groupId ] = assetId
+		
+	player.Signal( GetGroupSignal( "KillGroupForPlayer", groupId ) )
+	thread __Singlethread( player, clone group )
+}
+
+string function GetGroupSignal( string signal, int groupId )
+{
+	return format( "%s_%d", signal, groupId )
+}
+
+void function __Singlethread( entity player, AssetGroupData groupData )
 {
 	//FlagWait( "EntitiesDidLoad" )
 	
@@ -1318,8 +1404,7 @@ void function __Singlethread( entity player, BannerGroupData groupData )
 		mAssert( IsNewThread(), "[WorldAssets] Must be threaded off." )
 	#endif
 	
-	array<BannerAssetData> banners = DeepCopyBanner( groupData.groupBanners )
-	//groupData.groupBanners = banners //?
+	array<AssetData> banners = DeepCopyBanner( groupData.groupBanners )
 	
 	if( banners.len() == 0 )
 	{
@@ -1335,7 +1420,10 @@ void function __Singlethread( entity player, BannerGroupData groupData )
 		#endif 
 	}
 	
-	EndSignal( player, "OnDestroy" )
+	string groupKillSignal = GetGroupSignal( "KillGroupForPlayer", groupData.groupId )
+	
+	player.Signal( groupKillSignal )
+	EndSignal( player, "OnDestroy", groupKillSignal )
 	EndSignal( file.dummyEnt, "KillAllBannerGroups" )
 	
 	if( !player.p.bannersValidated )
@@ -1348,8 +1436,8 @@ void function __Singlethread( entity player, BannerGroupData groupData )
 			banners.remove( i )
 	}
 
-	BannerAssetData baseBannerImage
-	BannerAssetData baseBannerVideo
+	AssetData baseBannerImage
+	AssetData baseBannerVideo
 	
 	bool bFirstRun = !GroupDataHasRuiSet( GetGroupData( player, groupData.groupId ) )
 	int clientRUIID = -1
@@ -1365,6 +1453,8 @@ void function __Singlethread( entity player, BannerGroupData groupData )
 		#if DEVELOPER && DEBUG_BANNER_ASSET
 			printw( "[WorldAssets] setting group first run for group ", groupData.groupId )
 		#endif 
+		
+		SetupGroupSyncAssetsForPlayer( player, groupData.groupId )
 		
 		GetGroupData( player, groupData.groupId )[ eAssetType.IMAGE ] <- -1 
 		GetGroupData( player, groupData.groupId )[ eAssetType.BIK ] <- -1 
@@ -1523,14 +1613,13 @@ void function __Singlethread( entity player, BannerGroupData groupData )
 		}
 	}
 	
-	
 	if( groupData.isAudioQueue ) //group only needed for audio channel/validation of assets
 	{
 		if( ogBannersLen != banners.len() )
 		{
 			//tell server something?
 			#if DEVELOPER && DEBUG_BANNER_ASSET
-				Warning( "Some audio files were removed from the queue as the client does not have them." )
+				Warning( "[WorldAssets] Some audio files were removed from the queue as the client does not have them." )
 			#endif
 		}
 		
@@ -1579,8 +1668,21 @@ void function __Singlethread( entity player, BannerGroupData groupData )
 		
 		wait groupData.intermediateTime //between fadeins
 		
-		BannerAssetData banner		
-		if( groupData.syncToAsset == -1 && !groupData.bLocked )
+		AssetData banner	
+		int playerSyncAsset = player.p.syncGroupToAssetForPlayer[ groupData.groupId ]
+	
+		if( playerSyncAsset != -1 && !groupData.bLocked )
+		{
+			banner = __GetBannerDataForID( banners, playerSyncAsset )
+			player.p.syncGroupToAssetForPlayer[ groupData.groupId ] = -1
+			
+			if( !banner.isValid )
+			{
+				__PrintAssetMissingForGroup( playerSyncAsset, groupData.groupId )			
+				continue
+			}
+		}
+		else if( groupData.syncToAsset == -1 && !groupData.bLocked )
 		{
 			if( groupData.useRandom )
 				banner = banners.getrandom()
@@ -1594,7 +1696,7 @@ void function __Singlethread( entity player, BannerGroupData groupData )
 			
 			if( !banner.isValid )
 			{
-				Warning( format( "AssetId [%d] does not exist in group [%d]", groupData.syncToAsset, groupData.groupId ) )
+				__PrintAssetMissingForGroup( groupData.syncToAsset, groupData.groupId )
 				continue
 			}
 		}
@@ -1683,7 +1785,7 @@ void function __Singlethread( entity player, BannerGroupData groupData )
 	}
 	
 	#if DEVELOPER && DEBUG_BANNER_ASSET
-		Warning( "BannerGroupData: \"%s\" was set to invalid and shutdown for player: \"%s\"", groupData.groupName, string( player ) )
+		Warning( "[WorldAssets] AssetGroupData: \"%s\" was set to invalid and shutdown for player: \"%s\"", groupData.groupName, string( player ) )
 	#endif 
 }
 

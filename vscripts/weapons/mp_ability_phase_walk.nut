@@ -134,7 +134,7 @@ void function FullyCancelPhaseShift( entity player, entity weapon )
 	OnWeaponChargeEnd_ability_phase_walk( weapon )
 	
 	#if CLIENT
-		if( InPrediction() && !IsFirstTimePredicted() )
+		if( !InPrediction() )
 			return
 	#endif
 	

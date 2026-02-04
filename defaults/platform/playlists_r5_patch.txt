@@ -1411,7 +1411,7 @@ playlists
 				sur_circle_start_paused							1
 				
 				//Replays: 
-				use_r2_deathcam									1
+				use_r2_deathcam									0
 				deathcam_enabled								1
 				replay_enabled					 				1	 
 				replay_delay					   				7
@@ -1862,9 +1862,9 @@ playlists
 				//No circle:
 				sur_circle_start_paused							1
 				
-				use_r2_deathcam									1
-				
 				//Replays:
+				use_r2_deathcam									0
+				deathcam_enabled								1
 				replay_enabled					 				1  
 				replay_delay					   				5
 				replay_new_ui 									1
@@ -1981,10 +1981,10 @@ playlists
 								
 				
 				//Replays:
-				use_r2_deathcam									1
+				use_r2_deathcam									0
 				deathcam_enabled								1
 				replay_enabled					 				1 		 
-				replay_delay					   				5
+				replay_delay					   				7
 				replay_new_ui 									1
 				
 				
@@ -2437,12 +2437,14 @@ playlists
 				//installing or enabling extra spawn paks
 				// to add paks, prefix a mapname with spawnsets_  and list the paks to enable "1,2,3"
 				
+				spawnsets_mp_rr_aqueduct						"1,2"
 				spawnsets_mp_rr_desertlands_64k_x_64k			"1"
 				spawnsets_mp_rr_canyonlands_64k_x_64k			"1"
 				spawnsets_mp_rr_arena_phase_runner				"1"
 				spawnsets_mp_rr_canyonlands_staging				"1"
 				
-				spawnpaks_use_random							0	// bool, loads random configured pak on mapstart
+				spawnpaks_rotate_all							0   // bool, set to 1 to rotate a set list above
+				spawnpaks_use_random							0	// bool, set to 1 to load random configured pak on mapstart
 				spawnpaks_preferred_pak							0 	// integer, pak number, 0 to disable						
 				custom_spawnpak									""	// string, custom spawn.rpak override
 				custom_playlist_spawnpak						""  // string, custom playlist override (fs_1v1, fs_scenarios, etc. )  loads spawns for this gametype instead of game loaded gametype

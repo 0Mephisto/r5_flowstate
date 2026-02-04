@@ -809,7 +809,7 @@ void function BannerImages_1v1Init()
 	float defaultWidth 	= 480 //todo playlistvar
 	float defaultHeight	= 270 //todo playlistvar
 	
-	LocPair setBannerLoc = NewLocPair( WorldAssets_BannerVisibilityMover( getWaitingRoomLocation().origin, getWaitingRoomLocation().angles, testOrigin, testAngles, defaultWidth, defaultHeight ), testAngles )
+	LocPair setBannerLoc = NewLocPair( WorldAssets_GroupVisibilityMover( getWaitingRoomLocation().origin, getWaitingRoomLocation().angles, testOrigin, testAngles, defaultWidth, defaultHeight ), testAngles )
 	
 	WorldAssets_SetAllGroupsFunc
 	(

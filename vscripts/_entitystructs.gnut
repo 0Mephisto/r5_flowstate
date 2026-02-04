@@ -918,6 +918,7 @@ global struct ServerPlayerStruct
 	bool hasTeam
 	bool bIsTimedOut
 	table< int, bool > isGroupChannelCreatedTbl
+	table< int, int > syncGroupToAssetForPlayer
 	
 	//for adding specific spawn behavior on a player basis.
 	array<void functionref(entity)> playerSpawnedCallbacks
