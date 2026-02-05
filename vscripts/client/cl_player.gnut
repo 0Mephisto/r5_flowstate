@@ -454,16 +454,19 @@ void function OnSettingsUpdated()
 	int iCheckPlayerDamageCloseSetting = GetConVarInt( "player_setting_damage_closes_deathbox_menu" )
 	int iCheckShowHealthbarsSetting = GetConVarInt( "enable_healthbar" )
 	
-	if( iCheckPlayerDamageCloseSetting > 1 || iCheckShowHealthbarsSetting > 1 )
-		return
-	
 	if( iCheckPlayerDamageCloseSetting != file.player_setting_damage_closes_deathbox_menu  )
 	{
+		if( iCheckPlayerDamageCloseSetting > 1 )
+			return 
+			
 		file.player_setting_damage_closes_deathbox_menu = iCheckPlayerDamageCloseSetting
 	}
 	
 	if( iCheckShowHealthbarsSetting != file.enable_healthbar )
 	{	
+		if( iCheckShowHealthbarsSetting > 1 )
+			return 
+			
 		file.enable_healthbar = iCheckShowHealthbarsSetting
 		
 		if( IsLobby() || !file.bDoesPlaylistAllowHealthbars )

@@ -110,6 +110,15 @@ void function WorldDrawAsset_Init()
 	int iter = 0
 	foreach( asset varAsset, int assetType in registeredRemoteAssets )
 	{
+		#if DEVELOPER && DEBUG_WORLD_DRAW
+			printf
+			(
+				"AssetID[%d] = \"%s\"",
+				iter,
+				string( varAsset )
+			)
+		#endif
+	
 		assetRefToIdMap[ string( varAsset ) ] 	<- iter
 		assetIdToRefMap[ iter ]					<- string( varAsset )
 		assetIdToAssetMap[ iter ] 				<- varAsset
@@ -220,7 +229,7 @@ int function WorldDrawAsset_AssetRefToID( string ref )
 		return assetRefToIdMap[ ref ]
 	
 	#if DEBUG_WORLD_DRAW
-		mAssert( false, "Asset ref " + ref + " doesn't exist" )
+		mAssert( 0, "Asset ref %s doesn't exist", !empty( ref ) ? ref : "wasn't properly registered and" )
 	#endif
 	
 	return -1
@@ -904,7 +913,7 @@ int function WorldDrawAsset_AssetRefToID( string ref )
 	{
 		#if DEVELOPER && DEBUG_WORLD_DRAW
 			Warning( "Requested asset for ref id: " + ref )
-		#endif 
+		#endif
 		
 		if( ref in assetIdToAssetMap )
 		{

@@ -502,6 +502,7 @@
         InheritProperties		SwitchButton
         style					DialogListButton
         navUp					SwitchEnableMotd
+		navDown					SwitchShowPos
         ConVar					"open_motd_once_per_server"
         list
         {
@@ -516,6 +517,27 @@
         pin_to_sibling_corner	BOTTOM_LEFT
         childGroupAlways        ChoiceButtonAlways
     }
+	
+	SwitchShowPos
+	{
+		ControlName				RuiButton
+		InheritProperties		SwitchButton
+		style					DialogListButton
+		navUp					SwitchShowMotd
+		ConVar					"cl_showpos_archived"
+		list
+		{
+			"#SETTING_OFF"	0
+			"#SETTING_ON"	1
+		}
+
+		visible                 1
+
+		pin_to_sibling			SwitchShowMotd
+		pin_corner_to_sibling	TOP_LEFT
+		pin_to_sibling_corner	BOTTOM_LEFT
+		childGroupAlways        ChoiceButtonAlways
+	}
 
 	PanelBottom
 	{

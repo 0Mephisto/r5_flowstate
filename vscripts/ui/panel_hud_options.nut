@@ -57,6 +57,7 @@ void function InitHudOptionsPanel( var panel )
 
 	SetupSettingsButton( Hud_GetChild( contentPanel, "SwitchEnableMotd" ), "#HUD_ENABLE_MOTD", "#HUD_ENABLE_MOTD_DESC", $"rui/menu/settings/settings_hud" )
 	SetupSettingsButton( Hud_GetChild( contentPanel, "SwitchShowMotd" ), "#HUD_SHOW_MOTD", "#HUD_SHOW_MOTD_DESC", $"rui/menu/settings/settings_hud" )
+	SetupSettingsButton( Hud_GetChild( contentPanel, "SwitchShowPos" ), "#HUD_SHOW_POS", "#HUD_SHOW_POS_DESC", $"rui/menu/settings/settings_hud" )
 
 	AddPanelFooterOption( panel, LEFT, BUTTON_B, true, "#B_BUTTON_BACK", "#B_BUTTON_BACK" )
 	AddPanelFooterOption( panel, LEFT, BUTTON_BACK, true, "#BACKBUTTON_RESTORE_DEFAULTS", "#RESTORE_DEFAULTS", OpenConfirmRestoreHUDDefaultsDialog )
@@ -93,6 +94,22 @@ void function InitHudOptionsPanel( var panel )
 	
 	file.conVarDataList.append( CreateSettingsConVarData( "enable_motd", eConVarType.INT ) )
 	file.conVarDataList.append( CreateSettingsConVarData( "open_motd_once_per_server", eConVarType.INT ) )
+	file.conVarDataList.append( CreateSettingsConVarData( "cl_showpos_archived", eConVarType.INT ) )
+
+	UpdateShowPosArchived()
+	AddCallback_UiSettingsUpdated( UpdateShowPosArchived )
+}
+
+void function UpdateShowPosArchived()
+{
+	int currentShowPosArchived = GetConVarInt( "cl_showpos_archived" )
+	int currentClShowPos = GetConVarInt( "cl_showpos" )
+	
+	if( currentShowPosArchived > 1 || currentShowPosArchived < 0 )
+		return
+	
+	if( currentShowPosArchived != currentClShowPos )
+		SetConVarInt( "cl_showpos", currentShowPosArchived )
 }
 
 void function OpenConfirmRestoreHUDDefaultsDialog( var button )
@@ -147,6 +164,7 @@ void function RestoreHUDDefaults()
 	
 	SetConVarToDefault( "enable_motd" )
 	SetConVarToDefault( "open_motd_once_per_server" )
+	SetConVarToDefault( "cl_showpos_archived" )
 
 	SaveSettingsConVars( file.conVarDataList )
 

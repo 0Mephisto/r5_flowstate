@@ -664,6 +664,8 @@ playlists
 				flowstate_limit_playback_per_slot_amount		1	//-1 for unlimited (up to server limit)		
 				flowstateAdminTgive								0 // 0 enables weapons menu for players
 			
+				dummy_shield_level								2  // 0 = none | 1 = white | 2 = blue | 3 = purple | 4 = red
+				dummy_health									100 //can be very large if desired
 			}
 			gamemodes { survival { maps {
 				mp_rr_desertlands_64k_x_64k						1
@@ -2095,8 +2097,9 @@ playlists
 				
 				enable_headshot_sounds							0
 				enable_killshot_sounds							0
-				use_custom_audio								1
 				
+				register_grapples_audio							1 // must register to sync on client if use_custom_audio is enabled.
+				use_custom_audio								1
 			}
 			gamemodes { fs_dm { maps {
 				mp_rr_canyonlands_64k_x_64k						1

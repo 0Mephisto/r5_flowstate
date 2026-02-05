@@ -45,7 +45,7 @@ const int NORMAL 	= 0
 const int FAST 		= 1
 const int FASTER	= 2
 
-const string INVALID = "_INVALID"
+const string INVALID_GROUP_NAME = "_INVALID"
 const bool DEBUG_BANNER_ASSET = false
 
 
@@ -472,7 +472,7 @@ string function GetAssetGroupName( int groupId )
 			return groupName
 	}
 	
-	return "_INVALID"
+	return INVALID_GROUP_NAME
 }
 
 AssetGroupData function GetAssetGroupByID( int groupId ) //check with .isValid
@@ -564,9 +564,9 @@ void function WorldAssets_InitPlayerVideoChannels( entity player )
 }
 
 void function __SignalAudioChannelReadyForPlayerForGroup( entity player, int groupId )
-{
+{	
 	player.p.isGroupChannelCreatedTbl[ groupId ] <- true
-	player.Signal( format( "AudioChannelReady_%d", groupId ) )
+	player.Signal( GetGroupSignal( "AudioChannelReady", groupId ) )
 }
 
 void function WorldAssets_WaitForChannelCreation( entity player, string groupName )
@@ -576,7 +576,7 @@ void function WorldAssets_WaitForChannelCreation( entity player, string groupNam
 	if( IsChannelCreatedForPlayerForGroup( player, groupId ) )
 		return 
 		
-	player.WaitSignal( format( "AudioChannelReady_%d", groupId ) )
+	player.WaitSignal( GetGroupSignal( "AudioChannelReady", groupId ) )
 }
 
 bool function WorldAssets_IsChannelCreatedForPlayer( entity player, string groupName )
@@ -610,7 +610,7 @@ void function WorldAssets_Lock( int groupId )
 {
 	string group = GetAssetGroupName( groupId )
 	
-	if( group == INVALID )
+	if( group == INVALID_GROUP_NAME )
 	{
 		Warning( "groupId '%d' was invalid", groupId )
 		return
@@ -628,7 +628,7 @@ void function WorldAssets_Unlock( int groupId )
 {
 	string group = GetAssetGroupName( groupId )
 	
-	if( group == INVALID )
+	if( group == INVALID_GROUP_NAME )
 	{
 		Warning( "groupId '%d' was invalid", groupId )
 		return
@@ -699,7 +699,7 @@ bool function WorldAssets_ModifyGroupData( string groupName, table tbl )
 				{
 					group.isVisible	= visibility
 					
-					string signal = format( "VisibilityChanged_%d", group.groupId )
+					string signal = GetGroupSignal( "VisibilityChanged", group.groupId )
 					
 					if( WorldAssets_DoesSignalExist( signal ) )
 						Signal( file.dummyEnt, signal )
@@ -1043,7 +1043,7 @@ void function __AudioQueue( entity player, AssetData baseBannerVideo, AssetGroup
 		groupKillSignal
 	)
 	
-	SetupAudioQueueForPlayer( player, groupData.groupId )
+	__SetupAudioQueueForPlayer( player, groupData.groupId )
 	__SignalAudioChannelReadyForPlayerForGroup( player, groupData.groupId )
 	
 	if( !groupData.isValid )
@@ -1059,7 +1059,7 @@ void function __AudioQueue( entity player, AssetData baseBannerVideo, AssetGroup
 	{	
 		if( !groupData.isVisible )
 		{
-			WaitSignal( file.dummyEnt, format( "VisibilityChanged_%d", groupData.groupId ) )
+			WaitSignal( file.dummyEnt, GetGroupSignal( "VisibilityChanged", groupData.groupId ) )
 			continue
 		}
 	
@@ -1077,7 +1077,7 @@ void function __AudioQueue( entity player, AssetData baseBannerVideo, AssetGroup
 		}
 		else
 		{
-			string signal = format( "AudioQueue_Dequeue_%d", groupData.groupId )
+			string signal = GetGroupSignal( "AudioQueue_Dequeue", groupData.groupId )
 			if( !WorldAssets_DoesSignalExist( signal ) )
 			{
 				sqwarning( "Signal \"%s\" does not exist, ending audio thread for player: %s.", signal, string( player ) )
@@ -1150,14 +1150,11 @@ void function __AudioQueue( entity player, AssetData baseBannerVideo, AssetGroup
 		thread AudioMonitor( player, groupData.groupId, banner.id )
 		
 		if( !groupData.interupt )
-		{
-			string signal = "VideoFinishedPlaying_" + groupData.groupId
-			player.WaitSignal( signal )
-		}	
+			player.WaitSignal( GetGroupSignal( "VideoFinishedPlaying", groupData.groupId ) )
 	}
 }
 
-void function SetupAudioQueueForPlayer( entity player, int groupId )
+void function __SetupAudioQueueForPlayer( entity player, int groupId )
 {
 	if( !( groupId in player.p.isPlayingAudio ) )	
 		player.p.isPlayingAudio[ groupId ] <- false
@@ -1204,7 +1201,7 @@ void function AudioMonitor( entity player, int groupId, int audioId )
 		}
 	)
 	
-	player.EndSignal( "OnDestroy", "VideoFinishedPlaying_" + groupId, "OnDestroy" ) //potential abuse without a timeout
+	player.EndSignal( "OnDestroy", GetGroupSignal( "VideoFinishedPlaying", groupId ) ) //potential abuse without a timeout
 	WaitForever()
 }
 
@@ -1290,7 +1287,7 @@ bool function __HandleAudioQueue( entity player, int audioId, string groupName =
 			AudioQueue_Enqueue( player, audioId, groupId )
 		//else ( else statement not tested for timing issues)
 		
-		string signal = format( "AudioQueue_Dequeue_%d", groupId )	
+		string signal = GetGroupSignal( "AudioQueue_Dequeue", groupId )
 		if( WorldAssets_DoesSignalExist( signal ) )
 			player.Signal( signal, { assetRefId = audioId } )
 		else 
@@ -1435,6 +1432,12 @@ void function __Singlethread( entity player, AssetGroupData groupData )
 		if( player.p.invalidAssets.contains( banners[ i ].id ) )
 			banners.remove( i )
 	}
+	
+	#if DEVELOPER && DEBUG_BANNER_ASSET
+		int currentBannerLen = banners.len()
+		if( ogBannersLen != currentBannerLen )
+			Warning( "some assets were invalid and removed, newLen = %d, oldLen = %d, player =", currentBannerLen, ogBannersLen, string( player ) )
+	#endif 
 
 	AssetData baseBannerImage
 	AssetData baseBannerVideo
@@ -1662,7 +1665,7 @@ void function __Singlethread( entity player, AssetGroupData groupData )
 			
 		if( !groupData.isVisible )
 		{
-			WaitSignal( file.dummyEnt, format( "VisibilityChanged_%d", groupData.groupId ) )
+			WaitSignal( file.dummyEnt, GetGroupSignal( "VisibilityChanged", groupData.groupId ) )
 			continue
 		}
 		
@@ -1758,7 +1761,7 @@ void function __Singlethread( entity player, AssetGroupData groupData )
 			case eAssetType.BIK:
 				bKeepShow = false
 				
-				string signal = format( "VideoFinishedPlaying_%d", groupData.groupId )
+				string signal = GetGroupSignal( "VideoFinishedPlaying", groupData.groupId )
 				player.WaitSignal( signal )
 				
 				break

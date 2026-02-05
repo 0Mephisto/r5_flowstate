@@ -669,7 +669,7 @@ array<SpawnData> function SpawnSystem_ReturnAllSpawnLocations( int eMap = -1, ta
 						bool bValidIndexFound
 						string lastSpawnSet = "_set_1"
 								
-						if( !Dev_CommandLineHasParm( GetSpawnSetByMapCode() ) )
+						if( !Dev_CommandLineHasParm( GetSpawnSetByMapEnumKey() ) )
 						{
 							if( setpaks.len() )
 								spawnSet = setpaks[ 0 ]
@@ -678,7 +678,7 @@ array<SpawnData> function SpawnSystem_ReturnAllSpawnLocations( int eMap = -1, ta
 						}
 						else 
 						{
-							lastSpawnSet = Dev_CommandLineParmValue( GetSpawnSetByMapCode() )
+							lastSpawnSet = Dev_CommandLineParmValue( GetSpawnSetByMapEnumKey() )
 
 							bool bValidLastSetFound
 							if( !setpaks.contains( lastSpawnSet ) )
@@ -709,7 +709,7 @@ array<SpawnData> function SpawnSystem_ReturnAllSpawnLocations( int eMap = -1, ta
 							}
 						}
 						
-						Dev_CommandLineAddParm( GetSpawnSetByMapCode(), spawnSet )
+						Dev_CommandLineAddParm( GetSpawnSetByMapEnumKey(), spawnSet )
 					}
 					else if( options.use_random )
 					{
@@ -1595,7 +1595,7 @@ table< string, array< SpawnData > > function SpawnSystem_SortSpawnsByMetaData( a
 	return sorted
 }
 
-string function GetSpawnSetByMapCode()
+string function GetSpawnSetByMapEnumKey()
 {
 	return format( "ss_%d", MapName() )
 }

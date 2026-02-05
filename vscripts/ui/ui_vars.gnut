@@ -41,7 +41,7 @@ void function UIVars_Init()
 	RegisterUIVar( "forceLoadoutEnabled", false )
 	RegisterUIVar( "survivorTitanfallTime", 0 )
 	RegisterUIVar( "putPlayerInMatchmakingAfterDelay", false )
-	//RegisterUIVar( "tracker_enabled", false )  //(mk): Postponed until next update.
+	RegisterUIVar( "tracker_enabled", false )
 }
 
 void function RegisterUIVar( string varName, value )
@@ -102,6 +102,9 @@ void function SetUIVar( table<string,var> obj, string varName, value )
 
 function ServerCallback_SetUIVar( varHandle, value )
 {
+	if( !( varHandle in _uiVarHandles ) )
+		return
+		
 	local varName = _uiVarHandles[varHandle]
 
 	_uiVars[varName] = value
