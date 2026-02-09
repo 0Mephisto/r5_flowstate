@@ -94,9 +94,10 @@ void function rankupmap_init()
 {
 	AddCallback_OnClientConnected( rankupmap_player_setup )
 	AddCallback_EntitiesDidLoad( rankupmapEntitiesDidLoad )
-	AddClientCommandCallback("tp", tp_to_cp)
-	AddClientCommandCallback("pm", practice_mode)	  
-	AddClientCommandCallback("hub", hub_command)
+	AddClientCommandCallback( "tp", tp_to_cp )
+	AddClientCommandCallback( "pm", practice_mode )	  
+	AddClientCommandCallback( "hub", hub_command )
+	AddClientCommandCallback( "3p", ClientCommand_ToggleThirdPerson )
 	
 	rankupmap_precache()
 	
@@ -178,6 +179,19 @@ bool function hub_command(entity user, array < string > args) {
   TeleportFRPlayer(user, < -743, 24760.42, 54327.38 > , < 3, 90, -0.04 > )
   user.SetPersistentVar("gen", 0)
     return true
+}
+
+bool function ClientCommand_ToggleThirdPerson( entity player, array<string> args )
+{
+	if( !CheckRate( player, "toggle_3p", 0.5, true ) )
+		return true 
+		
+	if( player.IsThirdPersonShoulderModeOn() )
+		player.SetThirdPersonShoulderModeOff()
+	else 
+		player.SetThirdPersonShoulderModeOn()
+		
+	return true
 }
 
 void function rankupmap_load() {
@@ -3431,6 +3445,6 @@ thread function() : ( ent ) {
     // Text Info Panels
     MapEditor_CreateTextInfoPanel( "Rank-up Map", "I - Introduction to Parkour", < 7104, 37943.57, 40505 >, < 0, -180, 0 >, false, 1 )
 
-    MapEditor_CreateTextInfoPanel( "Command list:", "pm      |      tp      |      hub", < -743.4, 24715.97, 54335.8 >, < 0, -90, 0 >, false, 1 )
+    MapEditor_CreateTextInfoPanel( "Command list:", "pm      |      tp      |      hub      |       3p", < -743.4, 24715.97, 54335.8 >, < 0, -90, 0 >, false, 1 )
 
 }

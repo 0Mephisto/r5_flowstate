@@ -3,7 +3,7 @@ global function GrapplesNGunsInit
 struct
 {
 	
-} file 
+} file
 
 
 const table<string, string> GRAPPLES_N_GUNS_PLAYER_SETTINGS = 
@@ -51,10 +51,10 @@ void function GrapplesNGunsInit()
 		//AddFSCallback_ShouldTimerEnd( TimerFunction ) //not used yet.
 		AddCallback_OnTdmStateEnter_InProgress( OnGamePlaying )
 		AddCallback_OnTdmStateEnter_EndGame( OnGameEnd )
+		AddHeadshotCallback( "player", OnHeadshot )
 	}
 	
 	AddFSCallback_OnRespawned( OnRespawned )
-	AddHeadshotCallback( "player", OnHeadshot )
 }
 
 void function RegisterAudioGroups()
@@ -93,7 +93,7 @@ void function OnConnected( entity player )
 		void function() : ( player )
 		{
 			if( !IsValid( player ) )
-				return 
+				return
 
 			player.EndSignal( "OnDestroy" )
 			player.WaitSignal( "FSOnRespawned" )
@@ -194,7 +194,18 @@ void function OnHeadshot( entity player, var damageInfo )
 		
 	if( DamageInfo_GetCustomDamageType( damageInfo ) & DF_HEADSHOT )
 	{
-		string sound = HEADSHOT_SOUND_NAMES.getrandom()
-		WorldAssets_PlayAudioName( attacker, sound )
+		if( HEADSHOT_SOUND_NAMES.len() > 1 )
+			PlayUniqueRandomHeadshotSound( attacker )
+		else 
+			WorldAssets_PlayAudioName( attacker, HEADSHOT_SOUND_NAMES.getrandom() )	
 	}
+}
+
+void function PlayUniqueRandomHeadshotSound( entity player )
+{
+	array<string> headshotSounds = HEADSHOT_SOUND_NAMES
+	string lastPlayedName = WorldAssets_GetLastPlayedAudio( player ).assetName
+	
+	headshotSounds.fastremovebyvalue( lastPlayedName )
+	WorldAssets_PlayAudioName( player, headshotSounds.getrandom() )
 }

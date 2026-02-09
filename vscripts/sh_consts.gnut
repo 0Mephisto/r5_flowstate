@@ -73,6 +73,9 @@ global const float RUI_BADGAMETIME 	= -1 * pow( 10, 30 )
 
 global const float DEPLOYABLE_COLLISION_DEFAULT_TRACE_LENGTH = 16
 
+global const STATE_FLAG_NONE 			= 0
+global const STATE_FLAG_NO_DAMAGE		= 1 << 0
+
 global struct DeployableCollisionParams
 {
 vector	pos

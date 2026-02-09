@@ -240,6 +240,7 @@ struct
 	bool bNoSecondary
 	bool bNoPrimaryLongrange
 	bool bNoSecondaryLongrange
+	bool bApplyStateFlags
 	
 } settings
 
@@ -1194,6 +1195,7 @@ void function INIT_PlaylistSettings()
 	settings.giveCharmsWeapons 						= GetCurrentPlaylistVarBool( "flowstate_givecharms_weapons", false )
 	settings.giveSkinsWeapons 						= GetCurrentPlaylistVarBool( "flowstate_giveskins_weapons", false )
 	settings.enableCosmetics 						= GetCurrentPlaylistVarBool( "flowstate_enable_cosmetics", false )
+	settings.bApplyStateFlags						= GetCurrentPlaylistVarBool( "enable_state_flags", true )
 }
 
 bool function Gamemode1v1_AreCustomWeaponsAllowedForPlayer( entity player )
@@ -3559,7 +3561,30 @@ void function respawnInSoloMode( entity player, int respawnSlotIndex = -1 ) //å¤
 
 		TakeAllWeapons( player )
 		FS_GiveRandomMelee( player, true )
+		
+		if( settings.bApplyStateFlags )
+		{
+			int stateFlags = player.e.stateFlags
+			if( !( stateFlags & STATE_FLAG_NO_DAMAGE ) )
+				player.e.stateFlags = stateFlags | STATE_FLAG_NO_DAMAGE
+			
+			if( player.GetMeleeDisabled() == 0 )
+				player.SetMeleeDisabled()
+		}
+		
 		return
+	}
+	else
+	{
+		if( settings.bApplyStateFlags )
+		{
+			int stateFlags = player.e.stateFlags
+			if( stateFlags & STATE_FLAG_NO_DAMAGE )
+				player.e.stateFlags = stateFlags & ~STATE_FLAG_NO_DAMAGE
+			
+			if( player.GetMeleeDisabled() == 1 )
+				player.ClearMeleeDisabled()
+		}
 	}
 
 	if ( respawnSlotIndex == -1 ) 

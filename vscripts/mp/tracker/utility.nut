@@ -3048,6 +3048,9 @@ const int STAT_PREFIX_POS = 6
 const int SETTING_PREFIX_POS = 9
 string function GetFormatterValueForPlayer( entity player, string formatter )
 {	
+	if( !IsValid( player ) )
+		return "INVALID_PLAYER"
+
 	switch( formatter )
 	{
 		case "#player":

@@ -7,7 +7,7 @@ struct
 	var launchButton
 	var status
 
-	bool is_working = false
+	bool is_working
 	
 } file
 
@@ -40,6 +40,19 @@ void function LaunchButton_OnActivate( var button )
 {
 	if( file.is_working )
 		return
+
+	if( developer() ) //(mk): must use function call developer() here
+	{
+		if( !HasSeenDevWarning() && GetConVarInt( "show_dev_warning_dialogue" ) == 1 )
+		{
+			OpenDevWarningDialog()
+			return
+		}
+		
+		#if ( false ) //for npp
+		
+		#endif 
+	}
 	
 	if( !IsEULAAccepted() && !HasSeenEula() ) //(mk): Force open eula as a fallback during continue click if not accepted and also not seen.
 	{
@@ -58,7 +71,11 @@ void function LaunchLobby()
 	
 	#if LISTEN_SERVER
 		wait 1
-		CreateServer("Lobby", "", "mp_lobby", "dev_default", eServerVisibility.OFFLINE)
+		CreateServer( "Lobby", "", "mp_lobby", "dev_default", eServerVisibility.OFFLINE )
+	#else 
+		wait 1 //(mk): for effect
+		IsClientModeWarningDialog( true )
+		OpenDevWarningDialog()
 	#endif // LISTEN_SERVER
 	
 	ShowSpinner( false )

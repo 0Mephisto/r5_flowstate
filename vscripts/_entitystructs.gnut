@@ -539,6 +539,8 @@ global struct ServerEntityStruct
 	int hackableTerminalSpawnID
 	int terminalID
 	bool isBeingDataknifed
+	
+	int stateFlags
 }
 
 global struct MeritData

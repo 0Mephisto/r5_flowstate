@@ -467,8 +467,7 @@ playlists
 				///////////////////////////////////////////////////////////////////////////////////
 				///////////////////////////////////////////////////////////////////////////////////
 				
-				// (mk): todo: This wont be live until next major update requiring server/clients to both update
-				//disable_message_sounds							0 // optionally disable default message banner sounds on client by setting to 1
+				disable_message_sounds							0 // optionally disable default message banner sounds on client by setting to 1
 			}
 			maps
 			{

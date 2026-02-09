@@ -32,7 +32,9 @@ global function WorldAssets_PlayAudioName					// ( entity player, string audioNa
 global function WorldAssets_GetPlayCountForPlayer			// ( entity player, int assetId )
 global function WorldAssets_GetLastPlayTime					// ( entity player, int assetId )
 global function WorldAssets_WaitForChannelCreation			// ( entity player, string groupName )
-global function WorldAssets_IsChannelCreatedForPlayer		//( entity player, string groupName )
+global function WorldAssets_IsChannelCreatedForPlayer		// ( entity player, string groupName )
+global function WorldAssets_WasAudioPlayedLast				// ( entity player, string assetName = "", string assetRef = "", string groupName = "", int assetId = -1 )
+global function WorldAssets_GetLastPlayedAudio				// ( entity player, string groupName = "" )
 
 global const MAX_BIK_CHANNELS 			= 10 //this must not surpass engine internals.
 global const CURRENT_RESERVED_CHANNELS 	= 5 //this is the limit we start from. (todo: disable systems where posible)
@@ -46,7 +48,7 @@ const int FAST 		= 1
 const int FASTER	= 2
 
 const string INVALID_GROUP_NAME = "_INVALID"
-const bool DEBUG_BANNER_ASSET = false
+const bool DEBUG_WORLD_ASSET = false
 
 
 /*
@@ -66,6 +68,7 @@ const bool DEBUG_BANNER_ASSET = false
 		- Syncing all players to a specific asset, for instance, on a specific game event such as end game via WorldAssets_SyncAllPlayers
 		- Displaying a specific group's asset to a specific player for example: WorldAssets_SwitchToPlayerAssetForGroupNow( p(0), "rui/world/flowstate1v1_banner02", "main_banner" )
 		- Auto adjusting visibility to specific eye coordinates via WorldAssets_GroupVisibilityMover
+		- Getting the last played audio or creating elaborate audio logic using helpers such as WorldAssets_GetLastPlayedAudio( player )
 		- ..more
 		
 	====================================================================================================================================================	
@@ -86,7 +89,7 @@ const bool DEBUG_BANNER_ASSET = false
 			
 			
 			2. From a script local function ScriptRegisterAsset(), within function RegisterHardcodedScriptAssets of \platform\scripts\vscripts\sh_draw_register_assets.gnut
-				- Provide the same 'path', 'name', 'category' as exampled above in ScriptRegisterAsset(). 
+				- Provide the same 'path', 'name', 'category' as exampled above in your calls to ScriptRegisterAsset(). 
 	
 	
 			3. From Playlist file string var "banner_assets".  This allows server hosts to control what assets are registered for clients that connect to their server. 
@@ -97,9 +100,10 @@ const bool DEBUG_BANNER_ASSET = false
 		It is not required to associate category information. If the asset is registered by any of the 3 methods above, it can be 
 		played(if is audio/video) or appended to a banner group with it's full qualifying name.
 		
-				Example during appending to banner group:						WorldDrawAsset_AssetRefToID( "rui/world/flowstate1v1_banner02" )
+				Example during appending to banner group:						WorldAssets_GroupAppendAsset( "mygroup", "rui/world/flowstate1v1_banner02" )
 				Example playing an audio that does not have a name:   			WorldAssets_PlayAudio( player, "media/playlists/grapples_n_guns/grapples_cash.bik" )
 				Example playing an audio that was paked or script registered:	WorldAssets_PlayAudioName( player, "cash" )		
+				Example switching an asset in a floating display:				WorldAssets_SwitchToPlayerAssetForGroupNow( player, "rui/world/flowstate1v1_banner02", "mygroup" )
 	
 	====================================================================================================================================================
 	Standard Usage:
@@ -175,7 +179,7 @@ const bool DEBUG_BANNER_ASSET = false
 				
 		2.	Append audio assets to the group similar to standard usage above, using WorldAssets_GroupAppendAsset()
 			A common method to get the assets you want is by getting all assets for the category you registered it as using:
-				WorldDrawAsset_GetAssetArrayByCategory( "" ), which returns an array of string asset refs, such as [ "media/playlists/grapples_n_guns/grapples_cash.bik" ]
+				WorldDrawAsset_GetAssetArrayByCategory( "categoryname" ), which returns an array of string asset refs, such as [ "media/playlists/grapples_n_guns/grapples_cash.bik" ]
 		
 		3. Utilize any of the PlayAudio variant functions to play the audio to a player entity. (see top of this doc for more)
 			
@@ -187,15 +191,17 @@ const bool DEBUG_BANNER_ASSET = false
 			
 				WorldAssets_PlayAudioName( player, "cash" )   -- Uses the name you registered it with.	Most common usage.	
 				WorldAssets_PlayAudio( player, "media/playlists/grapples_n_guns/grapples_cash.bik" )
-				WorldAssets_PlayAudioID( player, 5 )   --(useful if known) or WorldDrawAsset_AssetRefToID( "media/playlists/grapples_n_guns/grapples_cash.bik" )
+				WorldAssets_PlayAudioID( player, 5 )   --(useful if known) or lookup with WorldDrawAsset_AssetRefToID( "media/playlists/grapples_n_guns/grapples_cash.bik" )
 				
 			
 		Additionally, audio playback is tracked to enable conditional audio playing. By utilizing:
 			
 			WorldAssets_GetPlayCountForPlayer( entity player, int assetId )
 			WorldAssets_GetLastPlayTime( entity player, int assetId )
+			WorldAssets_WasAudioPlayedLast( entity player, string assetName = "", string assetRef = "", string groupName = "", int assetId = -1 )  -- can provide any optional parameter to return if this was the last played audio
+			WorldAssets_GetLastPlayedAudio( entity player, string groupName = "" )  -- Returns an AudioHistory struct of the last played audio(any) or if group is specified from that group only. contains useful information, see: struct AudioHistory 
 			
-			You will have to pass the asset id, which can be got with WorldDrawAsset_AssetRefToID( "media/playlists/grapples_n_guns/grapples_cash.bik" )  for example.
+			You will have to pass the asset id for some functions, which can be got with WorldDrawAsset_AssetRefToID( "media/playlists/grapples_n_guns/grapples_cash.bik" )  for example.
 	
 	
 		A good example utilizing this system is in: \platform\scripts\vscripts\gamemodes\fs_grapples_n_guns\_fs_grapples_n_guns.nut
@@ -241,6 +247,9 @@ struct AudioHistory
 	int playAmount
 	int assetId
 	float lastPlayTime
+	string assetRef 
+	string assetName
+	int groupId
 	bool isValid = false 
 }
 
@@ -319,7 +328,7 @@ void function WorldAssets_Init()
 					// {
 						// banner.isValid = false
 						
-						// #if DEVELOPER && DEBUG_BANNER_ASSET
+						// #if DEVELOPER && DEBUG_WORLD_ASSET
 							// printw( "[WorldAssets] Asset ID:", banner.id, "for group", bannerData.groupId, "ref = ", banner.assetName, "was marked as invalid." )
 						// #endif
 					// }
@@ -373,7 +382,7 @@ void function WorldAssets_RegisterGroup( string name, LocPair groupLoc, float wi
 			file.iDefaultAudioGroup = iGroupId
 	}
 	
-	#if DEVELOPER && DEBUG_BANNER_ASSET
+	#if DEVELOPER && DEBUG_WORLD_ASSET
 		printt
 		(
 			bannerGroup.groupName,
@@ -743,7 +752,7 @@ void function __SetupThreads()
 {
 	foreach( string name, AssetGroupData data in file.groupDataMap )
 	{		
-		#if DEVELOPER && DEBUG_BANNER_ASSET
+		#if DEVELOPER && DEBUG_WORLD_ASSET
 			Warning( "Spawning banner group: " + name )
 		#endif
 		
@@ -923,7 +932,7 @@ vector function WorldAssets_GroupVisibilityMover( vector eyePos, vector eyeAngle
 	int iter = 0
     while ( iter < maxIterations ) 
 	{
-		#if DEVELOPER && DEBUG_BANNER_ASSET
+		#if DEVELOPER && DEBUG_WORLD_ASSET
 			Warning( "Adjusting..." )
 		#endif
 
@@ -951,7 +960,7 @@ vector function WorldAssets_GroupVisibilityMover( vector eyePos, vector eyeAngle
 
         if ( allCornersVisible ) 
 		{
-			#if DEVELOPER && DEBUG_BANNER_ASSET
+			#if DEVELOPER && DEBUG_WORLD_ASSET
 				Warning( "FOUND A GOOD POSITION: " + currentPosition )
 			#endif
 			
@@ -988,7 +997,7 @@ vector function AdjustBannerPosition( vector currentPosition, vector currentAngl
 			return newPosition
 	}
 
-	#if DEVELOPER && DEBUG_BANNER_ASSET
+	#if DEVELOPER && DEBUG_WORLD_ASSET
 		Warning( "Failed to find a good position" )
 	#endif
 
@@ -1001,16 +1010,96 @@ bool function IsPositionClear( vector position, vector simulateEyePos )
 	return traceResult.fraction == 1.0
 }
 
-void function UpdateAudioHistory( entity player, int assetId )
+void function UpdateAudioHistory( entity player, int assetId, int groupId )
 {
-	AudioHistory history = GetAudioHistoryForPlayer( player, assetId )
+	AudioHistory history = GetAssetAudioHistoryForPlayer( player, assetId )
+	
+	#if DEVELOPER && DEBUG_WORLD_ASSET
+		printf
+		(
+			"Setting audio history for assetId %d, groupId %d",
+			assetId, 
+			groupId
+		)
+	#endif
 	
 	history.playAmount		+= 1
 	history.assetId			= assetId
 	history.lastPlayTime	= Time()
+	history.assetRef		= WorldDrawAsset_GetAssetRefById( assetId )
+	history.assetName		= WorldDrawAsset_LookupAssetNameByRef( history.assetRef )
+	history.groupId 		= groupId
 }
 
-AudioHistory function GetAudioHistoryForPlayer( entity player, int assetId )
+bool function WorldAssets_WasAudioPlayedLast( entity player, string assetName = "", string assetRef = "", string groupName = "", int assetId = -1 )
+{	
+	if( assetName != "" )
+	{
+		assetRef = WorldAssets_GetAssetRefByName( assetName )
+		assetId = WorldDrawAsset_AssetRefToID( assetRef )
+	}
+	else if( assetRef != "" )
+	{
+		assetId = WorldDrawAsset_AssetRefToID( assetRef )
+	}
+	else if( assetId == -1 )
+	{
+		mAssert( 0, "Must provide one of: assetName, assetref, or assetId in a call to %s()", FUNC_NAME() )
+	}
+	
+	AudioHistory lastPlayed = WorldAssets_GetLastPlayedAudio( player, groupName )
+	
+	if( lastPlayed.assetId == assetId )
+		return true
+	
+	return false
+}
+
+AudioHistory function WorldAssets_GetLastPlayedAudio( entity player, string groupName = "" )
+{
+	int groupId = -1
+	
+	if( groupName != "" )
+		groupId = WorldAssets_GetGroupIdByName( groupName )
+	
+	array<AudioHistory> allHistory = GetAllAudioHistoryForPlayer( player, groupId )	
+	
+	allHistory.sort( SortAudioHistory )	
+	
+	if( allHistory.len() )
+		return allHistory.pop()
+	
+	AudioHistory nullHistory
+	return nullHistory
+}
+
+int function SortAudioHistory( AudioHistory a, AudioHistory b )
+{
+	if( a.lastPlayTime > b.lastPlayTime )
+		return -1
+		
+	return 1
+}
+
+array<AudioHistory> function GetAllAudioHistoryForPlayer( entity player, int groupId )
+{
+	array<AudioHistory> allHistory
+	
+	if( !( player.p.UID in file.audioHistoryMap ) )
+		return allHistory
+	
+	foreach( AudioHistory history in file.audioHistoryMap[ player.p.UID ] )
+	{
+		if( groupId > -1 && groupId != history.groupId )
+			continue 
+			
+		allHistory.append( history )
+	}
+		
+	return allHistory
+}
+
+AudioHistory function GetAssetAudioHistoryForPlayer( entity player, int assetId )
 {
 	CheckAudioTrackingForPlayer( player, assetId )
 	return file.audioHistoryMap[ player.p.UID ][ assetId ]
@@ -1018,13 +1107,13 @@ AudioHistory function GetAudioHistoryForPlayer( entity player, int assetId )
 
 int function WorldAssets_GetPlayCountForPlayer( entity player, int assetId )
 {
-	AudioHistory history = GetAudioHistoryForPlayer( player, assetId )
+	AudioHistory history = GetAssetAudioHistoryForPlayer( player, assetId )
 	return history.playAmount
 }
 
 float function WorldAssets_GetLastPlayTime( entity player, int assetId )
 {
-	AudioHistory history = GetAudioHistoryForPlayer( player, assetId )
+	AudioHistory history = GetAssetAudioHistoryForPlayer( player, assetId )
 	return history.lastPlayTime
 }
 
@@ -1053,7 +1142,7 @@ void function __AudioQueue( entity player, AssetData baseBannerVideo, AssetGroup
 		#endif 	
 		
 		return
-	}	
+	}
 	
 	for( ; ; )
 	{	
@@ -1105,9 +1194,10 @@ void function __AudioQueue( entity player, AssetData baseBannerVideo, AssetGroup
 			continue
 		}
 		
-		int clientRUIID = GetRUIID( player, groupData.groupId, banner.assetType )
 		//set the server managed ruiid instance to use based on type.
-		#if DEVELOPER && DEBUG_BANNER_ASSET
+		int clientRUIID = GetRUIID( player, groupData.groupId, banner.assetType )
+		
+		#if DEVELOPER && DEBUG_WORLD_ASSET
 			printf
 			( 
 				"[WorldAssets] playing sound '%s' as type: '%s', in group: '%s', RUIID = '%d' for player: %s",
@@ -1190,7 +1280,7 @@ void function AudioMonitor( entity player, int groupId, int audioId )
 		return
 
 	IsPlayingAudioForPlayer( player, groupId, true )
-	UpdateAudioHistory( player, audioId )
+	UpdateAudioHistory( player, audioId, groupId )
 		
 	OnThreadEnd
 	(
@@ -1201,7 +1291,9 @@ void function AudioMonitor( entity player, int groupId, int audioId )
 		}
 	)
 	
-	player.EndSignal( "OnDestroy", GetGroupSignal( "VideoFinishedPlaying", groupId ) ) //potential abuse without a timeout
+	player.EndSignal( "OnDestroy", GetGroupSignal( "VideoFinishedPlaying", groupId ), GetGroupSignal( "KillGroupForPlayer", groupId ) ) //potential abuse without a timeout
+	EndSignal( file.dummyEnt, "KillAllBannerGroups" )
+	
 	WaitForever()
 }
 
@@ -1222,17 +1314,18 @@ bool function IsPlayingAudioForPlayer( entity player, int groupId, bool ornull i
 	return false
 }
 
-
-
-AudioHistory function CheckAudioTrackingForPlayer( entity player, int assetId )
+void function CheckAudioTrackingForPlayer( entity player, int assetId )
 {
-	AudioHistory history
+	if( !( player.p.UID in file.audioHistoryMap ) )
+		file.audioHistoryMap[ player.p.UID ] <- {}
 	
-	if( !( player.p.UID in file.audioHistoryMap ) || !( assetId in file.audioHistoryMap[ player.p.UID ] ) )
-		file.audioHistoryMap[ player.p.UID ] <- { [ assetId ] = history }
-	
-	history.isValid = true	
-	return history
+	if( !( assetId in file.audioHistoryMap[ player.p.UID ] ) )
+	{
+		AudioHistory history
+		history.isValid = true
+		
+		file.audioHistoryMap[ player.p.UID ][ assetId ] <- history
+	}
 }
 
 int function AudioQueue_Dequeue( entity player, int groupId )
@@ -1405,14 +1498,14 @@ void function __Singlethread( entity player, AssetGroupData groupData )
 	
 	if( banners.len() == 0 )
 	{
-		#if DEVELOPER && DEBUG_BANNER_ASSET
+		#if DEVELOPER && DEBUG_WORLD_ASSET
 			Warning( "(0) banners were found, returning." )
 		#endif 
 		return
 	}
 	else 
 	{
-		#if DEVELOPER && DEBUG_BANNER_ASSET
+		#if DEVELOPER && DEBUG_WORLD_ASSET
 			Warning( "Found: " + banners.len() + " assets in group: " + groupData.groupName )
 		#endif 
 	}
@@ -1433,7 +1526,7 @@ void function __Singlethread( entity player, AssetGroupData groupData )
 			banners.remove( i )
 	}
 	
-	#if DEVELOPER && DEBUG_BANNER_ASSET
+	#if DEVELOPER && DEBUG_WORLD_ASSET
 		int currentBannerLen = banners.len()
 		if( ogBannersLen != currentBannerLen )
 			Warning( "some assets were invalid and removed, newLen = %d, oldLen = %d, player =", currentBannerLen, ogBannersLen, string( player ) )
@@ -1453,7 +1546,7 @@ void function __Singlethread( entity player, AssetGroupData groupData )
 	//////////////
 	if( bFirstRun )
 	{
-		#if DEVELOPER && DEBUG_BANNER_ASSET
+		#if DEVELOPER && DEBUG_WORLD_ASSET
 			printw( "[WorldAssets] setting group first run for group ", groupData.groupId )
 		#endif 
 		
@@ -1477,7 +1570,7 @@ void function __Singlethread( entity player, AssetGroupData groupData )
 					if( bFoundImage )
 						break
 					
-					#if DEVELOPER && DEBUG_BANNER_ASSET
+					#if DEVELOPER && DEBUG_WORLD_ASSET
 						printw( "[WorldAssets] found base bannerIMAGE in group", groupData.groupId, "for banner id", banners[ iter ].id  )
 					#endif 
 				
@@ -1490,7 +1583,7 @@ void function __Singlethread( entity player, AssetGroupData groupData )
 					if( bFoundVideo )
 						break
 						
-					#if DEVELOPER && DEBUG_BANNER_ASSET
+					#if DEVELOPER && DEBUG_WORLD_ASSET
 						printw( "[WorldAssets] found base bannerVIDEO in group", groupData.groupId, "for banner id", banners[ iter ].id  )
 					#endif
 					
@@ -1534,11 +1627,11 @@ void function __Singlethread( entity player, AssetGroupData groupData )
 				groupData.fadeSpeed
 			)
 			
-			#if DEVELOPER && DEBUG_BANNER_ASSET
+			#if DEVELOPER && DEBUG_WORLD_ASSET
 				printt( "[WorldAssets] Spawning base rui for banner:", baseBannerImage.assetName )
 			#endif
 			
-			#if DEVELOPER && DEBUG_BANNER_ASSET
+			#if DEVELOPER && DEBUG_WORLD_ASSET
 				printt
 				(
 					"clientRUIID", clientRUIID, "\n",
@@ -1592,11 +1685,11 @@ void function __Singlethread( entity player, AssetGroupData groupData )
 				baseBannerVideo.loopVideo
 			)
 			
-			#if DEVELOPER && DEBUG_BANNER_ASSET
+			#if DEVELOPER && DEBUG_WORLD_ASSET
 				printt( "[WorldAssets] Spawning base rui for banner:", baseBannerVideo.assetName )
 			#endif
 			
-			#if DEVELOPER && DEBUG_BANNER_ASSET
+			#if DEVELOPER && DEBUG_WORLD_ASSET
 				printt
 				( 
 					"clientRUIID", clientRUIID, "\n",
@@ -1621,7 +1714,7 @@ void function __Singlethread( entity player, AssetGroupData groupData )
 		if( ogBannersLen != banners.len() )
 		{
 			//tell server something?
-			#if DEVELOPER && DEBUG_BANNER_ASSET
+			#if DEVELOPER && DEBUG_WORLD_ASSET
 				Warning( "[WorldAssets] Some audio files were removed from the queue as the client does not have them." )
 			#endif
 		}
@@ -1706,7 +1799,7 @@ void function __Singlethread( entity player, AssetGroupData groupData )
 
 		clientRUIID = GetRUIID( player, groupData.groupId, banner.assetType )
 		//set the server managed ruiid instance to use based on type.
-		#if DEVELOPER && DEBUG_BANNER_ASSET
+		#if DEVELOPER && DEBUG_WORLD_ASSET
 			printf
 			( 
 				"[WorldAssets] setting next asset '%s' as type: '%s' in group: '%s', RUIID = '%d' for player: %s",
@@ -1767,7 +1860,7 @@ void function __Singlethread( entity player, AssetGroupData groupData )
 				break
 				
 			default:
-				#if DEVELOPER && DEBUG_BANNER_ASSET 
+				#if DEVELOPER && DEBUG_WORLD_ASSET 
 					mAssert( 0, "[WorldAssets] Invalid assetType." )
 				#endif 
 		}
@@ -1787,7 +1880,7 @@ void function __Singlethread( entity player, AssetGroupData groupData )
 		)
 	}
 	
-	#if DEVELOPER && DEBUG_BANNER_ASSET
+	#if DEVELOPER && DEBUG_WORLD_ASSET
 		Warning( "[WorldAssets] AssetGroupData: \"%s\" was set to invalid and shutdown for player: \"%s\"", groupData.groupName, string( player ) )
 	#endif 
 }

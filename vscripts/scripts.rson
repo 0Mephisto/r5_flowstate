@@ -884,6 +884,7 @@ Scripts:
 	ui/dialogs/report_player.nut
 	ui/dialogs/server_motd.nut
 	ui/menu_eula_dialog.nut
+	ui/menu_dev_warning_dialogue.nut
 	ui/menu_accessibility_dialog.nut
 	ui/menu_postgame.nut
 	

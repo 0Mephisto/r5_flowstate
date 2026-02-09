@@ -130,6 +130,12 @@ void function CodeCallback_DamagePlayerOrNPC( entity ent, var damageInfo )
 	{
 		attackerIsPlayer = attacker.IsPlayer()
 		attackerIsNPC = attacker.IsNPC()
+		
+		if( attacker.e.stateFlags & STATE_FLAG_NO_DAMAGE )
+		{
+			DamageInfo_SetDamage( damageInfo, 0 )
+			return
+		}
 	}
 
 	// Set damage source correctly when npc grunts or titans try to melee us
