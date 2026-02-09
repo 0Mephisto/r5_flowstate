@@ -69,9 +69,8 @@ Misc (Scripters):
 - badge stat crash fix
 - fix a bug not allowing you to do 'cc map' to reload current map playlist gamemode in some situations
 - antiafk system had other logic relying on it's functionality, this was split to retain required logic, and optionally disable the afk thread if setting 'enable_afk_thread' or 'flowstate_afk_kick_enable' is disabled.
-- Temporarily limited custom audio queues to only one group until rework is done.
 - added FS callback registry for onspawned to remove the need for threading and waiting to control behavior
-- fixed a crash exploit leftover from old respawn code
+- fixed a crash exploit leftover from old respawn code + several others
 - reworked bannerassets to WorldAssets and revitalized with refactors.
 - Made WorldAsset audio queues multi group compatible and remove s_audioQueueRegistered temp flag
 - fixed a bug in replay hud not deactivating when killer becomes invalid
