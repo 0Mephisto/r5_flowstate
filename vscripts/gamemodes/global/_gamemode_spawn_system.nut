@@ -57,6 +57,10 @@ global function SpawnSystem_GetPakInfoForKey				// string function SpawnSystem_G
 	devAutoSave				//bool 
 */
 
+global function SpawnSystem_ReturnAllSpawnLocationsFromDatatable	 // ( string dataTable = "" )
+/*
+	Can provide a custom datatable such as:  "datatable/mycustom.rpak"
+*/
 
 
 /*
@@ -547,7 +551,7 @@ void function SpawnSystem_InitGamemodeOptions()
 	settings.spawnOptions[ "use_sets" ] 			<- use_random || prefer || rotate_all
 	settings.spawnOptions[ "use_random" ] 			<- use_random
 	settings.spawnOptions[ "prefer" ] 				<- prefer
-	settings.spawnOptions[ "use_custom_rpak" ] 		<- SpawnSystem_SetCustomPak( customRpak ) //returns 0 on failed rpak
+	settings.spawnOptions[ "use_custom_rpak" ] 		<- SpawnSystem_SetCustomPak( customRpak ) //returns false on failed rpak
 	settings.spawnOptions[ "use_custom_playlist" ] 	<- use_custom_playlist
 	settings.spawnOptions[ "rotate_all" ]			<- rotate_all
 	
@@ -566,6 +570,24 @@ void function SpawnSystem_InitGamemodeOptions()
 		callbackFunc()
 	
 	settings.bOptionsAreSet = true
+}
+
+array<SpawnData> function SpawnSystem_ReturnAllSpawnLocationsFromDatatable( string dataTable = "" )
+{
+	bool bCustomPakIsValid = SpawnSystem_SetCustomPak( dataTable )
+	if( !bCustomPakIsValid )
+		mAssert( 0, "Invalid datatable: \"%s\"", dataTable )
+
+	table< string, bool > options 
+	
+	options[ "use_sets" ] 				<- false
+	options[ "use_random" ] 			<- false
+	options[ "prefer" ] 				<- false
+	options[ "use_custom_rpak" ] 		<- bCustomPakIsValid
+	options[ "use_custom_playlist" ] 	<- false
+	options[ "rotate_all" ]				<- false
+	
+	return SpawnSystem_ReturnAllSpawnLocations( -1, options )
 }
 
 array<SpawnData> function SpawnSystem_ReturnAllSpawnLocations( int eMap = -1, table<string,bool> options = {} )

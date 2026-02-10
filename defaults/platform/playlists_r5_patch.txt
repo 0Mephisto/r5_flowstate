@@ -1520,7 +1520,9 @@ playlists
 				random_dummy_spawn_maxtime						250
 				allow_legend_select								0
 				realistic_mode_allow_legend_abilities			0 
-				
+				realistic_ttv_ai_training_feature				1 //can be started/stopped with client command from an admin:  training 1/0/true/false
+				realistic_ttv_ai_training_mode_auto_start		0
+				realistic_ttv_max_alive_bots					2
 			}
 			gamemodes { fs_dm { maps {
 				mp_rr_desertlands_64k_x_64k						1

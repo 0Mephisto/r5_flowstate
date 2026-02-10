@@ -3183,7 +3183,7 @@ void function Tracker_HandleDamage( DamageEvent event, entity attacker, int weap
 {
 	if ( !IsValid( victim ) || !IsValid( attacker ) )
 		return
-	
+		
 	float currentHealth = float( victim.GetHealth() + victim.GetShieldHealth() )
 	
 	// negate damage that can't be done (no health to recieve damage)
@@ -3339,8 +3339,14 @@ void function Tracker_OnPlayerDamaged( entity victim, var damageInfo )
 	// early exits
     if ( !IsValid( victim ) || Bleedout_IsBleedingOut( victim ) ) 
 		return
+		
+	if( victim.e.stateFlags & STATE_FLAG_NO_STATS )
+		return
 
     entity attacker = DamageInfo_GetAttacker( damageInfo )
+	if( attacker.e.stateFlags & STATE_FLAG_NO_STATS )
+		return
+	
     int weaponSource = DamageInfo_GetDamageSourceIdentifier( damageInfo )
     
 	// exclude this damage type
@@ -4919,12 +4925,26 @@ void function PIN_PlayerRevived( entity injured, entity healer )
 void function PIN_PlayerKilled( entity victim, entity attacker, var damageInfo )
 {	
 	if ( file.bTrackerEnabled && TrackerIsLogging__internal() && IsValid( victim ) && victim.IsPlayer() )
+	{
+		if( attacker.e.stateFlags & STATE_FLAG_NO_STATS )
+			return
+			
+		if( victim.e.stateFlags & STATE_FLAG_NO_STATS )
+			return
+			
 		thread __EndFight( victim, attacker, damageInfo, Time(), StatPrintVector( attacker.GetOrigin() ), StatPrintVector( victim.GetOrigin() ) )
+	}
 }
 
 void function Tracker_EndFight( entity victim, entity attacker, var damageInfo )
 {
 	if( !Flowstate_IsTrackerSupportedMode() || !file.bTrackerEnabled || !TrackerIsLogging__internal() )
+		return
+		
+	if( attacker.e.stateFlags & STATE_FLAG_NO_STATS )
+		return
+		
+	if( victim.e.stateFlags & STATE_FLAG_NO_STATS )
 		return
 		
 	thread __EndFight( victim, attacker, damageInfo, Time(), StatPrintVector( attacker.GetOrigin() ), StatPrintVector( victim.GetOrigin() ) )

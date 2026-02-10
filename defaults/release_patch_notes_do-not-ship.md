@@ -51,6 +51,7 @@ For Hosts:
 - added playlist vars to movement recorder for:  enable_helmets(default 0), dummy_shield_level(default 2 = blue ), dummy_health( default = 100 )
 - Added 1v1 exploit protection for melee from rest -- If any issues arrive for 1v1 gamemode with not being able to melee or damage during a fight, you can set enable_state_flags to 0 in playlists file.
 - Added the ability to disable message sounds via playlist with playlist var: disable_message_sounds
+- Added training mode feature for realistic ttv mode
 
 The following commands can utilize -say
 [

@@ -17,6 +17,7 @@ global function SendPM
 global function IsStringNumeric
 global function IsStringNumber
 global function IsStringBool
+global function StringToBool
 global function StringRemoveControlCharacters
 global function Concatenate
 global function LineBreak
