@@ -8,7 +8,6 @@ global function GetPlayerEntityByUID
 global function GetPlayerEntityByName
 global function IsServerAdmin
 global function GetAdminList
-global function IsAuthEnabled
 global function AdminMessage
 global function SendResponse
 global function SendPM
@@ -25,14 +24,15 @@ global function IsSafeString
 global function UnescapeWithRules
 global function FindFirstUnescaped
 global function SplitUnescapedWithRules
-global function ResolveFormattersForPlayerMessage	
+global function ResolveFormattersForPlayerMessage
+global function PrepareForJson	
 
 //print util -- moved to _threads
 // global function print_string_array
 // global function print_var_table
 // global function print_var_array
 
-//Tracker print-to console as native
+//Tracker print-to-console as native
 global function sqprint
 global function sqerror
 global function sqwarning
@@ -51,19 +51,21 @@ global function __PlayerAdminsInit
 global function ClientCommand_mkos_return_data
 global function ClientCommand_mkos_admin
 global function CheckAdmin_OnConnect
+global function IsAuthEnabled
 
 //misc
-global function TP
+global function TrackerUtilityInit
 global function EnableVoice
 global function PlayTimeFromSecondsString
 global function Tracker_DetermineNextMap
 global function Tracker_GotoNextMap
-global function PrepareForJson
 global function ArrayUniqueInt
-global function CodeCallback_SendMessage
-global function TrackerUtilityInit
 global function IsMapPlaylistGamemodeRotationEnabled
 global function DecideNextMapPlaylistGamemodeRotation
+global function TP
+
+//code callbacks
+global function CodeCallback_SendMessage
 
 #if DEVELOPER
 	global function RegExpUnitTest

@@ -1,6 +1,7 @@
 For Players:
 
-- Added the ability to cancel wraith q with tactical button after entering the void
+- Updated all weapons values to Retail Apex season 28
+- Added the ability to cancel wraith q with tactical button / left click + with hint after entering the void
 - Removed Helmets from realistic TTV playlist (mode)
 - 1v1: Added legend select to esc menu buttons
 - 1v1: Added view champion card to esc menu buttons
@@ -52,6 +53,7 @@ For Hosts:
 - Added 1v1 exploit protection for melee from rest -- If any issues arrive for 1v1 gamemode with not being able to melee or damage during a fight, you can set enable_state_flags to 0 in playlists file.
 - Added the ability to disable message sounds via playlist with playlist var: disable_message_sounds
 - Added training mode feature for realistic ttv mode
+- Launched Tracker season 6
 
 The following commands can utilize -say
 [
@@ -86,3 +88,72 @@ Misc (Scripters):
 - fixed an issue in remote func float precision
 - ability to register tracking as non combat mode and ship only live data for custom stats
 - other minor bug fixes and feature/code improvements
+
+Weapons Updates:
+
+========================================
+mp_weapon_semipistol.txt
+----------------------------------------
+  damage_near_value: 24 → 23
+  damage_far_value: 24 → 23
+  damage_very_far_value: 24 → 23
+  damage_near_value_titanarmor: 24 → 23
+  damage_far_value_titanarmor: 24 → 23
+  damage_very_far_value_titanarmor: 24 → 23
+ 
+========================================
+mp_weapon_g2.txt
+----------------------------------------
+  fx_muzzle_flash_attach_scoped: muzzle_flash → muzzle_flash_scoped
+  
+========================================
+mp_weapon_shotgun.txt
+----------------------------------------
+  blast_pattern_default_scale: 1.500000 → 1.400000
+  fire_rate: 2.700000 → 2.800000
+  
+========================================
+mp_weapon_bow.txt
+----------------------------------------
+  holster_angles_offset: 90 90 90 → -90 45 -30
+  charge_time: 0.350000 → 0.450000
+  
+========================================
+mp_ability_hunt_mode.txt
+----------------------------------------
+  toss_time: 1.600000 → 1.200000
+  toss_overhead_time: 1.600000 → 1.200000
+  ammo_clip_size: 240 → 150
+  ammo_min_to_fire: 240 → 150
+  ammo_per_shot: 240 → 150
+  fire_duration: 30.000000 → 25.000000
+  
+========================================
+mp_weapon_doubletake.txt
+----------------------------------------
+  fire_rate: 1.450000 → 1.300000
+  
+========================================
+mp_weapon_3030.txt
+----------------------------------------
+  charge_time: 0.350000 → 0.400000
+  charge_additional_damage_multiplier: 0.500000 → 0.400000
+  damage_near_value: 43 → 41
+  damage_far_value: 43 → 41
+  damage_very_far_value: 43 → 41
+  damage_near_value_titanarmor: 43 → 41
+  damage_far_value_titanarmor: 43 → 41
+  damage_very_far_value_titanarmor: 43 → 41
+  viewkick_pattern: 3030 → 3030_repeater
+  
+========================================
+mp_weapon_mastiff.txt
+----------------------------------------
+
+  blast_pattern: mastiff_3 → mastiff_4
+  projectiles_per_shot: 6 → 5
+  damage_near_value: 16 → 19
+  damage_far_value: 16 → 19
+  damage_near_value_titanarmor: 16 → 19
+  damage_far_value_titanarmor: 16 → 19
+ 
