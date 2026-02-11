@@ -442,7 +442,7 @@ void function FooterButton_Focused( var button )
 
 void function FpsMax_Changed( var button )
 {
-	int f_fpsMax = GetConVarInt( "fps_max" )
-	if( f_fpsMax > 0 && f_fpsMax < 30 )
+	int fpsMax = GetConVarInt( "fps_max" )
+	if( fpsMax > 0 && fpsMax < 30 )
 		SetConVarInt( "fps_max", 30 )	
 }
