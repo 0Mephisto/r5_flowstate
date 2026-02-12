@@ -318,6 +318,7 @@ void function Gamemode1v1_Init( int eMap )
 		AddClientCommandCallback( "CC_1v1_Charm", CC_1v1_WeaponCharm )
 		AddClientCommandCallback( "CC_1v1_MaxEnemyLatency", CC_1v1_MaxEnemyLatency )
 		AddClientCommandCallback( "CC_1v1_MaxIBMMTime", CC_1v1_MaxIBMMTime )
+		AddClientCommandCallbackVoid( "CC_1v1_SettingsSent", CC_1v1_SettingsSent )
 	}
 	else if( bIsCoachingMode() )
 	{
@@ -636,7 +637,9 @@ void function FS1v1_OnEntitiesDidLoad()
 							
 						player.EndSignal( "OnDestroy" )
 						//player.WaitSignal( "SettingsReceieved" )
-						waitthread WaitSignalOrTimeout( player, 15, "SettingsReceieved" )//(mk): to prevent potential leak in the event client commands are disabled or throttled
+						
+						if( !player.p.b1v1SettingsSet )
+							waitthread WaitSignalOrTimeout( player, 15, "SettingsReceieved" )//(mk): to prevent potential leak in the event client commands are disabled or throttled
 					
 						if ( player.p.start_in_rest_setting && !Gamemode1v1_IsPlayerInState( player, e1v1State.RESTING ) )
 							Gamemode1v1_ForceRest( player )
@@ -733,10 +736,20 @@ bool function CC_1v1_WeaponCharm( entity player, array<string> args )
 
 bool function CC_1v1_Heirloom( entity player, array<string> args )
 {
-	if( !IsValid( player ) || !args.len() || !IsStringNumeric( args[0] ) )
+	if( !IsValid( player ) || !args.len() || !IsStringNumeric( args[ 0 ] ) )
 		return false
 	
-	player.p.chosenHeirloom = ClampInt( args[0].tointeger(), 0, 5 )
+	int heirloomId = args[ 0 ].tointeger()
+	
+	if( IsHeirloomRegistered( heirloomId ) )
+		player.p.chosenHeirloom = heirloomId
+	else
+	{
+		if( player.p.b1v1SettingsSet )
+			LocalMsg( player, "#FS_FAILED", "#UNREGISTERED_HEIRLOOOM", eMsgUI.NOTIFICATION )
+			
+		return true
+	}
 	
 	if( IsAlive( player ) && Gamemode1v1_IsPlayerInState( player, e1v1State.RESTING ) )
 		FS_GiveRandomMelee( player, true )
@@ -769,10 +782,17 @@ bool function CC_1v1_MaxIBMMTime( entity player, array<string> args )
 	if( !IsValid( player ) || !args.len() || !IsStringNumeric( args[0] ) )
 		return false
 
-	player.p.IBMM_grace_period = NormalizeGracePeriod( Clamp( args[0].tofloat(), 0.0, 30.0 ) )
-	player.Signal( "SettingsReceieved" )
-	
+	player.p.IBMM_grace_period = NormalizeGracePeriod( Clamp( args[0].tofloat(), 0.0, 30.0 ) )	
 	return true
+}
+
+void function CC_1v1_SettingsSent( entity player, array<string> args )
+{
+	if( player.p.b1v1SettingsSet )
+		return
+		
+	player.Signal( "SettingsReceieved" )
+	player.p.b1v1SettingsSet = true
 }
 
 float function NormalizeGracePeriod( float f_userSelection )

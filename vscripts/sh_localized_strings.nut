@@ -61,7 +61,8 @@ global enum eMsgUI
 	VAR_SUBTEXT_SLOT, 	//11
 	VAR_EVENT, 			//12
 	VAR_MOTD, 			//13
-	IBMM 				//14
+	IBMM, 				//14
+	NOTIFICATION		//15
 }
 
 struct 
@@ -84,7 +85,8 @@ struct
 	
 	array<string> variableVars
 	bool bConsistencyCheckComplete
-	bool bDisableSounds
+	bool bDisableDefaultMessageSounds
+	bool bMsgUINotificationClosesMenus
 #endif
 
 	//////////////////////////////////////////////////////////////////////////
@@ -437,14 +439,18 @@ struct
 		"#DEV_ONLY",
 		"#BADGE_SAVED",
 		
-		/* 4/8/2025 */
+		/* (mk): 4/8/2025 */
 		
 		"#FS_STATS_NOT_READY",
 		
-		/* 1/5/2025 */
+		/* (mk): 1/5/2025 */
 		
 		"#FS_TIMEOUT",
-		"#FS_UNTIMEOUT"
+		"#FS_UNTIMEOUT",
+		
+		/* (mk): 2/12/2026 */
+		
+		"#UNREGISTERED_HEIRLOOOM"
 	]
 	
 } file
@@ -479,11 +485,12 @@ void function INIT_Flowstate_Localization_Strings()
 		#endif
 	}
 	
-	file.allRegisteredTokens.clear()
-	
-	#if CLIENT
-		file.bDisableSounds = GetCurrentPlaylistVarBool( "disable_message_sounds", false )
+	#if CLIENT 
+		file.bDisableDefaultMessageSounds		= GetCurrentPlaylistVarBool( "disable_message_sounds", false )
+		file.bMsgUINotificationClosesMenus		= GetCurrentPlaylistVarBool( "eMsgUI_notification_closes_menus", true )
 	#endif
+	
+	file.allRegisteredTokens.clear()
 	
 	#if DEVELOPER && ASSERT_LOCALIZATION
 		Warning( "ASSERTS ENABLED for script: " + FILE_NAME() )
@@ -1004,10 +1011,19 @@ void function FS_DisplayLocalizedToken( int token, int subtoken, int uiType, flo
 
 	switch( uiType )
 	{
-		case eMsgUI.DEFAULT: DisplayMessage( Msg, SubMsg, duration ); break
-		case eMsgUI.EVENT: Flowstate_AddCustomScoreEventMessage(  Msg, duration ); break
-		// > 2 is handled by enum: eMsgUI and DisplayMessage()
+		case eMsgUI.EVENT: 
+			Flowstate_AddCustomScoreEventMessage( Msg, duration )
+			break
+			
+		case eMsgUI.NOTIFICATION: 
 		
+			if( file.bMsgUINotificationClosesMenus )
+				RunUIScript( "CloseAllMenus" )
+				
+			UIToClient_Notification( Msg, SubMsg, duration )
+			break
+		
+		// all others handled by DisplayMessage()
 		default:
 			DisplayMessage( Msg, SubMsg, duration, uiType ); break
 	}
@@ -1035,14 +1051,14 @@ void function DisplayMessage( string str1, string str2, float duration, int uiTy
 	Announcement_SetDuration( announcement, duration )
 	Announcement_SetPurge( announcement, true )
 	
-	if( file.bDisableSounds )
+	if( file.bDisableDefaultMessageSounds )
 		Announcement_SetSoundAlias( announcement, "" )
 	
 	//Announcement_SetLeftText( announcement, ["test","test","test"] )
 	//Announcement_SetRightText( announcement, ["test","test","test"] )
 	
 	//set default 
-	Announcement_SetStyle(announcement, ANNOUNCEMENT_STYLE_CIRCLE_WARNING)
+	Announcement_SetStyle( announcement, ANNOUNCEMENT_STYLE_CIRCLE_WARNING )
 
 	int mode = Gamemode()
 	

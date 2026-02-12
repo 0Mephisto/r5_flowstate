@@ -537,6 +537,8 @@ void function AiTrainingModeThread()
 				if( IsValid( bot ) )
 					bot.Destroy()
 			}
+			
+			file.aiBots.clear()
 		}
 	)
 	

@@ -2152,8 +2152,11 @@ void function TrackerUtilityInit()
 					}
 				}
 				
+				if( args.contains( "-motd" ) )
+					AdminCommandOpenMOTD( timeoutPlayer )
+				
 				break
-			}		
+			}
 			case "gettimeout":
 			{
 				if( param == "" )
@@ -2202,10 +2205,26 @@ void function TrackerUtilityInit()
 				Message( player, "Success", format( "Force Auto map rotation was set to \"%s\"", bSettingValue ) )
 				break
 			}
+			case "show_motd":
+			{
+				entity candidate = GetPlayer( param )
+				if( !IsValid( candidate ) )
+				{
+					Message( player, "Error", "Invalid player " + param )
+					break
+				}
+				
+				if( !AdminCommandOpenMOTD( candidate ) )
+					Message( player, "Error", "Player disconnected" )
+				else
+					Message( player, "Sent", "If the player has MOTD enabled they will see it popup,\n else they would need to manually view it from menu button" )
+			
+				break
+			}
 			//more...
 			
 			default:
-			{			
+			{	
 				Message( player, "Usage", "cc #command #param1 #param2 #..." )
 				return true
 			}

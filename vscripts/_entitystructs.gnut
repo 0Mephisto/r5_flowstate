@@ -919,6 +919,7 @@ global struct ServerPlayerStruct
 	bool eaVerifyProcessing = false
 	bool hasTeam
 	bool bIsTimedOut
+	bool b1v1SettingsSet
 	table< int, bool > isGroupChannelCreatedTbl
 	table< int, int > syncGroupToAssetForPlayer
 	

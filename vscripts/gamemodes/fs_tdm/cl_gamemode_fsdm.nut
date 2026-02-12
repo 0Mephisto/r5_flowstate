@@ -2777,9 +2777,10 @@ void function Send1v1SettingsToServer()
 	player.ClientCommand( "CC_1v1_CamoColor " + GetConVarString( "fs_1v1_camo" ) )
 	player.ClientCommand( "CC_1v1_Heirloom " + GetConVarString( "fs_1v1_heirloom" ) )
 	player.ClientCommand( "CC_1v1_MaxEnemyLatency " + GetConVarString( "fs_1v1_maxenemylatency" ) )
-	//more
+	player.ClientCommand( "CC_1v1_MaxIBMMTime " + GetConVarString( "fs_1v1_maxibmmtime" ) ) //(mk): must be after CC_1v1_IBMM, as CC_1v1_IBMM will set 0|3. 	
+	//more...
 	
-	player.ClientCommand( "CC_1v1_MaxIBMMTime " + GetConVarString( "fs_1v1_maxibmmtime" ) ) //(mk): must be after CC_1v1_IBMM, as CC_1v1_IBMM will set 0|3. Should also always be last as it fires signal "SettingsReceieved"
+	player.ClientCommand( "CC_1v1_SettingsSent" ) //(mk): should also always be last as it fires signal "SettingsReceieved" on the server
 }
 
 void function FS_RestButton( entity player )

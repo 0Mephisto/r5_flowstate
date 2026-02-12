@@ -1,31 +1,37 @@
-For Players:
+Release:  Feb 12/2026:
 
+
+========================================
+For Players:
+----------------------------------------
 - Updated all weapons values to Retail Apex season 28
+- Added warning dialog for when launching in developer mode
+- Added warning dialog for when launching in client mode
 - Added the ability to cancel wraith q with tactical button / left click + with hint after entering the void
+- New gamemode envisioned by SlapsMcGaps, implemented by mkos: fs_grapples_n_guns
+- Fixed not being able to heal some times in (all modes), tested in realistic ttv building playlist ( mode )
+- potential fix for sometimes spawning backwards in 1v1 applied
+- prevent ability to melee or do damage in rest to prevent any exploits
+- Fixed start in rest setting applying when joining a 1v1 server mid-game.
+- added ability to enable cl_showfps from in game settings. Saves to settings.
+- added settings menu setting to persist cl_show pos info with localization tokens
+- Fixed weapons not saving in realistic ttv building playlist ( mode )
 - Removed Helmets from realistic TTV playlist (mode)
 - 1v1: Added legend select to esc menu buttons
 - 1v1: Added view champion card to esc menu buttons
 - Weapons menu: Added a 'reset' button for quickly resetting saved guns.
 - MOTD will automatically show *one time* for any server you join unless changed in settings under "ACCESSIBILITY"
-- Fixed not being able to heal some times in realistic ttv building playlist ( mode )
-- Fixed weapons not saving in realistic ttv building playlist ( mode )
-- Fixed start in rest setting applying when joining a 1v1 server mid-game.
 - Taking damage ( other than ring damage ) now closes a deathbox if setting "Taking Damage Closes Deathbox or Menu" is set to on.
 - Fixed not being able to recall drone in fs_rankupmapmovementpractice
-- New gamemode envisioned by SlapsMcGaps, implemented by mkos: fs_grapples_n_guns
+- Added 3p client command to fs_rankupmapmovementpractice playlist
 - disabled battle chatter for fs_grapples_n_guns
-- Added several text to all 12 languages
-- added settings menu setting to persist cl_show pos info with localization tokens
+- Added several new text to all 12 languages
 - fixed movement recorder playback duration display
-- potential fix for sometimes spawning backwards in 1v1 applied
-- prevent ability to melee or do damage in rest to prevent any exploits
-- added ability to enable cl_showfps from in game settings. Saves to settings.
-- Added warning dialog for when launching in developer mode
-- Added warning dialog for when launching in client mode
-- Added 3p client command to rankup map practice playlist
+- Fixed scoreboard not toggling in some games such as vamp 1v1s
 
+========================================
 For Hosts:
-
+----------------------------------------
 - Added playlist var 'enable_loose_playername_comparison', which allows partial playername searches when doing cc commands - also works for things like chal. Example for a player named BobTheBuilder:  /chal bob  -- will match for "BobTheBuilder"
 - New proto feature to reserve at least one admin slot by enabling the feature in playlists via playlist var: reserve_admin_slot
 - Realistic TTV building now has a proto feature to spawn ai on a random player if playlist var 'random_dummy_spawn' is eanbled, and can be configured with: random_dummy_spawn_mintime and random_dummy_spawn_maxtime
@@ -54,6 +60,8 @@ For Hosts:
 - Added the ability to disable message sounds via playlist with playlist var: disable_message_sounds
 - Added training mode feature for realistic ttv mode
 - Launched Tracker season 6
+- Added cc command 'cc show_motd [playername/uid]' - Shows motd to a specified player even if already shown, but only if the player has not disabled 'Enable MOTD'
+
 
 The following commands can utilize -say
 [
@@ -65,9 +73,9 @@ The following commands can utilize -say
 
 - Removed commands: cc kicksay, cc bansay
 
-
+========================================
 Misc (Scripters):
-
+----------------------------------------
 - restore playlist override to blank after usage so that subsequent usage of server browser loading does not get locked to previous override.
 - badge stat crash fix
 - fix a bug not allowing you to do 'cc map' to reload current map playlist gamemode in some situations
@@ -87,11 +95,12 @@ Misc (Scripters):
 - removed specifying map for global rpaks in scripts/levels/settings
 - fixed an issue in remote func float precision
 - ability to register tracking as non combat mode and ship only live data for custom stats
-- other minor bug fixes and feature/code improvements
+- other minor bug fixes and feature/code improvements / refactors
+- added new eMsgUI type:  eMsgUI.NOTIFICATION for usage with LocalMsg() with playlist var controlled by server for should close all menus or not as 'eMsgUI_notification_closes_menus' set to true by default, and not added to playlists file.
+- Fixed scoreboard toggle behavior causing an issue leaving scoreboard in an inconsistent state, which would cause other menus to not work properly such as ordnance, health items, quips, etc
 
-Weapons Updates:
 
-========================================
+=============================================== Weapons Updates: ===============================================
 mp_weapon_semipistol.txt
 ----------------------------------------
   damage_near_value: 24 → 23

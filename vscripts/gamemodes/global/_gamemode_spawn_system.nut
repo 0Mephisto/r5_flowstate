@@ -579,15 +579,23 @@ array<SpawnData> function SpawnSystem_ReturnAllSpawnLocationsFromDatatable( stri
 		mAssert( 0, "Invalid datatable: \"%s\"", dataTable )
 
 	table< string, bool > options 
+	{
+		options[ "use_sets" ] 				<- false
+		options[ "use_random" ] 			<- false
+		options[ "prefer" ] 				<- false
+		options[ "use_custom_rpak" ] 		<- bCustomPakIsValid
+		options[ "use_custom_playlist" ] 	<- false
+		options[ "rotate_all" ]				<- false
+	}
 	
-	options[ "use_sets" ] 				<- false
-	options[ "use_random" ] 			<- false
-	options[ "prefer" ] 				<- false
-	options[ "use_custom_rpak" ] 		<- bCustomPakIsValid
-	options[ "use_custom_playlist" ] 	<- false
-	options[ "rotate_all" ]				<- false
+	bool bRunCallbacks = file.bRunCallbacks
+	if( bRunCallbacks )
+		file.bRunCallbacks = false
+		
+	array<SpawnData> spawns = SpawnSystem_ReturnAllSpawnLocations( -1, options )	
+	file.bRunCallbacks = bRunCallbacks
 	
-	return SpawnSystem_ReturnAllSpawnLocations( -1, options )
+	return spawns
 }
 
 array<SpawnData> function SpawnSystem_ReturnAllSpawnLocations( int eMap = -1, table<string,bool> options = {} )
@@ -892,13 +900,14 @@ array<SpawnData> function GenerateCustomSpawns( int eMap, int coreSpawnsLen = -1
 		//////////////////////////////////////////////////////////////////////////////////		
 	}//: Switch (eMap)
 	
-	#if DEVELOPER //for timing tests
-		printt("[SpawnSystem] --- CALLING CUSTOM SPAWN CALLBACKS --- ")
-	#endif
 	//add with AddCallback_SpawnsPostInit( functionref ) 
 	//  function ref should return a LocPairData data object
 	if( file.bRunCallbacks )
 	{
+		#if DEVELOPER //for timing tests
+			printt("[SpawnSystem] --- CALLING CUSTOM SPAWN CALLBACKS --- ")
+		#endif
+	
 		foreach( callbackFunc in file.onSpawnInitCallbacks )
 		{
 			LocPairData data = callbackFunc()

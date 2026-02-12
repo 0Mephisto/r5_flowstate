@@ -72,6 +72,7 @@ global function HaloMod_HandlePlayerModel
 global function EndRound
 global function PrimaryWeaponMetagame_Init
 global function FS_GiveRandomMelee
+global function IsHeirloomRegistered
 #if DEVELOPER
 	global function DEV_NextRound
 #endif
@@ -125,6 +126,7 @@ global struct Heirloom
 {
 	string melee
 	string primary
+	int id
 }
 
 struct 
@@ -186,6 +188,7 @@ struct
 	array<ItemFlavor> characters
 	
 	bool functionref( int ) ShouldTimerEnd = null
+	int __communityHeirloomRegisterID = 0
 
 } file
 
@@ -1283,8 +1286,7 @@ void function _OnPlayerDied( entity victim, entity attacker, var damageInfo )
 						decidedWaitTime = STATIC_WAIT_TIME
 				}
 					
-				if( Playlist() != ePlaylists.fs_realistic_ttv )
-					Remote_CallFunction_ByRef( victim, "ForceScoreboardLoseFocus" )
+				Remote_CallFunction_ByRef( victim, "ForceScoreboardLoseFocus" )
 				
 				//(mk): I originally intended this to be apart of a lifestate change or YouDied callback, and setting UpdateNextRespawnTime( entity player, float time ), client using: GetNextRespawnTime( player )  but due to various mode behavior, it's better left as a remote func call.
 				Remote_CallFunction_Replay( victim, "Flowstate_ShowRespawnTimeUI", int( DEATHCAM_TIME_SHORT + decidedWaitTime ) )//+ DEATHCAM_TIME_SHORT ) )
@@ -1546,7 +1548,7 @@ void function _HandleRespawn( entity player, bool isDroppodSpawn = false )
 		
         Remote_CallFunction_ByRef( player, "ServerCallback_KillReplayHud_Deactivate" )
     }
-
+	
 	if( MapName() == eMaps.mp_rr_arena_empty )
 		Remote_CallFunction_ByRef( player, "Minimap_DisableDraw_Internal" )
 	else
@@ -7577,24 +7579,63 @@ void function EndRound()
 	g_fCurrentRoundEndTime = Time()
 }
 
+const table<string, string> COMMUNITY_HEIRLOOMS = //(mk): order is important, client is hardcoded (for now) to send the id based on this order during selection.
+{
+	melee_pilot_emptyhanded = "mp_weapon_melee_survival",
+	melee_bolo_sword = "mp_weapon_bolo_sword_primary",
+	melee_karambit = "mp_weapon_karambit_primary",
+	melee_mc_sword = "mp_weapon_mc_sword_primary",
+	melee_mjolnir = "mp_weapon_mjolnir_primary",
+	melee_macks_knife = "mp_weapon_macks_knife_primary"
+}
+
 //todo(cafe): probably move this to a more general place
 void function FS_InitCommunityHeirlooms()
 {
 	// Disabled until we figure out which one crash the client
 	
-	file.heirlooms.append( CreateHeirloom( "melee_pilot_emptyhanded", "mp_weapon_melee_survival" ) )
-	file.heirlooms.append( CreateHeirloom( "melee_bolo_sword", "mp_weapon_bolo_sword_primary" ) )
-	file.heirlooms.append( CreateHeirloom( "melee_karambit", "mp_weapon_karambit_primary" ) )
-	file.heirlooms.append( CreateHeirloom( "melee_mc_sword", "mp_weapon_mc_sword_primary" ) )
-	file.heirlooms.append( CreateHeirloom( "melee_mjolnir", "mp_weapon_mjolnir_primary" ) )
-	file.heirlooms.append( CreateHeirloom( "melee_macks_knife", "mp_weapon_macks_knife_primary" ) )
+	// file.heirlooms.append( CreateHeirloom( "melee_pilot_emptyhanded", "mp_weapon_melee_survival" ) )
+	// file.heirlooms.append( CreateHeirloom( "melee_bolo_sword", "mp_weapon_bolo_sword_primary" ) )
+	// file.heirlooms.append( CreateHeirloom( "melee_karambit", "mp_weapon_karambit_primary" ) )
+	// file.heirlooms.append( CreateHeirloom( "melee_mc_sword", "mp_weapon_mc_sword_primary" ) )
+	// file.heirlooms.append( CreateHeirloom( "melee_mjolnir", "mp_weapon_mjolnir_primary" ) )
+	// file.heirlooms.append( CreateHeirloom( "melee_macks_knife", "mp_weapon_macks_knife_primary" ) )
+	
+	file.heirlooms.extend( CreateHeirloomArray( COMMUNITY_HEIRLOOMS ) )
 }
 
-Heirloom function CreateHeirloom( string melee, string primary )
+array<Heirloom> function CreateHeirloomArray( table< string, string > heirloomData ) //(mk): registration with validation
+{
+	array<Heirloom> heirloomsArray
+	
+	foreach( string melee, string primary in heirloomData )
+	{
+		if( !WeaponIsPrecached( melee ) )
+		{
+			#if DEVELOPER 
+				Warning( "Weapon " + melee + " was not precached and removed from list in " + FUNC_NAME() )
+			#endif 
+			
+			continue
+		}
+		
+		heirloomsArray.append( __CreateHeirloom( melee, primary ) )
+	}
+	
+	return heirloomsArray
+}
+
+int function __incrementHeirloomRegisterID()
+{
+	return file.__communityHeirloomRegisterID++
+}
+
+Heirloom function __CreateHeirloom( string melee, string primary )
 {
 	Heirloom heirloom
 	heirloom.melee = melee
 	heirloom.primary = primary
+	heirloom.id = __incrementHeirloomRegisterID()
 	
 	return heirloom
 }
@@ -7604,7 +7645,18 @@ array<Heirloom> function GetCommunityHeirlooms()
 	return file.heirlooms
 }
 
-void function FS_GiveRandomMelee(entity player, bool is1v1 = false )
+bool function IsHeirloomRegistered( int heirloomId )
+{
+	foreach( Heirloom heirloom in file.heirlooms )
+	{
+		if( heirloom.id == heirloomId )
+			return true
+	}
+	
+	return false
+}
+
+void function FS_GiveRandomMelee( entity player, bool is1v1 = false )
 {
 	// #if DEVELOPER
 	// DumpStack()
@@ -7612,12 +7664,17 @@ void function FS_GiveRandomMelee(entity player, bool is1v1 = false )
 	// #endif
 	
 	Heirloom randomMelee //todo(cafe): allow players to choose heirloom? possibly a new menu for "cosmetics" where players can choose the heirloom and camo color with persistence
-	
+
 	if( is1v1 )
-		randomMelee = GetCommunityHeirlooms()[player.p.chosenHeirloom]
-	else 
+	{
+		if( player.p.chosenHeirloom < GetCommunityHeirlooms().len() ) //(mk): defensive checks
+			randomMelee = GetCommunityHeirlooms()[ player.p.chosenHeirloom ] //this needs improved
+		else 
+			return
+	}
+	else
 		randomMelee = GetCommunityHeirlooms().getrandom()
-	
+
 	player.TakeNormalWeaponByIndexNow( WEAPON_INVENTORY_SLOT_PRIMARY_2 )
 	player.TakeOffhandWeapon( OFFHAND_MELEE )	
 	player.GiveWeapon( randomMelee.primary, WEAPON_INVENTORY_SLOT_PRIMARY_2, [] )

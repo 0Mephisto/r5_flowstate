@@ -24,6 +24,7 @@ global function WorldAssets_GroupVisibilityMover 			// ( vector initialPosition,
 global function WorldAssets_GetGroupIdByName				// ( string groupName )
 global function WorldAssets_GetGroupNameByID				// ( int groupId )
 global function WorldAssets_SwitchToPlayerAssetForGroupNow	// ( entity player, string assetRef, string groupName )
+global function WorldAssets_DestroyAllRuiAndTopo			// ( entity player )
 
 global function WorldAssets_RegisterAudioGroup				// ( string name, bool interupt = true, bool isVisible = true )
 global function WorldAssets_PlayAudio						// ( entity player, string assetRef, string groupName = "" )
@@ -610,6 +611,35 @@ void function WorldAssets_KillAllBanners()
 	Signal( file.dummyEnt, "KillAllBannerGroups" )
 }
 
+bool function HasValidRuiData( entity player, int groupId )
+{
+	return GroupDataHasRuiSet( GetGroupData( player, groupId ) )
+}
+
+void function WorldAssets_DestroyAllRuiAndTopo( entity player )
+{
+	foreach( string groupName, AssetGroupData groupData in file.groupDataMap )
+	{
+		if( HasValidRuiData( player, groupData.groupId ) )
+		{
+			int ruiId
+			foreach( int assetType in eAssetType )
+			{
+				if( assetType == eAssetType.INVALID )
+					continue 
+					
+				ruiId = GetRUIID( player, groupData.groupId, assetType )
+				
+				if( assetType != eAssetType.INVALID )
+					WorldDrawAsset_DestroyOnClient( player, ruiId )
+			}
+			
+			if( groupData.groupId in player.p.groupTypeToRuiID ) //should always be
+				delete player.p.groupTypeToRuiID[ groupData.groupId ]
+		}
+	}
+}
+
 void function WorldAssets_LockGroupsTo( int assetId, int groupId = -1 )
 {
 	WorldAssets_SyncAllPlayers( assetId, true, groupId, "" )
@@ -811,6 +841,9 @@ void function __HideAllBanners( entity player, AssetGroupData groupData )
 {
 	if( !IsValid( player ) ) //player might have disconnected
 		return
+		
+	if( !HasValidRuiData( player, groupData.groupId ) )
+		return 
 		
 	array<AssetData> banners = groupData.groupBanners
 		
@@ -1535,7 +1568,7 @@ void function __Singlethread( entity player, AssetGroupData groupData )
 	AssetData baseBannerImage
 	AssetData baseBannerVideo
 	
-	bool bFirstRun = !GroupDataHasRuiSet( GetGroupData( player, groupData.groupId ) )
+	bool bFirstRun = !HasValidRuiData( player, groupData.groupId )
 	int clientRUIID = -1
 	bool bDontSync
 	int iter
@@ -1796,6 +1829,9 @@ void function __Singlethread( entity player, AssetGroupData groupData )
 				continue
 			}
 		}
+
+		if( !HasValidRuiData( player, groupData.groupId ) )
+			break
 
 		clientRUIID = GetRUIID( player, groupData.groupId, banner.assetType )
 		//set the server managed ruiid instance to use based on type.

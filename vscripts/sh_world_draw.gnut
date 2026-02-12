@@ -432,6 +432,7 @@ int function WorldDrawAsset_AssetRefToID( string ref )
 			RuiDestroyIfAlive( rui )
 
 		file.worldRUI[ RUIID ].clear()
+		delete file.worldRUI[ RUIID ]
 		
 		if( !( RUIID in file.worldRUITopo ) )
 			return
@@ -451,6 +452,7 @@ int function WorldDrawAsset_AssetRefToID( string ref )
 		}
 		
 		file.worldRUITopo[ RUIID ].clear()
+		delete file.worldRUITopo[ RUIID ]
 	}
 	
 	void function __DestroyWorldRUIWithID_Timed( var topo, var rui, float duration = 5 )

@@ -1164,7 +1164,7 @@ void function RemoteFunctions_Init_Begin()
 	
 	RegisterServerVar( "tracker_enabled", false )
 	RegisterServerVar( "batch_fetch_complete", false )
-	ScriptRemote_RegisterUIFunction( "UI_Callback_MOTD" )
+	ScriptRemote_RegisterUIFunction( "UI_Callback_MOTD", "bool" )
 
 	if ( IsLobby() )
 	{

@@ -718,19 +718,19 @@ bool function ShouldDisplayOptInOptions()
 	return GetGlobalNetBool( "isOptInServer" )
 }
 
-void function UI_Callback_MOTD()
+void function UI_Callback_MOTD( bool force )
 {
-	SetMotdText( "" )
+	SetMotdText( "", force )
 }
 
-void function SetMotdText( string text )
+void function SetMotdText( string text, bool force )
 {
 	file.motdText = text + file.motdText
 	
 	if( !GetConVarBool( "enable_motd" ) )
 		return
 
-	if ( GetConVarBool( "open_motd_once_per_server" ) )
+	if ( GetConVarBool( "open_motd_once_per_server" ) && !force )
 	{
 		string server = GetServerID()
 	
