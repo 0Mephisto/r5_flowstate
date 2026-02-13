@@ -54,6 +54,7 @@ struct
 	array< SpawnData > aiSpawns
 	array< DoorDataStruct > trackedDoors
 	array< entity > aiBots
+	array< entity > aiBotsForPlayers
 	table< entity, ItemFlavor ornull > tbl_selectedLegends
 	
 	int iTrackedDoors
@@ -89,10 +90,10 @@ void function RealisticMode_Init()
 	if ( !FlowState_AdminTgive() )
 		INIT_WeaponsMenu()
 	else 
-		INIT_WeaponsMenu_Disabled()
+		INIT_WeaponsMenu_Disabled()	
 		
 	if( GetCurrentPlaylistVarBool( "random_dummy_spawn", true ) )
-	{
+	{	
 		file.fRandomDummySpawnMinTime = GetCurrentPlaylistVarFloat( "random_dummy_spawn_mintime", 100.0 )
 		file.fRandomDummySpawnMaxTime = GetCurrentPlaylistVarFloat( "random_dummy_spawn_maxtime", 250.0 )
 		thread SpawnDummyOnRandomPlayer_Thread()
@@ -113,6 +114,12 @@ void function RealisticMode_Init()
 		
 		if( GetCurrentPlaylistVarBool( "realistic_ttv_ai_training_mode_auto_start", false ) )
 			thread AiTrainingModeThread()
+	}
+	
+	if( file.bEnableTrainingMode || GetCurrentPlaylistVarBool( "random_dummy_spawn", true ) )
+	{
+		AddCallback_OnTdmStateEnter_InProgress( DummyResetIfAlive )
+		AddCallback_OnTdmStateEnter_EndGame( DummyPauseAggro )
 	}
 	
 	file.bLegendChangeEnabled = GetCurrentPlaylistVarBool( "allow_legend_select", false )
@@ -595,13 +602,28 @@ void function OnTrainingDummyKilled( entity dummy, var damageInfo )
 	Signal( file.infoSignal, "RealisticTTV_SpawnTrainingDummy" )
 }
 
+void function OnDummyKilledForPlayer( entity dummy, var damageInfo )
+{
+	if( IsValid( dummy ) )
+	{
+		file.aiBotsForPlayers.fastremovebyvalue( dummy )
+		
+		entity attacker = DamageInfo_GetAttacker( damageInfo )
+		
+		if( IsValid( attacker ) && attacker.IsPlayer() )
+			RealisticMode_GivePlayerBonusHeals( attacker )
+			
+		dummy.Destroy()
+	}
+}
+
 void function __SpawnDummy( vector origin, vector angles, entity player = null, entity dummy = null, int team = 99, float fWaitMin = 2.0, float fWaitMax = 5.0 ) //taken from ai util
 {	
 	if ( dummy == null )
 		dummy = CreateDummy( team, origin, angles )
 		
 	dummy.e.stateFlags = 0 | STATE_FLAG_NO_STATS
-	SetSpawnOption_AISettings( dummy, "npc_dummie_combat" )
+	SetSpawnOption_AISettings( dummy, "npc_combat_wraith" )
 
 	int shield = 100
 	int shieldskin = 1
@@ -620,11 +642,17 @@ void function __SpawnDummy( vector origin, vector angles, entity player = null, 
 	dummy.DisableHibernation()
 	dummy.SetAngles( angles )
 	dummy.SetEfficientMode( false )
+	dummy.SetSkin( RandomInt(6) )
+	dummy.EnableNPCMoveFlag( NPCMF_PREFER_SPRINT )
+	dummy.SetTitle( "Wraith Killer" )
 	
 	if( player != null )
 	{
 		dummy.RemoveFromAllRealms()
 		dummy.AddToOtherEntitysRealms( player )
+		
+		AddEntityCallback_OnKilled( dummy, OnDummyKilledForPlayer )
+		file.aiBotsForPlayers.append( dummy )
 	}
 
     array<string> weapons = ["npc_weapon_hemlok", "npc_weapon_energy_shotgun", "npc_weapon_lstar"]
@@ -639,5 +667,43 @@ void function __SpawnDummy( vector origin, vector angles, entity player = null, 
 	wait RandomFloatRange( fWaitMin, fWaitMax )
 	
 	if( IsValid( dummy ) )
+	{
 		dummy.DisableNPCFlag( NPC_IGNORE_ALL )
+		dummy.EnableNPCFlag( NPC_USE_SHOOTING_COVER | NPC_CROUCH_COMBAT )
+	}
+}
+
+array<entity> function GetAllDummies() //not using GetNPCArrayByClass( "npc_dummie" ) incase we add other classes later
+{
+	array<entity> allDummies
+	
+	allDummies.extend( file.aiBots )
+	allDummies.extend( file.aiBotsForPlayers )
+	
+	return allDummies
+}
+
+void function DummyResetIfAlive()
+{
+	foreach( entity dummy in GetAllDummies() )
+	{
+		if( IsValid( dummy ) && IsAlive( dummy ) )
+			dummy.Destroy()
+	}
+	
+	file.aiBots.clear()
+	file.aiBotsForPlayers.clear()
+}
+
+void function DummyPauseAggro()
+{
+	foreach( entity dummy in GetAllDummies() )
+	{
+		if( IsValid( dummy ) && IsAlive( dummy ) )
+		{
+			dummy.SetAttackMode( false )
+			dummy.Freeze()
+			dummy.EnableNPCFlag( NPC_IGNORE_ALL | NPC_DISABLE_SENSING )
+		}
+	}
 }
