@@ -3081,7 +3081,7 @@ void function soloModePlayerToWaitingList( entity player, bool isWinner = false,
 		MakeInvincible(player)
 
 	if( !fromResting && !(Gamemode1v1_GetPlayerGamestate( player ) == e1v1State.INVALID) )
-		Gamemode1v1_TeleportPlayer( player, getWaitingRoomLocation() ) //new
+		Gamemode1v1_TeleportPlayer( player, g_waitingRoomSpawnLocations.getrandom() ) //new
 	
 	Gamemode1v1_SetPlayerGamestate( player, e1v1State.WAITING )
 		
@@ -3166,7 +3166,7 @@ void function scenarios_soloModePlayerToWaitingList( entity player, bool isWinne
 		return
 	
 	Gamemode1v1_SetPlayerGamestate( player, e1v1State.WAITING )
-	Gamemode1v1_TeleportPlayer( player, getWaitingRoomLocation() ) //new
+	Gamemode1v1_TeleportPlayer( player, g_waitingRoomSpawnLocations.getrandom() ) //new
 	
 	player.SetMinimapZoomScale( 0.75, 3.0 ) // (cafe) There should be a better place for this call
 
@@ -4878,7 +4878,7 @@ void function ForceAllRoundsToFinish_solomode()
 		if( Gamemode1v1_IsPlayerWaiting( player ) )
 			continue
 		
-		Gamemode1v1_TeleportPlayer( player, getWaitingRoomLocation() )
+		Gamemode1v1_TeleportPlayer( player, g_waitingRoomSpawnLocations.getrandom() )
 		// soloModePlayerToWaitingList( player )
 		if( Gamemode1v1_IsPlayerResting( player ) )
 			Gamemode1v1_RemovePlayerFromRestingList( player )
@@ -5409,7 +5409,7 @@ void function Gamemode1v1_OnPlayerKilled( entity victim, entity attacker, var da
 		}
 
 		// ClearInvincible( victim ) 
-		Gamemode1v1_TeleportPlayer( victim, getWaitingRoomLocation() )
+		Gamemode1v1_TeleportPlayer( victim, g_waitingRoomSpawnLocations.getrandom() )
 		return
 	}
 	return
@@ -5451,7 +5451,7 @@ void function Gamemode1v1_OnSpawned( entity player )
 	if( GetTDMState() != eTDMState.IN_PROGRESS )
 		Gamemode1v1_SetPlayerGamestate( player, e1v1State.INVALID )
 	
-	Gamemode1v1_TeleportPlayer( player, getWaitingRoomLocation() )
+	Gamemode1v1_TeleportPlayer( player, g_waitingRoomSpawnLocations.getrandom() )
 	player.UnfreezeControlsOnServer()
 }
 
@@ -5463,7 +5463,7 @@ void function ValidateBlacklistedWeapons( array<string> Weapons ) //(mk): modifi
 	{
 		int sliceIndex = Weapons[ i ].find( " " )		
 		if( sliceIndex > -1 )
-		{	
+		{
 			string weaponName = Weapons[ i ].slice( 0, sliceIndex )
 			
 			if( GetBlackListedWeapons().contains( weaponName ) )
@@ -5475,16 +5475,6 @@ void function ValidateBlacklistedWeapons( array<string> Weapons ) //(mk): modifi
 				Weapons.remove( i )
 		}
 	}
-}
-
-void function DisablePlayerCollision( entity player )
-{
-	player.kv.contents = CONTENTS_BULLETCLIP | CONTENTS_MONSTERCLIP | CONTENTS_HITBOX | CONTENTS_BLOCKLOS | CONTENTS_PHYSICSCLIP; //CONTENTS_PLAYERCLIP
-}
-
-void function EnablePlayerCollision( entity player )
-{
-	player.kv.contents = CONTENTS_BULLETCLIP | CONTENTS_MONSTERCLIP | CONTENTS_HITBOX | CONTENTS_BLOCKLOS | CONTENTS_PHYSICSCLIP | CONTENTS_PLAYERCLIP
 }
 
 void function DecideToggleCollision_Rest( entity player, bool enable )

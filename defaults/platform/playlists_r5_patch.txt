@@ -3148,6 +3148,9 @@ playlists
 				
 				//no crypto drone scanning
 				disable_crypto_scan								1
+				
+				// 0 disables players colliding with each other.
+				player_collision_enabled						0
 			}
 			gamemodes { survival { maps {
 				mp_rr_desertlands_64k_x_64k						1
