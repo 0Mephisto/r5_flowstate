@@ -1111,7 +1111,10 @@ int function SortAudioHistory( AudioHistory a, AudioHistory b )
 	if( a.lastPlayTime > b.lastPlayTime )
 		return -1
 		
-	return 1
+	if( a.lastPlayTime < b.lastPlayTime )
+		return 1
+
+	return 0
 }
 
 array<AudioHistory> function GetAllAudioHistoryForPlayer( entity player, int groupId )
