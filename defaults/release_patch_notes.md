@@ -28,6 +28,8 @@ For Players:
 - Added several new text to all 12 languages
 - fixed movement recorder playback duration display
 - Fixed scoreboard not toggling in some games such as vamp 1v1s
+- Fixed healing amount preview display 
+- Fixed bug in realistic mode creating inconsistent ordnance state ( unusable arc stars / healing items )
 
 ========================================
 For Hosts:
