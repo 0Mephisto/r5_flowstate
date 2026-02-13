@@ -309,7 +309,7 @@ void function CL_FSDM_RegisterNetworkFunctions()
 	RegisterNetworkedVariableChangeCallback_time( "flowstate_DMStartTime", Flowstate_StartTimeChanged )
 	RegisterNetworkedVariableChangeCallback_time( "flowstate_DMRoundEndTime", Flowstate_RoundEndTimeChanged )
 	
-	if( G_REGISTER_1V1_NETVARS_FOR_PLAYLIST.contains( Playlist() ) )
+	if( g_bIs1v1GameType() )
 	{
 		RegisterNetworkedVariableChangeCallback_ent( "FSDM_1v1_Enemy", Flowstate_1v1EnemyChanged )
 		RegisterNetworkedVariableChangeCallback_int( "FS_1v1_PlayerState", FS_1v1_PlayerStateChanged )
@@ -658,7 +658,7 @@ void function Cl_OnResolutionChanged()
 	UISize screenSize = GetScreenSize()
 	Hud_SetSize( HudElement( "FS_DMCountDown_Frame" ), 248 * screenSize.width / 1920.0, 88 * screenSize.height / 1080.0 )
 	
-	if( IsValid( GetLocalViewPlayer() ) && G_REGISTER_1V1_NETVARS_FOR_PLAYLIST.contains( Playlist() ) )
+	if( IsValid( GetLocalViewPlayer() ) && g_bIs1v1GameType() )
 		FS_1v1_PlayerStateChanged( GetLocalViewPlayer(), 0, GetLocalViewPlayer().GetPlayerNetInt( "FS_1v1_PlayerState" ) , false )
 
 	if( GetGlobalNetInt( "FSDM_GameState" ) != eTDMState.IN_PROGRESS )

@@ -387,8 +387,15 @@ void function RealisticMode_GivePlayerBonusHeals( entity player, bool spawn = fa
 {
 	if( !spawn )
 	{
+		vector playerOriginAtKillTime = player.GetOrigin()
+		
 		foreach( ref in STANDARD_REALISTIC_KILL_LOOT )
-			SURVIVAL_AddToPlayerInventory( player, ref, 1 )
+		{
+			if( SURVIVAL_AddToPlayerInventory( player, ref, 1, false ) == 0 )
+				SpawnLoot( ref, playerOriginAtKillTime, true )
+			else
+				SURVIVAL_AddToPlayerInventory( player, ref, 1 )
+		}
 	}
 	else
 	{

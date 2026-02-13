@@ -417,7 +417,6 @@ void function RemoteFunctions_Init_Begin()
 				ScriptRegisterNetworkedVariable( "FS_Scenarios_gameStartTime", SNDC_PLAYER_EXCLUSIVE, SNVT_TIME )
 				ScriptRegisterNetworkedVariable( "FS_Scenarios_timePlayerEnteredInLobby", SNDC_PLAYER_EXCLUSIVE, SNVT_TIME )
 			
-				ScriptRegisterNetworkedVariable( "FS_1v1_PlayerState", SNDC_PLAYER_EXCLUSIVE, SNVT_INT )
 				Scenarios_RegisterNetworking() //(mk)
 			}
 			
@@ -447,15 +446,16 @@ void function RemoteFunctions_Init_Begin()
 			ScriptRegisterNetworkedVariable( "flowstate_DMRoundEndTime", SNDC_GLOBAL, SNVT_TIME, -1 )
 			ScriptRegisterNetworkedVariable( "FSDM_GameState", SNDC_GLOBAL, SNVT_INT, -1 )
 			
-			if( G_REGISTER_1V1_NETVARS_FOR_PLAYLIST.contains( Playlist() )  )
+			if( g_bIs1v1GameType()  )
 			{
 				ScriptRegisterNetworkedVariable( "FSDM_1v1_Enemy", SNDC_PLAYER_GLOBAL, SNVT_ENTITY )
 				ScriptRegisterNetworkedVariable( "FSDM_1v1_PositionInScoreboard", SNDC_PLAYER_GLOBAL, SNVT_INT, -1 )
 				ScriptRemote_RegisterClientFunction( "Gamemode1v1_ForceLegendSelector_Deprecated" ) //(mk): Todo clientsided ui activation
 				
 				ScriptRegisterNetworkedVariable( "FS_1v1_PlayerState", SNDC_PLAYER_EXCLUSIVE, SNVT_INT )
-
-				ScriptRemote_RegisterClientFunction( "ServerCallback_SpawnOrModifyClientSideDynamicLight", "vector", -32000.0, 32000.0, 32, "vector", -32000.0, 32000.0, 32, "int", 0, 10, "float", 0.0, 32000.0, 12, "float", 0.0, 32000.0, 12, "int", 0, 100 )
+				
+				if( Playlist() != ePlaylists.fs_scenarios )
+					ScriptRemote_RegisterClientFunction( "ServerCallback_SpawnOrModifyClientSideDynamicLight", "vector", -32000.0, 32000.0, 32, "vector", -32000.0, 32000.0, 32, "int", 0, 10, "float", 0.0, 32000.0, 12, "float", 0.0, 32000.0, 12, "int", 0, 100 )
 			}
 			
 			ScriptRemote_RegisterClientFunction( "DM_HintCatalog", "int", -100, 101, "entity" )//Audit 2-22-2025
