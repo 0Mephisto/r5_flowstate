@@ -30,6 +30,8 @@ For Players:
 - Fixed scoreboard not toggling in some games such as vamp 1v1s
 - Fixed healing amount preview display 
 - Fixed bug in realistic mode creating inconsistent ordnance state ( unusable arc stars / healing items )
+- Updated rankup movement map 
+- Made 1v1 spawns spaced out in waiting area automatically.
 
 ========================================
 For Hosts:
