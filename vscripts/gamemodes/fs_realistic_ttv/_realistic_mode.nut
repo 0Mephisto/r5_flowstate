@@ -630,5 +630,7 @@ void function __SpawnDummy( vector origin, vector angles, entity player = null, 
 	
 	dummy.EnableNPCFlag( NPC_IGNORE_ALL )
 	wait RandomFloatRange( fWaitMin, fWaitMax )
-	dummy.DisableNPCFlag( NPC_IGNORE_ALL )
+	
+	if( IsValid( dummy ) )
+		dummy.DisableNPCFlag( NPC_IGNORE_ALL )
 }
