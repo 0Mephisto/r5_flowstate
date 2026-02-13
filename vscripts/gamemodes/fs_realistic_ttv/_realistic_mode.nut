@@ -701,7 +701,6 @@ void function DummyPauseAggro()
 	{
 		if( IsValid( dummy ) && IsAlive( dummy ) )
 		{
-			dummy.SetAttackMode( false )
 			dummy.Freeze()
 			dummy.EnableNPCFlag( NPC_IGNORE_ALL | NPC_DISABLE_SENSING )
 		}
