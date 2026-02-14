@@ -112,73 +112,74 @@ Weapons Updates:
 ----------------------------------------
 mp_weapon_semipistol.txt
 ----------------------------------------
-  damage_near_value: 24 → 23
-  damage_far_value: 24 → 23
-  damage_very_far_value: 24 → 23
-  damage_near_value_titanarmor: 24 → 23
-  damage_far_value_titanarmor: 24 → 23
-  damage_very_far_value_titanarmor: 24 → 23
+  - damage_near_value: 24 → 23
+  - damage_far_value: 24 → 23
+  - damage_very_far_value: 24 → 23
+  - damage_near_value_titanarmor: 24 → 23
+  - damage_far_value_titanarmor: 24 → 23
+  - damage_very_far_value_titanarmor: 24 → 23
 
  
 mp_weapon_g2.txt
 ----------------------------------------
-  fx_muzzle_flash_attach_scoped: muzzle_flash → muzzle_flash_scoped
+  - fx_muzzle_flash_attach_scoped: muzzle_flash → muzzle_flash_scoped
 
   
 mp_weapon_shotgun.txt
 ----------------------------------------
-  blast_pattern_default_scale: 1.500000 → 1.400000
-  fire_rate: 2.700000 → 2.800000
+  - blast_pattern_default_scale: 1.500000 → 1.400000
+  - fire_rate: 2.700000 → 2.800000
   
 
 mp_weapon_bow.txt
 ----------------------------------------
-  holster_angles_offset: 90 90 90 → -90 45 -30
-  charge_time: 0.350000 → 0.450000
+  - holster_angles_offset: 90 90 90 → -90 45 -30
+  - charge_time: 0.350000 → 0.450000
   
 
 mp_ability_hunt_mode.txt
 ----------------------------------------
-  toss_time: 1.600000 → 1.200000
-  toss_overhead_time: 1.600000 → 1.200000
-  ammo_clip_size: 240 → 150
-  ammo_min_to_fire: 240 → 150
-  ammo_per_shot: 240 → 150
-  fire_duration: 30.000000 → 25.000000
+  - toss_time: 1.600000 → 1.200000
+  - toss_overhead_time: 1.600000 → 1.200000
+  - ammo_clip_size: 240 → 150
+  - ammo_min_to_fire: 240 → 150
+  - ammo_per_shot: 240 → 150
+  - fire_duration: 30.000000 → 25.000000
   
 
 mp_weapon_doubletake.txt
 ----------------------------------------
-  fire_rate: 1.450000 → 1.300000
+  - fire_rate: 1.450000 → 1.300000
   
 
 mp_weapon_3030.txt
 ----------------------------------------
-  charge_time: 0.350000 → 0.400000
-  charge_additional_damage_multiplier: 0.500000 → 0.400000
-  damage_near_value: 43 → 41
-  damage_far_value: 43 → 41
-  damage_very_far_value: 43 → 41
-  damage_near_value_titanarmor: 43 → 41
-  damage_far_value_titanarmor: 43 → 41
-  damage_very_far_value_titanarmor: 43 → 41
-  viewkick_pattern: 3030 → 3030_repeater
+  - charge_time: 0.350000 → 0.400000
+  - charge_additional_damage_multiplier: 0.500000 → 0.400000
+  - damage_near_value: 43 → 41
+  - damage_far_value: 43 → 41
+  - damage_very_far_value: 43 → 41
+  - damage_near_value_titanarmor: 43 → 41
+  - damage_far_value_titanarmor: 43 → 41
+  - damage_very_far_value_titanarmor: 43 → 41
+  - viewkick_pattern: 3030 → 3030_repeater
   
 
 mp_weapon_mastiff.txt
 ----------------------------------------
 
-  blast_pattern: mastiff_3 → mastiff_4
-  projectiles_per_shot: 6 → 5
-  damage_near_value: 16 → 19
-  damage_far_value: 16 → 19
-  damage_near_value_titanarmor: 16 → 19
-  damage_far_value_titanarmor: 16 → 19
+  - blast_pattern: mastiff_3 → mastiff_4
+  - projectiles_per_shot: 6 → 5
+  - damage_near_value: 16 → 19
+  - damage_far_value: 16 → 19
+  - damage_near_value_titanarmor: 16 → 19
+  - damage_far_value_titanarmor: 16 → 19
  
-( Older )
-- Created the ability to swap playlist gamemode and map on listen/dedi from client command ( + playlist doc )
-- Created robust mini framework for setting up, auto parsing with validation, for creating map/playlist/gamemode rotation configurations from playlists file.
-- Created player timeout system with settings in playlist
+# Older Changes
+
+	- Created the ability to swap playlist gamemode and map on listen/dedi from client command ( + playlist doc )
+	- Created robust mini framework for setting up, auto parsing with validation, for creating map/playlist/gamemode rotation configurations from playlists file.
+	- Created player timeout system with settings in playlist
 
 
 # Credits:
