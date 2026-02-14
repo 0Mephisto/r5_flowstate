@@ -36,6 +36,7 @@ global function WorldAssets_WaitForChannelCreation			// ( entity player, string 
 global function WorldAssets_IsChannelCreatedForPlayer		// ( entity player, string groupName )
 global function WorldAssets_WasAudioPlayedLast				// ( entity player, string assetName = "", string assetRef = "", string groupName = "", int assetId = -1 )
 global function WorldAssets_GetLastPlayedAudio				// ( entity player, string groupName = "" )
+global function WorldAssets_GetAudioHistoryForPlayerForAsset// ( entity player, string assetName = "", string assetRef = "", int assetId = -1 )
 
 global const MAX_BIK_CHANNELS 			= 10 //this must not surpass engine internals.
 global const CURRENT_RESERVED_CHANNELS 	= 5 //this is the limit we start from. (todo: disable systems where posible)
@@ -1050,7 +1051,7 @@ void function UpdateAudioHistory( entity player, int assetId, int groupId )
 	#if DEVELOPER && DEBUG_WORLD_ASSET
 		printf
 		(
-			"Setting audio history for assetId %d, groupId %d",
+			"[WorldAssets] Setting audio history for assetId %d, groupId %d",
 			assetId, 
 			groupId
 		)
@@ -1077,7 +1078,7 @@ bool function WorldAssets_WasAudioPlayedLast( entity player, string assetName = 
 	}
 	else if( assetId == -1 )
 	{
-		mAssert( 0, "Must provide one of: assetName, assetref, or assetId in a call to %s()", FUNC_NAME() )
+		mAssert( 0, "[WorldAssets] Must provide one of: assetName, assetref, or assetId in a call to %s()", FUNC_NAME() )
 	}
 	
 	AudioHistory lastPlayed = WorldAssets_GetLastPlayedAudio( player, groupName )
@@ -1109,10 +1110,10 @@ AudioHistory function WorldAssets_GetLastPlayedAudio( entity player, string grou
 int function SortAudioHistory( AudioHistory a, AudioHistory b )
 {
 	if( a.lastPlayTime > b.lastPlayTime )
-		return -1
+		return 1
 		
 	if( a.lastPlayTime < b.lastPlayTime )
-		return 1
+		return -1
 
 	return 0
 }
@@ -1151,6 +1152,25 @@ float function WorldAssets_GetLastPlayTime( entity player, int assetId )
 {
 	AudioHistory history = GetAssetAudioHistoryForPlayer( player, assetId )
 	return history.lastPlayTime
+}
+
+AudioHistory function WorldAssets_GetAudioHistoryForPlayerForAsset( entity player, string assetName = "", string assetRef = "", int assetId = -1 )
+{
+	if( assetName != "" )
+	{
+		assetRef = WorldAssets_GetAssetRefByName( assetName )
+		assetId = WorldDrawAsset_AssetRefToID( assetRef )
+	}
+	else if( assetRef != "" )
+	{
+		assetId = WorldDrawAsset_AssetRefToID( assetRef )
+	}
+	else if( assetId == -1 )
+	{
+		mAssert( 0, "[WorldAssets] Must provide one of: assetName, assetref, or assetId in a call to %s()", FUNC_NAME() )
+	}
+	
+	return GetAssetAudioHistoryForPlayer( player, assetId )
 }
 
 void function __AudioQueue( entity player, AssetData baseBannerVideo, AssetGroupData groupData )
@@ -1205,7 +1225,7 @@ void function __AudioQueue( entity player, AssetData baseBannerVideo, AssetGroup
 			string signal = GetGroupSignal( "AudioQueue_Dequeue", groupData.groupId )
 			if( !WorldAssets_DoesSignalExist( signal ) )
 			{
-				sqwarning( "Signal \"%s\" does not exist, ending audio thread for player: %s.", signal, string( player ) )
+				sqwarning( "[WorldAssets] Signal \"%s\" does not exist, ending audio thread for player: %s.", signal, string( player ) )
 				return
 			}
 				
@@ -1226,7 +1246,7 @@ void function __AudioQueue( entity player, AssetData baseBannerVideo, AssetGroup
 		AssetData banner = __GetBannerDataForID( groupData.groupBanners, audioAssetId )	
 		if( !banner.isValid )
 		{
-			Warning( format( "Audio AssetId [%d] does not exist in group [%d]", audioAssetId, groupData.groupId ) )
+			Warning( format( "[WorldAssets] Audio AssetId [%d] does not exist in group [%d]", audioAssetId, groupData.groupId ) )
 			continue
 		}
 		
@@ -1368,7 +1388,7 @@ int function AudioQueue_Dequeue( entity player, int groupId )
 {
 	#if DEVELOPER
 		if( player.p.audioQueue[ groupId ].len() == 0 )
-			mAssert( 0, "Tried to pop audio queue with no items in it." )
+			mAssert( 0, "[WorldAssets] Tried to pop audio queue with no items in it." )
 	#endif 
 	
 	return player.p.audioQueue[ groupId ].remove( 0 )
@@ -1681,7 +1701,13 @@ void function __Singlethread( entity player, AssetGroupData groupData )
 					"groupData.alpha", groupData.alpha, "\n",
 					"groupData.isVisible", groupData.isVisible, "\n",
 					"groupData.groupId", groupData.groupId, "\n",
-					"groupData.isAudioQueue", groupData.isAudioQueue, "\n"
+					"groupData.intermediateTime", groupData.intermediateTime, "\n",
+					"groupData.fadeSpeed", groupData.fadeSpeed, "\n",
+					"groupData.startDelay", groupData.startDelay, "\n",
+					"groupData.cycleTime", groupData.cycleTime, "\n",
+					"groupData.isAudioQueue", groupData.isAudioQueue, "\n",
+					"groupData.interupt", groupData.interupt, "\n",
+					"groupData.bikCount", groupData.bikCount, "\n"
 				)
 			#endif
 		}
@@ -1727,7 +1753,7 @@ void function __Singlethread( entity player, AssetGroupData groupData )
 			
 			#if DEVELOPER && DEBUG_WORLD_ASSET
 				printt
-				( 
+				(
 					"clientRUIID", clientRUIID, "\n",
 					"player", player, "\n",
 					"baseBannerVideo.assetResourceRef", baseBannerVideo.assetResourceRef, "\n",
@@ -1739,7 +1765,13 @@ void function __Singlethread( entity player, AssetGroupData groupData )
 					"groupData.alpha", groupData.alpha, "\n",
 					"groupData.isVisible", groupData.isVisible, "\n",
 					"groupData.groupId", groupData.groupId, "\n",
-					"groupData.isAudioQueue", groupData.isAudioQueue, "\n"
+					"groupData.intermediateTime", groupData.intermediateTime, "\n",
+					"groupData.fadeSpeed", groupData.fadeSpeed, "\n",
+					"groupData.startDelay", groupData.startDelay, "\n",
+					"groupData.cycleTime", groupData.cycleTime, "\n",
+					"groupData.isAudioQueue", groupData.isAudioQueue, "\n",
+					"groupData.interupt", groupData.interupt, "\n",
+					"groupData.bikCount", groupData.bikCount, "\n"
 				)
 			#endif
 		}

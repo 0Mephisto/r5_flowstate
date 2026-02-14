@@ -165,6 +165,15 @@ void function CodeCallback_DamagePlayerOrNPC( entity ent, var damageInfo )
 			}
 		}
 	}
+	
+	if( DamageInfo_GetCustomDamageType( damageInfo ) & DF_MELEE )
+	{
+		foreach( callbackFunc in ent.e.onEntMeleedCallbacks )
+			callbackFunc( attacker, ent, damageInfo )
+	}
+	
+	if( DamageInfo_GetDamage( damageInfo ) == 0 )
+		return
 
 	// if inflictor is trigger_hurt, set the identifier according to ent keyvalue
 	if ( DamageInfo_GetDamageSourceIdentifier( damageInfo ) == eDamageSourceId.invalid

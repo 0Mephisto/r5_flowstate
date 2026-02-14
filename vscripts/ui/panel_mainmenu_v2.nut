@@ -96,7 +96,18 @@ void function OnMainMenuPanel_Show( var panel )
 
 	RuiSetGameTime( statusDetailsRui, "initTime", Time() )
 	RuiSetString( statusRui, "prompt", Localize("#MAINMENU_CONTINUE") )
-	RuiSetBool( statusRui, "showPrompt", true )
-	RuiSetBool( statusRui, "showSpinner", false )
+	RuiSetBool( statusRui, "showPrompt", false )
+	RuiSetBool( statusRui, "showSpinner", true )
+	Hud_SetVisible( file.launchButton, false )
+	
+	thread WaitToShowMainMenu()
+}
+
+void function WaitToShowMainMenu()
+{
+	while( uiGlobal.bIsAutoLoadingLobby ) //(mk): when leaving a match via menu, scripts will attempt to auto load lobby in listen server. Wait for that state to prevent a crash from attempting to launch two servers on different threads
+		WaitFrame()
+		
+	ShowSpinner( false )
 	Hud_SetVisible( file.launchButton, true )
 }

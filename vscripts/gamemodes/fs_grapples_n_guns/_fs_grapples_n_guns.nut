@@ -1,11 +1,11 @@
-global function GrapplesNGunsInit
+global function GrapplesNGunsInit																			//mkos
 
-struct
-{
-	
-} file
+global function GrapplesNGuns_ReturnGrapples
+global function GrapplesNGuns_ReturnHeadshots
+global function GrapplesNGuns_ReturnMelees
+global function GrapplesNGuns_ReturnWins
 
-
+const float UNIQUE_AUDIO_PLAYTIME_GRACE = 5.0
 const table<string, string> GRAPPLES_N_GUNS_PLAYER_SETTINGS = 
 {
 	["acceleration"] = "550.0",
@@ -39,6 +39,42 @@ const table<string, string> GRAPPLES_N_GUNS_PLAYER_SETTINGS =
 	["antiMultiJumpHeightFrac"] = "1.0"
 }
 
+enum eSoundCategories
+{
+	ANY,
+	ATTACH,
+	HEADSHOT,
+	MELEE,
+	WINNER,
+	LOSS,
+	INTRO
+}
+
+struct GrapplesNGunsStats
+{
+	int grapples 
+	int melees 
+	int headshots
+	int wins
+}
+
+struct
+{
+	array<string> headshotAudio
+	array<string> introAudio
+	array<string> winnerAudio
+	array<string> lossAudio
+	array<string> grappleAudio
+	array<string> meleeAudio
+	
+	table<string,GrapplesNGunsStats> playerStats
+	
+} file
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////			INIT				////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////
+
 void function GrapplesNGunsInit()
 {		
 	if( GetCurrentPlaylistVarBool( "use_custom_audio", true ) )
@@ -48,12 +84,14 @@ void function GrapplesNGunsInit()
 		WorldAssets_Init() //init early before callbacks
 
 		AddCallback_OnClientConnected( OnConnected )
-		//AddFSCallback_ShouldTimerEnd( TimerFunction ) //not used yet.
+		SetFSCallback_ShouldTimerEnd( TimerFunction )
 		AddCallback_OnTdmStateEnter_InProgress( OnGamePlaying )
 		AddCallback_OnTdmStateEnter_EndGame( OnGameEnd )
 		AddHeadshotCallback( "player", OnHeadshot )
 	}
 	
+	AddCallback_OnClientConnected( SetupStatsForPlayer )
+	Tracker_AddDestroyStatCallback( ResetStatsForAllPlayers )
 	AddFSCallback_OnRespawned( OnRespawned )
 }
 
@@ -76,19 +114,48 @@ void function RegisterGroupAssets()
 {
 	array<string> audioAssets = WorldDrawAsset_GetAssetArrayByCategory( "grapples_n_guns" )
 	foreach( assetRef in audioAssets )
+	{
 		WorldAssets_GroupAppendAsset( "grapples_n_guns_audio", assetRef )
+		
+		if( assetRef.find( "_hs" ) != -1 )
+			file.headshotAudio.append( assetRef )
+			
+		if( assetRef.find( "_attach" ) != -1 )
+			file.grappleAudio.append( assetRef )
+			
+		if( assetRef.find( "_melee" ) != -1 )
+			file.meleeAudio.append( assetRef )
+	}
 		
 	array<string> audioAnnounceAssets = WorldDrawAsset_GetAssetArrayByCategory( "grapples_n_guns_announce" )
 	foreach( assetRef in audioAnnounceAssets )
+	{
 		WorldAssets_GroupAppendAsset( "grapples_n_guns_audio_announce", assetRef )
+		
+		if( assetRef.find( "_intro" ) != -1 )
+			file.introAudio.append( assetRef )
+			
+		if( assetRef.find( "_win" ) != -1 )
+			file.winnerAudio.append( assetRef )
+			
+		if( assetRef.find( "_loss" ) != -1 )
+			file.lossAudio.append( assetRef )
+	}
 }
 
-void function OnConnected( entity player )
+////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////			GAMESTATE				////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+void function OnConnected( entity player ) //only runs if audio enabled.
 {
 	if( GetTDMState() != eTDMState.IN_PROGRESS )
 		return 
-		
-	thread
+	
+	AddEntityCallback_OnGrappled( player, OnGrappled )
+	AddEntityCallback_OnMeleed( player, OnMeleed )
+	
+	thread //must wait for players channels to be created for audio
 	(
 		void function() : ( player )
 		{
@@ -98,56 +165,35 @@ void function OnConnected( entity player )
 			player.EndSignal( "OnDestroy" )
 			player.WaitSignal( "FSOnRespawned" )
 			
-			if( GetTDMState() != eTDMState.IN_PROGRESS )
+			if( GetTDMState() != eTDMState.IN_PROGRESS ) //already handled by OnGamePlaying
 				return
 		
 			WorldAssets_WaitForChannelCreation( player, "grapples_n_guns_audio_announce" )	
-			WorldAssets_PlayAudioName( player, INTRO_AUDIO.getrandom(), "grapples_n_guns_audio_announce" )
+			WorldAssets_PlayAudio( player, file.introAudio.getrandom(), "grapples_n_guns_audio_announce" )
 		}
 	)()
 }
 
-const array INTRO_AUDIO =
-[
-	"intro1",
-	"intro2",
-	"intro3"
-]
-
 void function OnGamePlaying()
 {
-	Announce( INTRO_AUDIO.getrandom() )
+	AnnounceToPlayers( file.introAudio.getrandom(), GetPlayerArray() )
 }
-
-const array OUTRO_AUDIO =
-[
-	"outro1",
-	"outro2",
-	"outro3",
-]
 
 void function OnGameEnd()
 {
-	Announce( OUTRO_AUDIO.getrandom() )
-}
-
-void function Announce( string audioName )
-{
-	foreach( player in GetPlayerArray() )
-		WorldAssets_PlayAudioName( player, audioName, "grapples_n_guns_audio_announce" )
-}
-
-const table< int, string > EVENT_ANNOUNCE_TIMES =
-{
-	[ 0 ] = "proof of concept"
-}
-
-bool function TimerFunction( int timeRemaining )
-{
-	if( ( timeRemaining in EVENT_ANNOUNCE_TIMES ) )
-		Announce( EVENT_ANNOUNCE_TIMES[ timeRemaining ] )
+	entity winner = GetBestPlayer()
+	array<entity> players = GetPlayerArray()
 	
-	return false
+	if( IsValid( winner ) )
+	{
+		players.fastremovebyvalue( winner )
+		
+		GetStats( winner.p.UID ).wins++
+		AnnounceToPlayers( file.winnerAudio.getrandom(), [ winner ] )
+	}
+	
+	ArrayRemoveInvalid( players )
+	AnnounceToPlayers( file.lossAudio.getrandom(), players )
 }
 
 void function OnRespawned( entity player )
@@ -176,15 +222,6 @@ void function OnRespawned( entity player )
 	)()
 }
 
-const array< string > HEADSHOT_SOUND_NAMES =
-[
-	"cash",
-	"coin",
-	"meow",
-	"uwu",
-	"terminated"
-]
-
 void function OnHeadshot( entity player, var damageInfo )
 {
 	entity attacker = InflictorOwner( DamageInfo_GetInflictor( damageInfo ) )	
@@ -192,20 +229,148 @@ void function OnHeadshot( entity player, var damageInfo )
 	if( !attacker.IsPlayer() )
 		return
 		
-	if( DamageInfo_GetCustomDamageType( damageInfo ) & DF_HEADSHOT )
+	GetStats( attacker.p.UID ).headshots++
+	PlayUniqueRandomSoundForPlayers( [ attacker ], file.headshotAudio )
+}
+
+void function OnMeleed( entity attacker, entity ent, var damageInfo )
+{
+	if( !attacker.IsPlayer() )
+		return
+
+	GetStats( attacker.p.UID ).melees++
+	PlayUniqueRandomSoundForPlayers( [ attacker ], file.meleeAudio )
+}
+
+void function OnGrappled( entity grapplePlayer, entity hitent, vector hitpos, vector hitNormal )
+{
+	if( IsValid( grapplePlayer ) && grapplePlayer.IsPlayer() && hitent.IsPlayer() )
 	{
-		if( HEADSHOT_SOUND_NAMES.len() > 1 )
-			PlayUniqueRandomHeadshotSound( attacker )
-		else 
-			WorldAssets_PlayAudioName( attacker, HEADSHOT_SOUND_NAMES.getrandom() )	
+		GetStats( grapplePlayer.p.UID ).grapples++
+		PlayUniqueRandomSoundForPlayers( [ grapplePlayer, hitent ], file.grappleAudio, eSoundCategories.ATTACH )
 	}
 }
 
-void function PlayUniqueRandomHeadshotSound( entity player )
+////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////			AUDIO				////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+void function AnnounceToPlayers( string audioRef, array<entity> players )
 {
-	array<string> headshotSounds = HEADSHOT_SOUND_NAMES
-	string lastPlayedName = WorldAssets_GetLastPlayedAudio( player ).assetName
+	foreach( player in players )
+		WorldAssets_PlayAudio( player, audioRef, "grapples_n_guns_audio_announce" )
+}
+
+const table< int, string > EVENT_ANNOUNCE_TIMES =
+{
+	[ 20 ] = "media/playlists/grapples_n_guns/grapples_countdown_20sec.bik",
+	[ 60 ] = "media/playlists/grapples_n_guns/grapples_countdown_1min.bik"
+}
+
+bool function TimerFunction( int timeRemaining )
+{
+	if( ( timeRemaining in EVENT_ANNOUNCE_TIMES ) )
+		AnnounceToPlayers( EVENT_ANNOUNCE_TIMES[ timeRemaining ], GetPlayerArray() )
 	
-	headshotSounds.fastremovebyvalue( lastPlayedName )
-	WorldAssets_PlayAudioName( player, headshotSounds.getrandom() )
+	return false// returning true would end the game.
+}
+
+void function PlayUniqueRandomSoundForPlayers( array<entity> players, array<string> soundArray, int eSoundCategory = 0, string audioGroup = "grapples_n_guns_audio" )
+{
+	array<string> uniqueSounds = clone soundArray
+	array<string> lastPlayedRefs
+	
+	foreach( player in players )
+	{
+		#if DEVELOPER
+			printf
+			(
+				"[GrapplesNGuns] Last played audio for player %s was \"%s\"",
+				player.GetPlayerName(),
+				WorldAssets_GetLastPlayedAudio( player, audioGroup ).assetRef
+			)
+		#endif 
+		
+		lastPlayedRefs.append( WorldAssets_GetLastPlayedAudio( player, audioGroup ).assetRef )
+				
+		if( eSoundCategory == eSoundCategories.ATTACH )
+		{
+			float lastPlayedComeHereSound = WorldAssets_GetAudioHistoryForPlayerForAsset( player, "attach_come_here" ).lastPlayTime
+			float lastPlayedGetOverHereSound = WorldAssets_GetAudioHistoryForPlayerForAsset( player, "attach_get_over" ).lastPlayTime
+			float currentTime = Time()
+			
+			if( currentTime - lastPlayedComeHereSound < UNIQUE_AUDIO_PLAYTIME_GRACE )
+				lastPlayedRefs.append( "media/playlists/grapples_n_guns/grapples_attach_come_here.bik" )
+			
+			if( currentTime - lastPlayedGetOverHereSound < UNIQUE_AUDIO_PLAYTIME_GRACE )
+				lastPlayedRefs.append( "media/playlists/grapples_n_guns/grapples_attach_get_over.bik" )
+		}
+	}
+	
+	lastPlayedRefs = ArrayUniqueString( lastPlayedRefs )
+	
+	foreach( lastPlayedRef in lastPlayedRefs )
+		uniqueSounds.fastremovebyvalue( lastPlayedRef )
+	
+	foreach( player in players )
+	{
+		print_string_array( uniqueSounds )
+		
+		if( uniqueSounds.len() )
+			WorldAssets_PlayAudio( player, uniqueSounds.getrandom(), audioGroup )
+		else
+			WorldAssets_PlayAudio( player, soundArray.getrandom(), audioGroup )
+	}
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////			STATS				////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+void function SetupStatsForPlayer( entity player )
+{
+	string uid = player.p.UID
+	if( uid in file.playerStats )
+		return 
+		
+	GrapplesNGunsStats statsTemplate
+	file.playerStats[ uid ] <- statsTemplate
+}
+
+void function ResetStatsForAllPlayers()
+{
+	foreach( string uid, GrapplesNGunsStats stats in file.playerStats )
+	{
+		GrapplesNGunsStats newStats
+		file.playerStats[ uid ] = newStats
+	}
+}
+
+GrapplesNGunsStats function GetStats( string uid )
+{
+	if( uid in file.playerStats )
+		return file.playerStats[ uid ]
+	
+	GrapplesNGunsStats emptyStats //should never be hit
+	return emptyStats
+}
+
+var function GrapplesNGuns_ReturnGrapples( string uid )
+{
+	return GetStats( uid ).grapples
+}
+
+var function GrapplesNGuns_ReturnHeadshots( string uid )
+{
+	return GetStats( uid ).headshots
+}
+
+var function GrapplesNGuns_ReturnMelees( string uid )
+{
+	return GetStats( uid ).melees
+}
+
+var function GrapplesNGuns_ReturnWins( string uid )
+{
+	return GetStats( uid ).wins
 }

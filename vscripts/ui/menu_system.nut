@@ -87,6 +87,13 @@ void function InitSystemMenu( var newMenuArg ) //
 			file.motdText = ""
 		}
 	)
+	
+	AddUICallback_LevelShutdown( SetShutdownTime )
+}
+
+void function SetShutdownTime()
+{
+	uiGlobal.fShutdownTime = Time()
 }
 
 void function InitSystemPanelMain( var panel )
@@ -553,10 +560,12 @@ void function SetButtonData( var panel, int buttonIndex, ButtonData buttonData )
 
 void function OnSystemMenu_Close()
 {
-	if( ISAIMTRAINER && IsConnected() && Playlist() == ePlaylists.fs_aimtrainer ){
-		CloseAllMenus()
-		RunClientScript("ServerCallback_OpenFRChallengesMainMenu", PlayerKillsForChallengesUI)
-	}
+	// if( ISAIMTRAINER && IsConnected() && Playlist() == ePlaylists.fs_aimtrainer )
+	// {
+		// printt( "uiGlobal.bIsLeavingMatch is:", uiGlobal.bIsLeavingMatch )
+		// CloseAllMenus()
+		// RunClientScript( "ServerCallback_OpenFRChallengesMainMenu", PlayerKillsForChallengesUI )
+	// }
 }
 
 
@@ -564,10 +573,12 @@ void function OnSystemMenu_NavigateBack()
 {
 	Assert( GetActiveMenu() == file.menu )
 	CloseActiveMenu()
-	if( ISAIMTRAINER && IsConnected() && Playlist() == ePlaylists.fs_aimtrainer ){
-		CloseAllMenus()
-		RunClientScript("ServerCallback_OpenFRChallengesMainMenu", PlayerKillsForChallengesUI)
-	}
+	
+	// if( ISAIMTRAINER && IsConnected() && Playlist() == ePlaylists.fs_aimtrainer )
+	// {
+		// CloseAllMenus()
+		// RunClientScript("ServerCallback_OpenFRChallengesMainMenu", PlayerKillsForChallengesUI )
+	// }
 }
 
 

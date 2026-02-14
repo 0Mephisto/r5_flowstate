@@ -156,6 +156,7 @@ global function AddCallback_OnBatchStatsLoaded
 global function RemoveCallback_OnBatchStatsLoaded
 global function AddCallback_PlayerDataFullyLoaded
 global function AddCallback_PlayerData
+global function Tracker_AddDestroyStatCallback
 
 global function Tracker_IsBatchStatsLoaded
 global function Tracker_GetCurrentEventByPlayerHandle_expensive
@@ -378,11 +379,12 @@ struct //Todo: move appropriate to tracker.var
 	table <string,int> Global_R5RDEV_IntSettings
 	table <string,bool> Global_R5RDEV_BoolSettings
 	
-	table<string, array<void functionref( entity player, string data )> > PlayerSettingsMap = {}
-	table<string, table<string,string> > PlayerData = {}// playerUID = setting,value
-	array<void functionref( entity player ) > syncDataFullyLoadedCallbacks = []
-	table<string, array< void functionref(entity player) > > registeredStatCallbackFuncs = {}
-	array<void functionref() > batchStatsLoadedCallbacks = []
+	table<string, array<void functionref( entity player, string data )> > PlayerSettingsMap
+	table<string, table<string,string> > PlayerData// playerUID = setting,value
+	array<void functionref( entity player ) > syncDataFullyLoadedCallbacks
+	table<string, array< void functionref(entity player) > > registeredStatCallbackFuncs
+	array<void functionref() > batchStatsLoadedCallbacks
+	array<void functionref() > destroyStatCallbacks
 	array<string> statsLocalAllowed
 	
 	array<string> requestedStatsArray
@@ -1216,6 +1218,12 @@ void function Tracker_RegisterStat( string statname, void functionref( entity ) 
 		file.statsLocalAllowed.append( statname )
 }
 
+void function Tracker_AddDestroyStatCallback( void functionref() callbackFunc )
+{
+	mAssert( !file.destroyStatCallbacks.contains( callbackFunc ), "Tried to add callback %s with %s but was already added", string( callbackFunc ), FUNC_NAME() )
+	file.destroyStatCallbacks.append( callbackFunc )	
+}
+
 array<string> function BuildRequestedStatsArray()
 {
 	array<string> statKeysArray
@@ -1473,6 +1481,9 @@ void function __DestroyStats()
 		int mID = InitializePlayerMetricsStructForPlayer( player )
 		__GetPlayerMetrics( mID ).ent = player
 	}
+	
+	foreach( callbackFunc in file.destroyStatCallbacks )
+		callbackFunc()
 }
 
 void function __CONTROLLED_LogInit()

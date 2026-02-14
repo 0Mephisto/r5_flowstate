@@ -3150,7 +3150,7 @@ playlists
 				disable_crypto_scan								1
 				
 				// 0 disables players colliding with each other.
-				player_collision_enabled						0
+				player_collision_enabled						0 
 			}
 			gamemodes { survival { maps {
 				mp_rr_desertlands_64k_x_64k						1
@@ -3712,10 +3712,10 @@ playlists
 				r5reloaded_AnimatedCharacterSelect				0
 				flowstate_spectator_team_only					0
 
-				survival_server_restart_after_end				0
-				enable_bullet_slow					1
+				survival_server_restart_after_end				1
+				enable_bullet_slow								1
 				
-				activate_passive_abilities				1
+				activate_passive_abilities						1
 				flowstate_mod_active							0
 				enable_global_chat								0
 

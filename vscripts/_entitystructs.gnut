@@ -541,6 +541,8 @@ global struct ServerEntityStruct
 	bool isBeingDataknifed
 	
 	int stateFlags
+	
+	array< void functionref( entity, entity, var ) > onEntMeleedCallbacks
 }
 
 global struct MeritData

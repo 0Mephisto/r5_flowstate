@@ -80,7 +80,7 @@ global function IsHeirloomRegistered
 //Beginning of refactor( supposed to be for next, next release.. )
 global function AddCallback_OnTdmStateEnter_InProgress
 global function AddCallback_OnTdmStateEnter_EndGame
-global function AddFSCallback_ShouldTimerEnd
+global function SetFSCallback_ShouldTimerEnd
 global function AddFSCallback_OnRespawned
 
 global function Message_New //deprecated, use LocalEventMsg() ~mkos
@@ -310,7 +310,7 @@ void function InitializePlaylistSettings()
 	flowstateSettings.flowstate_givecharms_weapons			= GetCurrentPlaylistVarBool( "flowstate_givecharms_weapons", false )
 }
 
-void function AddFSCallback_ShouldTimerEnd( bool functionref( int ) callbackFunc )
+void function SetFSCallback_ShouldTimerEnd( bool functionref( int ) callbackFunc )
 {
 	if( file.ShouldTimerEnd != null )
 		mAssert( 0, "Tried to add callback %s with %s but it was already set as %s", string( callbackFunc ), FUNC_NAME(), string( file.ShouldTimerEnd ) )
@@ -545,6 +545,18 @@ void function _CustomTDM_Init()
 	
 	if( is1v1EnabledAndAllowed() )
 		Gamemode1v1_Init( MapName() )
+		
+	if( flowstateSettings.hackersVsPros )
+		SetFSCallback_ShouldTimerEnd( HackerVsProsTimerFunc )
+
+	if( flowstateSettings.enable_oddball_gamemode )
+	{
+		SetFSCallback_ShouldTimerEnd( HaloOddballTimerFunc )
+		AddCallback_OnTdmStateEnter_EndGame( OnRoundEndOddball )
+	}
+		
+	if( flowstateSettings.is_halo_gamemode )
+		SetFSCallback_ShouldTimerEnd( HaloPlayAnnounce )
 }
 
 void function __OnEntitiesDidLoadCTF()
@@ -3107,7 +3119,16 @@ void function SimpleChampionUI()
 	}
 	else
 	{
-		file.selectedLocation = file.locationSettings[ FS_DM.mappicked ]
+		if( !file.locationSettings.len() )
+		{
+			#if DEVELOPER 
+				Warning( "No locations found in file.locationSettings, setting VOTING_PHASE_ENABLE to false" )
+			#endif
+			
+			VOTING_PHASE_ENABLE = false
+		}
+		else
+			file.selectedLocation = file.locationSettings[ FS_DM.mappicked ]
 	}
 
 	file.thisroundDroppodSpawns = GetNewFFADropShipLocations( file.selectedLocation.name, GetMapName() )
@@ -3670,9 +3691,7 @@ void function SimpleChampionUI()
 	g_fCurrentRoundEndTime = Time() + FlowState_RoundTime() //set global for server
 	
 	if( flowstateSettings.EndlessFFAorTDM )
-	{
 		WaitForever()
-	}
 
 	if ( FlowState_Timer() )
 	{
@@ -3710,67 +3729,13 @@ void function SimpleChampionUI()
 		////////////////////////////////
 		
 		bool hasTimerCallback = file.ShouldTimerEnd != null
-		while( Time() <= g_fCurrentRoundEndTime && file.tdmState == eTDMState.IN_PROGRESS ) //Todo(mk): Execute callbacks for gamemode and add via AddFSCallback_ShouldTimerEnd( int timeRemaining, bool functionref() condFunc ) //done
+		while( Time() <= g_fCurrentRoundEndTime && file.tdmState == eTDMState.IN_PROGRESS )
 		{
-			if( hasTimerCallback && file.ShouldTimerEnd( ( g_fCurrentRoundEndTime - Time() ).tointeger() ) )
+			//(mk): add via SetFSCallback_ShouldTimerEnd( int timeRemaining, bool functionref() condFunc )
+			if( hasTimerCallback && file.ShouldTimerEnd( floor( g_fCurrentRoundEndTime - Time() ).tointeger() ) )
 				break
-		
-			if( flowstateSettings.hackersVsPros )
-			{
-				foreach(player in GetPlayerArray())
-				{
-					if ( !IsValid( player ) ) continue
-					
-					if(player.GetPlayerGameStat( PGS_KILLS ) >= HACKERS_VS_PRO_MAX_KILLS )
-					{
-						SetTdmStateToNextRound()
-						break
-					}
-				}
-			}
-
-			if( flowstateSettings.enable_oddball_gamemode )
-			{
-				table< int,int > totalTeamsScore
-				
-				foreach(player in GetPlayerArray())
-				{
-					if ( !IsValid( player ) ) continue
-
-					if( !( player.GetTeam() in totalTeamsScore ) )
-					{
-						totalTeamsScore[ player.GetTeam() ] <- player.GetPlayerNetInt( "oddball_ballHeldTime" )
-					} else
-					{
-						totalTeamsScore[ player.GetTeam() ] += player.GetPlayerNetInt( "oddball_ballHeldTime" )
-					}
-				}
-
-				foreach( team, score in totalTeamsScore )
-				{
-					if( score >= ODDBALL_POINTS_TO_WIN )
-					{
-						//set team as winner, show ui screen
-						if( flowstateSettings.enable_oddball_gamemode && IsValid( GetBallCarrier() ) && IsAlive( GetBallCarrier() ) )
-						{
-							ClearBallCarrierPlayerSetup( GetBallCarrier() )
-							SetEmptyBallInBallSpawner()
-							SetBallCarrier( null )
-						}
-
-						SetTdmStateToNextRound()
-
-						file.winnerTeam = team
-						break
-					}
-				}
-			}
 			
-			if( flowstateSettings.is_halo_gamemode )
-			{
-				HaloPlayAnnounce( g_fCurrentRoundEndTime )
-			}
-			else 
+			if( !flowstateSettings.is_halo_gamemode ) //Todo(mk): change to if ( flowstateSettings.bEnablePlayAnnounce ) playlist var
 			{
 				if( Time() == g_fCurrentRoundEndTime - 60 )
 					PlayAnnounce( "diag_ap_aiNotify_circleMoves60sec_01" )
@@ -3788,9 +3753,7 @@ void function SimpleChampionUI()
 	else if ( !FlowState_Timer() )
 	{
 		while( Time() <= g_fCurrentRoundEndTime )
-		{
 			wait 1
-		}
 	}
 	
 	////////////////////////////////
@@ -3798,61 +3761,6 @@ void function SimpleChampionUI()
 	////////////////////////////////
 	
 	RunRoundEndCallbacks()
-
-	if( flowstateSettings.enable_oddball_gamemode && file.winnerTeam == -1 )
-	{
-		table< int,int > totalTeamsScore
-		
-		foreach(player in GetPlayerArray())
-		{
-			if ( !IsValid( player ) ) continue
-
-			if( !( player.GetTeam() in totalTeamsScore ) )
-			{
-				totalTeamsScore[ player.GetTeam() ] <- player.GetPlayerNetInt( "oddball_ballHeldTime" )
-			} else
-			{
-				totalTeamsScore[ player.GetTeam() ] += player.GetPlayerNetInt( "oddball_ballHeldTime" )
-			}
-		}
-		
-		int winnerTeam = -1
-		int lastScore = 0
-		bool isTie = false
-
-		foreach( team, score in totalTeamsScore )
-		{
-			if( score > lastScore )
-			{
-				winnerTeam = team
-				lastScore = score
-			}
-		}
-
-		foreach( team, score in totalTeamsScore )
-		{
-			if( team == winnerTeam )
-				continue
-			
-			if( lastScore == score )
-			{
-				isTie = true
-			}
-		}
-
-		if( isTie )
-			winnerTeam = -2
-
-		file.winnerTeam = winnerTeam
-
-		if( IsValid( GetBallCarrier() ) && IsAlive( GetBallCarrier() ) )
-		{
-			ClearBallCarrierPlayerSetup( GetBallCarrier() )
-			SetEmptyBallInBallSpawner()
-			SetBallCarrier( null )
-		}
-	}
-	
 	SetTdmStateToNextRound()
 	
 	if( isScenariosMode() )
@@ -4053,7 +3961,8 @@ void function SimpleChampionUI()
 	{
 		thread function() : ()
 		{
-			if(file.locationSettings.len() < NUMBER_OF_MAP_SLOTS_FSDM) 
+			int locationSettingsLen = file.locationSettings.len()
+			if( locationSettingsLen < NUMBER_OF_MAP_SLOTS_FSDM || locationSettingsLen == 0 ) 
 			{
 				VOTING_PHASE_ENABLE = false
 				return
@@ -7407,11 +7316,8 @@ void function HaloAssets()
 	AddCallback_OnPlayerKilled( Callback_HaloOnPlayerKilled )
 }
 
-void function HaloPlayAnnounce( float roundEndTime )
+bool function HaloPlayAnnounce( int targetTime )
 {
-	int currentTime = int( floor( Time() ) )
-	int targetTime = int( floor( roundEndTime - currentTime ) )
-	
 	const table< int, string > eventTimes =
 	{
 		[ 60 ] 	= "media/halo/one_min_remaining.bik",
@@ -7427,6 +7333,8 @@ void function HaloPlayAnnounce( float roundEndTime )
 		foreach( entity player in GetPlayerArray() )
 			WorldAssets_PlayAudio( player, eventTimes[ targetTime ] )
 	}
+	
+	return false
 }
 
 void function Callback_HaloOnPlayerKilled( entity victim, entity attacker, var damageInfo )
@@ -7679,4 +7587,116 @@ void function FS_GiveRandomMelee( entity player, bool is1v1 = false )
 	player.TakeOffhandWeapon( OFFHAND_MELEE )	
 	player.GiveWeapon( randomMelee.primary, WEAPON_INVENTORY_SLOT_PRIMARY_2, [] )
 	player.GiveOffhandWeapon( randomMelee.melee, OFFHAND_MELEE, [] )
+}
+
+bool function HackerVsProsTimerFunc( int timeRemaining )
+{
+	foreach( player in GetPlayerArray() )
+	{
+		if ( !IsValid( player ) ) 
+			continue
+		
+		if( player.GetPlayerGameStat( PGS_KILLS ) >= HACKERS_VS_PRO_MAX_KILLS )
+		{
+			SetTdmStateToNextRound()
+			return true
+		}
+	}
+	
+	return false
+}
+	
+bool function HaloOddballTimerFunc( int timeRemaining )
+{
+	table< int,int > totalTeamsScore
+				
+	foreach( player in GetPlayerArray() )
+	{
+		if ( !IsValid( player ) ) 
+			continue
+
+		if( !( player.GetTeam() in totalTeamsScore ) )
+			totalTeamsScore[ player.GetTeam() ] <- player.GetPlayerNetInt( "oddball_ballHeldTime" )
+		else
+			totalTeamsScore[ player.GetTeam() ] += player.GetPlayerNetInt( "oddball_ballHeldTime" )
+	}
+
+	foreach( team, score in totalTeamsScore )
+	{
+		if( score >= ODDBALL_POINTS_TO_WIN )
+		{
+			//set team as winner, show ui screen
+			if( flowstateSettings.enable_oddball_gamemode && IsValid( GetBallCarrier() ) && IsAlive( GetBallCarrier() ) )
+			{
+				ClearBallCarrierPlayerSetup( GetBallCarrier() )
+				SetEmptyBallInBallSpawner()
+				SetBallCarrier( null )
+			}
+
+			SetTdmStateToNextRound()
+
+			file.winnerTeam = team
+			return true
+		}
+	}
+	
+	return false
+}
+
+void function OnRoundEndOddball()
+{	
+	if( file.winnerTeam == -1 )
+	{
+		table< int,int > totalTeamsScore
+		
+		foreach(player in GetPlayerArray())
+		{
+			if ( !IsValid( player ) ) continue
+
+			if( !( player.GetTeam() in totalTeamsScore ) )
+			{
+				totalTeamsScore[ player.GetTeam() ] <- player.GetPlayerNetInt( "oddball_ballHeldTime" )
+			}
+			else
+			{
+				totalTeamsScore[ player.GetTeam() ] += player.GetPlayerNetInt( "oddball_ballHeldTime" )
+			}
+		}
+		
+		int winnerTeam = -1
+		int lastScore = 0
+		bool isTie = false
+
+		foreach( team, score in totalTeamsScore )
+		{
+			if( score > lastScore )
+			{
+				winnerTeam = team
+				lastScore = score
+			}
+		}
+
+		foreach( team, score in totalTeamsScore )
+		{
+			if( team == winnerTeam )
+				continue
+			
+			if( lastScore == score )
+			{
+				isTie = true
+			}
+		}
+
+		if( isTie )
+			winnerTeam = -2
+
+		file.winnerTeam = winnerTeam
+
+		if( IsValid( GetBallCarrier() ) && IsAlive( GetBallCarrier() ) )
+		{
+			ClearBallCarrierPlayerSetup( GetBallCarrier() )
+			SetEmptyBallInBallSpawner()
+			SetBallCarrier( null )
+		}
+	}
 }

@@ -60,9 +60,11 @@ global function PlayTimeFromSecondsString
 global function Tracker_DetermineNextMap
 global function Tracker_GotoNextMap
 global function ArrayUniqueInt
+global function ArrayUniqueString
 global function IsMapPlaylistGamemodeRotationEnabled
 global function DecideNextMapPlaylistGamemodeRotation
 global function TP
+global function TestRandom
 
 //code callbacks
 global function CodeCallback_SendMessage
@@ -1366,11 +1368,30 @@ void function TrackerUtilityInit()
 			{		
 				#if TRACKER && HAS_TRACKER_DLL	
 				
+					const array<string> PROTECTED_SETTINGS =
+					[
+						"apikey", /* blocked at engine level */
+						"webhooks.PLAYERS_WEBHOOK",
+						"webhooks.MATCHES_WEBHOOK"
+					]
+				
 					if ( args.len() < 2)
 					{
 						Message( player, "Failed", "Param 1 of command 'setting' requires key name" )
 						return true
-					}				
+					}			
+					
+					if( param == "" )
+					{
+						Message( player, "Failed", "setting name cannot be empty" )
+						return true
+					}
+
+					if( PROTECTED_SETTINGS.contains( param ) )
+					{
+						Message( player, "Failed", format( "Setting \"%s\" is a protected setting and cannot be shown.", param ) )
+						return true
+					}
 					
 					try 
 					{	
@@ -1982,13 +2003,6 @@ void function TrackerUtilityInit()
 				#endif 
 			
 				return true
-			}	
-			case "gamerules":
-			{
-				//TODO: mini framework for parsing valid map/playlist combos
-				// needs server function capable of swapping playlist & map
-				//CreateServer("","","mp_rr_desertlands_64k_x_64k","survival_solos", 0)
-				break
 			}
 			case "movement_recorder_playback_rate":
 			{
@@ -2003,7 +2017,7 @@ void function TrackerUtilityInit()
 				}
 				
 				break
-			}	
+			}
 			case "kill_banners":
 			{
 				WorldAssets_KillAllBanners()
@@ -2977,6 +2991,19 @@ array<int> function ArrayUniqueInt( array<int> arr )
 	return newArr
 }
 
+array<string> function ArrayUniqueString( array<string> arr )
+{
+	array<string> newArr
+	
+	foreach( item in arr )
+	{
+		if( !newArr.contains( item ) )
+			newArr.append( item )	
+	}
+	
+	return newArr
+}
+
 void function sqprint( ... )
 {
 	if ( vargc <= 0 )
@@ -3646,4 +3673,35 @@ void function DecideNextMapPlaylistGamemodeRotation()
 bool function IsMapPlaylistGamemodeRotationEnabled()
 {
 	return file.bAutoRotationEnabled
+}
+
+void function TestRandom()
+{
+	thread
+	(
+		void function()
+		{
+			const int RUN_COUNT = 100000
+			array<string> randomStuff
+			for( int i = 0; i < 5; i++ )
+				randomStuff.append( "rand" + i )
+				
+			string randSelection
+			int idxZeroSelections
+			
+			for( int j = 0; j < RUN_COUNT; j++ )
+			{
+				randSelection = randomStuff.getrandom()
+				if( randSelection == "rand0" )
+					idxZeroSelections++
+			}
+			
+			printf
+			(
+				"Ran %d times, selected idxZero %d times.",
+				RUN_COUNT,
+				idxZeroSelections
+			)
+		}
+	)()
 }
