@@ -74,10 +74,10 @@ For Hosts:
 
 The following commands can utilize -say
 
-cc kick
-cc ban
-cc timeout
-cc mute
+- cc kick
+- cc ban
+- cc timeout
+- cc mute
 
 - Removed commands: cc kicksay, cc bansay
 
