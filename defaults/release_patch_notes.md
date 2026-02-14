@@ -32,6 +32,8 @@ For Players:
 - Fixed bug in realistic mode creating inconsistent ordnance state ( unusable arc stars / healing items )
 - Updated rankup movement map 
 - Made 1v1 spawns spaced out in waiting area automatically.
+- Prevented crash when leaving a game mode by basing continue button on current auto load lobby state
+- Prevent aim trainer menu in wrong context
 
 ========================================
 For Hosts:
