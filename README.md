@@ -4,7 +4,7 @@ https://github.com/Mauler125/r5_flowstate/tree/r5r_scripts_2025f
 
 
 # Feb 14 R5Reloaded ( Newest Script Update )
-========================================
+
 For Players:
 ----------------------------------------
 - Updated all weapons values to Retail Apex season 28
@@ -38,7 +38,7 @@ For Players:
 - Prevented crash when leaving a game mode by basing continue button on current auto load lobby state
 - Prevent aim trainer menu in wrong context
 
-========================================
+
 For Hosts:
 ----------------------------------------
 - Added playlist var 'enable_loose_playername_comparison', which allows partial playername searches when doing cc commands - also works for things like chal. Example for a player named BobTheBuilder:  /chal bob  -- will match for "BobTheBuilder"
@@ -81,7 +81,7 @@ cc mute
 
 - Removed commands: cc kicksay, cc bansay
 
-========================================
+
 Misc (Scripters):
 ----------------------------------------
 - restore playlist override to blank after usage so that subsequent usage of server browser loading does not get locked to previous override.
@@ -108,7 +108,8 @@ Misc (Scripters):
 - Fixed scoreboard toggle behavior causing an issue leaving scoreboard in an inconsistent state, which would cause other menus to not work properly such as ordnance, health items, quips, etc
 
 
-=============================================== Weapons Updates: ===============================================
+Weapons Updates: 
+----------------------------------------
 mp_weapon_semipistol.txt
 ----------------------------------------
   damage_near_value: 24 → 23
@@ -117,25 +118,25 @@ mp_weapon_semipistol.txt
   damage_near_value_titanarmor: 24 → 23
   damage_far_value_titanarmor: 24 → 23
   damage_very_far_value_titanarmor: 24 → 23
+
  
-========================================
 mp_weapon_g2.txt
 ----------------------------------------
   fx_muzzle_flash_attach_scoped: muzzle_flash → muzzle_flash_scoped
+
   
-========================================
 mp_weapon_shotgun.txt
 ----------------------------------------
   blast_pattern_default_scale: 1.500000 → 1.400000
   fire_rate: 2.700000 → 2.800000
   
-========================================
+
 mp_weapon_bow.txt
 ----------------------------------------
   holster_angles_offset: 90 90 90 → -90 45 -30
   charge_time: 0.350000 → 0.450000
   
-========================================
+
 mp_ability_hunt_mode.txt
 ----------------------------------------
   toss_time: 1.600000 → 1.200000
@@ -145,12 +146,12 @@ mp_ability_hunt_mode.txt
   ammo_per_shot: 240 → 150
   fire_duration: 30.000000 → 25.000000
   
-========================================
+
 mp_weapon_doubletake.txt
 ----------------------------------------
   fire_rate: 1.450000 → 1.300000
   
-========================================
+
 mp_weapon_3030.txt
 ----------------------------------------
   charge_time: 0.350000 → 0.400000
@@ -163,7 +164,7 @@ mp_weapon_3030.txt
   damage_very_far_value_titanarmor: 43 → 41
   viewkick_pattern: 3030 → 3030_repeater
   
-========================================
+
 mp_weapon_mastiff.txt
 ----------------------------------------
 
@@ -181,6 +182,7 @@ mp_weapon_mastiff.txt
 
 
 # Credits:
+----------------------------------------
 
 - Developed by: mkos
 - Faithful Testers:
