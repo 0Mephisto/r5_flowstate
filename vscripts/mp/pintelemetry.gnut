@@ -62,6 +62,7 @@ global function TrackerGetSettingFloat
 global function SendServerMessageToPlayer
 global function SendServerMessage
 global function Tracker_RegisterTrackingAsNonCombatMode
+global function Tracker_AddDestroyStatCallback
 
 global function SetAfkToRest
 global function ClientCommand_RequestStat
@@ -156,7 +157,6 @@ global function AddCallback_OnBatchStatsLoaded
 global function RemoveCallback_OnBatchStatsLoaded
 global function AddCallback_PlayerDataFullyLoaded
 global function AddCallback_PlayerData
-global function Tracker_AddDestroyStatCallback
 
 global function Tracker_IsBatchStatsLoaded
 global function Tracker_GetCurrentEventByPlayerHandle_expensive
@@ -5503,6 +5503,7 @@ bool function Tracker_IsRestrictedServer(){ return false }
 void function Tracker_SetRestrictedServer( bool _ ){}
 SerializedData function Tracker_BuildAllPlayerMetrics( bool _ ){ return "" }
 int function Tracker_GetStartUnixTime(){ return file.launchStartUnixTime }
+void function Tracker_AddDestroyStatCallback( void functionref() callbackFunc ){}
 
 void function PIN_Init()
 {

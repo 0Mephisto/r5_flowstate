@@ -64,7 +64,6 @@ global function ArrayUniqueString
 global function IsMapPlaylistGamemodeRotationEnabled
 global function DecideNextMapPlaylistGamemodeRotation
 global function TP
-global function TestRandom
 
 //code callbacks
 global function CodeCallback_SendMessage
@@ -73,6 +72,7 @@ global function CodeCallback_SendMessage
 	global function RegExpUnitTest
 	global function RegExpUnitTest2
 	global function StringUnitTest
+	global function TestRandom
 #endif
 
 #if TRACKER && HAS_TRACKER_DLL
@@ -3675,33 +3675,35 @@ bool function IsMapPlaylistGamemodeRotationEnabled()
 	return file.bAutoRotationEnabled
 }
 
-void function TestRandom()
-{
-	thread
-	(
-		void function()
-		{
-			const int RUN_COUNT = 100000
-			array<string> randomStuff
-			for( int i = 0; i < 5; i++ )
-				randomStuff.append( "rand" + i )
-				
-			string randSelection
-			int idxZeroSelections
-			
-			for( int j = 0; j < RUN_COUNT; j++ )
+#if DEVELOPER
+	void function TestRandom()
+	{
+		thread
+		(
+			void function()
 			{
-				randSelection = randomStuff.getrandom()
-				if( randSelection == "rand0" )
-					idxZeroSelections++
+				const int RUN_COUNT = 100000
+				array<string> randomStuff
+				for( int i = 0; i < 5; i++ )
+					randomStuff.append( "rand" + i )
+					
+				string randSelection
+				int idxZeroSelections
+				
+				for( int j = 0; j < RUN_COUNT; j++ )
+				{
+					randSelection = randomStuff.getrandom()
+					if( randSelection == "rand0" )
+						idxZeroSelections++
+				}
+				
+				printf
+				(
+					"Ran %d times, selected idxZero %d times.",
+					RUN_COUNT,
+					idxZeroSelections
+				)
 			}
-			
-			printf
-			(
-				"Ran %d times, selected idxZero %d times.",
-				RUN_COUNT,
-				idxZeroSelections
-			)
-		}
-	)()
-}
+		)()
+	}
+#endif
