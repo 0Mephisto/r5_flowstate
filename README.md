@@ -174,8 +174,21 @@ mp_weapon_mastiff.txt
   damage_near_value_titanarmor: 16 → 19
   damage_far_value_titanarmor: 16 → 19
  
+( Older )
+- Created the ability to swap playlist gamemode and map on listen/dedi from client command ( + playlist doc )
+- Created robust mini framework for setting up, auto parsing with validation, for creating map/playlist/gamemode rotation configurations from playlists file.
+- Created player timeout system with settings in playlist
 
 
+# Credits:
+
+- Developed by: mkos
+- Faithful Testers:
+  - SlapsMcGaps: fs_grapples_n_guns idea, audio assets porting, parameter designer, tester, feedback
+  - Raptor:	fs_rankupmapmovementpractice maintainer, feature ideas, tester, script modifications, feedback
+  - WateryContinent02: support, tester, anims debug, feedback
+  - Minovakura: tester, feedback
+  - UgniusL: support goat, tester, quality assurance, launcher maintainer, master server maintainer, update manager, feature feedback, bug feedback
 
 
 
