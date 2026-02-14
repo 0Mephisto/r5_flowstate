@@ -188,6 +188,7 @@ mp_weapon_mastiff.txt
 - Developed by: mkos
 - Faithful Testers:
   - SlapsMcGaps: fs_grapples_n_guns idea, audio assets porting, parameter designer, tester, feedback
+  - G0F: Creator of Rankup Parkour (fs_rankupmapmovementpractice), maps maintainer, feature ideas, feedback
   - Raptor:	fs_rankupmapmovementpractice maintainer, feature ideas, tester, script modifications, feedback
   - WateryContinent02: support, tester, anims debug, feedback
   - Minovakura: tester, feedback
