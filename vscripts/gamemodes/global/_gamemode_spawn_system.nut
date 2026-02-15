@@ -4612,22 +4612,27 @@ void function DEV_CheckSpawns( vector mins = ZERO_VECTOR, vector maxs = ZERO_VEC
 
 void function DEV_CycleAll( float delay = 2.0, int startIdx = 0 )
 {
-	int spawnsLen = GetSpawns().len()
+	if( delay <= 0 )
+	{
+		file.dummyEnt.Signal( "EndCycleAllSpawns" )
+		return
+	}
+
+	int spawnsLen = GetSpawns().len()	
+	
 	if( spawnsLen == 0 )
 	{
 		string none = "No spawns to cycle."
 		printl( none ); printm( none )
+		
+		return
 	}
 	
 	if( startIdx >= spawnsLen )
 	{
 		string cannot = format( "Cannot start at index %d, it does not exist", startIdx )
 		printl( cannot ); printm( cannot )
-	}
-
-	if( delay <= 0 )
-	{
-		file.dummyEnt.Signal( "EndCycleAllSpawns" )
+		
 		return
 	}
 	
