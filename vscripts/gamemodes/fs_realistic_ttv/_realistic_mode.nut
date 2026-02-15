@@ -113,7 +113,7 @@ void function RealisticMode_Init()
 		AddClientCommandCallbackVoid( "training", ClientCommand_RealisticTrainingMode )
 		
 		if( GetCurrentPlaylistVarBool( "realistic_ttv_ai_training_mode_auto_start", false ) )
-			thread AiTrainingModeThread()
+			AddCallback_EntitiesDidLoad( AiTrainingModeThread ) //threads in callbacks
 	}
 	
 	if( file.bEnableTrainingMode || GetCurrentPlaylistVarBool( "random_dummy_spawn", true ) )
@@ -564,6 +564,9 @@ void function AiTrainingModeThread()
 	int currentAliveDummies = file.aiBots.len()
 	entity dummy
 	SpawnData dummySpawn
+	
+	while( GetTDMState() != eTDMState.IN_PROGRESS )// don't spawn if round hasn't started yet
+		WaitFrame()
 	
 	for( ; ; )
 	{
