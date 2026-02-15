@@ -2336,7 +2336,7 @@ playlists
 				
 				
 				
-				default_shield_hp				  				125
+				default_shield_hp				  				100
 				survival_shields				   				1
 				skydive_ziplines_enabled		   				1
 				ground_loot_enable 				   				0
@@ -2495,7 +2495,7 @@ playlists
 				max_players										120
 				min_players										0
 				
-				default_shield_hp				  				125
+				default_shield_hp				  				100
 				survival_shields				   				1
 				skydive_ziplines_enabled		   				1
 				ground_loot_enable 				   				0
@@ -2612,7 +2612,7 @@ playlists
 				max_players										120
 				min_players										0
 				
-				default_shield_hp				  				125
+				default_shield_hp				  				100
 				survival_shields				   				1
 				skydive_ziplines_enabled		   				1
 				ground_loot_enable 				   				0
@@ -4094,7 +4094,7 @@ playlists
 				"MOTD_TEXT" "An R5Reloaded server" //set your servers message of the day. 1000 char max.  Use \n for newline.
 				"MOTD_TEXT_EXTENDED" "" // appends to first, 1000 char max.
 			
-				"BETA_BUILD_WATERMARK" "R5Reloaded - v2.6.14"
+				"BETA_BUILD_WATERMARK" "R5Reloaded - v2.6.31"
 
 				//////////////////////////////////////////////////
 				// TEMP TOKENS (remove before release shipping )//
