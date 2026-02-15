@@ -2837,7 +2837,7 @@ string function ParseWeapon( string weaponString )
 {
 	array<string> mods = split( strip( weaponString ), " " )
 	
-	if( mods.len() < 1 )
+	if( !mods.len() )
 		return ""
 	
 	if( !IsWeaponValid( mods[ 0 ] ) || !( SURVIVAL_Loot_IsRefValid( mods[ 0 ] ) ) )
@@ -2846,11 +2846,22 @@ string function ParseWeapon( string weaponString )
 	bool removed = false
 	for ( int i = mods.len() - 1 ; i >= 1; i-- )
 	{
-		if ( !SURVIVAL_Loot_IsRefValid( mods[ i ] ) 
-		|| !IsModValidForWeapon( mods[ 0 ], mods[ i ] ) )
+		if ( !SURVIVAL_Loot_IsRefValid( mods[ i ] ) )
 		{
 			removed = true
-			sqprint( "removed:", mods[ i ] )		
+			sqprint( "removed invalid ref:", mods[ i ] )		
+			mods.remove( i )
+		}
+		else if( !IsModValidForWeapon( mods[ 0 ], mods[ i ] ) )
+		{
+			removed = true
+			sqprint( format( "removed invalid mod \"%s\" for weapon \"%s\" )", mods[ i ], mods[ 0 ] ) )	
+			mods.remove( i )
+		}
+		else if( SURVIVAL_Loot_IsRefDisabled( mods[ i ] ) )
+		{
+			removed = true
+			sqprint( format( "removed disabled ref \"%s\"", mods[ i ] ) )		
 			mods.remove( i )
 		}
 	}

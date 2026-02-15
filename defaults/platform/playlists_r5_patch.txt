@@ -468,6 +468,7 @@ playlists
 				///////////////////////////////////////////////////////////////////////////////////
 				
 				disable_message_sounds							0 // optionally disable default message banner sounds on client by setting to 1
+				survival_disabled_loot							"highcal_mag_l3" //(mk): temporary disabled for season 6
 			}
 			maps
 			{

@@ -124,7 +124,7 @@ void function OnSpawned( entity player )
 		if( file.current_cp[ uid ] != ZERO_VECTOR )
 		{
 			__EnablePracticeMode( player, uid, false )
-			LocalMsg( player, "#FS_NULL", "#FS_NULL", eMsgUI.NOTIFICATION, max( 9999, GetConVarFloat( "host_autoReloadRate" ) ), "Active TP", "You have an active tp stored." )
+			SetRankupTpHint( player, true )
 		}
 	}
 	
@@ -161,7 +161,7 @@ void function rankupmap_player_setup( entity user )
 					wait 3
 					
 					__EnablePracticeMode( user, uid, false )
-					LocalMsg( user, "#FS_NULL", "#FS_NULL", eMsgUI.NOTIFICATION, 10, "Active TP", "You have an active tp stored." )
+					SetRankupTpHint( user, true )
 				}
 			)()
 		}
@@ -176,6 +176,22 @@ void function rankupmap_player_setup( entity user )
 	EmitSoundOnEntityOnlyToPlayer( user, user, FIRINGRANGE_BUTTON_SOUND )
 	TeleportFRPlayer( user, < -743, 24760.42, 54327.38 > , < 3, 90, -0.04 > )
 	user.SetPersistentVar( "gen", 0 )
+}
+
+void function SetRankupTpHint( entity player, bool setting )
+{
+	if( setting )
+	{
+		LocalMsg( player, "#FS_NULL", "#FS_NULL", eMsgUI.NOTIFICATION, max( 9999, GetConVarFloat( "host_autoReloadRate" ) ), "Active TP", "You have an active tp stored." )
+		player.p.bHasRankupTpHint = true
+	}
+	else 
+	{
+		if( player.p.bHasRankupTpHint )
+			LocalMsg( player, "#FS_NULL", "#FS_NULL", eMsgUI.NOTIFICATION, 0.1 )
+			
+		player.p.bHasRankupTpHint = false
+	}
 }
 
 // Practice mode
@@ -233,7 +249,7 @@ void function __DisablePracticeMode( entity user, string uid )
 	if( !user.HasPassive( ePassives.PAS_PILOT_BLOOD ) )
 		GivePassive( user, ePassives.PAS_PILOT_BLOOD )
 		
-	LocalMsg( user, "#FS_NULL", "#FS_NULL", eMsgUI.NOTIFICATION, 0.1 )
+	SetRankupTpHint( user, false )
 }
 
 bool function ClientCommand_TeleportToCheckpoint( entity user, array < string > args ) 
@@ -250,7 +266,7 @@ bool function ClientCommand_TeleportToCheckpoint( entity user, array < string > 
 	user.SetAngles( file.current_angles[ uid ] )
 	user.KnockBack( <0, 0, 0.1>, 0.1 )
 	
-	LocalMsg( user, "#FS_NULL", "#FS_NULL", eMsgUI.NOTIFICATION, 0.1 )
+	SetRankupTpHint( user, false )
 	return true
 }
 

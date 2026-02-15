@@ -1253,6 +1253,9 @@ global struct ServerPlayerStruct
 	int submitCringeCount
 	int cringedCount
 	array< CringeReport > cringeDataReports //todo deprecate..
+	
+	//rankup
+	bool bHasRankupTpHint
 }
 
 global struct ChallengeScore
