@@ -148,10 +148,7 @@ void function RegisterGroupAssets()
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
 void function OnConnected( entity player ) //only runs if audio enabled.
-{
-	if( GetTDMState() != eTDMState.IN_PROGRESS )
-		return 
-	
+{	
 	AddEntityCallback_OnGrappled( player, OnGrappled )
 	AddEntityCallback_OnMeleed( player, OnMeleed )
 	
@@ -289,7 +286,7 @@ void function PlayUniqueRandomSoundForPlayers( array<entity> players, array<stri
 				player.GetPlayerName(),
 				WorldAssets_GetLastPlayedAudio( player, audioGroup ).assetRef
 			)
-		#endif 
+		#endif
 		
 		lastPlayedRefs.append( WorldAssets_GetLastPlayedAudio( player, audioGroup ).assetRef )
 				
@@ -314,7 +311,7 @@ void function PlayUniqueRandomSoundForPlayers( array<entity> players, array<stri
 	
 	foreach( player in players )
 	{
-		print_string_array( uniqueSounds )
+		// print_string_array( uniqueSounds )
 		
 		if( uniqueSounds.len() )
 			WorldAssets_PlayAudio( player, uniqueSounds.getrandom(), audioGroup )
