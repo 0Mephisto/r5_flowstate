@@ -3671,10 +3671,8 @@ void function DecideNextMapPlaylistGamemodeRotation()
 		rotationIndexToLoad = ( currentRotationIndex + 1 + i ) % rotationMaxIndex		
 		rotationDataToLoad = file.allRotationData[ rotationIndexToLoad ]
 		
-		if( playerCount >= rotationDataToLoad.minplayers && playerCount <= rotationDataToLoad.maxplayers )
+		if( playerCount >= rotationDataToLoad.minplayers && ( rotationDataToLoad.maxplayers <= 0 || playerCount <= rotationDataToLoad.maxplayers ) )
 			break
-			
-		currentRotationIndex++
 	}
 	
 	Dev_CommandLineAddParm( "playlistOverride", rotationDataToLoad.playlist )
