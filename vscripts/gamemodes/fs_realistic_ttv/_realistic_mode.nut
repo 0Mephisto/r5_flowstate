@@ -321,15 +321,12 @@ void function __SpawnLootAtIntervals( float minWait, float maxWait, int numItems
 
 void function CheckPlayerCountForBots( entity _ )
 {
-	if( GetTDMState() != eTDMState.IN_PROGRESS )
-		return
-	
-	int playerCount = GetConnectedPlayerCount()
+	int playerCount = GetConnectedPlayerCount() + GetPendingClientsCount()
 	if( file.bTrainingModeActive && playerCount > file.max_players_for_bots )
 	{
 		EnableOrDisableTrainingMode( false )
 	}
-	else if( !file.bTrainingModeActive && playerCount - 1 >= file.min_players_for_bots )
+	else if( !file.bTrainingModeActive && playerCount >= file.min_players_for_bots )
 	{
 		EnableOrDisableTrainingMode( true )
 	}
