@@ -63,6 +63,7 @@ global function ArrayUniqueInt
 global function ArrayUniqueString
 global function IsMapPlaylistGamemodeRotationEnabled
 global function DecideNextMapPlaylistGamemodeRotation
+global function IsValidCharacterGUID
 global function TP
 
 //code callbacks
@@ -412,7 +413,7 @@ void function TrackerUtilityInit()
 		string pair
 		
 		#if TRACKER && HAS_TRACKER_DLL
-			admins_list = TrackerGetSetting( "settings.ADMINS" )
+			admins_list = TrackerGetSettingString( "settings.ADMINS" )
 		#endif
 		
 		if( admins_list != "" )
@@ -1396,7 +1397,7 @@ void function TrackerUtilityInit()
 					try 
 					{	
 						string return_str = ""
-						return_str = TrackerGetSetting( param )	
+						return_str = TrackerGetSettingString( param )	
 						
 						Message( player, param + ":", return_str )
 						return true
@@ -3716,3 +3717,22 @@ bool function IsMapPlaylistGamemodeRotationEnabled()
 		)()
 	}
 #endif
+
+bool function IsValidCharacterGUID( int characterGUID, entity player )
+{
+	ItemFlavor ornull characterOrNull = GetItemFlavorOrNullByGUID( characterGUID )
+	if( characterOrNull == null )
+		return false
+	
+	expect ItemFlavor ( characterOrNull )
+	if( ItemFlavor_GetType( characterOrNull ) != eItemType.character )
+		return false
+		
+	if( !ItemFlavor_ShouldBeVisible( characterOrNull, player ) )
+		return false
+		
+	if( !ItemFlavor_IsAvailableInPlaylist( characterOrNull ) )
+		return false
+		
+	return true
+}

@@ -607,9 +607,9 @@ array<SpawnData> function SpawnSystem_ReturnAllSpawnLocations( int eMap = -1, ta
 		options = settings.spawnOptions
 		
 		#if DEVELOPER
-			Warning( "Options were not valid in %s()", FUNC_NAME() )
+			printf( "[SpawnSystem] Options were not valid/set in %s()", FUNC_NAME() )
 			foreach( setting, value in options )
-				printt( "[SpawnSystem] Spawn setting:", setting, " Value:", value )
+				printt( "[SpawnSystem] Setting Spawn setting:", setting, " Value:", value )
 		#endif
 	}
 		

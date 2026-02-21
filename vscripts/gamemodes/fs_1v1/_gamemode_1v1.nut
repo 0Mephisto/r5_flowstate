@@ -1039,6 +1039,9 @@ void function Gamemode1v1_SetPlayerGamestate( entity player, int state = 0 )
 			// printw( "[SERVER] SERVER PLAYER STATE CHANGED TO:", DEV_GetEnumStringSafe( "e1v1State", state ), player )
 		// #endif
 		
+		if( !IsValid( player ) )
+			return
+		
 		player.SetPlayerNetInt( "FS_1v1_PlayerState", state )
 		
 		foreach( callbackFunc in player.e.onPlayerGamestateChangedCallbacks )
@@ -1294,10 +1297,10 @@ void function INIT_1v1_sbmm()
 	//initialize defaults for SBMM
 	if ( bGlobalStats() )
 	{
-		file.season_kd_weight = GetCurrentPlaylistVarFloat( "season_kd_weight", 0.90 )
-		file.current_kd_weight = GetCurrentPlaylistVarFloat( "current_kd_weight", 1.3 )
-		file.SBMM_kd_difference = GetCurrentPlaylistVarFloat( "kd_difference", 1.5 )
-	} 
+		file.season_kd_weight = GetCurrentPlaylistVarFloat( "season_kd_weight", 0.85 )
+		file.current_kd_weight = GetCurrentPlaylistVarFloat( "current_kd_weight", 1.32 )
+		file.SBMM_kd_difference = GetCurrentPlaylistVarFloat( "kd_difference", 3.5 )
+	}
 	else
 	{
 		//base values
@@ -1630,8 +1633,10 @@ void function endSpectate(entity player)
 	catch (error)
 	{}
 	
-    RemoveButtonPressedPlayerInputCallback(player, IN_JUMP,endSpectate)
-	Gamemode1v1_SetPlayerGamestate( player, e1v1State.RESTING )
+    RemoveButtonPressedPlayerInputCallback( player, IN_JUMP, endSpectate )
+	
+	if( g_bIs1v1GameType() )
+		Gamemode1v1_SetPlayerGamestate( player, e1v1State.RESTING )
 }
 
 
@@ -5371,7 +5376,7 @@ void function SetInput_IN_FORWARD( entity player )
 
 bool function GroupIsLockable( soloGroupStruct newGroup )
 {	//(mk): This can return "could not lock" message when the enemy has not moved yet for the match. Intended behavior.
-	return ( newGroup.player1.p.lastmoved > 2 && newGroup.player2.p.lastmoved > 2 
+	return ( newGroup.player1.p.lastmoved > 15 && newGroup.player2.p.lastmoved > 15 
 	&& ( ( Fetch_IBMM_Timeout_For_Player( newGroup.player1 ) == false && Fetch_IBMM_Timeout_For_Player( newGroup.player2 ) == false ) 
 	|| newGroup.player1.p.input == newGroup.player2.p.input ) )	
 }

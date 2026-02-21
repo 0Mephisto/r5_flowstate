@@ -351,7 +351,7 @@ void function Sequence_PickLoadout()
 	thread Sequence_Prematch()
 }
 
-void function Flowstate_AssignUniqueCharacterForPlayer(entity player, bool lock)
+void function Flowstate_AssignUniqueCharacterForPlayer( entity player, bool lock )
 {
 	// Warning( "Flowstate_AssignUniqueCharacterForPlayer" )
 	// DumpStack()
@@ -388,11 +388,20 @@ void function Flowstate_AssignUniqueCharacterForPlayer(entity player, bool lock)
 	}
 
 	ItemFlavor initialCharacter
+	int preferredLegendGUID = player.p.preferredLegendGUID //(mk): only gets set from lobby selection after passing checks in: ShouldAutoSelectPreferredLegend 
 	
-	if( characters.len() == 0) //Shouldn't happen, but just in case. (Teams of more than 10 players probably)
+	if( characters.len() == 0 )//Shouldn't happen, but just in case. (Teams of more than 10 players probably)
+	{
 		initialCharacter = GetAllCharacters().getrandom()
+	}
+	else if( preferredLegendGUID != -1 && IsValidCharacterGUID( preferredLegendGUID, player ) )
+	{
+		initialCharacter = GetItemFlavorByGUID( preferredLegendGUID )
+	}
 	else
+	{
 		initialCharacter = characters.getrandom()
+	}
 	
 	player.SetPlayerNetInt( "characterSelectFocusIndex", ConvertItemFlavorToLoadoutSlotContentsIndex( Loadout_CharacterClass(), initialCharacter ) )
 	
