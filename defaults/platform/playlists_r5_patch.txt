@@ -1525,7 +1525,8 @@ playlists
 				realistic_ttv_ai_training_feature				1 	//can be started/stopped with client command from an admin:  training 1/0/true/false
 				realistic_ttv_ai_training_mode_auto_start		0
 				realistic_ttv_max_alive_bots					2
-			
+				blockable_door_can_be_hurt_by_melee				1 // required for ai logic
+				
 				dissolve_drops_time								15
 				realistic_mode_give_heirloom					1
 				realistic_max_players_for_bots					3 	//when player count goes above this number, will disable patrol bots if realistic_ttv_ai_training_feature is enabled
