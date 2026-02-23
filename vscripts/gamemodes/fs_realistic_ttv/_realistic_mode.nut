@@ -46,11 +46,13 @@ const array<string> STANDARD_SPAWN_LOOT =
 	"health_pickup_health_small",
 	"health_pickup_health_small",
 	"mp_weapon_grenade_emp",
-	"optic_cq_hcog_classic",
-	"optic_cq_hcog_bruiser",
-	"optic_cq_holosight",
-	"optic_ranged_hcog",
-	"optic_ranged_aog_variable" //10 items to inv
+	"health_pickup_combo_large",
+	"health_pickup_health_large"
+	// "optic_cq_hcog_classic",
+	// "optic_cq_hcog_bruiser",
+	// "optic_cq_holosight",
+	// "optic_ranged_hcog",
+	// "optic_ranged_aog_variable"
 ]
 
 const array<string> TIER_ZERO_LOOT =
@@ -129,6 +131,7 @@ void function RealisticMode_Init()
 {
 	RegisterSignal( "PlayerSkyDive" )
 	
+	Onboarding_SetNegateDespawnStats( true )
 	AddCallback_OnDoorInteraction( OnDoorInteraction )
 	AddCallback_EntitiesDidLoad( InitializeDoorTracking )
 	AddCallback_OnPlayerWeaponAttachmentChanged( Realistic_OnWeaponAttachmentChanged )
@@ -1139,6 +1142,9 @@ void function OnDoorInteraction( entity door, entity user, entity oppositeDoor, 
 
 void function NPCDoorFightThink( entity npc, entity enemyPlayer, entity door )
 {
+	if( !IsValid( npc ) || !IsValid( enemyPlayer ) )
+		return
+
 	OnThreadEnd
 	(
 		void function() : ( npc, enemyPlayer, door )
@@ -1165,8 +1171,9 @@ void function NPCDoorFightThink( entity npc, entity enemyPlayer, entity door )
 			}
 		}
 	)
-
+	
 	npc.ai.bIsInDoorFight = true
+	
 	npc.EndSignal( "OnDestroy" )
 	enemyPlayer.EndSignal( "OnDestroy", "OnDeath" )
 	door.EndSignal( "OnDestroy" )
