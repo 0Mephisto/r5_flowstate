@@ -129,13 +129,13 @@ void function OnSpawnedFinal( entity player )
 	}
 	
 	if( !file.bCollisionEnabled )
-		DisablePlayerCollision( player ) 
+		DisablePlayerCollision( player )
 		
 	if( !PlayerHasPassive( player, ePassives.PAS_CRYPTO ) )
 		GivePassive( player, ePassives.PAS_CRYPTO )
 		
-	if( !PlayerHasWeapon( player, "mp_ability_crypto_drone" ) )
-		player.GiveOffhandWeapon( "mp_ability_crypto_drone", OFFHAND_TACTICAL )
+	player.TakeOffhandWeapon( OFFHAND_TACTICAL )
+	player.GiveOffhandWeapon( "mp_ability_crypto_drone", OFFHAND_TACTICAL )
 		
 	GiveMelee( player )
 }
