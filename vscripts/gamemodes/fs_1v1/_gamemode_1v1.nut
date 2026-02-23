@@ -199,7 +199,6 @@ struct
 	array< string > LongRangeWeaponsSecondary
 
 	LocPair WaitingRoom
-	float restGrace
 	
 	vector notificationPanel_Coordinates
 	vector notificationPanel_Angles
@@ -217,18 +216,21 @@ struct
 	array<string> hostSetAttachments
 	array<string> Weapons = []
 	
-	bool enableChallenges = false
+	float roundTime
+	float restGrace
+	
+	int playerMaxFightDistance = 2000
+	int give_weapon_stack_count_amount	
 	int groupID = 112250000
+	
+	bool enableChallenges = false
 	bool bGiveSameRandomLegendToBothPlayers = false
 	bool bAllowLegend = false
 	bool bAllowAbilities = false
 	bool bChalServerMsg = false
 	bool customWeaponsChallengeOnly = false
 	bool isScenariosMode
-	float roundTime
 	bool bAllowWeaponsMenu	
-	int playerMaxFightDistance = 2000
-	int give_weapon_stack_count_amount
 	bool player_collision_enabled
 	bool player_rest_collision_enabled
 	bool allow_legend_select
@@ -279,7 +281,7 @@ const array<string> LEGEND_INDEX_ARRAY =
 void function Gamemode1v1_Init( int eMap )
 {
 	#if DEVELOPER 
-	printw( "Gamemode1v1_Init" )
+		printw( "Gamemode1v1_Init" )
 	#endif
 	
 	RegisterSignal( "ChallengeStarted" )
@@ -287,6 +289,7 @@ void function Gamemode1v1_Init( int eMap )
 	RegisterSignal( "SettingsReceieved" )
 	
 	PrecacheOITCRoom()
+	Onboarding_SetNegateDespawnStats( true )
 	
 	#if DEVELOPER 
 		DEV_1v1Init()
@@ -339,13 +342,11 @@ void function Gamemode1v1_Init( int eMap )
 	if( settings.isScenariosMode )
 		Init_FS_Scenarios()
 	
-	file.restGrace = GetCurrentPlaylistVarFloat( "rest_grace", 0.0 )
-	
 	if( !settings.player_collision_enabled )
 		AddCallback_OnPlayerRespawned( DisablePlayerCollision )
 	
 	file.characters = GetAllCharacters()
-	characterslist = [0,1,2,3,4,5,6,7,8,9,10,11,12,13] //TODO(mk): uniform legend system
+	characterslist = [ 0,1,2,3,4,5,6,7,8,9,10,11,12,13 ] //TODO(mk): uniform legend system
 	Init_ValidLegendRange()
 	
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1219,6 +1220,7 @@ void function INIT_PlaylistSettings()
 	settings.giveSkinsWeapons 						= GetCurrentPlaylistVarBool( "flowstate_giveskins_weapons", false )
 	settings.enableCosmetics 						= GetCurrentPlaylistVarBool( "flowstate_enable_cosmetics", false )
 	settings.bApplyStateFlags						= GetCurrentPlaylistVarBool( "enable_state_flags", true )
+	settings.restGrace 								= GetCurrentPlaylistVarFloat( "rest_grace", 0.0 )
 }
 
 bool function Gamemode1v1_AreCustomWeaponsAllowedForPlayer( entity player )
@@ -2933,20 +2935,20 @@ bool function ClientCommand_Maki_SoloModeRest( entity player, array<string> args
 				
 				bool start_grace_exceeded = false
 				
-				if( ( timeNow - group.startTime ) > file.restGrace )
+				if( ( timeNow - group.startTime ) > settings.restGrace )
 					start_grace_exceeded = true
 				
-				if( difference < file.restGrace || !start_grace_exceeded )
+				if( difference < settings.restGrace || !start_grace_exceeded )
 				{	
 					float fTryAgainIn
 					
 					if( start_grace_exceeded )
-						fTryAgainIn = file.restGrace - ( timeNow - event.lastHitTimestamp )
+						fTryAgainIn = settings.restGrace - ( timeNow - event.lastHitTimestamp )
 					else 
-						fTryAgainIn = file.restGrace - ( timeNow - group.startTime )
+						fTryAgainIn = settings.restGrace - ( timeNow - group.startTime )
 					
 					#if DEVELOPER
-						sqprint(format( "[1V1 REST] Tried to enter rest too soon. Time since last hit: %d, Rest grace period: %d", difference, file.restGrace ))
+						sqprint(format( "[1V1 REST] Tried to enter rest too soon. Time since last hit: %d, Rest grace period: %d", difference, settings.restGrace ))
 					#endif
 					
 					string sTryAgain = format( " %d", floor( fTryAgainIn.tointeger() ) )
@@ -2957,11 +2959,11 @@ bool function ClientCommand_Maki_SoloModeRest( entity player, array<string> args
 				else
 				{
 					#if DEVELOPER
-						sqprint( format( "[1V1 REST] Time was good: Time since last hit: %d, Rest grace period: %d", difference, file.restGrace ) )
+						sqprint( format( "[1V1 REST] Time was good: Time since last hit: %d, Rest grace period: %d", difference, settings.restGrace ) )
 					#endif
 					
 					restText = "#FS_RestGrace"
-					restFlag = file.restGrace.tostring()
+					restFlag = settings.restGrace.tostring()
 				}
 			}
 		}
@@ -3563,6 +3565,7 @@ void function respawnInSoloMode( entity player, int respawnSlotIndex = -1 ) //å¤
 	if ( !player.p.isConnected ) 
 		return
 	
+	player.EndSignal( "OnDestroy" )
 	Remote_CallFunction_ByRef( player, "ForceScoreboardLoseFocus" )
 
 	//(cafe) new
@@ -3637,15 +3640,13 @@ void function respawnInSoloMode( entity player, int respawnSlotIndex = -1 ) //å¤
 	}
 	
 	GivePlayerCustomPlayerModel( player )
+	WaitFrame() //(mk): trying to set angles the same frame parenting can cause angles to be 180 out
 	
 	soloLocStruct groupLocStruct = group.groupLocStruct
 	Gamemode1v1_TeleportPlayer( player, groupLocStruct.respawnLocations[ respawnSlotIndex ] )
 	ClearInvincible( player )
 	
 	wait 0.2
-
-	if( !IsValid( player ) ) 
-		return
 
 	if( Equipment_GetDefaultShieldHP() > 0 && !Flowstate_IsLGDuels() )
 	{
@@ -5125,7 +5126,9 @@ void function RechargePlayerAbilities( entity player, int index = -1, bool noUlt
 	
 	//sqprint( format("LEGEND: %s, GUID: %d", ItemFlavor_GetHumanReadableRef( character ), ItemFlavor_GetGUID( character ) ))
 	ItemFlavor tacticalAbility = CharacterClass_GetTacticalAbility( character )
-	player.GiveOffhandWeapon(CharacterAbility_GetWeaponClassname( tacticalAbility ), OFFHAND_TACTICAL )	
+
+	player.TakeOffhandWeapon( OFFHAND_TACTICAL )	
+	player.GiveOffhandWeapon( CharacterAbility_GetWeaponClassname( tacticalAbility ), OFFHAND_TACTICAL )	
 
 	int charID = ItemFlavor_GetGUID( character )
 

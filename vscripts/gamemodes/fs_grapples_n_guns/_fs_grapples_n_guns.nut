@@ -68,6 +68,7 @@ struct
 	array<string> meleeAudio
 	
 	table<string,GrapplesNGunsStats> playerStats
+	bool bAudioEnabled
 	
 } file
 
@@ -77,7 +78,9 @@ struct
 
 void function GrapplesNGunsInit()
 {		
-	if( GetCurrentPlaylistVarBool( "use_custom_audio", true ) )
+	file.bAudioEnabled = GetCurrentPlaylistVarBool( "use_custom_audio", true )
+
+	if( file.bAudioEnabled )
 	{
 		WorldAssets_SetAllGroupsFunc( RegisterAudioGroups )
 		WorldAssets_SetAllAssetsFunc( RegisterGroupAssets )
@@ -85,11 +88,11 @@ void function GrapplesNGunsInit()
 
 		AddCallback_OnClientConnected( OnConnected )
 		SetFSCallback_ShouldTimerEnd( TimerFunction )
-		AddCallback_OnTdmStateEnter_InProgress( OnGamePlaying )
-		AddCallback_OnTdmStateEnter_EndGame( OnGameEnd )
-		AddHeadshotCallback( "player", OnHeadshot )
+		AddCallback_OnTdmStateEnter_InProgress( OnGamePlaying )	
 	}
 	
+	AddHeadshotCallback( "player", OnHeadshot )
+	AddCallback_OnTdmStateEnter_EndGame( OnGameEnd )
 	AddCallback_OnClientConnected( SetupStatsForPlayer )
 	Tracker_AddDestroyStatCallback( ResetStatsForAllPlayers )
 	AddFSCallback_OnRespawned( OnRespawned )
@@ -148,10 +151,7 @@ void function RegisterGroupAssets()
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
 void function OnConnected( entity player ) //only runs if audio enabled.
-{	
-	AddEntityCallback_OnGrappled( player, OnGrappled )
-	AddEntityCallback_OnMeleed( player, OnMeleed )
-	
+{		
 	thread //must wait for players channels to be created for audio
 	(
 		void function() : ( player )
@@ -183,7 +183,7 @@ void function OnGameEnd()
 	
 	if( IsValid( winner ) )
 	{
-		players.fastremovebyvalue( winner )
+		players.fastremovebyvalue( winner )		
 		
 		GetStats( winner.p.UID ).wins++
 		AnnounceToPlayers( file.winnerAudio.getrandom(), [ winner ] )
@@ -195,28 +195,33 @@ void function OnGameEnd()
 
 void function OnRespawned( entity player )
 {
-	thread
-	(
-		void function() : ( player )
-		{
-			if( !IsValid( player ) )
-				return
-			
-			player.EndSignal( "OnDestroy" )			
-			
-			wait 1 //yet to determine why calling SetClassVar causes sync issues closely with SetPlayerSettingsWithMods, which is called during DecideRespawn
-			
-			foreach( string key, string value in GRAPPLES_N_GUNS_PLAYER_SETTINGS )
-				player.SetClassVar( key, value )
-				
-			Inventory_SetPlayerEquipment( player, "helmet_pickup_lv1", "helmet" )
-			
-			player.TakeNormalWeaponByIndexNow( WEAPON_INVENTORY_SLOT_PRIMARY_2 )
-			player.TakeOffhandWeapon( OFFHAND_MELEE )
-			player.GiveWeapon( "mp_weapon_melee_survival", WEAPON_INVENTORY_SLOT_PRIMARY_2, [] )
-			player.GiveOffhandWeapon( "melee_pilot_emptyhanded", OFFHAND_MELEE, [] )
-		}
-	)()
+	if( player.p.respawnCount == 0 )
+		thread __SetupSpawnedPlayerDelayed( player )
+	else 
+		__SetupSpawnedPlayerDelayed( player, false )
+}
+
+void function __SetupSpawnedPlayerDelayed( entity player, bool bUseDleay = true )
+{
+	if( bUseDleay )
+	{
+		if( !IsValid( player ) )
+			return
+		
+		player.EndSignal( "OnDestroy" )			
+		
+		wait 1 //calling SetClassVar causes sync issues closely with SetPlayerSettingsWithMods on first spawn, which is called during DecideRespawn
+	}
+	
+	foreach( string key, string value in GRAPPLES_N_GUNS_PLAYER_SETTINGS )
+		player.SetClassVar( key, value )
+		
+	Inventory_SetPlayerEquipment( player, "helmet_pickup_lv1", "helmet" )
+	
+	player.TakeNormalWeaponByIndexNow( WEAPON_INVENTORY_SLOT_PRIMARY_2 )
+	player.TakeOffhandWeapon( OFFHAND_MELEE )
+	player.GiveWeapon( "mp_weapon_melee_survival", WEAPON_INVENTORY_SLOT_PRIMARY_2, [] )
+	player.GiveOffhandWeapon( "melee_pilot_emptyhanded", OFFHAND_MELEE, [] )
 }
 
 void function OnHeadshot( entity player, var damageInfo )
@@ -236,7 +241,9 @@ void function OnMeleed( entity attacker, entity ent, var damageInfo )
 		return
 
 	GetStats( attacker.p.UID ).melees++
-	PlayUniqueRandomSoundForPlayers( [ attacker ], file.meleeAudio )
+	
+	if( file.bAudioEnabled )
+		PlayUniqueRandomSoundForPlayers( [ attacker ], file.meleeAudio )
 }
 
 void function OnGrappled( entity grapplePlayer, entity hitent, vector hitpos, vector hitNormal )
@@ -244,7 +251,9 @@ void function OnGrappled( entity grapplePlayer, entity hitent, vector hitpos, ve
 	if( IsValid( grapplePlayer ) && grapplePlayer.IsPlayer() && hitent.IsPlayer() )
 	{
 		GetStats( grapplePlayer.p.UID ).grapples++
-		PlayUniqueRandomSoundForPlayers( [ grapplePlayer, hitent ], file.grappleAudio, eSoundCategories.ATTACH )
+		
+		if( file.bAudioEnabled )
+			PlayUniqueRandomSoundForPlayers( [ grapplePlayer, hitent ], file.grappleAudio, eSoundCategories.ATTACH )
 	}
 }
 
@@ -254,6 +263,9 @@ void function OnGrappled( entity grapplePlayer, entity hitent, vector hitpos, ve
 
 void function AnnounceToPlayers( string audioRef, array<entity> players )
 {
+	if( !file.bAudioEnabled )
+		return 
+		
 	foreach( player in players )
 		WorldAssets_PlayAudio( player, audioRef, "grapples_n_guns_audio_announce" )
 }
@@ -274,6 +286,9 @@ bool function TimerFunction( int timeRemaining )
 
 void function PlayUniqueRandomSoundForPlayers( array<entity> players, array<string> soundArray, int eSoundCategory = 0, string audioGroup = "grapples_n_guns_audio" )
 {
+	if( !file.bAudioEnabled )
+		return
+
 	array<string> uniqueSounds = clone soundArray
 	array<string> lastPlayedRefs
 	
@@ -326,6 +341,9 @@ void function PlayUniqueRandomSoundForPlayers( array<entity> players, array<stri
 
 void function SetupStatsForPlayer( entity player )
 {
+	AddEntityCallback_OnGrappled( player, OnGrappled )
+	AddEntityCallback_OnMeleed( player, OnMeleed )
+
 	string uid = player.p.UID
 	if( uid in file.playerStats )
 		return 

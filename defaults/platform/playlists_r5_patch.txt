@@ -2102,7 +2102,7 @@ playlists
 				//game continuity 
 				flowstateAutoreloadPrimary 						1
 				flowstateAutoreloadSecondary 					1
-				flowstateKillshotEnabled 						1	//enables the killshot sound when killing
+				flowstateKillshotEnabled 						0	//enables the killshot sound when killing
 				
 				//extrashields
 				flowstateExtrashieldsEnabled 					0
@@ -3169,6 +3169,10 @@ playlists
 				
 				// 0 disables players colliding with each other.
 				player_collision_enabled						0 
+							
+				// don't give basic survival items
+				give_basic_survival_items 						0
+				
 			}
 			gamemodes { survival { maps {
 				mp_rr_desertlands_64k_x_64k						1

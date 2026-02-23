@@ -112,10 +112,10 @@ void function rankupmap_init()
 	Ping_SetCanPingCallback( CanPing )
 	
 	file.bCollisionEnabled = GetCurrentPlaylistVarBool( "player_collision_enabled", false )
-	AddCallback_OnPlayerRespawned( OnSpawned )
+	AddCallback_OnPlayerRespawnedFinal( OnSpawnedFinal )
 }
 
-void function OnSpawned( entity player )
+void function OnSpawnedFinal( entity player )
 {
 	string uid = player.GetPlatformUID()
 	
@@ -130,6 +130,14 @@ void function OnSpawned( entity player )
 	
 	if( !file.bCollisionEnabled )
 		DisablePlayerCollision( player ) 
+		
+	if( !PlayerHasPassive( player, ePassives.PAS_CRYPTO ) )
+		GivePassive( player, ePassives.PAS_CRYPTO )
+		
+	if( !PlayerHasWeapon( player, "mp_ability_crypto_drone" ) )
+		player.GiveOffhandWeapon( "mp_ability_crypto_drone", OFFHAND_TACTICAL )
+		
+	GiveMelee( player )
 }
 
 bool function CanPing( entity player )
@@ -3678,24 +3686,25 @@ thread function() : ( ent ) {
     }
     })
     DispatchSpawn( trigger )
-    trigger = MapEditor_CreateTrigger( < -756.4, 24828.1, 54274.9 >, < 0, 0, 0 >, 100, 50, false )
-    trigger.SetEnterCallback( void function( entity trigger, entity ent )
+    trigger = MapEditor_CreateTrigger( < -756.4, 24828.1, 54274.9 >, < 0, 0, 0 >, 100, 50, false )   
+	trigger.SetEnterCallback( void function( entity trigger, entity ent )
     {
-        if (IsValid(ent)) 
-    {
-        if (ent.IsPlayer() && ent.GetPhysics() != MOVETYPE_NOCLIP) 
-        {
-        	array<ItemFlavor> characters = GetAllCharacters()
-        	CharacterSelect_AssignCharacter(ToEHI(ent), characters[10])
-          //TakeAllWeapons( ent )
-          //TakeAllPassives( ent )
-          ent.TakeOffhandWeapon(OFFHAND_ULTIMATE)
-          //ent.GiveOffhandWeapon( "mp_ability_crypto_drone", OFFHAND_TACTICAL)
+        if ( IsValid( ent ) ) 
+		{
+			if ( ent.IsPlayer() && ent.GetPhysics() != MOVETYPE_NOCLIP ) 
+			{
+				array<ItemFlavor> characters = GetAllCharacters()
+				CharacterSelect_AssignCharacter( ToEHI( ent ), characters[ 10 ], true, false ) //(mk): not passing arg 4 as false was taking crypto passive causing recall to not work. If this becomes an issue, remove the false, and just give the passive for crypto manually after.
+			  
+			  //TakeAllWeapons( ent )
+			  //TakeAllPassives( ent )
+			  ent.TakeOffhandWeapon( OFFHAND_ULTIMATE )
+			  //ent.GiveOffhandWeapon( "mp_ability_crypto_drone", OFFHAND_TACTICAL)
 
-          //if( !ent.HasPassive( ePassives.PAS_PILOT_BLOOD ) )
-            //GivePassive(ent, ePassives.PAS_PILOT_BLOOD)
-        }
-    }
+			  //if( !ent.HasPassive( ePassives.PAS_PILOT_BLOOD ) )
+				//GivePassive(ent, ePassives.PAS_PILOT_BLOOD)
+			}
+		}
     })
     DispatchSpawn( trigger )
     trigger = MapEditor_CreateTrigger( < -662.0441, -49783.43, 40617 >, < 0, 0, 0 >, 9000, 100, false )
