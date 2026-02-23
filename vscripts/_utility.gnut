@@ -6154,6 +6154,6 @@ void function GiveMelee( entity player )
 	if( !HasWeaponInWeaponSlot( player, WEAPON_INVENTORY_SLOT_PRIMARY_2 ) )
 		player.GiveWeapon( "mp_weapon_melee_survival", WEAPON_INVENTORY_SLOT_PRIMARY_2, [] )
 		
-	if( !PlayerHasWeapon( player, "melee_pilot_emptyhanded" ) )
-		player.GiveOffhandWeapon( "melee_pilot_emptyhanded", OFFHAND_MELEE, [] )
+	player.TakeOffhandWeapon( OFFHAND_MELEE )
+	player.GiveOffhandWeapon( "melee_pilot_emptyhanded", OFFHAND_MELEE, [] )
 }
