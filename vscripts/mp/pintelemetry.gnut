@@ -158,7 +158,7 @@ global function CodeCallback_SettingsUpdate
 global function AddCallback_OnBatchStatsLoaded
 global function RemoveCallback_OnBatchStatsLoaded
 global function AddCallback_PlayerDataFullyLoaded
-global function AddCallback_PlayerData
+global function Tracker_RegisterPlayerData
 
 global function Tracker_IsBatchStatsLoaded
 global function Tracker_GetCurrentEventByPlayerHandle_expensive
@@ -199,6 +199,7 @@ global function Tracker_IsRestrictedServer
 global function Tracker_SetRestrictedServer
 global function Tracker_SetForceUpdatePlayerData
 global function Tracker_GetStartUnixTime
+global function Tracker_NegateWeaponShot
 
 global function Tracker_ReturnSuperglides
 global function Tracker_ReturnKills
@@ -220,7 +221,7 @@ const bool DEBUG_STATS = false
 #if DEVELOPER
 	global function DEV_GetPlayerMetricsIndexByUID
 	global function DEV_SetMetricSafe
-	
+	global function DEV_PrintShotTimestamps
 	#if DEBUGDMG
 		global function DEV_DamageInfo
 		global function DEV_PrintDamageMap
@@ -1410,7 +1411,7 @@ void function AddCallback_PlayerDataFullyLoaded( void functionref( entity player
 		file.syncDataFullyLoadedCallbacks.append( callbackFunc ) 
 }
 
-void function AddCallback_PlayerData( string setting, void functionref( entity player, string data ) ornull setCallbackFunc = null )
+void function Tracker_RegisterPlayerData( string setting, void functionref( entity player, string data ) ornull setCallbackFunc = null )
 {
 	void functionref( entity player, string data ) callbackFunc = NULL_PDATA
 	
@@ -3806,6 +3807,29 @@ void function RecordPlayerShot( entity player, int weaponSource )
 		file.PlayerMetricsArray[ index ].WeaponShotsTimestamps[ weaponSource ].append( Time() )
 }
 
+void function Tracker_NegateWeaponShot( entity player, int weaponSource )
+{
+	int index = GetPlayerMetricsIndex( player )
+	
+	if ( !( weaponSource in file.PlayerMetricsArray[ index ].WeaponShotsTimestamps ) ) 
+		return 
+		
+	file.PlayerMetricsArray[ index ].WeaponShotsTimestamps[ weaponSource ].pop()	
+}
+
+void function DEV_PrintShotTimestamps( entity player )
+{
+	int index = GetPlayerMetricsIndex( player )
+	
+	foreach( int weaponSource, array<float> timestamps in file.PlayerMetricsArray[ index ].WeaponShotsTimestamps )
+	{
+		printt( "weaponSource:", weaponSource )
+		foreach( float timestamp in file.PlayerMetricsArray[ index ].WeaponShotsTimestamps[ weaponSource ] )
+			printt( "timestamp:", timestamp )
+			
+		print( "\n\n")
+	}
+}
 
 void function AddToPlayerKills( string playerID )
 {	
@@ -3853,7 +3877,7 @@ void function AddToPlayerHits( string playerID, int hits )
 /////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////
 
-// add your settings with AddCallback_PlayerData()
+// add your settings with Tracker_RegisterPlayerData()
 
 
 //player quit and rejoined, but data is already in table
@@ -3878,7 +3902,7 @@ void function PlayerDataCallbacks_Init()
 
 void function Gamemode1v1_PlayerDataCallbacks()
 {
-	if( !FlowState_AdminTgive() ){ AddCallback_PlayerData( "saved_weapons", UpdateSavedWeapons ) }
+	if( !FlowState_AdminTgive() ){ Tracker_RegisterPlayerData( "saved_weapons", UpdateSavedWeapons ) }
 }
 
 // utility funcitons for fetch/save playerdata 
@@ -4006,7 +4030,7 @@ string function GetWorldSpawnRef( int uid )
 // This function is responsible for sending sync data to r5r.dev.
 // If your data is not output with this, your data will not be synced. 
 
-// For settings added via AddCallback_PlayerData(), your settings will be here,
+// For settings added via Tracker_RegisterPlayerData(), your settings will be here,
 // IF they were saved using Tracker_SavePlayerData()
 
 // For stats added via Tracker_RegisterStat() with also having defined

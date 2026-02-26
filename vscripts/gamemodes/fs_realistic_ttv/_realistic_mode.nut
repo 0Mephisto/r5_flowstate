@@ -343,9 +343,9 @@ bool function ShouldEnableTrainingMode()
 	if( file.max_players_for_bots > 0 || file.min_players_for_bots > 0 )
 	{
 		int playerCount = GetConnectedPlayerCount() + GetPendingClientsCount()
-		if( playerCount < file.max_players_for_bots && playerCount >= file.min_players_for_bots )
+		if( playerCount <= file.max_players_for_bots && playerCount >= file.min_players_for_bots )
 			return true
-		else 
+		else
 			return false
 	}
 	
@@ -1002,7 +1002,11 @@ void function __SpawnDummy( vector origin, vector angles, entity player = null, 
 	}
 	
 	AddEntityCallback_OnKilled( dummy, OnDummyKilledCommon )
-
+	
+	#if TRACKER
+		AddEntityCallback_OnPostDamaged( dummy, OnDummyDamagedCommon ) //dirty
+	#endif
+	
     array<string> weapons = ["npc_weapon_hemlok", "npc_weapon_energy_shotgun", "npc_weapon_lstar"]
     string randomWeapon = weapons[ RandomInt( weapons.len() ) ]
     dummy.GiveWeapon( randomWeapon, WEAPON_INVENTORY_SLOT_ANY )
@@ -1256,6 +1260,12 @@ void function ClientCommand_RealisticSpectate( entity player, array<string> args
 		return
 	}
 	
+	if( Timeout_IsPlayerTimedOut( player ) )
+	{
+		LocalMsg( player, "#FS_TIMEOUT" )
+		return
+	}
+	
 	if( player.p.isSpectating )
 	{
 		RealisticEndSpectate( player )
@@ -1389,6 +1399,9 @@ void function OnTimedOut( entity player, bool toggle )
 					return 
 					
 				player.EndSignal( "OnDestroy" )
+				
+				while( GetTDMState() != eTDMState.IN_PROGRESS )
+					WaitFrame()
 				
 				if( !IsAlive( player ) )
 					player.WaitSignal( "FSOnRespawned" )
@@ -1577,4 +1590,15 @@ void function RealisticAirDrop( SpawnData data )
 
 	entity fx = StartParticleEffectInWorld_ReturnEntity( GetParticleSystemIndex( DROPPOD_SPAWN_FX ), data.spawn.origin, data.spawn.angles )
     thread AirdropItems( data.spawn.origin, data.spawn.angles, AIRDROP_ITEMS_POOL, fx, "droppod_loot_drop", null, 0, "" )
+}
+
+void function OnDummyDamagedCommon( entity dummy, var damageInfo ) //dirty hack
+{
+	#if TRACKER
+		entity attacker	= DamageInfo_GetAttacker( damageInfo )
+		if( !attacker.IsPlayer() )
+			return
+
+		Tracker_NegateWeaponShot( attacker, DamageInfo_GetDamageSourceIdentifier( damageInfo ) )
+	#endif
 }

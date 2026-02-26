@@ -820,6 +820,7 @@ Scripts:
 
 	client/rui/cl_weapon_status.gnut
 	client/rui/cl_custom_use_prompt.gnut
+	client/vgui/cl_overlay.nut
 
 	client/_cl_model_viewer.nut
 	client/cl_passives.gnut

@@ -419,9 +419,9 @@ void function Chat_Init()
 void function Chat_RegisterPlayerData()
 {
 	#if TRACKER && HAS_TRACKER_DLL
-		AddCallback_PlayerData( "unmuteTime", SetUnmuteTime ) //must be before muted
-		AddCallback_PlayerData( "muted", MuteFromPersistence )
-		AddCallback_PlayerData( "muted_reason" )
+		Tracker_RegisterPlayerData( "unmuteTime", SetUnmuteTime ) //must be before muted
+		Tracker_RegisterPlayerData( "muted", MuteFromPersistence )
+		Tracker_RegisterPlayerData( "muted_reason" )
 	#endif
 }
 

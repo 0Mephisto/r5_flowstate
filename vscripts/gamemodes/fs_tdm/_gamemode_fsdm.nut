@@ -2722,7 +2722,8 @@ void function CreateFlowStateDeathBoxForPlayer( entity victim, entity attacker, 
 		//Message(victim,"DEBUG", invItem.type.tostring(), 10)
 		if( invItem.type == 44 || invItem.type == 45 || invItem.type == 46 || invItem.type == 47 || invItem.type == 48 || invItem.type == 53 || invItem.type == 54 || invItem.type == 55 || invItem.type == 56 )
 		    continue
-		else{
+		else
+		{
 		    LootData data = SURVIVAL_Loot_GetLootDataByIndex( invItem.type )
 		    entity loot = SpawnGenericLoot( data.ref, deathBox.GetOrigin(), deathBox.GetAngles(), invItem.count )
 		    AddToDeathBox( loot, deathBox )
@@ -2768,29 +2769,45 @@ entity function FlowState_CreateDeathBox( entity player, bool hasCard )
 		vector restPos = box.GetOrigin()
 		vector fallPos = restPos + < 0, 0, 54 >
 
-		thread (void function( entity box , vector restPos , vector fallPos) {
-			entity mover = CreateScriptMover( restPos, box.GetAngles(), 0 )
-			if ( IsValid( box ) )
+		thread
+		(
+			void function( entity box , vector restPos , vector fallPos ) 
+			{
+				entity mover = CreateScriptMover( restPos, box.GetAngles(), 0 )
+				
+				if ( IsValid( box ) )
 				{
-				box.SetParent( mover, "", true )
-				mover.NonPhysicsMoveTo( fallPos, 0.5, 0.0, 0.5 )
+					box.SetParent( mover, "", true )
+					mover.NonPhysicsMoveTo( fallPos, 0.5, 0.0, 0.5 )
 				}
-			wait 0.5
-			if ( IsValid( box ) )
-				mover.NonPhysicsMoveTo( restPos, 0.5, 0.5, 0.0 )
-			wait 0.5
-			if ( IsValid( box ) )
-				box.ClearParent()
-			if ( IsValid( mover ) )
-				mover.Destroy()
+				
+				wait 0.5
+				
+				if ( IsValid( box ) )
+					mover.NonPhysicsMoveTo( restPos, 0.5, 0.5, 0.0 )
+				
+				wait 0.5
+				
+				if ( IsValid( box ) )
+					box.ClearParent()
+				
+				if ( IsValid( mover ) )
+					mover.Destroy()
 
-		}) ( box , restPos , fallPos)
+			}
+			
+		)( box , restPos , fallPos )
 
-		thread (void function( entity box) {
-			wait 20
-			if(IsValid(box))
-				box.Destroy()
-		}) ( box )
+		thread
+		( 
+			void function( entity box ) 
+			{
+				wait 20
+				if( IsValid( box ) )
+					box.Destroy()
+			}
+			
+		)( box )
 	}
 
 	return box
@@ -3498,7 +3515,7 @@ void function SimpleChampionUI()
 		thread
 		(
 			void function()
-			{
+			{		
 				SetChampionShowingState( true, Time() + SHORT_CHAMPION_CARD_TIME )
 				
 				OnThreadEnd
