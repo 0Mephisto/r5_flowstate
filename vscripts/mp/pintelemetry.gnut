@@ -3814,7 +3814,8 @@ void function Tracker_NegateWeaponShot( entity player, int weaponSource )
 	if ( !( weaponSource in file.PlayerMetricsArray[ index ].WeaponShotsTimestamps ) ) 
 		return 
 		
-	file.PlayerMetricsArray[ index ].WeaponShotsTimestamps[ weaponSource ].pop()	
+	if( file.PlayerMetricsArray[ index ].WeaponShotsTimestamps[ weaponSource ].len() )	
+		file.PlayerMetricsArray[ index ].WeaponShotsTimestamps[ weaponSource ].pop()	
 }
 
 void function DEV_PrintShotTimestamps( entity player )
