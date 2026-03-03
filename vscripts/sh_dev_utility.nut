@@ -41,7 +41,7 @@ void function ShDevUtility_Init()
 
 #if SERVER
 const string defaultkraldesc = "Made by @LorryLeKral."
-const string defaultdesc = ""
+const string defaultdesc = "Made by @archtux (Xearendil)."
 const string defaultmackdesc = "Made by @MackTheBoatMan."
 const array< array<string> > CustomHeirlooms =
 [
