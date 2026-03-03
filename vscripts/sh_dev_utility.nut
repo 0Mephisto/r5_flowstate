@@ -41,6 +41,7 @@ void function ShDevUtility_Init()
 
 #if SERVER
 const string defaultkraldesc = "Made by @LorryLeKral."
+const string defaultdesc = ""
 const string defaultmackdesc = "Made by @MackTheBoatMan."
 const array< array<string> > CustomHeirlooms =
 [
@@ -49,7 +50,9 @@ const array< array<string> > CustomHeirlooms =
     [ "mp_weapon_macks_knife_primary", "melee_macks_knife", defaultmackdesc ], // 1
 	[ "mp_weapon_mc_sword_primary", "melee_mc_sword", defaultkraldesc ], // 2
 	[ "mp_weapon_mjolnir_primary", "melee_mjolnir", defaultkraldesc ], // 3
-	[ "mp_weapon_karambit_primary", "melee_karambit", defaultkraldesc ] // 4
+	[ "mp_weapon_karambit_primary", "melee_karambit", defaultkraldesc ], // 4
+	[ "mp_weapon_vctblue_primary", "melee_vctblue", defaultdesc ], // 5
+	[ "mp_weapon_glitchpop", "melee_glitchpop", defaultdesc ] // 6
 ]
 
 bool function ClientCommand_GiveHeirloom( entity commandPlayer, array<string> argList )
