@@ -1,5 +1,73 @@
-Release:  Feb 12/2026:
+Release:   March ?/2026
 
+========================================
+For Players:
+----------------------------------------
+
+- New heirlooms made by Archtux ( Xerendil ) ported by (WateryContinent02)
+- Added dev menu options for equipping heirlooms (WateryContinent02)
+- Added complete dev menu subsystem for equipping legend abilities (WateryContinent02)
+
+- Added vctblue heirloom as default to Realistic TTV mode playlist.
+- Fixed zipline behavior to match retail
+- Fixed sometimes unable to loot from deathbox in realistic TTV mode
+- Can vote to skip maps with chat command:  /skip  in participating  servers
+- Enabling the movement overlay for gamemodes is now possible via settings menu
+- Updated default kd weights for 1v1 mode
+- Fixed crash related to inworld assets
+- Fixed flashing tp hint in rankup map playlist
+- Added bot kills stats to realistic mode (separate from core leaderboard )
+- Added ui persist for legend select from lobby, applies to servers when joining (if legend selection is available on server)
+- Added legend select from pause menu in free roam
+- 1v1: Potential fix for respawning backwards in 1v1, prevent crash during challenge when using tactical in some instances
+- Removed default killshot sound in grapples n guns
+- Fixed rankup mode issues with velocity and recalling drone
+
+========================================
+For Hosts:
+----------------------------------------
+
+- Fixed auto unmute for expired mutes
+- Added player map vote skip, disabled by default, configured in playlist. see playlist var: map_skip_enabled
+- Removed broken spawns in mp_rr_olympus_tt for 1v1 playlist
+- temporarily disable highcal_mag_l3 via playlists
+- fixed all audio queing in grapples n guns playlist
+- Added DoorFight ai think logic to realistic mode
+- Added playlist var settings to control the player threshold for npc training mode in realistic ttv playlist
+- Added giving heirloom playlist var realistic_mode_give_heirloom
+- Added spectate to menu based on playlist var:  realistic_enable_spectate
+- Added enabling ground loot via with tier data in spawns via playlist var:  realistic_ground_loot
+- Added enabling air drops via playlist var: realistic_air_drops
+- Timeout feature improvement: persistence based timeouts that survive server map change and restart via tracker PlayerData isolated to server host (if running tracker)
+
+========================================
+Misc (Scripters):
+----------------------------------------
+
+- Improved ParseWeapon function with better feedback and include disabled refs
+- Fixed rotation bug when min/max are specified in a rotation file entry
+- Updated notepad++ read me and squirrel.xml file, as well as provided EnHanceAnyLexer config for full native lexxing.
+- Moved realistic mode portal logic out of portal weapon and isolated into gamemode
+- Updated  ea_verify display to use eMsgUI.NOTIFICATION
+- Prevent crash from array bounds access for anims
+- Added callback registry for door interaction callbacks so gamemodes can move their logic there
+- Added finalon player respawned registry to definitively control behavior on spawn in non flowstate gamemodes
+- Added several utility functions
+- Prevent rare crash from invalid net var
+- Added quick custom item flavor unlock registry in sh_grx.nut (CUSTOM_UNLOCKED_REFS)
+- Added new localization tokens ( also registered for remote calling )
+- Repaked problem assets using newest repak source. (WateryContinent02)
+
+
+
+
+
+
+
+
+
+
+Release:  Feb 12/2026:
 
 ========================================
 For Players:
