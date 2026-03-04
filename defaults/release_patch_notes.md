@@ -4,7 +4,7 @@ Release:   March ?/2026
 For Players:
 ----------------------------------------
 
-- New heirlooms made by Archtux ( Xerendil ) ported by (WateryContinent02)
+- New heirlooms made by Archtux ( Xearendil ) ported by (WateryContinent02)
 - Added dev menu options for equipping heirlooms (WateryContinent02)
 - Added complete dev menu subsystem for equipping legend abilities (WateryContinent02)
 
