@@ -1,0 +1,17 @@
+#base "melee_pilot_emptyhanded.txt"
+
+WeaponData
+{
+
+	// General
+	"printname"   								"MELEE_SKIN_GLITCH_POP_NAME"
+	"shortprintname"							"MELEE_SKIN_GLITCH_POP_NAME"
+	"description" 								"MELEE_SKIN_GLITCH_POP_NAME"
+	"longdesc"									"MELEE_SKIN_GLITCH_POP_NAME"
+	"menu_icon"									"rui/hud/common/melee_icon"
+	"hud_icon"									"rui/hud/common/melee_icon"
+	"weapon_type_flags"							"WPT_MELEE"
+	"viewmodel"   								"mdl/Weapons/glitchpop/glitchpop_ptpov.rmdl"
+	"impact_effect_table" 						"melee_knife"
+}
+
