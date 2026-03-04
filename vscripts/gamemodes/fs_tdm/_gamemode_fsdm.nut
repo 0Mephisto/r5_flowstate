@@ -73,6 +73,7 @@ global function EndRound
 global function PrimaryWeaponMetagame_Init
 global function FS_GiveRandomMelee
 global function IsHeirloomRegistered
+global function Flowstate_ForceMapChange
 #if DEVELOPER
 	global function DEV_NextRound
 #endif
@@ -95,6 +96,8 @@ global function ClientCommand_GiveWeapon
 global function ValidateWeaponTgiveSettings
 global function GetCommunityHeirlooms
 global function FS_InitCommunityHeirlooms
+
+global function CreateFlowStateDeathBoxForPlayer
 
 
 const string WHITE_SHIELD = "armor_pickup_lv1"
@@ -202,6 +205,8 @@ struct
     array<int> mapVotes
     array<int> mapIds
     int mappicked = 0
+	bool forceRoundMapChange = false
+	
 } FS_DM
 
 // ██████   █████  ███████ ███████     ███████ ██    ██ ███    ██  ██████ ████████ ██  ██████  ███    ██ ███████
@@ -332,6 +337,14 @@ bool function Flowstate_IsRealisticMode()
 void function ResetLoadedWeapons( entity player )
 {
 	ClientCommand_ResetSavedWeapons( player, [] )
+}
+
+bool function Flowstate_ForceMapChange( bool ornull setting = null )
+{
+	if( setting != null )
+		FS_DM.forceRoundMapChange = expect bool ( setting )
+		
+	return FS_DM.forceRoundMapChange
 }
 
 array<string> function ReturnChatArray()
@@ -1301,9 +1314,9 @@ void function _OnPlayerDied( entity victim, entity attacker, var damageInfo )
 				Remote_CallFunction_ByRef( victim, "ForceScoreboardLoseFocus" )
 				
 				//(mk): I originally intended this to be apart of a lifestate change or YouDied callback, and setting UpdateNextRespawnTime( entity player, float time ), client using: GetNextRespawnTime( player )  but due to various mode behavior, it's better left as a remote func call.
-				Remote_CallFunction_Replay( victim, "Flowstate_ShowRespawnTimeUI", int( DEATHCAM_TIME_SHORT + decidedWaitTime ) )//+ DEATHCAM_TIME_SHORT ) )
+				Remote_CallFunction_NonReplay( victim, "Flowstate_ShowRespawnTimeUI", int( DEATHCAM_TIME_SHORT + decidedWaitTime ) )//+ DEATHCAM_TIME_SHORT ) )
 
-				if( flowstateSettings.is_halo_gamemode || flowstateSettings.bIsRealisticMode )
+				if( flowstateSettings.is_halo_gamemode )// || flowstateSettings.bIsRealisticMode )
 				{
 					SURVIVAL_Death_DropLoot( victim, damageInfo ) //(mk):this wait threads inside.
 					
@@ -2712,6 +2725,18 @@ array<ConsumableInventoryItem> function FlowStateGetAllDroppableItems( entity pl
 	return final
 }
 
+const array<int> INVALID_INV_ITEM_FOR_DEATHBOX =
+[
+	44, 
+	45, 
+	46, 
+	47, 
+	48, 
+	53, 
+	54, 
+	55, 
+	56
+]
 
 void function CreateFlowStateDeathBoxForPlayer( entity victim, entity attacker, var damageInfo )
 {
@@ -2720,14 +2745,12 @@ void function CreateFlowStateDeathBoxForPlayer( entity victim, entity attacker, 
 	foreach ( invItem in FlowStateGetAllDroppableItems( victim ) )
 	{
 		//Message(victim,"DEBUG", invItem.type.tostring(), 10)
-		if( invItem.type == 44 || invItem.type == 45 || invItem.type == 46 || invItem.type == 47 || invItem.type == 48 || invItem.type == 53 || invItem.type == 54 || invItem.type == 55 || invItem.type == 56 )
+		if( INVALID_INV_ITEM_FOR_DEATHBOX.contains( invItem.type ) )
 		    continue
-		else
-		{
-		    LootData data = SURVIVAL_Loot_GetLootDataByIndex( invItem.type )
-		    entity loot = SpawnGenericLoot( data.ref, deathBox.GetOrigin(), deathBox.GetAngles(), invItem.count )
-		    AddToDeathBox( loot, deathBox )
-		}
+			
+		LootData data = SURVIVAL_Loot_GetLootDataByIndex( invItem.type )
+		entity loot = SpawnGenericLoot( data.ref, deathBox.GetOrigin(), deathBox.GetAngles(), invItem.count )
+		AddToDeathBox( loot, deathBox )
 	}
 
 	UpdateDeathBoxHighlight( deathBox )
@@ -3516,7 +3539,17 @@ void function SimpleChampionUI()
 		(
 			void function()
 			{		
+				#if TRACKER
+					entity champion = GetChampion()
+					while( IsValid( champion ) && !Tracker_IsStatsReadyFor( champion ) )
+						WaitFrame()
+						
+					WaitEndFrame()
+				#endif
+				
 				SetChampionShowingState( true, Time() + SHORT_CHAMPION_CARD_TIME )
+				foreach( player in GetPlayerArray() )
+					Remote_CallFunction_ByRef( player, "Tracker_ShowChampion" )
 				
 				OnThreadEnd
 				(
@@ -3525,7 +3558,7 @@ void function SimpleChampionUI()
 						SetChampionShowingState( false )
 					}
 				)
-				
+							
 				WaitForChampionToFinish()
 			}
 		)()
@@ -3545,9 +3578,6 @@ void function SimpleChampionUI()
 	{
 		if( !IsValid( player ) ) 
 			continue
-		
-		if( presentChampion )
-			Remote_CallFunction_ByRef( player, "Tracker_ShowChampion" )
 			
 		FSDM_SetMatchPersistentVarsForPlayer( player ) //(mk): sets current round stats since we are about to clear that data.
 			
@@ -4007,7 +4037,7 @@ void function SimpleChampionUI()
 	//////// 	ROUND OVER 	////////
 	////////////////////////////////
 		
-	if( file.currentRound == Flowstate_AutoChangeLevelRounds() && Flowstate_EnableAutoChangeLevel() )
+	if( file.currentRound == Flowstate_AutoChangeLevelRounds() && Flowstate_EnableAutoChangeLevel() || Flowstate_ForceMapChange() )
 	{
 		foreach( player in GetPlayerArray() )
 		{

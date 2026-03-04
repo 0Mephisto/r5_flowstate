@@ -136,6 +136,7 @@ void function RealisticMode_Init()
 	AddCallback_EntitiesDidLoad( InitializeDoorTracking )
 	AddCallback_OnPlayerWeaponAttachmentChanged( Realistic_OnWeaponAttachmentChanged )
 	AddFSCallback_OnRespawned( RealisticMode_OnSpawned )
+	AddDeathCallback( "player", OnPlayerKilledCommon )
 
 	SpawnSystem_InitGamemodeOptions()
 	
@@ -325,11 +326,12 @@ void function __SpawnLootAtIntervals( float minWait, float maxWait, int numItems
 void function CheckPlayerCountForBots( entity _ )
 {
 	int playerCount = GetConnectedPlayerCount() + GetPendingClientsCount()
-	if( file.bTrainingModeActive && playerCount > file.max_players_for_bots )
+	
+	if( file.bTrainingModeActive && ( playerCount > file.max_players_for_bots || playerCount < file.min_players_for_bots ) )
 	{
 		EnableOrDisableTrainingMode( false )
 	}
-	else if( !file.bTrainingModeActive && playerCount >= file.min_players_for_bots )
+	else if( !file.bTrainingModeActive && playerCount >= file.min_players_for_bots && playerCount <= file.max_players_for_bots )
 	{
 		EnableOrDisableTrainingMode( true )
 	}
@@ -342,7 +344,7 @@ bool function ShouldEnableTrainingMode()
 
 	if( file.max_players_for_bots > 0 || file.min_players_for_bots > 0 )
 	{
-		int playerCount = GetConnectedPlayerCount() + GetPendingClientsCount()
+		int playerCount = GetConnectedPlayerCount() + GetPendingClientsCount()		
 		if( playerCount <= file.max_players_for_bots && playerCount >= file.min_players_for_bots )
 			return true
 		else
@@ -770,8 +772,8 @@ void function RealisticMode_OnSpawned( entity player )
 		
 		if( file.bGiveHeirloom )
 		{
-			player.GiveWeapon( "mp_weapon_bolo_sword_primary", WEAPON_INVENTORY_SLOT_PRIMARY_2, [] )
-			player.GiveOffhandWeapon( "melee_bolo_sword", OFFHAND_MELEE, [] )
+			player.GiveWeapon( "mp_weapon_vctblue_primary", WEAPON_INVENTORY_SLOT_PRIMARY_2, [] )
+			player.GiveOffhandWeapon( "melee_vctblue", OFFHAND_MELEE, [] )
 		}
 		else
 		{
@@ -1601,4 +1603,10 @@ void function OnDummyDamagedCommon( entity dummy, var damageInfo ) //dirty hack
 
 		Tracker_NegateWeaponShot( attacker, DamageInfo_GetDamageSourceIdentifier( damageInfo ) )
 	#endif
+}
+
+void function OnPlayerKilledCommon( entity player, var damageInfo )
+{
+	entity attacker = DamageInfo_GetAttacker( damageInfo )
+	CreateFlowStateDeathBoxForPlayer( player, attacker, damageInfo )
 }

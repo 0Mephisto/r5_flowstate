@@ -396,6 +396,7 @@ void function Server_Init()
 	ObjectiveResourceSystem_ServerInit()
 	Chat_Init()
 	TimeoutInit()
+	MapSkip_Init()
 
 	LiveAPI_Init()
 	LootHelper_Init()
