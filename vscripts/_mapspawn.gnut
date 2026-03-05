@@ -493,8 +493,8 @@ void function PrecacheSDKWeapons()
 	PrecacheWeapon( $"mp_weapon_vctblue_primary" )
 	PrecacheWeapon( $"melee_vctblue" )	
 	
-	PrecacheWeapon( $"mp_weapon_glitchpop" )
-	PrecacheWeapon( $"melee_glitchpop" )
+	//PrecacheWeapon( $"mp_weapon_glitchpop" )
+	//PrecacheWeapon( $"melee_glitchpop" )
 
 	//Custom Weapons
 	PrecacheWeapon( $"mp_weapon_lightninggun" )//Make a proper hitscan weapon later
