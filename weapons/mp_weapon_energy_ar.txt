@@ -1,6 +1,4 @@
-#base "_base_assault_rifle.txt"
-
-                   
+#base "_base_assault_rifle.txt"             
 #base "_base_mags_energy.txt"
       
 
