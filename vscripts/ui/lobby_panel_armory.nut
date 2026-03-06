@@ -13,7 +13,7 @@ void function InitArmoryPanel( var panel )
 {
 	file.panel = panel
 	file.buttons = GetPanelElementsByClassname( panel, "WeaponCategoryButtonClass" )
-	Assert( file.buttons.len() == 6 )
+	Assert( file.buttons.len() == 7 )
 
 	SetPanelTabTitle( panel, "#ARMORY" )
 	SetPanelTabTitle( panel, "#LOADOUT" )
