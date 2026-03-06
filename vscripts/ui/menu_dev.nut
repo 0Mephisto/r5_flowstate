@@ -715,8 +715,6 @@ void function SetupRespawnPlayersDevMenu()
 void function SetupHeirloomsDevMenu()
 {
 	SetupDevCommand( "Default Melee", "giveheirloom -1" )
-	SetupDevCommand( "VCT Blue", "giveheirloom 5" )
-	SetupDevCommand( "Glitch Pop", "giveheirloom 6" )
 	if ( IsKralStuffActive() ){
 	SetupDevCommand( "Bolo Sword", "giveheirloom 0" )
 	SetupDevCommand( "Diamond Sword", "giveheirloom 2" )

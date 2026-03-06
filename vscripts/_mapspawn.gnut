@@ -489,12 +489,6 @@ void function PrecacheSDKWeapons()
 	PrecacheWeapon( $"mp_weapon_macks_knife_primary" )
 	PrecacheWeapon( $"melee_pathfinder_gloves" )//REMOVE LATER
 	PrecacheWeapon( $"mp_weapon_pathfinder_gloves_primary" )
-	
-	PrecacheWeapon( $"mp_weapon_vctblue_primary" )
-	PrecacheWeapon( $"melee_vctblue" )	
-	
-	PrecacheWeapon( $"mp_weapon_glitchpop" )
-	PrecacheWeapon( $"melee_glitchpop" )
 
 	//Custom Weapons
 	PrecacheWeapon( $"mp_weapon_lightninggun" )//Make a proper hitscan weapon later
