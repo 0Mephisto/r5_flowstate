@@ -76,7 +76,6 @@ void function CustomizeWeaponMenu_Update( var menu )
 		Hud_GetChild( menu, "WeaponSkinsPanel3" )
 		Hud_GetChild( menu, "WeaponSkinsPanel4" )
 		Hud_GetChild( menu, "WeaponSkinsPanel5" )
-		Hud_GetChild( menu, "WeaponSkinsPanel6" )
 	]
 
 	for ( int panelIdx = 0; panelIdx < file.weaponTabBodyPanelList.len(); panelIdx++ )

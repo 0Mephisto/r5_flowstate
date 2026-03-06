@@ -171,9 +171,6 @@ global enum eDamageSourceId
 
 	melee_lifeline_baton
 	mp_weapon_lifeline_baton_primary
-	
-	melee_macks_knife
-	mp_weapon_macks_knife_primary
 
 	melee_shadowsquad_hands
 	melee_shadowroyale_hands
