@@ -38,6 +38,7 @@ For Hosts:
 - Added enabling air drops via playlist var: realistic_air_drops
 - Timeout feature improvement: persistence based timeouts that survive server map change and restart via tracker PlayerData isolated to server host (if running tracker)
 - Patched rare case where inability to melee during a fight can occur
+- Fixed incorret message in realistic ttv for enable/disable of bots
 
 ========================================
 Misc (Scripters):
