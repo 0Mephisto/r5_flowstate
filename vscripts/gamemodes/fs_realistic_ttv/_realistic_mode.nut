@@ -772,8 +772,8 @@ void function RealisticMode_OnSpawned( entity player )
 		
 		if( file.bGiveHeirloom )
 		{
-			player.GiveWeapon( "mp_weapon_vctblue_primary", WEAPON_INVENTORY_SLOT_PRIMARY_2, [] )
-			player.GiveOffhandWeapon( "melee_vctblue", OFFHAND_MELEE, [] )
+			player.GiveWeapon( "mp_weapon_bolo_sword_primary", WEAPON_INVENTORY_SLOT_PRIMARY_2, [] )
+			player.GiveOffhandWeapon( "melee_bolo_sword", OFFHAND_MELEE, [] )
 		}
 		else
 		{

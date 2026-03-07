@@ -1,14 +1,12 @@
-Release:   March ?/2026
+Release:   March 7/2026
 
 ========================================
 For Players:
 ----------------------------------------
 
-- New heirlooms made by Archtux ( Xearendil ) ported by (WateryContinent02)
-- Added dev menu options for equipping heirlooms (WateryContinent02)
 - Added complete dev menu subsystem for equipping legend abilities (WateryContinent02)
+- Added hopup turbo charger back to havoc (WateryContinent02)
 
-- Added vctblue heirloom as default to Realistic TTV mode playlist.
 - Fixed zipline behavior to match retail
 - Fixed sometimes unable to loot from deathbox in realistic TTV mode
 - Can vote to skip maps with chat command:  /skip  in participating  servers
@@ -59,6 +57,14 @@ Misc (Scripters):
 - Repaked problem assets using newest repak source. (WateryContinent02)
 
 
+========================================
+Engine:
+----------------------------------------
+
+- Platform: Fix potential code execution vulnerability in LaunchExternalWebBrowser script function. (O-Robotic)
+- Pylon: Normalise all ip addresses used in the auth process ( fixes reconnect ). (O-Robotic)
+- Server: Implement automatic JWT public key fetching ( Rexx )
+- Other refactors and optimizations
 
 
 

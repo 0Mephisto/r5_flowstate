@@ -3897,12 +3897,6 @@ void function SimpleChampionUI()
 	
 	foreach( roundPlayer in GetPlayerArray() )
 		FSDM_SetMatchPersistentVarsForPlayer( roundPlayer )
-
-	PIN_RoundEnd( file.currentRound ) //must be after champion determined.
-	// wait (2) // Not required wait since we're already waiting above flowstateSettings.endgame_delay
-	WaitEndFrame()
-
-	// end ship
 	
 	////////////////////////////////
 	//////// 	SCORE BOARD 	////
@@ -3910,8 +3904,56 @@ void function SimpleChampionUI()
 
 	if( SCOREBOARD_ENABLE )
 	{
-		thread SendScoreboardToClient()
+		#if TRACKER 
+			if( bIs1v1Mode() )
+			{
+				foreach( player in GetPlayerArray() )
+				{				
+					PlayerMetrics pm 		= Tracker_StatsMetricsByUID( player.p.UID )
+					int subtractKills 		= pm.lock1v1Kills
+					int subtractDeaths 		= pm.lock1v1Deaths
+					int subtractDamage		= pm.lock1v1Damage.tointeger()
+						
+					int currentKills		= player.GetPlayerNetInt( "kills" )
+					int currentDeaths		= player.GetPlayerNetInt( "deaths" )
+					int currentDamage		= player.GetPlayerNetInt( "damage" )
+					
+					player.SetPlayerNetInt( "kills", currentKills - subtractKills )
+					player.SetPlayerNetInt( "deaths", currentDeaths - subtractDeaths )
+					player.SetPlayerNetInt( "damage", currentDamage - subtractDamage )
+					
+					
+					const array<int> SKIP_PGS_FOR_MODE =
+					[
+						ePlaylists.fs_scenarios,
+						ePlaylists.fs_lgduels_1v1
+					]
+					
+					if( SKIP_PGS_FOR_MODE.contains( Playlist() ) )
+						continue
+					
+					currentKills 		= player.GetPlayerGameStat( PGS_KILLS )
+					currentDeaths		= player.GetPlayerGameStat( PGS_DEATHS )
+					currentDamage		= player.GetPlayerGameStat( PGS_ASSISTS ) //(mk): PGS_ASSISTS is used to display damage except for scenarios/lgduels . Todo: register custom pgs fields
+					
+					player.SetPlayerGameStat( PGS_KILLS, currentKills - subtractKills )
+					player.SetPlayerGameStat( PGS_DEATHS, currentDeaths - subtractDeaths )
+					player.SetPlayerGameStat( PGS_ASSISTS, currentDamage - subtractDamage )
+				}
+			}
+		#endif
+
+		waitthread SendScoreboardToClient()
 	}
+	
+	////////////////////////////////
+	//////// 	SHIP STATS 		////
+	////////////////////////////////
+	wait 1
+	
+	PIN_RoundEnd( file.currentRound ) //must be after champion determined.
+	WaitEndFrame()
+	// end ship
 
 	if( file.currentRound == Flowstate_AutoChangeLevelRounds() && Flowstate_EnableAutoChangeLevel() && flowstateSettings.end_match_message )
 	{
@@ -4796,17 +4838,17 @@ string function GetBestPlayerName()
 	return champion
 }
 
-float function getkd(int kills, int deaths)
+float function getkd( int kills, int deaths )
 {
-
-	if(deaths == 0)
-		return kills.tofloat();
+	if( deaths == 0 )
+		return kills.tofloat()
 
 	float kd = kills.tofloat() / deaths.tofloat()
-	kd = kd*100
+	kd = kd * 100
 
-	int floorkd = int(floor(kd+0.5))
-	kd = (float(floorkd))/100
+	int floorkd = int( floor( kd + 0.5 ) )
+	kd = ( float( floorkd ) ) / 100
+	
 	return kd
 }
 
@@ -4817,7 +4859,7 @@ void function SendScoreboardToClient()
 		if ( !IsValid( sPlayer ) ) 
 			continue
 		
-		Remote_CallFunction_NonReplay(sPlayer, "ServerCallback_ClearScoreboardOnClient")
+		Remote_CallFunction_NonReplay( sPlayer, "ServerCallback_ClearScoreboardOnClient" )
 		
 		thread function() : ( sPlayer )
 		{
@@ -4826,15 +4868,24 @@ void function SendScoreboardToClient()
 				if ( !IsValid( player ) ) 
 					continue
 				
+				int subtractKills
+				int subtractDeaths
+				float subtractDamage
+				
+				#if TRACKER
+					PlayerMetrics pm 	= Tracker_StatsMetricsByUID( player.p.UID )
+					subtractDamage		= pm.lock1v1Damage
+				#endif
+				
 				PlayerInfo p
 				p.eHandle = player.GetEncodedEHandle()
 				p.score = player.GetPlayerGameStat( PGS_KILLS )
 				p.deaths = player.GetPlayerGameStat( PGS_DEATHS )
 				p.kd = getkd( p.score, p.deaths )
-				p.damage = int( player.p.playerDamageDealt)
-				p.lastLatency = int(player.GetLatency()* 1000)
+				p.damage = int( player.p.playerDamageDealt - subtractDamage )
+				p.lastLatency = int( player.GetLatency() * 1000 )
 				
-				Remote_CallFunction_NonReplay(sPlayer, "ServerCallback_SendScoreboardToClient", p.eHandle, p.score, p.deaths, p.kd, p.damage, p.lastLatency)
+				Remote_CallFunction_NonReplay( sPlayer, "ServerCallback_SendScoreboardToClient", p.eHandle, p.score, p.deaths, p.kd, p.damage, p.lastLatency )
 			}
 		}()
 	}

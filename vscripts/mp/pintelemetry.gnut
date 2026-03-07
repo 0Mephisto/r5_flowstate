@@ -311,15 +311,8 @@ global struct Tracker
 } 
 global Tracker tracker
 
-//verify struct
-struct PlayerVerifyCount 
-{
-    string playerID
-    int verifyCount
-}
-
 // array of player structs containing various new metrics
-struct PlayerMetrics 
+global struct PlayerMetrics 
 {
     string playerID
 	string playername
@@ -334,6 +327,10 @@ struct PlayerMetrics
 	float damage
 	int shots
 	int hits
+	
+	int lock1v1Deaths
+	int lock1v1Kills
+	float lock1v1Damage
 
 	bool hadleft = false
 	bool playerleft = false
@@ -343,6 +340,13 @@ struct PlayerMetrics
 	int previous_score = 0
 	
 	bool isValid
+}
+
+//verify struct
+struct PlayerVerifyCount 
+{
+    string playerID
+    int verifyCount
 }
 
 struct PlayerData 
@@ -2881,7 +2885,15 @@ void function RemoveDamageEvents( int attacker_handle, int victim_handle ) //Tod
 				soloGroupStruct group = Gamemode1v1_GetPlayerSoloGroup( currentAttacker )
 			
 				if ( IsValid( group.isValid ) && group.IsKeep )
+				{
 					addStatsToGroup( currentAttacker, group, playerTotalDamages[i], playerTotalHits[i], playerTotalShots[i], true )
+					
+					string uidToAddTo = GetPlayerUIDFromHandle( player_handles[i] )
+					{
+						AddToPlayerLock1v1Kills( uidToAddTo, 1 )
+						AddToPlayerLock1v1Damage( uidToAddTo, playerTotalDamages[i] )
+					}
+				}
 			}						
 		}
 		
@@ -2941,6 +2953,11 @@ void function RemoveDamageEvents( int attacker_handle, int victim_handle ) //Tod
 			{
 				bIsChal = true
 				addStatsToGroup( victim, group, victimTotalDamage, victimTotalHits, victimTotalShots, false )
+				
+				string uidToAddTo = victim.p.UID
+				
+				AddToPlayerLock1v1Damage( uidToAddTo, victimTotalDamage )
+				AddToPlayerLock1v1Deaths( uidToAddTo, 1 )
 			}
 		}
 			
@@ -3867,6 +3884,23 @@ void function AddToPlayerHits( string playerID, int hits )
 	file.PlayerMetricsArray[ index ].hits += hits
 }
 
+void function AddToPlayerLock1v1Kills( string playerID, int lockedKills )
+{
+	int index = GetPlayerMetricsIndexByUID( playerID )
+	file.PlayerMetricsArray[ index ].lock1v1Kills += lockedKills
+}
+
+void function AddToPlayerLock1v1Damage( string playerID, float lockedDamage )
+{
+	int index = GetPlayerMetricsIndexByUID( playerID )
+	file.PlayerMetricsArray[ index ].lock1v1Damage += lockedDamage
+}
+
+void function AddToPlayerLock1v1Deaths( string playerID, int deaths )
+{
+	int index = GetPlayerMetricsIndexByUID( playerID )
+	file.PlayerMetricsArray[ index ].lock1v1Deaths += deaths
+}
 
 /////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////
@@ -5095,22 +5129,22 @@ void function PIN_PlayerOutResource( entity player, string ref )
 //Todo: change determination based on mode
 string function Tracker_WinnerByKillsAndDamage() 
 {
-    int Most_Kills 		= -1
-    float Most_Damage 	= -1.0
-    string winner 
+    int iMostKills 		= -1
+    float fMostDamage 	= -1.0
+    string winner
     float winner_damage
     int winner_kills
     string winner_oid
 
     foreach ( player in file.PlayerMetricsArray ) 
 	{
-        int kills = player.kills
-        float damage = player.damage
+        int kills = maxint( player.kills - player.lock1v1Kills, 0 )
+        float damage = max( player.damage - player.lock1v1Damage, 0 )
 
-        if ( kills > Most_Kills || ( kills == Most_Kills && damage > Most_Damage ) ) 
+        if ( kills > iMostKills || ( kills == iMostKills && damage > fMostDamage ) ) 
 		{
-            Most_Kills = kills
-            Most_Damage = damage
+            iMostKills = kills
+            fMostDamage = damage
 
             winner = player.playername
             winner_oid = player.playerID
@@ -5119,7 +5153,7 @@ string function Tracker_WinnerByKillsAndDamage()
         }
     }
 
-    if ( winner != "" ) 
+    if ( iMostKills > 0 && winner != "" ) 
 	{
         string json = "{\"winner\":\"" + StringRemoveControlCharacters( winner ) + "\",\"winner_oid\":\"" + winner_oid + "\",\"winner_kills\":" + winner_kills.tostring() + ",\"winner_damage\":" + format( "%.2f", winner_damage ) + "}"
         return json
