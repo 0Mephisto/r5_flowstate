@@ -38,7 +38,7 @@ For Hosts:
 - Added enabling air drops via playlist var: realistic_air_drops
 - Timeout feature improvement: persistence based timeouts that survive server map change and restart via tracker PlayerData isolated to server host (if running tracker)
 - Patched rare case where inability to melee during a fight can occur
-- Fixed incorret message in realistic ttv for enable/disable of bots
+- Fixed incorrect message in realistic ttv for enable/disable of bots
 
 ========================================
 Misc (Scripters):
@@ -46,7 +46,7 @@ Misc (Scripters):
 
 - Improved ParseWeapon function with better feedback and include disabled refs
 - Fixed rotation bug when min/max are specified in a rotation file entry
-- Updated notepad++ read me and squirrel.xml file, as well as provided EnHanceAnyLexer config for full native lexxing.
+- Updated notepad++ read me and squirrel.xml file, as well as provided EnhanceAnyLexer config for full native lexxing.
 - Moved realistic mode portal logic out of portal weapon and isolated into gamemode
 - Updated  ea_verify display to use eMsgUI.NOTIFICATION
 - Prevent crash from array bounds access for anims
