@@ -37,6 +37,7 @@ For Hosts:
 - Added enabling ground loot via with tier data in spawns via playlist var:  realistic_ground_loot
 - Added enabling air drops via playlist var: realistic_air_drops
 - Timeout feature improvement: persistence based timeouts that survive server map change and restart via tracker PlayerData isolated to server host (if running tracker)
+- Patched rare case where inability to melee during a fight can occur
 
 ========================================
 Misc (Scripters):
