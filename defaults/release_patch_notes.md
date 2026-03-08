@@ -7,6 +7,7 @@ For Players:
 - Added complete dev menu subsystem for equipping legend abilities (WateryContinent02)
 - Added hopup turbo charger back to havoc (WateryContinent02)
 
+- 1v1 Gamemode: Lock1v1 ( chal ) kills/damage no longer count towards a win.
 - Fixed zipline behavior to match retail
 - Fixed sometimes unable to loot from deathbox in realistic TTV mode
 - Can vote to skip maps with chat command:  /skip  in participating  servers
