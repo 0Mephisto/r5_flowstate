@@ -3918,9 +3918,9 @@ void function SimpleChampionUI()
 					int currentDeaths		= player.GetPlayerNetInt( "deaths" )
 					int currentDamage		= player.GetPlayerNetInt( "damage" )
 					
-					player.SetPlayerNetInt( "kills", currentKills - subtractKills )
-					player.SetPlayerNetInt( "deaths", currentDeaths - subtractDeaths )
-					player.SetPlayerNetInt( "damage", currentDamage - subtractDamage )
+					player.SetPlayerNetInt( "kills", maxint( 0, currentKills - subtractKills ) )
+					player.SetPlayerNetInt( "deaths", maxint( 0, currentDeaths - subtractDeaths ) )
+					player.SetPlayerNetInt( "damage", maxint( 0, currentDamage - subtractDamage ) )
 					
 					
 					const array<int> SKIP_PGS_FOR_MODE =
@@ -3936,9 +3936,9 @@ void function SimpleChampionUI()
 					currentDeaths		= player.GetPlayerGameStat( PGS_DEATHS )
 					currentDamage		= player.GetPlayerGameStat( PGS_ASSISTS ) //(mk): PGS_ASSISTS is used to display damage except for scenarios/lgduels . Todo: register custom pgs fields
 					
-					player.SetPlayerGameStat( PGS_KILLS, currentKills - subtractKills )
-					player.SetPlayerGameStat( PGS_DEATHS, currentDeaths - subtractDeaths )
-					player.SetPlayerGameStat( PGS_ASSISTS, currentDamage - subtractDamage )
+					player.SetPlayerGameStat( PGS_KILLS, maxint( 0, currentKills - subtractKills ) )
+					player.SetPlayerGameStat( PGS_DEATHS, maxint( 0, currentDeaths - subtractDeaths ) )
+					player.SetPlayerGameStat( PGS_ASSISTS, maxint( 0, currentDamage - subtractDamage ) )
 				}
 			}
 		#endif
@@ -4882,7 +4882,7 @@ void function SendScoreboardToClient()
 				p.score = player.GetPlayerGameStat( PGS_KILLS )
 				p.deaths = player.GetPlayerGameStat( PGS_DEATHS )
 				p.kd = getkd( p.score, p.deaths )
-				p.damage = int( player.p.playerDamageDealt - subtractDamage )
+				p.damage = maxint( 0, int( player.p.playerDamageDealt - subtractDamage ) )
 				p.lastLatency = int( player.GetLatency() * 1000 )
 				
 				Remote_CallFunction_NonReplay( sPlayer, "ServerCallback_SendScoreboardToClient", p.eHandle, p.score, p.deaths, p.kd, p.damage, p.lastLatency )
