@@ -202,7 +202,7 @@ void function ShChallenges_LevelInit_PreStats()
 	#if UI
 		if ( !file.initialized )
 		{
-			AddUICallback_OnResolutionChanged( RefreshChallenges )
+			// AddUICallback_OnResolutionChanged( RefreshChallenges )
 		}
 	#endif
 
