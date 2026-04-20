@@ -2864,7 +2864,7 @@ void function UICodeCallback_UIScriptResetComplete()
 {
 	printf( "UICodeCallback_UIScriptResetComplete()" )
 	ShGRX_UIScriptResetComplete()
-	RefreshChallenges()
+	//RefreshChallenges()
 }
 
 
