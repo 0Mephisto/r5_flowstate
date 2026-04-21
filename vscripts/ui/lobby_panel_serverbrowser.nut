@@ -187,7 +187,16 @@ void function ServerBrowser_UpdateSelectedServerUI()
 
 void function ServerBrowser_NoServersLabel(bool show)
 {
-	//Set no servers found ui based on bool
+	// [rexx]: there's no point doing any of this if the label is just going to be hidden
+	if (show)
+	{
+		if (GetConVarInt("eula_version") > GetConVarInt("eula_version_accepted"))
+			Hud_SetText(Hud_GetChild( file.panel, "NoServersLbl" ), "#FS_EULA_NOT_ACCEPTED")
+		else
+			Hud_SetText(Hud_GetChild( file.panel, "NoServersLbl" ), "#FS_NO_SERVERS_FOUND")
+	}
+
+	// Set no servers found ui based on bool
 	Hud_SetVisible(Hud_GetChild( file.panel, "PlayerCountLine" ), !show )
 	Hud_SetVisible(Hud_GetChild( file.panel, "PlaylistLine" ), !show )
 	Hud_SetVisible(Hud_GetChild( file.panel, "MapLine" ), !show )
