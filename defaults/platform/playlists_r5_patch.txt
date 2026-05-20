@@ -3241,10 +3241,10 @@ playlists
 			vars
 			{
 				visible											1
-			
+
 				name										   	"Falling Forever [Practice Map]"
-				flowstate_mod_active						   1
-				
+				flowstate_mod_active							1
+
 				// match teams will not fill with more than one party, up to max_teams of size max_team_size (or less) -- not exceeding max_players
 				max_team_size									120
 				max_players										120
@@ -3261,17 +3261,17 @@ playlists
 
 				// No circle:
 				sur_circle_start_paused							1
-				
+
 				// Can change loadouts:
 				dev_loadout_changeable_at_any_time			 	1
 				sur_dev_unrestricted_character_changes		 	1
-				
+
 				// Bots:
 				sur_bots_spawn_with_random_weapons			 	1
 				match_ending_enabled						   	0
-				
-				
-				
+
+
+
 				survival_shields								1
 				survival_infinite_ammo							1
 
@@ -3281,7 +3281,6 @@ playlists
 				mp_rr_desertlands_64k_x_64k						1
 				mp_rr_desertlands_64k_x_64k_nx				 	1
 				mp_rr_desertlands_64k_x_64k_tt				 	1
-				
 			} } }
 		}
 
@@ -3291,9 +3290,9 @@ playlists
 			vars
 			{
 				visible											1
-			
+
 				name										   	"Door Map [Practice Map]"
-				flowstate_mod_active						   1
+				flowstate_mod_active							1
 				
 				// match teams will not fill with more than one party, up to max_teams of size max_team_size (or less) -- not exceeding max_players
 				max_team_size									120
@@ -3311,17 +3310,17 @@ playlists
 
 				// No circle:
 				sur_circle_start_paused							1
-				
+
 				// Can change loadouts:
 				dev_loadout_changeable_at_any_time			 	1
 				sur_dev_unrestricted_character_changes		 	1
-				
+
 				// Bots:
 				sur_bots_spawn_with_random_weapons			 	1
 				match_ending_enabled						   	0
-				
-				
-				
+
+
+
 				survival_shields								1
 				survival_infinite_ammo							1
 
@@ -3332,7 +3331,6 @@ playlists
 				mp_rr_desertlands_64k_x_64k						1
 				mp_rr_desertlands_64k_x_64k_nx				 	1
 				mp_rr_desertlands_64k_x_64k_tt				 	1
-				
 			} } }
 		}
 
@@ -3342,10 +3340,10 @@ playlists
 			vars
 			{
 				visible											1
-			
+
 				name										   	"Grapple Practice [Practice Map]"
-				flowstate_mod_active						   1
-				
+				flowstate_mod_active							1
+
 				// match teams will not fill with more than one party, up to max_teams of size max_team_size (or less) -- not exceeding max_players
 				max_team_size									120
 				max_players										120
@@ -3362,17 +3360,17 @@ playlists
 
 				// No circle:
 				sur_circle_start_paused							1
-				
+
 				// Can change loadouts:
 				dev_loadout_changeable_at_any_time			 	1
 				sur_dev_unrestricted_character_changes		 	1
-				
+
 				// Bots:
 				sur_bots_spawn_with_random_weapons			 	1
 				match_ending_enabled						   	0
-				
-				
-				
+
+
+
 				survival_shields								1
 				survival_infinite_ammo							1
 
@@ -3382,7 +3380,6 @@ playlists
 				mp_rr_desertlands_64k_x_64k						1
 				mp_rr_desertlands_64k_x_64k_nx				 	1
 				mp_rr_desertlands_64k_x_64k_tt				 	1
-				
 			} } }
 		}
 
@@ -3392,9 +3389,9 @@ playlists
 			vars
 			{
 				visible											1
-			
+
 				name										   "Mantle Jump Map [Practice Map]"
-				flowstate_mod_active						   1
+				flowstate_mod_active							1
 				
 				// match teams will not fill with more than one party, up to max_teams of size max_team_size (or less) -- not exceeding max_players
 				max_team_size									120
@@ -3412,20 +3409,20 @@ playlists
 
 				// No circle:
 				sur_circle_start_paused							1
-				
+
 				// Can change loadouts:
 				dev_loadout_changeable_at_any_time			 	1
 				sur_dev_unrestricted_character_changes		 	1
-				
+
 				// Bots:
 				sur_bots_spawn_with_random_weapons			 	1
 				match_ending_enabled						   	0
-				
-				
-				
+
+
+
 				survival_shields								1
 				survival_infinite_ammo							1
-				
+
 				is_practice_map									1
 			}
 			gamemodes { survival { maps {
@@ -3442,10 +3439,10 @@ playlists
 			vars
 			{
 				visible											1
-			
+
 				name										   	"First Movement Map [Practice Map]"
-				flowstate_mod_active						   1
-				
+				flowstate_mod_active							1
+
 				// match teams will not fill with more than one party, up to max_teams of size max_team_size (or less) -- not exceeding max_players
 				max_team_size									120
 				max_players										120
@@ -3462,17 +3459,17 @@ playlists
 
 				// No circle:
 				sur_circle_start_paused							1
-				
+
 				// Can change loadouts:
 				dev_loadout_changeable_at_any_time			 	1
 				sur_dev_unrestricted_character_changes		 	1
-				
+
 				// Bots:
 				sur_bots_spawn_with_random_weapons			 	1
 				match_ending_enabled						   	0
-				
-				
-				
+
+
+
 				survival_shields								1
 				survival_infinite_ammo							1
 
@@ -3492,10 +3489,10 @@ playlists
 			vars
 			{
 				visible											1
-			
-				name										   	"Gym Movement Map [Practice Map]"
-				flowstate_mod_active						   1
-				
+
+				name											"Gym Movement Map [Practice Map]"
+				flowstate_mod_active							1
+
 				// match teams will not fill with more than one party, up to max_teams of size max_team_size (or less) -- not exceeding max_players
 				max_team_size									120
 				max_players										120
@@ -3512,17 +3509,17 @@ playlists
 
 				// No circle:
 				sur_circle_start_paused							1
-				
+
 				// Can change loadouts:
 				dev_loadout_changeable_at_any_time			 	1
 				sur_dev_unrestricted_character_changes		 	1
-				
+
 				// Bots:
 				sur_bots_spawn_with_random_weapons			 	1
 				match_ending_enabled						   	0
-				
-				
-				
+
+
+
 				survival_shields								1
 				survival_infinite_ammo							1
 
@@ -3532,7 +3529,6 @@ playlists
 				mp_rr_desertlands_64k_x_64k						1
 				mp_rr_desertlands_64k_x_64k_nx				 	1
 				mp_rr_desertlands_64k_x_64k_tt				 	1
-				
 			} } }
 		}
 
@@ -3542,10 +3538,10 @@ playlists
 			vars
 			{
 				visible											1
-			
+
 				name										   	"Strafe It Movement Map [Practice Map]"
-				flowstate_mod_active						   1
-				
+				flowstate_mod_active							1
+
 				// match teams will not fill with more than one party, up to max_teams of size max_team_size (or less) -- not exceeding max_players
 				max_team_size									120
 				max_players										120
@@ -3562,17 +3558,17 @@ playlists
 
 				// No circle:
 				sur_circle_start_paused							1
-				
+
 				// Can change loadouts:
 				dev_loadout_changeable_at_any_time			 	1
 				sur_dev_unrestricted_character_changes		 	1
-				
+
 				// Bots:
 				sur_bots_spawn_with_random_weapons			 	1
 				match_ending_enabled						   	0
-				
-				
-				
+
+
+
 				survival_shields								1
 				survival_infinite_ammo							1
 
@@ -3591,25 +3587,25 @@ playlists
 			vars
 			{
 				visible											1
-				
+
 				name										   	"TRIOS"
 				abbreviation								   	"TRIOS"
 				description										"TRIOS"
-			
+
 				deathbox_ondeath_enabled 						1 //( 0 will throw loot around player ) // survival only
 				battlechatter_enabled						  	1
 
 				enable_nessies								 	1
-				
+
 				// match teams will not fill with more than one party, up to max_teams of size max_team_size (or less) -- not exceeding max_players
 				max_team_size									3
 				max_players										60
 				min_players										15
-				
+
 				custom_loot               						0
-				
+
 				bleedout_enabled								1
-				
+
 				survival_shields							   	1
 				is_ranked_game								 	0
 				player_revive_enabled						  	1
@@ -3617,13 +3613,13 @@ playlists
 				skydive_ziplines_enabled					   	1
 				charselect_intro_countdown_duration				0.0
 				dev_loadout_changeable_at_any_time 1
-				
+
 				r5reloaded_AnimatedCharacterSelect				0
 				flowstate_spectator_team_only					1
-				
+
 				survival_server_restart_after_end				1
 				enable_bullet_slow					1
-				
+
 				activate_passive_abilities				1
 				flowstate_mod_active							0
 				enable_global_chat								0
@@ -3645,44 +3641,44 @@ playlists
 				mp_rr_canyonlands_mu2_tt						1
 			} } }
 		}
-		
+
 		survival_duos
 		{
 			inherit defaults
 			vars
 			{
 				visible											1
-				
+
 				name										   	"DUOS"
 				description										"DUOS"
 				abbreviation								   	"DUOS"
-				
+
 				battlechatter_enabled						  	1
 
 				enable_nessies								 	1
-				
+
 				// match teams will not fill with more than one party, up to max_teams of size max_team_size (or less) -- not exceeding max_players
 				max_team_size									2
 				max_players										60
 				min_players										16
-				
+
 				custom_loot               						0
-				
+
 				bleedout_enabled								1
-				
+
 				survival_shields							   	1
 				is_ranked_game								 	0
 				player_revive_enabled						  	1
 				enable_apex_screens								1
 				skydive_ziplines_enabled					   	1
 				charselect_intro_countdown_duration				0.0
-				
+
 				r5reloaded_AnimatedCharacterSelect				0
 				flowstate_spectator_team_only					1
 
 				survival_server_restart_after_end				1
 				enable_bullet_slow					1
-				
+
 				activate_passive_abilities				1
 				flowstate_mod_active							0
 				enable_global_chat								0
@@ -3704,33 +3700,33 @@ playlists
 				mp_rr_canyonlands_mu2_tt						1
 			} } }
 		}
-		
+
 		survival_solos
 		{
 			inherit defaults
 			vars
 			{
 				visible											1
-				
+
 				name										   	"SOLOS"
 				description										"SOLOS"
 				abbreviation								   	"SOLOS"
-				
+
 				battlechatter_enabled						  	1
 
 				enable_nessies								 	1
-				
+
 				// match teams will not fill with more than one party, up to max_teams of size max_team_size (or less) -- not exceeding max_players
 				max_team_size									1
 				max_players										60
 				min_players										15
 
 				custom_loot               						0
-				
+
 				bleedout_enabled								1
-				
-				
-				
+
+
+
 				survival_shields							   	1
 				is_ranked_game								 	0
 				player_revive_enabled						  	1
@@ -3744,7 +3740,7 @@ playlists
 
 				survival_server_restart_after_end				1
 				enable_bullet_slow								1
-				
+
 				activate_passive_abilities						1
 				flowstate_mod_active							0
 				enable_global_chat								0
@@ -3768,7 +3764,6 @@ playlists
 			} } }
 		}
 
-
 		survival_firingrange
 		{
 			inherit survival
@@ -3776,10 +3771,10 @@ playlists
 			{
 				visible											1
 				flowstate_mod_active						    0
-				
+
 				name										   	"Firing Range"
 				description										"Firing Range"
-				
+
 				ui_slot											firing_range
 				image										  	firing_range
 				video										  	_temp
@@ -3846,10 +3841,10 @@ playlists
 			{
 				visible										1
 				flowstate_mod_active						0
-				
+
 				name										"Training"
 				description									"Training"
-				
+
 				ui_slot										firing_range
 				image										firing_range
 				video										_temp
@@ -3864,7 +3859,7 @@ playlists
 				loot_preprocessing_should_be_skipped		1
 				survival_staging_area_enabled				1
 				make_room_for_new_players					1
-				
+
 				//match teams will not fill with more than one party, up to max_teams of size max_team_size (or less) -- not exceeding max_players
 				max_team_size								3
 				max_players									3
@@ -3890,10 +3885,10 @@ playlists
 
 				// Bots:
 				sur_bots_spawn_with_random_weapons			1
-				
+
 				//General Gamemode Settings
 				match_ending_enabled						0
-				
+
 				// Firing Range:
 				survival_firingrange						1
 				staging_ultimates_enabled					1
@@ -4124,7 +4119,7 @@ playlists
 				"MOTD_TEXT" "An R5Reloaded server" //set your servers message of the day. 1000 char max.  Use \n for newline.
 				"MOTD_TEXT_EXTENDED" "" // appends to first, 1000 char max.
 			
-				"BETA_BUILD_WATERMARK" "R5Reloaded - v2.6.31"
+				"BETA_BUILD_WATERMARK" "R5Reloaded - v2.6.42"
 
 				//////////////////////////////////////////////////
 				// TEMP TOKENS (remove before release shipping )//
