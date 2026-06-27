@@ -537,7 +537,7 @@ void function UpdateListSliderPosition( int servers )
 	var movementCapture = Hud_GetChild( file.panel , "MouseMovementCapture" )
 
 	float minYPos = -45.0 * ( GetScreenSize().height / 1080.0 )
-	float useableSpace = ( 610.0 * ( GetScreenSize().height / 1080.0 ) - Hud_GetHeight( sliderPanel ) ) // This should not be hardcoded if possible
+	float useableSpace = ( 595.0 * ( GetScreenSize().height / 1080.0 ) - Hud_GetHeight( sliderPanel ) ) // This should not be hardcoded if possible
 
 	float jump = minYPos - ( useableSpace / ( float( servers ) - SB_MAX_SERVER_PER_PAGE ) * m_vScroll.Offset )
 
@@ -555,7 +555,7 @@ void function UpdateListSliderHeight( float servers )
 	var sliderPanel = Hud_GetChild( file.panel , "BtnServerListSliderPanel" )
 	var movementCapture = Hud_GetChild( file.panel , "MouseMovementCapture" )
 
-	float maxHeight = 610.0 * ( GetScreenSize().height / 1080.0 )
+	float maxHeight = 595.0 * ( GetScreenSize().height / 1080.0 )
 	float minHeight = 80.0 * ( GetScreenSize().height / 1080.0 )
 
 	float height = maxHeight * ( SB_MAX_SERVER_PER_PAGE / servers )
@@ -597,7 +597,7 @@ void function SliderBarUpdate()
 	Hud_SetFocused( sliderButton )
 
 	float minYPos = -45.0 * ( GetScreenSize().height / 1080.0 )
-	float maxHeight = 610.0  * ( GetScreenSize().height / 1080.0 )
+	float maxHeight = 595.0  * ( GetScreenSize().height / 1080.0 )
 	float maxYPos = minYPos - ( maxHeight - Hud_GetHeight( sliderPanel ) )
 	float useableSpace = ( maxHeight - Hud_GetHeight( sliderPanel ) )
 

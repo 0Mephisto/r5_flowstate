@@ -500,7 +500,7 @@ scripts/resource/ui/menus/panels/serverbrowser.res
 	{
 		"ControlName"			"ImagePanel"
 		wide 24
-		tall 777
+		tall 687
 		xpos 6
 		ypos 30
 		zpos 0
@@ -519,7 +519,7 @@ scripts/resource/ui/menus/panels/serverbrowser.res
 		InheritProperties RuiSmallButton
 		//labelText "V"
 		wide 22
-		tall 777
+		tall 687
 		xpos -10
 		ypos 30
 		zpos 0
@@ -536,7 +536,7 @@ scripts/resource/ui/menus/panels/serverbrowser.res
 	{
 		ControlName RuiPanel
 		wide 22
-		tall 777
+		tall 687
 		xpos -10
 		ypos 30
 		zpos 100
